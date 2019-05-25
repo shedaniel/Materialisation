@@ -1,5 +1,7 @@
 package me.shedaniel.materialisedtools.items;
 
+import me.shedaniel.materialisedtools.MaterialisedTools;
+import me.shedaniel.materialisedtools.api.KnownMaterial;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.enchantment.UnbreakingEnchantment;
@@ -7,14 +9,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolMaterial;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.util.math.MathHelper;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Random;
 
 public class MaterialisedToolUtils {
-    
-    // Wooden Handle: 33529892
     
     public static final NumberFormat TWO_DECIMAL_FORMATTER = new DecimalFormat("#.##");
     public static final ToolMaterial DUMMY_MATERIAL = new ToolMaterial() {
@@ -65,7 +66,7 @@ public class MaterialisedToolUtils {
         return stack.getOrCreateTag().containsKey("materialisedtools_maxdurability") ? stack.getOrCreateTag().getInt("materialisedtools_maxdurability") : 1;
     }
     
-    public static int getColor(ItemStack stack, int layer) {
+    public static int getItemLayerColor(ItemStack stack, int layer) {
         return stack.getOrCreateTag().containsKey("mt_color_" + layer) ? stack.getOrCreateTag().getInt("mt_color_" + layer) : 0;
     }
     
@@ -94,6 +95,45 @@ public class MaterialisedToolUtils {
             setToolDurability(stack, int_2);
             return int_2 < getToolDurability(stack);
         }
+    }
+    
+    public static ItemStack createToolHandle(KnownMaterial material) {
+        ItemStack stack = new ItemStack(MaterialisedTools.HANDLE);
+        CompoundTag tag = stack.getOrCreateTag();
+        tag.putInt("mt_color_0", material.getToolHandleColor());
+        tag.putString("mt_material", material.getName());
+        if (material.isBright())
+            tag.putBoolean("mt_bright", true);
+        stack.setTag(tag);
+        return stack;
+    }
+    
+    public static ItemStack createPickaxeHead(KnownMaterial material) {
+        ItemStack stack = new ItemStack(MaterialisedTools.PICKAXE_HEAD);
+        CompoundTag tag = stack.getOrCreateTag();
+        tag.putInt("mt_color_0", material.getPickaxeHeadColor());
+        tag.putString("mt_material", material.getName());
+        if (material.isBright())
+            tag.putBoolean("mt_bright", true);
+        stack.setTag(tag);
+        return stack;
+    }
+    
+    public static ItemStack createPickaxe(KnownMaterial handle, KnownMaterial pickaxeHead) {
+        ItemStack stack = new ItemStack(MaterialisedTools.MATERIALISED_PICKAXE);
+        CompoundTag tag = stack.getOrCreateTag();
+        tag.putInt("mt_color_0", handle.getToolHandleColor());
+        tag.putInt("mt_color_1", pickaxeHead.getPickaxeHeadColor());
+        tag.putInt("materialisedtools_maxdurability", MathHelper.floor(pickaxeHead.getPickaxeHeadDurability() * handle.getHandleDurabilityMultiplier()));
+        tag.putInt("materialisedtools_mininglevel", MathHelper.ceil((handle.getMiningLevel() + pickaxeHead.getMiningLevel()) / 2f));
+        tag.putFloat("materialisedtools_breakingspeed", pickaxeHead.getPickaxeHeadSpeed() * handle.getHandleBreakingSpeedMultiplier());
+        tag.putBoolean("mt_done_tool", true);
+        if (handle.isBright())
+            tag.putBoolean("mt_handle_bright", true);
+        if (pickaxeHead.isBright())
+            tag.putBoolean("mt_pickaxe_head_bright", true);
+        stack.setTag(tag);
+        return stack;
     }
     
 }

@@ -2,6 +2,7 @@ package me.shedaniel.materialisedtools;
 
 import me.shedaniel.materialisedtools.blocks.MaterialisingTableBlock;
 import me.shedaniel.materialisedtools.containers.MaterialisingTableContainer;
+import me.shedaniel.materialisedtools.items.ColoredItem;
 import me.shedaniel.materialisedtools.items.MaterialisedPickaxeItem;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
@@ -21,6 +22,8 @@ public class MaterialisedTools implements ModInitializer {
     public static final Block MATERIALISING_TABLE = new MaterialisingTableBlock();
     public static final Identifier MATERIALISING_TABLE_CONTAINER = new Identifier(MaterialisedReference.MOD_ID, "materialising_table");
     public static final Item MATERIALISED_PICKAXE = new MaterialisedPickaxeItem(new Item.Settings());
+    public static final Item HANDLE = new ColoredItem(new Item.Settings());
+    public static final Item PICKAXE_HEAD = new ColoredItem(new Item.Settings());
     
     public static <T> Optional<T> getReflectionField(Object parent, Class<T> clazz, int index) {
         try {
@@ -41,6 +44,8 @@ public class MaterialisedTools implements ModInitializer {
             return new MaterialisingTableContainer(syncId, playerEntity.inventory, BlockContext.create(playerEntity.world, packetByteBuf.readBlockPos()));
         });
         registerItem("materialised_pickaxe", MATERIALISED_PICKAXE);
+        registerItem("handle", HANDLE);
+        registerItem("pickaxe_head", PICKAXE_HEAD);
     }
     
     private void registerBlock(String name, Block block) {

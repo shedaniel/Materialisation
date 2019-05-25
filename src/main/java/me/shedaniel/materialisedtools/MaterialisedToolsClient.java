@@ -14,6 +14,6 @@ public class MaterialisedToolsClient implements ClientModInitializer {
         ScreenProviderRegistry.INSTANCE.registerFactory(MaterialisedTools.MATERIALISING_TABLE_CONTAINER, (syncId, identifier, playerEntity, packetByteBuf) -> {
             return new MaterialisingTableScreen(new MaterialisingTableContainer(syncId, playerEntity.inventory), playerEntity.inventory, new TranslatableComponent("container.materialisedtools.materialising_table"));
         });
-        ColorProviderRegistryImpl.ITEM.register(MaterialisedToolUtils::getColor, MaterialisedTools.MATERIALISED_PICKAXE);
+        ColorProviderRegistryImpl.ITEM.register(MaterialisedToolUtils::getItemLayerColor, MaterialisedTools.MATERIALISED_PICKAXE, MaterialisedTools.HANDLE, MaterialisedTools.PICKAXE_HEAD);
     }
 }

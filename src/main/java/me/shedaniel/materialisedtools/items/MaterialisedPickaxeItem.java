@@ -1,6 +1,7 @@
 package me.shedaniel.materialisedtools.items;
 
 import com.google.common.collect.ImmutableSet;
+import me.shedaniel.materialisedtools.MaterialisedReference;
 import me.shedaniel.materialisedtools.mixin.MiningToolItemAccessor;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -16,6 +17,7 @@ import net.minecraft.item.PickaxeItem;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.stat.Stats;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -29,6 +31,18 @@ public class MaterialisedPickaxeItem extends PickaxeItem {
     // TODO: getBlockBreakingSpeed
     public MaterialisedPickaxeItem(Settings settings) {
         super(MaterialisedToolUtils.DUMMY_MATERIAL, 0, -2.8F, settings.durability(0));
+        addProperty(new Identifier(MaterialisedReference.MOD_ID, "handle_isbright"), (itemStack, world, livingEntity) -> {
+            return itemStack.getOrCreateTag().containsKey("mt_handle_bright") ? 1f : 0f;
+        });
+        addProperty(new Identifier(MaterialisedReference.MOD_ID, "handle_isnotbright"), (itemStack, world, livingEntity) -> {
+            return !itemStack.getOrCreateTag().containsKey("mt_handle_bright") ? 1f : 0f;
+        });
+        addProperty(new Identifier(MaterialisedReference.MOD_ID, "pickaxe_head_isbright"), (itemStack, world, livingEntity) -> {
+            return itemStack.getOrCreateTag().containsKey("mt_pickaxe_head_bright") ? 1f : 0f;
+        });
+        addProperty(new Identifier(MaterialisedReference.MOD_ID, "pickaxe_head_isnotbright"), (itemStack, world, livingEntity) -> {
+            return !itemStack.getOrCreateTag().containsKey("mt_pickaxe_head_bright") ? 1f : 0f;
+        });
     }
     
     public static boolean canEffectivelyBreak(ItemStack stack, BlockState state) {
