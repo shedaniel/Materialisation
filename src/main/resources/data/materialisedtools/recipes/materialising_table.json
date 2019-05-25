@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "WWW",
+    "iDi",
+    "ISI"
+  ],
+  "key": {
+    "W": {
+      "tag": "minecraft:planks"
+    },
+    "S": {
+      "item": "minecraft:stone"
+    },
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "i": {
+      "item": "minecraft:iron_ingot"
+    },
+    "I": {
+      "item": "minecraft:iron_block"
+    }
+  },
+  "result": {
+    "item": "materialisedtools:materialising_table"
+  }
+}

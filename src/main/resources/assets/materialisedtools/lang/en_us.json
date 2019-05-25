@@ -1,0 +1,10 @@
+{
+  "block.materialisedtools.materialising_table": "Materialising Table",
+  "item.materialisedtools.materialised_pickaxe": "Materialised Pickaxe",
+  "container.materialisedtools.materialising_table": "Materialising Table",
+  "text.materialisedtools.broken": "Current Durability: §cBroken",
+  "text.materialisedtools.max_durability": "Max Durability: %d",
+  "text.materialisedtools.durability": "Current Durability: %d (%s%%)",
+  "text.materialisedtools.breaking_speed": "Breaking Speed: %.2f",
+  "text.materialisedtools.mining_level": "Mining Level: %d"
+}

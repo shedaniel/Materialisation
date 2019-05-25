@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "materialisedtools:item/materialised_pickaxe_handle",
+    "layer1": "materialisedtools:item/materialised_pickaxe_head"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "materialisedtools",
+  "name": "Materialised Tools",
+  "description": "Description to be added.\n-Danielshe",
+  "version": "${version}",
+  "authors": [
+    "Danielshe"
+  ],
+  "contact": {
+    "sources": "https://github.com/shedaniel/MaterialisedTools",
+    "issues": "https://github.com/shedaniel/MaterialisedTools/issues"
+  },
+  "entrypoints": {
+    "main": [
+      "me.shedaniel.materialisedtools.MaterialisedTools"
+    ],
+    "client": [
+      "me.shedaniel.materialisedtools.MaterialisedToolsClient"
+    ],
+    "rei_plugins": [
+      "me.shedaniel.materialisedtools.rei.MaterialisedREIPlugin"
+    ]
+  },
+  "requires": {
+    "fabricloader": ">=0.4.0"
+  },
+  "mixins": [
+    "materialisedtools.mixins.json"
+  ]
+}

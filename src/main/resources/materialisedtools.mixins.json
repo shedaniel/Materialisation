@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "me.shedaniel.materialisedtools.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MiningToolItemAccessor",
+    "MixinItemRenderer",
+    "MixinPlayerInventory",
+    "MixinItemColors"
+  ],
+  "client": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

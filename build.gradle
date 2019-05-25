@@ -1,0 +1,36 @@
+plugins {
+    id 'fabric-loom' version '0.2.2-SNAPSHOT'
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+archivesBaseName = "MaterialisedTools"
+version = "0.1.0"
+
+def minecraftVersion = "1.14.1"
+def yarnVersion = "1.14.1+build.10"
+def fabricVersion = "0.3.0-pre+build.165"
+
+minecraft {
+}
+
+processResources {
+    filesMatching('fabric.mod.json') {
+        expand 'version': project.version
+    }
+    inputs.property "version", project.version
+}
+
+repositories {
+    maven { url "https://tehnut.info/maven/" }
+    maven { url "https://minecraft.curseforge.com/api/maven" }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${minecraftVersion}"
+    mappings "net.fabricmc:yarn:${yarnVersion}"
+    modCompile "net.fabricmc:fabric-loader:0.4.7+build.148"
+    modCompile "net.fabricmc.fabric-api:fabric-api:${fabricVersion}"
+    modCompile "me.shedaniel:RoughlyEnoughItems:2.9.1+build.116"
+}
