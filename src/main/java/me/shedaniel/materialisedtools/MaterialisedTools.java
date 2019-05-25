@@ -6,6 +6,8 @@ import me.shedaniel.materialisedtools.items.ColoredItem;
 import me.shedaniel.materialisedtools.items.MaterialisedPickaxeItem;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
+import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.minecraft.SharedConstants;
 import net.minecraft.block.Block;
 import net.minecraft.container.BlockContext;
 import net.minecraft.item.BlockItem;
@@ -21,6 +23,7 @@ public class MaterialisedTools implements ModInitializer {
     
     public static final Block MATERIALISING_TABLE = new MaterialisingTableBlock();
     public static final Identifier MATERIALISING_TABLE_CONTAINER = new Identifier(MaterialisedReference.MOD_ID, "materialising_table");
+    public static final Identifier MATERIALISING_TABLE_RENAME = new Identifier(MaterialisedReference.MOD_ID, "materialising_table_rename");
     public static final Item MATERIALISED_PICKAXE = new MaterialisedPickaxeItem(new Item.Settings());
     public static final Item HANDLE = new ColoredItem(new Item.Settings());
     public static final Item PICKAXE_HEAD = new ColoredItem(new Item.Settings());
@@ -42,6 +45,14 @@ public class MaterialisedTools implements ModInitializer {
         registerBlock("materialising_table", MATERIALISING_TABLE, ItemGroup.DECORATIONS);
         ContainerProviderRegistry.INSTANCE.registerFactory(MATERIALISING_TABLE_CONTAINER, (syncId, identifier, playerEntity, packetByteBuf) -> {
             return new MaterialisingTableContainer(syncId, playerEntity.inventory, BlockContext.create(playerEntity.world, packetByteBuf.readBlockPos()));
+        });
+        ServerSidePacketRegistry.INSTANCE.register(MATERIALISING_TABLE_RENAME, (packetContext, packetByteBuf) -> {
+            if (packetContext.getPlayer().container instanceof MaterialisingTableContainer) {
+                MaterialisingTableContainer container = (MaterialisingTableContainer) packetContext.getPlayer().container;
+                String string_1 = SharedConstants.stripInvalidChars(packetByteBuf.readString());
+                if (string_1.length() <= 35)
+                    container.setNewItemName(string_1);
+            }
         });
         registerItem("materialised_pickaxe", MATERIALISED_PICKAXE);
         registerItem("handle", HANDLE);

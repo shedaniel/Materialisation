@@ -2,6 +2,7 @@ package me.shedaniel.materialisedtools.items;
 
 import me.shedaniel.materialisedtools.MaterialisedTools;
 import me.shedaniel.materialisedtools.api.KnownMaterial;
+import me.shedaniel.materialisedtools.api.KnownMaterials;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.enchantment.UnbreakingEnchantment;
@@ -117,6 +118,14 @@ public class MaterialisedToolUtils {
             tag.putBoolean("mt_bright", true);
         stack.setTag(tag);
         return stack;
+    }
+    
+    public static KnownMaterial getMaterialFromPart(ItemStack stack) {
+        if (stack.getOrCreateTag().containsKey("mt_material")) {
+            String material = stack.getOrCreateTag().getString("mt_material");
+            return KnownMaterials.getKnownMaterials().filter(mat -> mat.getName().equalsIgnoreCase(material)).findAny().orElse(null);
+        } else
+            return null;
     }
     
     public static ItemStack createPickaxe(KnownMaterial handle, KnownMaterial pickaxeHead) {
