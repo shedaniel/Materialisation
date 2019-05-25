@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "id": "materialisedtools",
-  "name": "Materialised Tools",
+  "id": "materialisation",
+  "name": "Materialisation",
   "description": "Description to be added.\n-Danielshe",
   "version": "${version}",
   "authors": [
@@ -13,19 +13,19 @@
   },
   "entrypoints": {
     "main": [
-      "me.shedaniel.materialisedtools.MaterialisedTools"
+      "me.shedaniel.materialisation.Materialisation"
     ],
     "client": [
-      "me.shedaniel.materialisedtools.MaterialisedToolsClient"
+      "me.shedaniel.materialisation.MaterialisationClient"
     ],
     "rei_plugins": [
-      "me.shedaniel.materialisedtools.rei.MaterialisedREIPlugin"
+      "me.shedaniel.materialisation.rei.MaterialisationREIPlugin"
     ]
   },
   "requires": {
     "fabricloader": ">=0.4.0"
   },
   "mixins": [
-    "materialisedtools.mixins.json"
+    "materialisation.mixins.json"
   ]
 }

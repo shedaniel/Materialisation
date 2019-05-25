@@ -1,0 +1,30 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "materialisation:item/materialised_pickaxe_handle",
+    "layer1": "materialisation:item/materialised_pickaxe_head"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "materialisation:handle_isbright": 1,
+        "materialisation:pickaxe_head_isbright": 1
+      },
+      "model": "materialisation:item/materialised_pickaxe_both"
+    },
+    {
+      "predicate": {
+        "materialisation:handle_isnotbright": 1,
+        "materialisation:pickaxe_head_isbright": 1
+      },
+      "model": "materialisation:item/materialised_pickaxe_only_head"
+    },
+    {
+      "predicate": {
+        "materialisation:handle_isbright": 1,
+        "materialisation:pickaxe_head_isnotbright": 1
+      },
+      "model": "materialisation:item/materialised_pickaxe_only_handle"
+    }
+  ]
+}

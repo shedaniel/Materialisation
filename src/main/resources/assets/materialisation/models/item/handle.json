@@ -1,0 +1,14 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "materialisation:item/handle"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "materialisation:bright": 1
+      },
+      "model": "materialisation:item/handle_bright"
+    }
+  ]
+}

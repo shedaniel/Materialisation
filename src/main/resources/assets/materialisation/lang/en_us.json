@@ -1,0 +1,18 @@
+{
+  "block.materialisation.materialising_table": "Materialising Table",
+  "item.materialisation.materialised_pickaxe": "Materialised Pickaxe",
+  "item.materialisation.handle": "Unknown Tool Handle",
+  "item.materialisation.materialised_handle": "%s Handle",
+  "item.materialisation.materialised_pickaxe_head": "%s Pickaxe Head",
+  "item.materialisation.pickaxe_head": "Unknown Pickaxe Head",
+  "container.materialisation.materialising_table": "Materialising Table",
+  "text.materialisation.broken": "Current Durability: §cBroken",
+  "text.materialisation.max_durability": "Max Durability: %d",
+  "text.materialisation.durability": "Current Durability: %d (%s%%)",
+  "text.materialisation.breaking_speed": "Breaking Speed: %.2f",
+  "text.materialisation.mining_level": "Mining Level: %d",
+  "material.materialisation.wood": "Wooden",
+  "material.materialisation.stone": "Stone",
+  "material.materialisation.iron": "Iron",
+  "material.materialisation.gold": "Golden"
+}

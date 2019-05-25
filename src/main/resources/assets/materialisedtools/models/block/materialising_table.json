@@ -1,8 +1,0 @@
-{
-  "parent": "block/orientable",
-  "textures": {
-    "top": "materialisedtools:block/materialising_table_top",
-    "front": "materialisedtools:block/materialising_table_front",
-    "side": "materialisedtools:block/materialising_table_side"
-  }
-}

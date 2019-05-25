@@ -1,0 +1,14 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "materialisation:item/pickaxe_head"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "materialisation:bright": 1
+      },
+      "model": "materialisation:item/pickaxe_head_bright"
+    }
+  ]
+}
