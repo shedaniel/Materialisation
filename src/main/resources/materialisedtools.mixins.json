@@ -5,8 +5,7 @@
   "mixins": [
     "MiningToolItemAccessor",
     "MixinItemRenderer",
-    "MixinPlayerInventory",
-    "MixinItemColors"
+    "MixinPlayerInventory"
   ],
   "client": [],
   "injectors": {
