@@ -71,7 +71,7 @@ public class MixinPlayerInventory {
                 // If there is not durability left
                 callbackInfo.setReturnValue(false);
             } else {
-                TriState triState = ToolManager.handleIsEffectiveOn(itemStack, state);
+                TriState triState = mt_handleIsEffectiveOn(itemStack, state);
                 if (triState != TriState.DEFAULT) {
                     // If we are dealing with 3rd party blocks
                     callbackInfo.setReturnValue(triState.get());
