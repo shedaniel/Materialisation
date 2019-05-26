@@ -28,6 +28,7 @@ public class Materialisation implements ModInitializer {
     // TODO: Disable Anvil Enchanting
     
     public static final Block MATERIALISING_TABLE = new MaterialisingTableBlock();
+    public static final Block MATERIAL_PREPARER = new MaterialisingTableBlock();
     public static final Identifier MATERIALISING_TABLE_CONTAINER = new Identifier(ModReference.MOD_ID, "materialising_table");
     public static final Identifier MATERIALISING_TABLE_RENAME = new Identifier(ModReference.MOD_ID, "materialising_table_rename");
     public static final Identifier MATERIALISING_TABLE_PLAY_SOUND = new Identifier(ModReference.MOD_ID, "materialising_table_play_sound");
@@ -50,6 +51,7 @@ public class Materialisation implements ModInitializer {
     @Override
     public void onInitialize() {
         registerBlock("materialising_table", MATERIALISING_TABLE, ItemGroup.DECORATIONS);
+        registerBlock("material_preparer", MATERIAL_PREPARER, ItemGroup.DECORATIONS);
         ContainerProviderRegistry.INSTANCE.registerFactory(MATERIALISING_TABLE_CONTAINER, (syncId, identifier, playerEntity, packetByteBuf) -> {
             return new MaterialisingTableContainer(syncId, playerEntity.inventory, BlockContext.create(playerEntity.world, packetByteBuf.readBlockPos()));
         });

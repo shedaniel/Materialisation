@@ -22,7 +22,7 @@ public class MaterialisedToolUtils {
     public static final ToolMaterial DUMMY_MATERIAL = new ToolMaterial() {
         @Override
         public int getDurability() {
-            return 1;
+            return 0;
         }
         
         @Override

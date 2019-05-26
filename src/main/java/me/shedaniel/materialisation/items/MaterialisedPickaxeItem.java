@@ -26,8 +26,6 @@ import java.util.Set;
 
 public class MaterialisedPickaxeItem extends PickaxeItem {
     
-    public static final Set<Material> WORKING_MATERIALS = ImmutableSet.of(Material.GLASS, Material.ICE, Material.STONE, Material.PACKED_ICE, Material.ANVIL, Material.METAL, Material.REDSTONE_LAMP);
-    
     public MaterialisedPickaxeItem(Settings settings) {
         super(MaterialisedToolUtils.DUMMY_MATERIAL, 0, -2.8F, settings.durability(0));
         addProperty(new Identifier(ModReference.MOD_ID, "handle_isbright"), (itemStack, world, livingEntity) -> {

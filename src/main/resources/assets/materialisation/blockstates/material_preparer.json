@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=south": { "model": "materialisedtools:block/material_preparer" },
+    "facing=west": { "model": "materialisedtools:block/material_preparer", "y": 90 },
+    "facing=north": { "model": "materialisedtools:block/material_preparer", "y": 180 },
+    "facing=east": { "model": "materialisedtools:block/material_preparer", "y": 270 }
+  }
+}

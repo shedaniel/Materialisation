@@ -1,5 +1,6 @@
 {
   "block.materialisation.materialising_table": "Materialising Table",
+  "block.materialisation.material_preparer": "Material Preparer",
   "item.materialisation.materialised_pickaxe": "Materialised Pickaxe",
   "item.materialisation.handle": "Unknown Tool Handle",
   "item.materialisation.materialised_handle": "%s Handle",

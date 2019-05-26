@@ -5,7 +5,9 @@
   "mixins": [
     "MiningToolItemAccessor",
     "MixinItemRenderer",
-    "MixinPlayerInventory"
+    "MixinPlayerInventory",
+    "MixinItemStack",
+    "MixinAnvilContainer"
   ],
   "client": [],
   "injectors": {
