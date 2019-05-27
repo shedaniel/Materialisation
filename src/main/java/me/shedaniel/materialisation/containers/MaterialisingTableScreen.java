@@ -2,8 +2,8 @@ package me.shedaniel.materialisation.containers;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import io.netty.buffer.Unpooled;
-import me.shedaniel.materialisation.ModReference;
 import me.shedaniel.materialisation.Materialisation;
+import me.shedaniel.materialisation.ModReference;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.AbstractContainerScreen;
@@ -123,8 +123,10 @@ public class MaterialisingTableScreen extends AbstractContainerScreen<Materialis
     @Override
     public void onContainerSlotUpdate(Container container, int i, ItemStack itemStack) {
         if (i == 2) {
+            this.nameField.setChangedListener(null);
             this.nameField.setText(!container.getSlot(i).hasStack() ? "" : itemStack.getDisplayName().getString());
             this.nameField.setIsEditable(!itemStack.isEmpty());
+            this.nameField.setChangedListener(this::onChangeName);
         }
     }
     

@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "materialisation:handle_pattern"
+    }
+  ],
+  "result": {
+    "item": "materialisation:pickaxe_head_pattern"
+  }
+}

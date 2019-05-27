@@ -1,6 +1,10 @@
 package me.shedaniel.materialisation.containers;
 
 import me.shedaniel.materialisation.Materialisation;
+import me.shedaniel.materialisation.api.KnownMaterial;
+import me.shedaniel.materialisation.api.KnownMaterials;
+import me.shedaniel.materialisation.items.MaterialisedToolUtils;
+import me.shedaniel.materialisation.items.PatternItem;
 import net.minecraft.container.BlockContext;
 import net.minecraft.container.Container;
 import net.minecraft.container.Slot;
@@ -10,6 +14,9 @@ import net.minecraft.inventory.BasicInventory;
 import net.minecraft.inventory.CraftingResultInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.MathHelper;
+
+import java.util.stream.Collectors;
 
 public class MaterialPreparerContainer extends Container {
     
@@ -17,6 +24,7 @@ public class MaterialPreparerContainer extends Container {
     private final PlayerEntity player;
     private BlockContext context;
     private String itemName;
+    private int takingFirst, takingSecond;
     
     public MaterialPreparerContainer(int syncId, PlayerInventory main) {
         this(syncId, main, BlockContext.EMPTY);
@@ -33,7 +41,12 @@ public class MaterialPreparerContainer extends Container {
             }
         };
         this.player = playerInventory.player;
-        this.addSlot(new Slot(this.main, 0, 27, 21));
+        this.addSlot(new Slot(this.main, 0, 27, 21) {
+            @Override
+            public boolean canInsert(ItemStack itemStack_1) {
+                return itemStack_1.getItem() instanceof PatternItem;
+            }
+        });
         this.addSlot(new Slot(this.main, 1, 76, 21));
         this.addSlot(new Slot(this.result, 2, 134, 21) {
             public boolean canInsert(ItemStack itemStack_1) {
@@ -41,16 +54,16 @@ public class MaterialPreparerContainer extends Container {
             }
             
             public boolean canTakeItems(PlayerEntity playerEntity_1) {
-                return hasStack();
+                return hasStack() && main.getInvStack(0).getAmount() >= takingFirst && main.getInvStack(1).getAmount() >= takingSecond;
             }
             
             public ItemStack onTakeItem(PlayerEntity playerEntity_1, ItemStack itemStack_1) {
-                ItemStack stack = main.getInvStack(1);
-                stack.subtractAmount(1);
-                main.setInvStack(1, stack);
-                //                context.run((world, blockPos) -> {
-                //                    ServerSidePacketRegistry.INSTANCE.sendToPlayer(playerEntity_1, Materialisation.MATERIALISING_TABLE_PLAY_SOUND, new PacketByteBuf(Unpooled.buffer()));
-                //                });
+                ItemStack first = main.getInvStack(0);
+                first.subtractAmount(takingFirst);
+                main.setInvStack(0, first);
+                ItemStack second = main.getInvStack(1);
+                second.subtractAmount(takingSecond);
+                main.setInvStack(1, second);
                 return itemStack_1;
             }
         });
@@ -78,10 +91,58 @@ public class MaterialPreparerContainer extends Container {
     }
     
     private void updateResult() {
+        takingFirst = 0;
+        takingSecond = 0;
         ItemStack first = this.main.getInvStack(0);
         ItemStack second = this.main.getInvStack(1);
         if (first.isEmpty() || second.isEmpty()) {
             this.result.setInvStack(0, ItemStack.EMPTY);
+        } else if (first.getItem() instanceof PatternItem && first.getItem() != Materialisation.BLANK_PATTERN) {
+            if (first.getItem() == Materialisation.PICKAXE_HEAD_PATTERN) {
+                KnownMaterial material = null;
+                float repairMultiplier = -1;
+                for(KnownMaterial knownMaterial : KnownMaterials.getKnownMaterials().collect(Collectors.toList())) {
+                    float repairAmount = knownMaterial.getRepairMultiplier(second);
+                    if (repairAmount > 0) {
+                        material = knownMaterial;
+                        repairMultiplier = repairAmount;
+                    }
+                }
+                if (material == null || repairMultiplier <= 0)
+                    this.result.setInvStack(0, ItemStack.EMPTY);
+                else {
+                    int itemsNeeded = MathHelper.ceil(4 / repairMultiplier);
+                    takingSecond = itemsNeeded;
+                    if (second.getAmount() < itemsNeeded) {
+                        this.result.setInvStack(0, ItemStack.EMPTY);
+                    } else {
+                        this.result.setInvStack(0, MaterialisedToolUtils.createPickaxeHead(material));
+                    }
+                }
+            } else if (first.getItem() == Materialisation.TOOL_HANDLE_PATTERN) {
+                KnownMaterial material = null;
+                float repairMultiplier = -1;
+                for(KnownMaterial knownMaterial : KnownMaterials.getKnownMaterials().collect(Collectors.toList())) {
+                    float repairAmount = knownMaterial.getRepairMultiplier(second);
+                    if (repairAmount > 0) {
+                        material = knownMaterial;
+                        repairMultiplier = repairAmount;
+                    }
+                }
+                if (material == null || repairMultiplier <= 0)
+                    this.result.setInvStack(0, ItemStack.EMPTY);
+                else {
+                    int itemsNeeded = MathHelper.ceil(1 / repairMultiplier);
+                    takingSecond = itemsNeeded;
+                    if (second.getAmount() < itemsNeeded) {
+                        this.result.setInvStack(0, ItemStack.EMPTY);
+                    } else {
+                        this.result.setInvStack(0, MaterialisedToolUtils.createToolHandle(material));
+                    }
+                }
+            } else {
+                this.result.setInvStack(0, ItemStack.EMPTY);
+            }
         } else {
             this.result.setInvStack(0, ItemStack.EMPTY);
         }
