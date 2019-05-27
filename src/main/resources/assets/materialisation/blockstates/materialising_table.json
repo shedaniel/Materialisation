@@ -1,8 +1,20 @@
 {
   "variants": {
-    "facing=south": { "model": "materialisedtools:block/materialising_table" },
-    "facing=west": { "model": "materialisedtools:block/materialising_table", "y": 90 },
-    "facing=north": { "model": "materialisedtools:block/materialising_table", "y": 180 },
-    "facing=east": { "model": "materialisedtools:block/materialising_table", "y": 270 }
+    "facing=south": {
+      "model": "materialisation:block/materialising_table",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "materialisation:block/materialising_table",
+      "y": 270
+    },
+    "facing=north": {
+      "model": "materialisation:block/materialising_table"
+    },
+    "facing=east": {
+      "model": "materialisation:block/materialising_table",
+      "y": 90
+    }
   }
 }
+

@@ -1,12 +1,14 @@
 package me.shedaniel.materialisation.api;
 
+import com.google.common.collect.Maps;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.tag.ItemTags;
+import net.minecraft.util.math.MathHelper;
 
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class KnownMaterials extends ArrayList<KnownMaterial> {
@@ -20,10 +22,10 @@ public class KnownMaterials extends ArrayList<KnownMaterial> {
     static {
         Color white = new Color(255, 255, 255);
         Color gold = new Color(255, 239, 61);
-        WOOD = registerMaterial(getNewMaterial("wood").setIngredient(Ingredient.fromTag(ItemTags.PLANKS)).setRepairAmountGetter(stack -> 100).setPickaxeHeadSpeed(2f).setHandleDurabilityMultiplier(1.1f).setToolHandleColor(33529892).setPickaxeHeadColor(33530399).setPickaxeHeadDurability(59));
-        STONE = registerMaterial(getNewMaterial("stone").setIngredient(Ingredient.ofItems(Items.STONE)).setRepairAmountGetter(stack -> 100).setPickaxeHeadSpeed(4f).setHandleDurabilityMultiplier(0.4f).setHandleBreakingSpeedMultiplier(0.9f).setToolHandleColor(27962026).setPickaxeHeadColor(-2960686).setPickaxeHeadDurability(131).setMiningLevel(1));
-        IRON = registerMaterial(getNewMaterial("iron").setIngredient(Ingredient.ofItems(Items.IRON_INGOT)).setRepairAmountGetter(stack -> 200).setBright(true).setPickaxeHeadSpeed(6f).setHandleDurabilityMultiplier(0.9f).setHandleBreakingSpeedMultiplier(1f).setToolHandleColor(white.getRGB()).setPickaxeHeadColor(white.getRGB()).setPickaxeHeadDurability(250).setMiningLevel(2));
-        GOLD = registerMaterial(getNewMaterial("gold").setIngredient(Ingredient.ofItems(Items.GOLD_INGOT)).setRepairAmountGetter(stack -> 20).setBright(true).setPickaxeHeadSpeed(12f).setHandleDurabilityMultiplier(0.2f).setHandleBreakingSpeedMultiplier(0.4f).setToolHandleColor(gold.getRGB()).setPickaxeHeadColor(gold.getRGB()).setPickaxeHeadDurability(32));
+        WOOD = registerMaterial(getNewMaterial("wood").addIngredient(Ingredient.fromTag(ItemTags.PLANKS), 1).addIngredient(Ingredient.ofItems(Items.STICK), .5f).setFullAmount(100).setPickaxeHeadSpeed(2f).setHandleDurabilityMultiplier(1.1f).setToolHandleColor(33529892).setPickaxeHeadColor(33530399).setPickaxeHeadDurability(59));
+        STONE = registerMaterial(getNewMaterial("stone").addIngredient(Ingredient.ofItems(Items.STONE), 1).setFullAmount(100).setPickaxeHeadSpeed(4f).setHandleDurabilityMultiplier(0.4f).setHandleBreakingSpeedMultiplier(0.9f).setToolHandleColor(27962026).setPickaxeHeadColor(-2960686).setPickaxeHeadDurability(131).setMiningLevel(1));
+        IRON = registerMaterial(getNewMaterial("iron").addIngredient(Ingredient.ofItems(Items.IRON_INGOT), 2).addIngredient(Ingredient.ofItems(Items.IRON_BLOCK), 18).setFullAmount(100).setBright(true).setPickaxeHeadSpeed(6f).setHandleDurabilityMultiplier(0.9f).setHandleBreakingSpeedMultiplier(1f).setToolHandleColor(white.getRGB()).setPickaxeHeadColor(white.getRGB()).setPickaxeHeadDurability(250).setMiningLevel(2));
+        GOLD = registerMaterial(getNewMaterial("gold").addIngredient(Ingredient.ofItems(Items.GOLD_INGOT), 2).addIngredient(Ingredient.ofItems(Items.GOLD_BLOCK), 18).setFullAmount(10).setBright(true).setPickaxeHeadSpeed(12f).setHandleDurabilityMultiplier(0.2f).setHandleBreakingSpeedMultiplier(0.4f).setToolHandleColor(gold.getRGB()).setPickaxeHeadColor(gold.getRGB()).setPickaxeHeadDurability(32));
     }
     
     public static Material getNewMaterial(String name) {
@@ -48,16 +50,25 @@ public class KnownMaterials extends ArrayList<KnownMaterial> {
         private int toolHandleColor = -1, pickaxeHeadColor = -1, pickaxeHeadDurability = 1, miningLevel = 0;
         private float handleDurabilityMultiplier = 1f, handleBreakingSpeedMultiplier = 1f, pickaxeHeadSpeed = -1f;
         private String materialTranslateKey = "", name;
-        private Ingredient ingredient = Ingredient.EMPTY;
         private boolean bright = false;
-        private RepairAmountGetter repairAmountGetter = stack -> -1;
+        private Map<Ingredient, Float> amountMultiplierMap = Maps.newHashMap();
+        private AmountGetter amountGetter = ingredient -> {
+            Optional<Map.Entry<Ingredient, Float>> any = amountMultiplierMap.entrySet().stream().filter(entry -> entry.getKey().equals(ingredient)).findAny();
+            return any.map(Map.Entry::getValue).orElse(-1f);
+        };
+        private int fullAmount = -1;
         
         private Material(String name) {
             this.name = name;
         }
         
-        public Material setRepairAmountGetter(RepairAmountGetter repairAmountGetter) {
-            this.repairAmountGetter = repairAmountGetter;
+        public Material addIngredient(Ingredient ingredient, float multiplier) {
+            amountMultiplierMap.put(ingredient, multiplier);
+            return this;
+        }
+        
+        public Material setFullAmount(int i) {
+            this.fullAmount = i;
             return this;
         }
         
@@ -152,24 +163,32 @@ public class KnownMaterials extends ArrayList<KnownMaterial> {
         }
         
         @Override
-        public Ingredient getIngredient() {
-            return ingredient;
-        }
-        
-        public Material setIngredient(Ingredient ingredient) {
-            this.ingredient = ingredient;
-            return this;
+        public Set<Ingredient> getIngredients() {
+            return amountMultiplierMap.keySet();
         }
         
         @Override
         public int getRepairAmount(ItemStack stack) {
-            return repairAmountGetter.getRepairAmount(stack);
+            Ingredient ingredient = null;
+            for(Ingredient ingredient1 : getIngredients()) {
+                for(ItemStack itemStack : ingredient1.getStackArray()) {
+                    if (ItemStack.areEqualIgnoreDurability(itemStack, stack)) {
+                        ingredient = ingredient1;
+                        break;
+                    }
+                }
+            }
+            if (ingredient != null)
+                return MathHelper.ceil(fullAmount * amountGetter.getFrom(ingredient));
+            else
+                return -1;
         }
         
         @Override
         public String getName() {
             return name;
         }
+        
     }
     
 }

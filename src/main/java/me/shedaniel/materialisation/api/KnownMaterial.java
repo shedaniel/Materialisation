@@ -2,6 +2,8 @@ package me.shedaniel.materialisation.api;
 
 import net.minecraft.recipe.Ingredient;
 
+import java.util.Set;
+
 public interface KnownMaterial extends KnownMaterials.RepairAmountGetter {
     
     int getToolHandleColor();
@@ -10,7 +12,7 @@ public interface KnownMaterial extends KnownMaterials.RepairAmountGetter {
     
     String getMaterialTranslateKey();
     
-    Ingredient getIngredient();
+    Set<Ingredient> getIngredients();
     
     String getName();
     
@@ -25,5 +27,9 @@ public interface KnownMaterial extends KnownMaterials.RepairAmountGetter {
     float getPickaxeHeadSpeed();
     
     int getMiningLevel();
+    
+    public static interface AmountGetter {
+        float getFrom(Ingredient ingredient);
+    }
     
 }

@@ -1,9 +1,12 @@
 package me.shedaniel.materialisation;
 
+import me.shedaniel.materialisation.blocks.MaterialPreparerBlock;
 import me.shedaniel.materialisation.blocks.MaterialisingTableBlock;
+import me.shedaniel.materialisation.containers.MaterialPreparerContainer;
 import me.shedaniel.materialisation.containers.MaterialisingTableContainer;
 import me.shedaniel.materialisation.items.ColoredItem;
 import me.shedaniel.materialisation.items.MaterialisedPickaxeItem;
+import me.shedaniel.materialisation.items.PatternItem;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
@@ -25,16 +28,18 @@ import java.util.Optional;
 
 public class Materialisation implements ModInitializer {
     
-    // TODO: Disable Anvil Enchanting
-    
     public static final Block MATERIALISING_TABLE = new MaterialisingTableBlock();
-    public static final Block MATERIAL_PREPARER = new MaterialisingTableBlock();
+    public static final Block MATERIAL_PREPARER = new MaterialPreparerBlock();
+    public static final Identifier MATERIAL_PREPARER_CONTAINER = new Identifier(ModReference.MOD_ID, "material_preparer");
     public static final Identifier MATERIALISING_TABLE_CONTAINER = new Identifier(ModReference.MOD_ID, "materialising_table");
     public static final Identifier MATERIALISING_TABLE_RENAME = new Identifier(ModReference.MOD_ID, "materialising_table_rename");
     public static final Identifier MATERIALISING_TABLE_PLAY_SOUND = new Identifier(ModReference.MOD_ID, "materialising_table_play_sound");
     public static final Item MATERIALISED_PICKAXE = new MaterialisedPickaxeItem(new Item.Settings());
     public static final Item HANDLE = new ColoredItem(new Item.Settings());
     public static final Item PICKAXE_HEAD = new ColoredItem(new Item.Settings());
+    public static final Item BLANK_PATTERN = new PatternItem(new Item.Settings().itemGroup(ItemGroup.MATERIALS));
+    public static final Item TOOL_HANDLE_PATTERN = new PatternItem(new Item.Settings().itemGroup(ItemGroup.MATERIALS));
+    public static final Item PICKAXE_HEAD_PATTERN = new PatternItem(new Item.Settings().itemGroup(ItemGroup.MATERIALS));
     
     public static <T> Optional<T> getReflectionField(Object parent, Class<T> clazz, int index) {
         try {
@@ -55,6 +60,9 @@ public class Materialisation implements ModInitializer {
         ContainerProviderRegistry.INSTANCE.registerFactory(MATERIALISING_TABLE_CONTAINER, (syncId, identifier, playerEntity, packetByteBuf) -> {
             return new MaterialisingTableContainer(syncId, playerEntity.inventory, BlockContext.create(playerEntity.world, packetByteBuf.readBlockPos()));
         });
+        ContainerProviderRegistry.INSTANCE.registerFactory(MATERIAL_PREPARER_CONTAINER, (syncId, identifier, playerEntity, packetByteBuf) -> {
+            return new MaterialPreparerContainer(syncId, playerEntity.inventory, BlockContext.create(playerEntity.world, packetByteBuf.readBlockPos()));
+        });
         ServerSidePacketRegistry.INSTANCE.register(MATERIALISING_TABLE_RENAME, (packetContext, packetByteBuf) -> {
             if (packetContext.getPlayer().container instanceof MaterialisingTableContainer) {
                 MaterialisingTableContainer container = (MaterialisingTableContainer) packetContext.getPlayer().container;
@@ -69,6 +77,9 @@ public class Materialisation implements ModInitializer {
         registerItem("materialised_pickaxe", MATERIALISED_PICKAXE);
         registerItem("handle", HANDLE);
         registerItem("pickaxe_head", PICKAXE_HEAD);
+        registerItem("blank_pattern", BLANK_PATTERN);
+        registerItem("handle_pattern", TOOL_HANDLE_PATTERN);
+        registerItem("pickaxe_head_pattern", PICKAXE_HEAD_PATTERN);
     }
     
     private void registerBlock(String name, Block block) {

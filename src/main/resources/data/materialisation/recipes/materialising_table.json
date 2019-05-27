@@ -1,13 +1,13 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "WWW",
+    "III",
     "iDi",
-    "ISI"
+    "CiC"
   ],
   "key": {
-    "W": {
-      "tag": "minecraft:planks"
+    "C": {
+      "item": "minecraft:cobblestone"
     },
     "S": {
       "item": "minecraft:stone"

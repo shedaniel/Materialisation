@@ -122,16 +122,13 @@ public class MaterialisingTableContainer extends Container {
                     this.sendContentUpdates();
                     return;
                 }
-                boolean isIn = false;
-                for(ItemStack stack : material.getIngredient().getStackArray())
-                    if (stack.isEqualIgnoreTags(second))
-                        isIn = true;
-                if (!isIn) {
+                int repairAmount = material.getRepairAmount(second);
+                if (repairAmount <= 0) {
                     this.result.setInvStack(0, ItemStack.EMPTY);
                     this.sendContentUpdates();
                     return;
                 }
-                MaterialisedToolUtils.setToolDurability(copy, Math.min(maxDurability, toolDurability + material.getRepairAmount(second)));
+                MaterialisedToolUtils.setToolDurability(copy, Math.min(maxDurability, toolDurability + repairAmount));
             }
             if (StringUtils.isBlank(this.itemName)) {
                 if (copy.hasDisplayName())

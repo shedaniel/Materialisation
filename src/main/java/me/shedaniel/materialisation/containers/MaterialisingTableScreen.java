@@ -80,7 +80,7 @@ public class MaterialisingTableScreen extends AbstractContainerScreen<Materialis
     private void onChangeName(String string_1) {
         if (!string_1.isEmpty()) {
             String string_2 = string_1;
-            Slot slot_1 = this.container.getSlot(0);
+            Slot slot_1 = this.container.getSlot(2);
             if (slot_1 != null && slot_1.hasStack() && !slot_1.getStack().hasDisplayName() && string_1.equals(slot_1.getStack().getDisplayName().getString())) {
                 string_2 = "";
             }

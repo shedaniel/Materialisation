@@ -10,8 +10,7 @@ version = "0.1.0"
 
 def minecraftVersion = "1.14.1"
 def yarnVersion = "1.14.1+build.10"
-def fabricVersion = "0.3.0-pre+build.165"
-def auto_config_version = "1.1.2+mc1.14.1"
+def fabricVersion = "0.3.0-pre+build.157a"
 
 minecraft {
 }
@@ -32,8 +31,7 @@ repositories {
 dependencies {
     minecraft "com.mojang:minecraft:${minecraftVersion}"
     mappings "net.fabricmc:yarn:${yarnVersion}"
-    modCompile "net.fabricmc:fabric-loader:0.4.7+build.148"
+    modCompile "net.fabricmc:fabric-loader:0.4.7+build.154"
     modCompile "net.fabricmc.fabric-api:fabric-api:${fabricVersion}"
     modCompile "me.shedaniel:RoughlyEnoughItems:2.9.1+build.116"
-    modCompile "me.sargunvohra.mcmods:auto-config:${auto_config_version}"
 }
