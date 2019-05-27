@@ -22,6 +22,8 @@ public abstract class MixinItemStack {
     public void hasDisplayName(CallbackInfoReturnable<Boolean> callbackInfo) {
         if (getItem() == Materialisation.MATERIALISED_PICKAXE)
             callbackInfo.setReturnValue(false);
+        else if (getItem() == Materialisation.MATERIALISED_AXE)
+            callbackInfo.setReturnValue(false);
     }
     
 }

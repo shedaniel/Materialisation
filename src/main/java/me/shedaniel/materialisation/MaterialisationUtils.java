@@ -1,6 +1,5 @@
-package me.shedaniel.materialisation.items;
+package me.shedaniel.materialisation;
 
-import me.shedaniel.materialisation.Materialisation;
 import me.shedaniel.materialisation.api.KnownMaterial;
 import me.shedaniel.materialisation.api.KnownMaterials;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -16,7 +15,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Random;
 
-public class MaterialisedToolUtils {
+public class MaterialisationUtils {
     
     public static final NumberFormat TWO_DECIMAL_FORMATTER = new DecimalFormat("#.##");
     public static final ToolMaterial DUMMY_MATERIAL = new ToolMaterial() {
@@ -109,6 +108,17 @@ public class MaterialisedToolUtils {
         return stack;
     }
     
+    public static ItemStack createAxeHead(KnownMaterial material) {
+        ItemStack stack = new ItemStack(Materialisation.AXE_HEAD);
+        CompoundTag tag = stack.getOrCreateTag();
+        tag.putInt("mt_color_0", material.getPickaxeHeadColor());
+        tag.putString("mt_material", material.getName());
+        if (material.isBright())
+            tag.putBoolean("mt_bright", true);
+        stack.setTag(tag);
+        return stack;
+    }
+    
     public static ItemStack createPickaxeHead(KnownMaterial material) {
         ItemStack stack = new ItemStack(Materialisation.PICKAXE_HEAD);
         CompoundTag tag = stack.getOrCreateTag();
@@ -146,6 +156,25 @@ public class MaterialisedToolUtils {
             tag.putBoolean("mt_pickaxe_head_bright", true);
         tag.putString("mt_handle_material", handle.getName());
         tag.putString("mt_pickaxe_head_material", pickaxeHead.getName());
+        stack.setTag(tag);
+        return stack;
+    }
+    
+    public static ItemStack createAxe(KnownMaterial handle, KnownMaterial axeHead) {
+        ItemStack stack = new ItemStack(Materialisation.MATERIALISED_AXE);
+        CompoundTag tag = stack.getOrCreateTag();
+        tag.putInt("mt_color_0", handle.getToolHandleColor());
+        tag.putInt("mt_color_1", axeHead.getPickaxeHeadColor());
+        tag.putInt("materialisedtools_maxdurability", MathHelper.floor(axeHead.getPickaxeHeadDurability() * handle.getHandleDurabilityMultiplier()));
+        tag.putInt("materialisedtools_mininglevel", MathHelper.ceil((handle.getMiningLevel() + axeHead.getMiningLevel()) / 2f));
+        tag.putFloat("materialisedtools_breakingspeed", axeHead.getPickaxeHeadSpeed() * handle.getHandleBreakingSpeedMultiplier());
+        tag.putBoolean("mt_done_tool", true);
+        if (handle.isBright())
+            tag.putBoolean("mt_handle_bright", true);
+        if (axeHead.isBright())
+            tag.putBoolean("mt_axe_head_bright", true);
+        tag.putString("mt_handle_material", handle.getName());
+        tag.putString("mt_axe_head_material", axeHead.getName());
         stack.setTag(tag);
         return stack;
     }

@@ -1,7 +1,7 @@
 package me.shedaniel.materialisation.items;
 
-import me.shedaniel.materialisation.ModReference;
 import me.shedaniel.materialisation.Materialisation;
+import me.shedaniel.materialisation.ModReference;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.resource.language.I18n;
@@ -31,6 +31,8 @@ public class ColoredItem extends Item {
                 return Optional.ofNullable(I18n.translate("item.materialisation.materialised_handle", I18n.translate("material.materialisation." + stack.getOrCreateTag().getString("mt_material"))));
             if (stack.getItem() == Materialisation.PICKAXE_HEAD)
                 return Optional.ofNullable(I18n.translate("item.materialisation.materialised_pickaxe_head", I18n.translate("material.materialisation." + stack.getOrCreateTag().getString("mt_material"))));
+            if (stack.getItem() == Materialisation.AXE_HEAD)
+                return Optional.ofNullable(I18n.translate("item.materialisation.materialised_axe_head", I18n.translate("material.materialisation." + stack.getOrCreateTag().getString("mt_material"))));
         }
         return Optional.empty();
     }

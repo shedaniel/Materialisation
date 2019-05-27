@@ -4,7 +4,6 @@ import me.shedaniel.materialisation.containers.MaterialPreparerContainer;
 import me.shedaniel.materialisation.containers.MaterialPreparerScreen;
 import me.shedaniel.materialisation.containers.MaterialisingTableContainer;
 import me.shedaniel.materialisation.containers.MaterialisingTableScreen;
-import me.shedaniel.materialisation.items.MaterialisedToolUtils;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.screen.ScreenProviderRegistry;
 import net.fabricmc.fabric.impl.client.render.ColorProviderRegistryImpl;
@@ -19,7 +18,6 @@ public class MaterialisationClient implements ClientModInitializer {
         ScreenProviderRegistry.INSTANCE.registerFactory(Materialisation.MATERIAL_PREPARER_CONTAINER, (syncId, identifier, playerEntity, packetByteBuf) -> {
             return new MaterialPreparerScreen(new MaterialPreparerContainer(syncId, playerEntity.inventory), playerEntity.inventory, new TranslatableComponent("container.materialisation.material_preparer"));
         });
-        ColorProviderRegistryImpl.ITEM.register(MaterialisedToolUtils::getItemLayerColor, Materialisation.MATERIALISED_PICKAXE, Materialisation.HANDLE, Materialisation.PICKAXE_HEAD);
-        //        BlockEntityRendererRegistry.INSTANCE.register(MaterialisingTableBlockEntity.class, new MaterialisingTableBlockEntityRenderer());
+        ColorProviderRegistryImpl.ITEM.register(MaterialisationUtils::getItemLayerColor, Materialisation.MATERIALISED_PICKAXE, Materialisation.MATERIALISED_AXE, Materialisation.HANDLE, Materialisation.PICKAXE_HEAD, Materialisation.AXE_HEAD);
     }
 }

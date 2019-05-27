@@ -2,9 +2,10 @@ package me.shedaniel.materialisation.containers;
 
 import io.netty.buffer.Unpooled;
 import me.shedaniel.materialisation.Materialisation;
+import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.api.KnownMaterial;
+import me.shedaniel.materialisation.items.MaterialisedAxeItem;
 import me.shedaniel.materialisation.items.MaterialisedPickaxeItem;
-import me.shedaniel.materialisation.items.MaterialisedToolUtils;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.minecraft.container.BlockContext;
 import net.minecraft.container.Container;
@@ -105,9 +106,10 @@ public class MaterialisingTableContainer extends Container {
         if (first.isEmpty()) {
             this.result.setInvStack(0, ItemStack.EMPTY);
         } else if (first.getItem() instanceof MaterialisedPickaxeItem) {
+            // Fixing pickaxe
             ItemStack copy = first.copy();
-            int toolDurability = MaterialisedToolUtils.getToolDurability(first);
-            int maxDurability = MaterialisedToolUtils.getToolMaxDurability(first);
+            int toolDurability = MaterialisationUtils.getToolDurability(first);
+            int maxDurability = MaterialisationUtils.getToolMaxDurability(first);
             if (!second.isEmpty()) {
                 if (toolDurability >= maxDurability) {
                     this.result.setInvStack(0, ItemStack.EMPTY);
@@ -116,7 +118,7 @@ public class MaterialisingTableContainer extends Container {
                 }
                 KnownMaterial material = null;
                 if (copy.getOrCreateTag().containsKey("mt_pickaxe_head_material"))
-                    material = MaterialisedToolUtils.getMaterialFromString(copy.getOrCreateTag().getString("mt_pickaxe_head_material"));
+                    material = MaterialisationUtils.getMaterialFromString(copy.getOrCreateTag().getString("mt_pickaxe_head_material"));
                 if (material == null) {
                     this.result.setInvStack(0, ItemStack.EMPTY);
                     this.sendContentUpdates();
@@ -128,7 +130,43 @@ public class MaterialisingTableContainer extends Container {
                     this.sendContentUpdates();
                     return;
                 }
-                MaterialisedToolUtils.setToolDurability(copy, Math.min(maxDurability, toolDurability + repairAmount));
+                MaterialisationUtils.setToolDurability(copy, Math.min(maxDurability, toolDurability + repairAmount));
+            }
+            if (StringUtils.isBlank(this.itemName)) {
+                if (copy.hasDisplayName())
+                    copy.removeDisplayName();
+            } else if (!this.itemName.equals(copy.getDisplayName().getString()))
+                if (itemName.equals(copy.getItem().getTranslatedNameTrimmed(copy)))
+                    copy.removeDisplayName();
+                else
+                    copy.setDisplayName(new TextComponent(this.itemName));
+            this.result.setInvStack(0, copy);
+        } else if (first.getItem() instanceof MaterialisedAxeItem) {
+            // Fixing axe
+            ItemStack copy = first.copy();
+            int toolDurability = MaterialisationUtils.getToolDurability(first);
+            int maxDurability = MaterialisationUtils.getToolMaxDurability(first);
+            if (!second.isEmpty()) {
+                if (toolDurability >= maxDurability) {
+                    this.result.setInvStack(0, ItemStack.EMPTY);
+                    this.sendContentUpdates();
+                    return;
+                }
+                KnownMaterial material = null;
+                if (copy.getOrCreateTag().containsKey("mt_axe_head_material"))
+                    material = MaterialisationUtils.getMaterialFromString(copy.getOrCreateTag().getString("mt_axe_head_material"));
+                if (material == null) {
+                    this.result.setInvStack(0, ItemStack.EMPTY);
+                    this.sendContentUpdates();
+                    return;
+                }
+                int repairAmount = material.getRepairAmount(second);
+                if (repairAmount <= 0) {
+                    this.result.setInvStack(0, ItemStack.EMPTY);
+                    this.sendContentUpdates();
+                    return;
+                }
+                MaterialisationUtils.setToolDurability(copy, Math.min(maxDurability, toolDurability + repairAmount));
             }
             if (StringUtils.isBlank(this.itemName)) {
                 if (copy.hasDisplayName())
@@ -140,17 +178,41 @@ public class MaterialisingTableContainer extends Container {
                     copy.setDisplayName(new TextComponent(this.itemName));
             this.result.setInvStack(0, copy);
         } else if ((first.getItem() == Materialisation.PICKAXE_HEAD && second.getItem() == Materialisation.HANDLE) || (first.getItem() == Materialisation.HANDLE && second.getItem() == Materialisation.PICKAXE_HEAD)) {
+            // Crafting a pickaxe
             int handle = 0, head = 0;
             if (first.getItem() == Materialisation.HANDLE)
                 head = 1;
             else if (first.getItem() == Materialisation.PICKAXE_HEAD)
                 handle = 1;
-            KnownMaterial handleMaterial = MaterialisedToolUtils.getMaterialFromPart(main.getInvStack(handle));
-            KnownMaterial headMaterial = MaterialisedToolUtils.getMaterialFromPart(main.getInvStack(head));
+            KnownMaterial handleMaterial = MaterialisationUtils.getMaterialFromPart(main.getInvStack(handle));
+            KnownMaterial headMaterial = MaterialisationUtils.getMaterialFromPart(main.getInvStack(head));
             if (handleMaterial == null || headMaterial == null) {
                 this.result.setInvStack(0, ItemStack.EMPTY);
             } else {
-                ItemStack copy = MaterialisedToolUtils.createPickaxe(handleMaterial, headMaterial);
+                ItemStack copy = MaterialisationUtils.createPickaxe(handleMaterial, headMaterial);
+                if (StringUtils.isBlank(this.itemName)) {
+                    if (copy.hasDisplayName())
+                        copy.removeDisplayName();
+                } else if (!this.itemName.equals(copy.getDisplayName().getString()))
+                    if (itemName.equals(copy.getItem().getTranslatedNameTrimmed(copy)))
+                        copy.removeDisplayName();
+                    else
+                        copy.setDisplayName(new TextComponent(this.itemName));
+                this.result.setInvStack(0, copy);
+            }
+        } else if ((first.getItem() == Materialisation.AXE_HEAD && second.getItem() == Materialisation.HANDLE) || (first.getItem() == Materialisation.HANDLE && second.getItem() == Materialisation.AXE_HEAD)) {
+            // Crafting an axe
+            int handle = 0, head = 0;
+            if (first.getItem() == Materialisation.HANDLE)
+                head = 1;
+            else if (first.getItem() == Materialisation.AXE_HEAD)
+                handle = 1;
+            KnownMaterial handleMaterial = MaterialisationUtils.getMaterialFromPart(main.getInvStack(handle));
+            KnownMaterial headMaterial = MaterialisationUtils.getMaterialFromPart(main.getInvStack(head));
+            if (handleMaterial == null || headMaterial == null) {
+                this.result.setInvStack(0, ItemStack.EMPTY);
+            } else {
+                ItemStack copy = MaterialisationUtils.createAxe(handleMaterial, headMaterial);
                 if (StringUtils.isBlank(this.itemName)) {
                     if (copy.hasDisplayName())
                         copy.removeDisplayName();

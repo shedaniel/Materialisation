@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "item": "materialisation:pickaxe_head_pattern"
+      "item": "materialisation:axe_head_pattern"
     }
   ],
   "result": {

@@ -5,6 +5,7 @@ import me.shedaniel.materialisation.blocks.MaterialisingTableBlock;
 import me.shedaniel.materialisation.containers.MaterialPreparerContainer;
 import me.shedaniel.materialisation.containers.MaterialisingTableContainer;
 import me.shedaniel.materialisation.items.ColoredItem;
+import me.shedaniel.materialisation.items.MaterialisedAxeItem;
 import me.shedaniel.materialisation.items.MaterialisedPickaxeItem;
 import me.shedaniel.materialisation.items.PatternItem;
 import net.fabricmc.api.ModInitializer;
@@ -35,11 +36,14 @@ public class Materialisation implements ModInitializer {
     public static final Identifier MATERIALISING_TABLE_RENAME = new Identifier(ModReference.MOD_ID, "materialising_table_rename");
     public static final Identifier MATERIALISING_TABLE_PLAY_SOUND = new Identifier(ModReference.MOD_ID, "materialising_table_play_sound");
     public static final Item MATERIALISED_PICKAXE = new MaterialisedPickaxeItem(new Item.Settings());
+    public static final Item MATERIALISED_AXE = new MaterialisedAxeItem(new Item.Settings());
     public static final Item HANDLE = new ColoredItem(new Item.Settings());
+    public static final Item AXE_HEAD = new ColoredItem(new Item.Settings());
     public static final Item PICKAXE_HEAD = new ColoredItem(new Item.Settings());
     public static final Item BLANK_PATTERN = new PatternItem(new Item.Settings().itemGroup(ItemGroup.MATERIALS));
     public static final Item TOOL_HANDLE_PATTERN = new PatternItem(new Item.Settings().itemGroup(ItemGroup.MATERIALS));
     public static final Item PICKAXE_HEAD_PATTERN = new PatternItem(new Item.Settings().itemGroup(ItemGroup.MATERIALS));
+    public static final Item AXE_HEAD_PATTERN = new PatternItem(new Item.Settings().itemGroup(ItemGroup.MATERIALS));
     
     public static <T> Optional<T> getReflectionField(Object parent, Class<T> clazz, int index) {
         try {
@@ -75,11 +79,14 @@ public class Materialisation implements ModInitializer {
             MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(SoundEvents.BLOCK_ANVIL_USE, 1, 1));
         });
         registerItem("materialised_pickaxe", MATERIALISED_PICKAXE);
+        registerItem("materialised_axe", MATERIALISED_AXE);
         registerItem("handle", HANDLE);
+        registerItem("axe_head", AXE_HEAD);
         registerItem("pickaxe_head", PICKAXE_HEAD);
         registerItem("blank_pattern", BLANK_PATTERN);
         registerItem("handle_pattern", TOOL_HANDLE_PATTERN);
         registerItem("pickaxe_head_pattern", PICKAXE_HEAD_PATTERN);
+        registerItem("axe_head_pattern", AXE_HEAD_PATTERN);
     }
     
     private void registerBlock(String name, Block block) {

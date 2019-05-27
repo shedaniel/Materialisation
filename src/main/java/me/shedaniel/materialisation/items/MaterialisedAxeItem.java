@@ -1,5 +1,6 @@
 package me.shedaniel.materialisation.items;
 
+import com.google.common.collect.Sets;
 import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.ModReference;
 import me.shedaniel.materialisation.mixin.MiningToolItemAccessor;
@@ -13,7 +14,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.PickaxeItem;
+import net.minecraft.item.MiningToolItem;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.stat.Stats;
@@ -22,44 +23,35 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.List;
+import java.util.Set;
 
-public class MaterialisedPickaxeItem extends PickaxeItem {
+public class MaterialisedAxeItem extends MiningToolItem {
     
-    public MaterialisedPickaxeItem(Settings settings) {
-        super(MaterialisationUtils.DUMMY_MATERIAL, 0, -2.8F, settings.durability(0));
+    private static final Set<Block> EFFECTIVE_BLOCKS = Sets.newHashSet(new Block[]{Blocks.OAK_PLANKS, Blocks.SPRUCE_PLANKS, Blocks.BIRCH_PLANKS, Blocks.JUNGLE_PLANKS, Blocks.ACACIA_PLANKS, Blocks.DARK_OAK_PLANKS, Blocks.BOOKSHELF, Blocks.OAK_WOOD, Blocks.SPRUCE_WOOD, Blocks.BIRCH_WOOD, Blocks.JUNGLE_WOOD, Blocks.ACACIA_WOOD, Blocks.DARK_OAK_WOOD, Blocks.OAK_LOG, Blocks.SPRUCE_LOG, Blocks.BIRCH_LOG, Blocks.JUNGLE_LOG, Blocks.ACACIA_LOG, Blocks.DARK_OAK_LOG, Blocks.CHEST, Blocks.PUMPKIN, Blocks.CARVED_PUMPKIN, Blocks.JACK_O_LANTERN, Blocks.MELON, Blocks.LADDER, Blocks.SCAFFOLDING, Blocks.OAK_BUTTON, Blocks.SPRUCE_BUTTON, Blocks.BIRCH_BUTTON, Blocks.JUNGLE_BUTTON, Blocks.DARK_OAK_BUTTON, Blocks.ACACIA_BUTTON, Blocks.OAK_PRESSURE_PLATE, Blocks.SPRUCE_PRESSURE_PLATE, Blocks.BIRCH_PRESSURE_PLATE, Blocks.JUNGLE_PRESSURE_PLATE, Blocks.DARK_OAK_PRESSURE_PLATE, Blocks.ACACIA_PRESSURE_PLATE});
+    
+    public MaterialisedAxeItem(Settings settings) {
+        super(0, -3.1F, MaterialisationUtils.DUMMY_MATERIAL, EFFECTIVE_BLOCKS, settings.durability(0));
         addProperty(new Identifier(ModReference.MOD_ID, "handle_isbright"), (itemStack, world, livingEntity) -> {
             return itemStack.getOrCreateTag().containsKey("mt_handle_bright") ? 1f : 0f;
         });
         addProperty(new Identifier(ModReference.MOD_ID, "handle_isnotbright"), (itemStack, world, livingEntity) -> {
             return !itemStack.getOrCreateTag().containsKey("mt_handle_bright") ? 1f : 0f;
         });
-        addProperty(new Identifier(ModReference.MOD_ID, "pickaxe_head_isbright"), (itemStack, world, livingEntity) -> {
-            return itemStack.getOrCreateTag().containsKey("mt_pickaxe_head_bright") ? 1f : 0f;
+        addProperty(new Identifier(ModReference.MOD_ID, "axe_head_isbright"), (itemStack, world, livingEntity) -> {
+            return itemStack.getOrCreateTag().containsKey("mt_axe_head_bright") ? 1f : 0f;
         });
-        addProperty(new Identifier(ModReference.MOD_ID, "pickaxe_head_isnotbright"), (itemStack, world, livingEntity) -> {
-            return !itemStack.getOrCreateTag().containsKey("mt_pickaxe_head_bright") ? 1f : 0f;
+        addProperty(new Identifier(ModReference.MOD_ID, "axe_head_isnotbright"), (itemStack, world, livingEntity) -> {
+            return !itemStack.getOrCreateTag().containsKey("mt_axe_head_bright") ? 1f : 0f;
         });
-    }
-    
-    public static boolean canEffectivelyBreak(ItemStack stack, BlockState state) {
-        Block block_1 = state.getBlock();
-        int int_1 = MaterialisationUtils.getToolMiningLevel(stack);
-        if (block_1 == Blocks.OBSIDIAN) {
-            return int_1 >= 3;
-        } else if (block_1 != Blocks.DIAMOND_BLOCK && block_1 != Blocks.DIAMOND_ORE && block_1 != Blocks.EMERALD_ORE && block_1 != Blocks.EMERALD_BLOCK && block_1 != Blocks.GOLD_BLOCK && block_1 != Blocks.GOLD_ORE && block_1 != Blocks.REDSTONE_ORE) {
-            if (block_1 != Blocks.IRON_BLOCK && block_1 != Blocks.IRON_ORE && block_1 != Blocks.LAPIS_BLOCK && block_1 != Blocks.LAPIS_ORE) {
-                Material material_1 = state.getMaterial();
-                return material_1 == Material.STONE || material_1 == Material.METAL || material_1 == Material.ANVIL;
-            } else
-                return int_1 >= 1;
-        } else {
-            return int_1 >= 2;
-        }
     }
     
     public static float getToolBlockBreakingSpeed(ItemStack stack, BlockState state) {
-        Material material = state.getMaterial();
-        return material != Material.METAL && material != Material.ANVIL && material != Material.STONE ? (((MiningToolItemAccessor) stack.getItem()).getEffectiveBlocks().contains(state.getBlock()) ? MaterialisationUtils.getToolBreakingSpeed(stack) : 1.0F) : MaterialisationUtils.getToolBreakingSpeed(stack);
+        Material material_1 = state.getMaterial();
+        return material_1 != Material.WOOD && material_1 != Material.PLANT && material_1 != Material.REPLACEABLE_PLANT && material_1 != Material.BAMBOO ? (((MiningToolItemAccessor) stack.getItem()).getEffectiveBlocks().contains(state.getBlock()) ? MaterialisationUtils.getToolBreakingSpeed(stack) : 1.0F) : MaterialisationUtils.getToolBreakingSpeed(stack);
+    }
+    
+    public static boolean canEffectivelyBreak(ItemStack itemStack, BlockState state) {
+        return EFFECTIVE_BLOCKS.contains(state.getBlock());
     }
     
     @Override

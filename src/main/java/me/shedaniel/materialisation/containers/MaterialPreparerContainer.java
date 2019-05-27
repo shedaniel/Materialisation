@@ -1,9 +1,9 @@
 package me.shedaniel.materialisation.containers;
 
 import me.shedaniel.materialisation.Materialisation;
+import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.api.KnownMaterial;
 import me.shedaniel.materialisation.api.KnownMaterials;
-import me.shedaniel.materialisation.items.MaterialisedToolUtils;
 import me.shedaniel.materialisation.items.PatternItem;
 import net.minecraft.container.BlockContext;
 import net.minecraft.container.Container;
@@ -116,7 +116,7 @@ public class MaterialPreparerContainer extends Container {
                     if (second.getAmount() < itemsNeeded) {
                         this.result.setInvStack(0, ItemStack.EMPTY);
                     } else {
-                        this.result.setInvStack(0, MaterialisedToolUtils.createPickaxeHead(material));
+                        this.result.setInvStack(0, MaterialisationUtils.createPickaxeHead(material));
                     }
                 }
             } else if (first.getItem() == Materialisation.TOOL_HANDLE_PATTERN) {
@@ -137,7 +137,28 @@ public class MaterialPreparerContainer extends Container {
                     if (second.getAmount() < itemsNeeded) {
                         this.result.setInvStack(0, ItemStack.EMPTY);
                     } else {
-                        this.result.setInvStack(0, MaterialisedToolUtils.createToolHandle(material));
+                        this.result.setInvStack(0, MaterialisationUtils.createToolHandle(material));
+                    }
+                }
+            } else if (first.getItem() == Materialisation.AXE_HEAD_PATTERN) {
+                KnownMaterial material = null;
+                float repairMultiplier = -1;
+                for(KnownMaterial knownMaterial : KnownMaterials.getKnownMaterials().collect(Collectors.toList())) {
+                    float repairAmount = knownMaterial.getRepairMultiplier(second);
+                    if (repairAmount > 0) {
+                        material = knownMaterial;
+                        repairMultiplier = repairAmount;
+                    }
+                }
+                if (material == null || repairMultiplier <= 0)
+                    this.result.setInvStack(0, ItemStack.EMPTY);
+                else {
+                    int itemsNeeded = MathHelper.ceil(4 / repairMultiplier);
+                    takingSecond = itemsNeeded;
+                    if (second.getAmount() < itemsNeeded) {
+                        this.result.setInvStack(0, ItemStack.EMPTY);
+                    } else {
+                        this.result.setInvStack(0, MaterialisationUtils.createAxeHead(material));
                     }
                 }
             } else {
