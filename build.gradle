@@ -8,9 +8,9 @@ targetCompatibility = 1.8
 archivesBaseName = "MaterialisedTools"
 version = "0.1.0"
 
-def minecraftVersion = "1.14.1"
-def yarnVersion = "1.14.1+build.10"
-def fabricVersion = "0.3.0-pre+build.157a"
+def minecraftVersion = "1.14.2"
+def yarnBuild = "2"
+def fabricVersion = "0.3.0+build.173"
 
 minecraft {
 }
@@ -30,8 +30,8 @@ repositories {
 
 dependencies {
     minecraft "com.mojang:minecraft:${minecraftVersion}"
-    mappings "net.fabricmc:yarn:${yarnVersion}"
-    modCompile "net.fabricmc:fabric-loader:0.4.7+build.154"
+    mappings "net.fabricmc:yarn:${minecraftVersion}+build.${yarnBuild}"
+    modCompile "net.fabricmc:fabric-loader:0.4.8+build.154"
     modCompile "net.fabricmc.fabric-api:fabric-api:${fabricVersion}"
     modCompile "me.shedaniel:RoughlyEnoughItems:2.9.1+build.116"
 }
