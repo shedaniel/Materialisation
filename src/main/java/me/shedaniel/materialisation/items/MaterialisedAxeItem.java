@@ -53,6 +53,11 @@ public class MaterialisedAxeItem extends AxeItem implements MaterialisedMiningTo
     }
     
     @Override
+    public double getAttackSpeed() {
+        return attackSpeed;
+    }
+    
+    @Override
     public boolean canEffectivelyBreak(ItemStack itemStack, BlockState state) {
         return EFFECTIVE_BLOCKS.contains(state.getBlock());
     }

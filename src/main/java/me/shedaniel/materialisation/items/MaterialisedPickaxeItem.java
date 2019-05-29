@@ -65,6 +65,11 @@ public class MaterialisedPickaxeItem extends PickaxeItem implements Materialised
     }
     
     @Override
+    public double getAttackSpeed() {
+        return attackSpeed;
+    }
+    
+    @Override
     public boolean canRepair(ItemStack itemStack_1, ItemStack itemStack_2) {
         return false;
     }

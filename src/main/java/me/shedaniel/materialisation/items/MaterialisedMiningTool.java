@@ -7,4 +7,6 @@ public interface MaterialisedMiningTool {
     boolean canEffectivelyBreak(ItemStack itemStack, BlockState state);
     
     float getToolBlockBreakingSpeed(ItemStack itemStack, BlockState state);
+    
+    double getAttackSpeed();
 }

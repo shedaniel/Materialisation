@@ -73,6 +73,11 @@ public class MaterialisedShovelItem extends ShovelItem implements MaterialisedMi
     }
     
     @Override
+    public double getAttackSpeed() {
+        return attackSpeed;
+    }
+    
+    @Override
     public boolean canEffectivelyBreak(ItemStack itemStack, BlockState state) {
         return ((MiningToolItemAccessor) itemStack.getItem()).getEffectiveBlocks().contains(state.getBlock()) || itemStack.isEffectiveOn(state);
     }

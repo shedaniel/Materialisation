@@ -23,6 +23,8 @@ public interface KnownMaterial extends KnownMaterials.RepairAmountGetter {
     
     float getHandleBreakingSpeedMultiplier();
     
+    float getAttackDamage();
+    
     int getPickaxeHeadDurability();
     
     float getPickaxeHeadSpeed();

@@ -26,8 +26,8 @@ public class KnownMaterials extends ArrayList<KnownMaterial> {
         Color white = new Color(255, 255, 255);
         Color gold = new Color(255, 239, 61);
         WOOD = registerMaterial(getNewMaterial("wood").addIngredient(Ingredient.fromTag(ItemTags.PLANKS), 1).addIngredient(Ingredient.ofItems(Items.STICK), .5f).setFullAmount(100).setPickaxeHeadSpeed(2f).setHandleDurabilityMultiplier(1.1f).setToolHandleColor(33529892).setToolHeadColor(33530399).setPickaxeHeadDurability(59));
-        STONE = registerMaterial(getNewMaterial("stone").addIngredient(Ingredient.ofItems(Items.COBBLESTONE), 1).setFullAmount(100).setPickaxeHeadSpeed(4f).setHandleDurabilityMultiplier(0.4f).setHandleBreakingSpeedMultiplier(0.9f).setToolHandleColor(27962026).setToolHeadColor(-2960686).setPickaxeHeadDurability(131).setMiningLevel(1));
-        IRON = registerMaterial(getNewMaterial("iron").addIngredient(Ingredient.ofItems(Items.IRON_INGOT), 2).addIngredient(Ingredient.ofItems(Items.IRON_BLOCK), 18).setFullAmount(100).setBright(true).setPickaxeHeadSpeed(6f).setHandleDurabilityMultiplier(0.9f).setHandleBreakingSpeedMultiplier(1f).setToolHandleColor(white.getRGB()).setToolHeadColor(white.getRGB()).setPickaxeHeadDurability(250).setMiningLevel(2));
+        STONE = registerMaterial(getNewMaterial("stone").addIngredient(Ingredient.ofItems(Items.COBBLESTONE), 1).setAttackDamage(1).setFullAmount(100).setPickaxeHeadSpeed(4f).setHandleDurabilityMultiplier(0.4f).setHandleBreakingSpeedMultiplier(0.9f).setToolHandleColor(27962026).setToolHeadColor(-2960686).setPickaxeHeadDurability(131).setMiningLevel(1));
+        IRON = registerMaterial(getNewMaterial("iron").addIngredient(Ingredient.ofItems(Items.IRON_INGOT), 2).setAttackDamage(2).addIngredient(Ingredient.ofItems(Items.IRON_BLOCK), 18).setFullAmount(100).setBright(true).setPickaxeHeadSpeed(6f).setHandleDurabilityMultiplier(0.9f).setHandleBreakingSpeedMultiplier(1f).setToolHandleColor(white.getRGB()).setToolHeadColor(white.getRGB()).setPickaxeHeadDurability(250).setMiningLevel(2));
         GOLD = registerMaterial(getNewMaterial("gold").addIngredient(Ingredient.ofItems(Items.GOLD_INGOT), 2).addIngredient(Ingredient.ofItems(Items.GOLD_BLOCK), 18).setFullAmount(10).setBright(true).setPickaxeHeadSpeed(12f).setHandleDurabilityMultiplier(0.2f).setHandleBreakingSpeedMultiplier(0.4f).setToolHandleColor(gold.getRGB()).setToolHeadColor(gold.getRGB()).setPickaxeHeadDurability(32));
     }
     
@@ -51,7 +51,7 @@ public class KnownMaterials extends ArrayList<KnownMaterial> {
     public static class Material implements KnownMaterial {
         
         private int toolHandleColor = -1, toolHeadColor = -1, pickaxeHeadDurability = 1, miningLevel = 0;
-        private float handleDurabilityMultiplier = 1f, handleBreakingSpeedMultiplier = 1f, pickaxeHeadSpeed = -1f;
+        private float handleDurabilityMultiplier = 1f, handleBreakingSpeedMultiplier = 1f, pickaxeHeadSpeed = -1f, attackDamage = 0f;
         private String materialTranslateKey = "", name;
         private boolean bright = false;
         private Map<Ingredient, Float> amountMultiplierMap = Maps.newHashMap();
@@ -63,6 +63,16 @@ public class KnownMaterials extends ArrayList<KnownMaterial> {
         
         private Material(String name) {
             this.name = name;
+        }
+        
+        @Override
+        public float getAttackDamage() {
+            return attackDamage;
+        }
+        
+        public Material setAttackDamage(float attackDamage) {
+            this.attackDamage = attackDamage;
+            return this;
         }
         
         public Material addIngredient(Ingredient ingredient, float multiplier) {
