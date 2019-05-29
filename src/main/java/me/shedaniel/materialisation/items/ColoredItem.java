@@ -33,6 +33,8 @@ public class ColoredItem extends Item {
                 return Optional.ofNullable(I18n.translate("item.materialisation.materialised_pickaxe_head", I18n.translate("material.materialisation." + stack.getOrCreateTag().getString("mt_material"))));
             if (stack.getItem() == Materialisation.AXE_HEAD)
                 return Optional.ofNullable(I18n.translate("item.materialisation.materialised_axe_head", I18n.translate("material.materialisation." + stack.getOrCreateTag().getString("mt_material"))));
+            if (stack.getItem() == Materialisation.SHOVEL_HEAD)
+                return Optional.ofNullable(I18n.translate("item.materialisation.materialised_shovel_head", I18n.translate("material.materialisation." + stack.getOrCreateTag().getString("mt_material"))));
         }
         return Optional.empty();
     }
