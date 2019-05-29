@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "materialisation:item/materialised_shovel_handle_bright",
+    "layer1": "materialisation:item/materialised_shovel_head"
+  }
+}

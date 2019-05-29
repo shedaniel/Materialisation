@@ -23,7 +23,7 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public class MaterialisedPickaxeItem extends PickaxeItem {
+public class MaterialisedPickaxeItem extends PickaxeItem implements MaterialisedMiningTool {
     
     public MaterialisedPickaxeItem(Settings settings) {
         super(MaterialisationUtils.DUMMY_MATERIAL, 0, -2.8F, settings.durability(0));
@@ -41,7 +41,8 @@ public class MaterialisedPickaxeItem extends PickaxeItem {
         });
     }
     
-    public static boolean canEffectivelyBreak(ItemStack stack, BlockState state) {
+    @Override
+    public boolean canEffectivelyBreak(ItemStack stack, BlockState state) {
         Block block_1 = state.getBlock();
         int int_1 = MaterialisationUtils.getToolMiningLevel(stack);
         if (block_1 == Blocks.OBSIDIAN) {
@@ -57,7 +58,8 @@ public class MaterialisedPickaxeItem extends PickaxeItem {
         }
     }
     
-    public static float getToolBlockBreakingSpeed(ItemStack stack, BlockState state) {
+    @Override
+    public float getToolBlockBreakingSpeed(ItemStack stack, BlockState state) {
         Material material = state.getMaterial();
         return material != Material.METAL && material != Material.ANVIL && material != Material.STONE ? (((MiningToolItemAccessor) stack.getItem()).getEffectiveBlocks().contains(state.getBlock()) ? MaterialisationUtils.getToolBreakingSpeed(stack) : 1.0F) : MaterialisationUtils.getToolBreakingSpeed(stack);
     }

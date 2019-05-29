@@ -20,9 +20,7 @@ public abstract class MixinItemStack {
      */
     @Inject(method = "hasDisplayName", at = @At("HEAD"), cancellable = true)
     public void hasDisplayName(CallbackInfoReturnable<Boolean> callbackInfo) {
-        if (getItem() == Materialisation.MATERIALISED_PICKAXE)
-            callbackInfo.setReturnValue(false);
-        else if (getItem() == Materialisation.MATERIALISED_AXE)
+        if (getItem() == Materialisation.MATERIALISED_PICKAXE || getItem() == Materialisation.MATERIALISED_AXE || getItem() == Materialisation.MATERIALISED_SHOVEL)
             callbackInfo.setReturnValue(false);
     }
     

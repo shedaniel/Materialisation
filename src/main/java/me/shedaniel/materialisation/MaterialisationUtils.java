@@ -111,7 +111,7 @@ public class MaterialisationUtils {
     public static ItemStack createAxeHead(KnownMaterial material) {
         ItemStack stack = new ItemStack(Materialisation.AXE_HEAD);
         CompoundTag tag = stack.getOrCreateTag();
-        tag.putInt("mt_color_0", material.getPickaxeHeadColor());
+        tag.putInt("mt_color_0", material.getToolHeadColor());
         tag.putString("mt_material", material.getName());
         if (material.isBright())
             tag.putBoolean("mt_bright", true);
@@ -122,7 +122,18 @@ public class MaterialisationUtils {
     public static ItemStack createPickaxeHead(KnownMaterial material) {
         ItemStack stack = new ItemStack(Materialisation.PICKAXE_HEAD);
         CompoundTag tag = stack.getOrCreateTag();
-        tag.putInt("mt_color_0", material.getPickaxeHeadColor());
+        tag.putInt("mt_color_0", material.getToolHeadColor());
+        tag.putString("mt_material", material.getName());
+        if (material.isBright())
+            tag.putBoolean("mt_bright", true);
+        stack.setTag(tag);
+        return stack;
+    }
+    
+    public static ItemStack createShovelHead(KnownMaterial material) {
+        ItemStack stack = new ItemStack(Materialisation.SHOVEL_HEAD);
+        CompoundTag tag = stack.getOrCreateTag();
+        tag.putInt("mt_color_0", material.getToolHeadColor());
         tag.putString("mt_material", material.getName());
         if (material.isBright())
             tag.putBoolean("mt_bright", true);
@@ -145,7 +156,7 @@ public class MaterialisationUtils {
         ItemStack stack = new ItemStack(Materialisation.MATERIALISED_PICKAXE);
         CompoundTag tag = stack.getOrCreateTag();
         tag.putInt("mt_color_0", handle.getToolHandleColor());
-        tag.putInt("mt_color_1", pickaxeHead.getPickaxeHeadColor());
+        tag.putInt("mt_color_1", pickaxeHead.getToolHeadColor());
         tag.putInt("materialisedtools_maxdurability", MathHelper.floor(pickaxeHead.getPickaxeHeadDurability() * handle.getHandleDurabilityMultiplier()));
         tag.putInt("materialisedtools_mininglevel", MathHelper.ceil((handle.getMiningLevel() + pickaxeHead.getMiningLevel()) / 2f));
         tag.putFloat("materialisedtools_breakingspeed", pickaxeHead.getPickaxeHeadSpeed() * handle.getHandleBreakingSpeedMultiplier());
@@ -164,7 +175,7 @@ public class MaterialisationUtils {
         ItemStack stack = new ItemStack(Materialisation.MATERIALISED_AXE);
         CompoundTag tag = stack.getOrCreateTag();
         tag.putInt("mt_color_0", handle.getToolHandleColor());
-        tag.putInt("mt_color_1", axeHead.getPickaxeHeadColor());
+        tag.putInt("mt_color_1", axeHead.getToolHeadColor());
         tag.putInt("materialisedtools_maxdurability", MathHelper.floor(axeHead.getPickaxeHeadDurability() * handle.getHandleDurabilityMultiplier()));
         tag.putInt("materialisedtools_mininglevel", MathHelper.ceil((handle.getMiningLevel() + axeHead.getMiningLevel()) / 2f));
         tag.putFloat("materialisedtools_breakingspeed", axeHead.getPickaxeHeadSpeed() * handle.getHandleBreakingSpeedMultiplier());
@@ -175,6 +186,25 @@ public class MaterialisationUtils {
             tag.putBoolean("mt_axe_head_bright", true);
         tag.putString("mt_handle_material", handle.getName());
         tag.putString("mt_axe_head_material", axeHead.getName());
+        stack.setTag(tag);
+        return stack;
+    }
+    
+    public static ItemStack createShovel(KnownMaterial handle, KnownMaterial shovelHead) {
+        ItemStack stack = new ItemStack(Materialisation.MATERIALISED_SHOVEL);
+        CompoundTag tag = stack.getOrCreateTag();
+        tag.putInt("mt_color_0", handle.getToolHandleColor());
+        tag.putInt("mt_color_1", shovelHead.getToolHeadColor());
+        tag.putInt("materialisedtools_maxdurability", MathHelper.floor(shovelHead.getPickaxeHeadDurability() * handle.getHandleDurabilityMultiplier()));
+        tag.putInt("materialisedtools_mininglevel", MathHelper.ceil((handle.getMiningLevel() + shovelHead.getMiningLevel()) / 2f));
+        tag.putFloat("materialisedtools_breakingspeed", shovelHead.getPickaxeHeadSpeed() * handle.getHandleBreakingSpeedMultiplier());
+        tag.putBoolean("mt_done_tool", true);
+        if (handle.isBright())
+            tag.putBoolean("mt_handle_bright", true);
+        if (shovelHead.isBright())
+            tag.putBoolean("mt_shovel_head_bright", true);
+        tag.putString("mt_handle_material", handle.getName());
+        tag.putString("mt_shovel_head_material", shovelHead.getName());
         stack.setTag(tag);
         return stack;
     }

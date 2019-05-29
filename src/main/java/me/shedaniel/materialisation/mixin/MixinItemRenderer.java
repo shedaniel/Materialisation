@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.items.MaterialisedAxeItem;
 import me.shedaniel.materialisation.items.MaterialisedPickaxeItem;
+import me.shedaniel.materialisation.items.MaterialisedShovelItem;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
@@ -31,7 +32,7 @@ public abstract class MixinItemRenderer {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;isDamaged()Z", ordinal = 0,
                      shift = At.Shift.BEFORE))
     public void renderGuiItemOverlay(TextRenderer font, ItemStack stack, int x, int y, String overlayText, CallbackInfo callbackInfo) {
-        if (stack.getItem() instanceof MaterialisedPickaxeItem || stack.getItem() instanceof MaterialisedAxeItem) {
+        if (stack.getItem() instanceof MaterialisedPickaxeItem || stack.getItem() instanceof MaterialisedAxeItem || stack.getItem() instanceof MaterialisedShovelItem) {
             float float_1 = MaterialisationUtils.getToolDurability(stack);
             float float_2 = MaterialisationUtils.getToolMaxDurability(stack);
             if (float_1 < float_2) {

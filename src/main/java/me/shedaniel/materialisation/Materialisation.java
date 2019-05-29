@@ -4,10 +4,7 @@ import me.shedaniel.materialisation.blocks.MaterialPreparerBlock;
 import me.shedaniel.materialisation.blocks.MaterialisingTableBlock;
 import me.shedaniel.materialisation.containers.MaterialPreparerContainer;
 import me.shedaniel.materialisation.containers.MaterialisingTableContainer;
-import me.shedaniel.materialisation.items.ColoredItem;
-import me.shedaniel.materialisation.items.MaterialisedAxeItem;
-import me.shedaniel.materialisation.items.MaterialisedPickaxeItem;
-import me.shedaniel.materialisation.items.PatternItem;
+import me.shedaniel.materialisation.items.*;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
@@ -37,6 +34,7 @@ public class Materialisation implements ModInitializer {
     public static final Identifier MATERIALISING_TABLE_PLAY_SOUND = new Identifier(ModReference.MOD_ID, "materialising_table_play_sound");
     public static final Item MATERIALISED_PICKAXE = new MaterialisedPickaxeItem(new Item.Settings());
     public static final Item MATERIALISED_AXE = new MaterialisedAxeItem(new Item.Settings());
+    public static final Item MATERIALISED_SHOVEL = new MaterialisedShovelItem(new Item.Settings());
     public static final Item HANDLE = new ColoredItem(new Item.Settings());
     public static final Item AXE_HEAD = new ColoredItem(new Item.Settings());
     public static final Item PICKAXE_HEAD = new ColoredItem(new Item.Settings());
@@ -82,6 +80,7 @@ public class Materialisation implements ModInitializer {
         });
         registerItem("materialised_pickaxe", MATERIALISED_PICKAXE);
         registerItem("materialised_axe", MATERIALISED_AXE);
+        registerItem("materialised_shovel", MATERIALISED_SHOVEL);
         registerItem("handle", HANDLE);
         registerItem("axe_head", AXE_HEAD);
         registerItem("pickaxe_head", PICKAXE_HEAD);

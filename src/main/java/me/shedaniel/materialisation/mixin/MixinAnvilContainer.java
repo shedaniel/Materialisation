@@ -42,6 +42,11 @@ public abstract class MixinAnvilContainer extends Container {
             levelCost.set(0);
             sendContentUpdates();
             callbackInfo.cancel();
+        }else if (inventory.getInvStack(0).getItem() == Materialisation.MATERIALISED_SHOVEL) {
+            result.setInvStack(0, ItemStack.EMPTY);
+            levelCost.set(0);
+            sendContentUpdates();
+            callbackInfo.cancel();
         }
     }
     

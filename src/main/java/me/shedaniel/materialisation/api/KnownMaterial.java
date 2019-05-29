@@ -9,7 +9,7 @@ public interface KnownMaterial extends KnownMaterials.RepairAmountGetter {
     
     int getToolHandleColor();
     
-    int getPickaxeHeadColor();
+    int getToolHeadColor();
     
     String getMaterialTranslateKey();
     

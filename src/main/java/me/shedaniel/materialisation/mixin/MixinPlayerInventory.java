@@ -3,8 +3,7 @@ package me.shedaniel.materialisation.mixin;
 import me.shedaniel.cloth.api.ReflectionUtils;
 import me.shedaniel.materialisation.Materialisation;
 import me.shedaniel.materialisation.MaterialisationUtils;
-import me.shedaniel.materialisation.items.MaterialisedAxeItem;
-import me.shedaniel.materialisation.items.MaterialisedPickaxeItem;
+import me.shedaniel.materialisation.items.MaterialisedMiningTool;
 import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.tools.ToolManager;
 import net.minecraft.block.BlockState;
@@ -44,7 +43,7 @@ public class MixinPlayerInventory {
     @Inject(method = "getBlockBreakingSpeed", at = @At("HEAD"), cancellable = true)
     public void getBlockBreakingSpeed(BlockState state, CallbackInfoReturnable<Float> callbackInfo) {
         ItemStack itemStack = main.get(selectedSlot);
-        if (itemStack.getItem() instanceof MaterialisedPickaxeItem) {
+        if (itemStack.getItem() instanceof MaterialisedMiningTool) {
             if (MaterialisationUtils.getToolDurability(itemStack) <= 0) {
                 // If there is not durability left
                 callbackInfo.setReturnValue(-1f);
@@ -55,21 +54,7 @@ public class MixinPlayerInventory {
                     callbackInfo.setReturnValue(triState.get() ? MaterialisationUtils.getToolBreakingSpeed(itemStack) : 1.0F);
                 } else {
                     // Lastly if we are not dealing with 3rd party blocks with durability left
-                    callbackInfo.setReturnValue(MaterialisedPickaxeItem.getToolBlockBreakingSpeed(itemStack, state));
-                }
-            }
-        } else if (itemStack.getItem() instanceof MaterialisedAxeItem) {
-            if (MaterialisationUtils.getToolDurability(itemStack) <= 0) {
-                // If there is not durability left
-                callbackInfo.setReturnValue(-1f);
-            } else {
-                TriState triState = mt_handleIsEffectiveOn(itemStack, state);
-                if (triState != TriState.DEFAULT) {
-                    // If we are dealing with 3rd party blocks
-                    callbackInfo.setReturnValue(triState.get() ? MaterialisationUtils.getToolBreakingSpeed(itemStack) : 1.0F);
-                } else {
-                    // Lastly if we are not dealing with 3rd party blocks with durability left
-                    callbackInfo.setReturnValue(MaterialisedAxeItem.getToolBlockBreakingSpeed(itemStack, state));
+                    callbackInfo.setReturnValue(((MaterialisedMiningTool) itemStack.getItem()).getToolBlockBreakingSpeed(itemStack, state));
                 }
             }
         }
@@ -81,7 +66,7 @@ public class MixinPlayerInventory {
     @Inject(method = "isUsingEffectiveTool", at = @At("HEAD"), cancellable = true)
     public void isUsingEffectiveTool(BlockState state, CallbackInfoReturnable<Boolean> callbackInfo) {
         ItemStack itemStack = main.get(selectedSlot);
-        if (itemStack.getItem() instanceof MaterialisedPickaxeItem) {
+        if (itemStack.getItem() instanceof MaterialisedMiningTool) {
             if (MaterialisationUtils.getToolDurability(itemStack) <= 0) {
                 // If there is not durability left
                 callbackInfo.setReturnValue(false);
@@ -92,21 +77,7 @@ public class MixinPlayerInventory {
                     callbackInfo.setReturnValue(triState.get());
                 } else {
                     // Lastly if we are not dealing with 3rd party blocks with durability left
-                    callbackInfo.setReturnValue(MaterialisedPickaxeItem.canEffectivelyBreak(itemStack, state));
-                }
-            }
-        } else if (itemStack.getItem() instanceof MaterialisedAxeItem) {
-            if (MaterialisationUtils.getToolDurability(itemStack) <= 0) {
-                // If there is not durability left
-                callbackInfo.setReturnValue(false);
-            } else {
-                TriState triState = mt_handleIsEffectiveOn(itemStack, state);
-                if (triState != TriState.DEFAULT) {
-                    // If we are dealing with 3rd party blocks
-                    callbackInfo.setReturnValue(triState.get());
-                } else {
-                    // Lastly if we are not dealing with 3rd party blocks with durability left
-                    callbackInfo.setReturnValue(MaterialisedAxeItem.canEffectivelyBreak(itemStack, state));
+                    callbackInfo.setReturnValue(((MaterialisedMiningTool) itemStack.getItem()).canEffectivelyBreak(itemStack, state));
                 }
             }
         }
