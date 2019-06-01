@@ -1,0 +1,30 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "materialisation:item/materialised_sword_handle",
+    "layer1": "materialisation:item/materialised_sword_blade"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "materialisation:handle_isbright": 1,
+        "materialisation:sword_head_isbright": 1
+      },
+      "model": "materialisation:item/materialised_sword_both"
+    },
+    {
+      "predicate": {
+        "materialisation:handle_isnotbright": 1,
+        "materialisation:sword_head_isbright": 1
+      },
+      "model": "materialisation:item/materialised_sword_only_head"
+    },
+    {
+      "predicate": {
+        "materialisation:handle_isbright": 1,
+        "materialisation:sword_head_isnotbright": 1
+      },
+      "model": "materialisation:item/materialised_sword_only_handle"
+    }
+  ]
+}

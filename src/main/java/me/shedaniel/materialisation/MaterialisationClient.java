@@ -18,6 +18,6 @@ public class MaterialisationClient implements ClientModInitializer {
         ScreenProviderRegistry.INSTANCE.registerFactory(Materialisation.MATERIAL_PREPARER_CONTAINER, (syncId, identifier, playerEntity, packetByteBuf) -> {
             return new MaterialPreparerScreen(new MaterialPreparerContainer(syncId, playerEntity.inventory), playerEntity.inventory, new TranslatableComponent("container.materialisation.material_preparer"));
         });
-        ColorProviderRegistryImpl.ITEM.register(MaterialisationUtils::getItemLayerColor, Materialisation.MATERIALISED_PICKAXE, Materialisation.MATERIALISED_SHOVEL, Materialisation.MATERIALISED_AXE, Materialisation.HANDLE, Materialisation.SHOVEL_HEAD, Materialisation.PICKAXE_HEAD, Materialisation.AXE_HEAD);
+        ColorProviderRegistryImpl.ITEM.register(MaterialisationUtils::getItemLayerColor, Materialisation.MATERIALISED_PICKAXE, Materialisation.MATERIALISED_SHOVEL, Materialisation.MATERIALISED_AXE, Materialisation.MATERIALISED_SWORD, Materialisation.HANDLE, Materialisation.SWORD_BLADE, Materialisation.SHOVEL_HEAD, Materialisation.PICKAXE_HEAD, Materialisation.AXE_HEAD);
     }
 }

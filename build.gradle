@@ -60,5 +60,5 @@ dependencies {
     implementation "net.fabricmc:yarn:${minecraftVersion}+build.${yarnBuild}"
     modCompile "net.fabricmc:fabric-loader:0.4.8+build.154"
     modCompile "net.fabricmc.fabric-api:fabric-api:${fabricVersion}"
-    modCompile "me.shedaniel:RoughlyEnoughItems:2.9.1+build.116"
+    modCompile "me.shedaniel:RoughlyEnoughItems:2.9.1+build.121"
 }

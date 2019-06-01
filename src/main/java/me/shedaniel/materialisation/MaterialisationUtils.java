@@ -162,6 +162,17 @@ public class MaterialisationUtils {
         return stack;
     }
     
+    public static ItemStack createSwordBlade(KnownMaterial material) {
+        ItemStack stack = new ItemStack(Materialisation.SWORD_BLADE);
+        CompoundTag tag = stack.getOrCreateTag();
+        tag.putInt("mt_color_0", material.getToolHeadColor());
+        tag.putString("mt_material", material.getName());
+        if (material.isBright())
+            tag.putBoolean("mt_bright", true);
+        stack.setTag(tag);
+        return stack;
+    }
+    
     public static KnownMaterial getMaterialFromPart(ItemStack stack) {
         if (stack.getOrCreateTag().containsKey("mt_material"))
             return getMaterialFromString(stack.getOrCreateTag().getString("mt_material"));
@@ -181,7 +192,7 @@ public class MaterialisationUtils {
         tag.putInt("mt_maxdurability", MathHelper.floor(pickaxeHead.getPickaxeHeadDurability() * handle.getHandleDurabilityMultiplier()));
         tag.putInt("mt_mininglevel", MathHelper.ceil((handle.getMiningLevel() + pickaxeHead.getMiningLevel()) / 2f));
         tag.putFloat("mt_breakingspeed", pickaxeHead.getPickaxeHeadSpeed() * handle.getHandleBreakingSpeedMultiplier());
-        tag.putFloat("mt_damage", (pickaxeHead.getAttackDamage() + handle.getAttackDamage()) / 2f + 1f);
+        tag.putFloat("mt_damage", pickaxeHead.getAttackDamage() + 2f);
         tag.putBoolean("mt_done_tool", true);
         if (handle.isBright())
             tag.putBoolean("mt_handle_bright", true);
@@ -201,7 +212,7 @@ public class MaterialisationUtils {
         tag.putInt("mt_maxdurability", MathHelper.floor(axeHead.getPickaxeHeadDurability() * handle.getHandleDurabilityMultiplier()));
         tag.putInt("mt_mininglevel", MathHelper.ceil((handle.getMiningLevel() + axeHead.getMiningLevel()) / 2f));
         tag.putFloat("mt_breakingspeed", axeHead.getPickaxeHeadSpeed() * handle.getHandleBreakingSpeedMultiplier());
-        tag.putFloat("mt_damage", (axeHead.getAttackDamage() + handle.getAttackDamage()) / 2f + 6f);
+        tag.putFloat("mt_damage", axeHead.getAttackDamage() + 7f);
         tag.putBoolean("mt_done_tool", true);
         if (handle.isBright())
             tag.putBoolean("mt_handle_bright", true);
@@ -221,7 +232,7 @@ public class MaterialisationUtils {
         tag.putInt("mt_maxdurability", MathHelper.floor(shovelHead.getPickaxeHeadDurability() * handle.getHandleDurabilityMultiplier()));
         tag.putInt("mt_mininglevel", MathHelper.ceil((handle.getMiningLevel() + shovelHead.getMiningLevel()) / 2f));
         tag.putFloat("mt_breakingspeed", shovelHead.getPickaxeHeadSpeed() * handle.getHandleBreakingSpeedMultiplier());
-        tag.putFloat("mt_damage", (shovelHead.getAttackDamage() + handle.getAttackDamage()) / 2f + 1.5f);
+        tag.putFloat("mt_damage", shovelHead.getAttackDamage() + 2.5f);
         tag.putBoolean("mt_done_tool", true);
         if (handle.isBright())
             tag.putBoolean("mt_handle_bright", true);
@@ -229,6 +240,24 @@ public class MaterialisationUtils {
             tag.putBoolean("mt_shovel_head_bright", true);
         tag.putString("mt_handle_material", handle.getName());
         tag.putString("mt_shovel_head_material", shovelHead.getName());
+        stack.setTag(tag);
+        return stack;
+    }
+    
+    public static ItemStack createSword(KnownMaterial handle, KnownMaterial swordBlade) {
+        ItemStack stack = new ItemStack(Materialisation.MATERIALISED_SWORD);
+        CompoundTag tag = stack.getOrCreateTag();
+        tag.putInt("mt_color_0", handle.getToolHandleColor());
+        tag.putInt("mt_color_1", swordBlade.getToolHeadColor());
+        tag.putInt("mt_maxdurability", MathHelper.floor(swordBlade.getPickaxeHeadDurability() * handle.getHandleDurabilityMultiplier()));
+        tag.putFloat("mt_damage", swordBlade.getAttackDamage() + 4f);
+        tag.putBoolean("mt_done_tool", true);
+        if (handle.isBright())
+            tag.putBoolean("mt_handle_bright", true);
+        if (swordBlade.isBright())
+            tag.putBoolean("mt_sword_blade_bright", true);
+        tag.putString("mt_handle_material", handle.getName());
+        tag.putString("mt_sword_blade_material", swordBlade.getName());
         stack.setTag(tag);
         return stack;
     }

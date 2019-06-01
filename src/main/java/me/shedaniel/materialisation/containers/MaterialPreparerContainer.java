@@ -182,6 +182,27 @@ public class MaterialPreparerContainer extends Container {
                         this.result.setInvStack(0, MaterialisationUtils.createShovelHead(material));
                     }
                 }
+            } else if (first.getItem() == Materialisation.SWORD_BLADE_PATTERN) {
+                KnownMaterial material = null;
+                float repairMultiplier = -1;
+                for(KnownMaterial knownMaterial : KnownMaterials.getKnownMaterials().collect(Collectors.toList())) {
+                    float repairAmount = knownMaterial.getRepairMultiplier(second);
+                    if (repairAmount > 0) {
+                        material = knownMaterial;
+                        repairMultiplier = repairAmount;
+                    }
+                }
+                if (material == null || repairMultiplier <= 0)
+                    this.result.setInvStack(0, ItemStack.EMPTY);
+                else {
+                    int itemsNeeded = MathHelper.ceil(4 / repairMultiplier);
+                    takingSecond = itemsNeeded;
+                    if (second.getAmount() < itemsNeeded) {
+                        this.result.setInvStack(0, ItemStack.EMPTY);
+                    } else {
+                        this.result.setInvStack(0, MaterialisationUtils.createSwordBlade(material));
+                    }
+                }
             } else {
                 this.result.setInvStack(0, ItemStack.EMPTY);
             }
