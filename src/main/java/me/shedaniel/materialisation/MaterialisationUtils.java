@@ -189,7 +189,7 @@ public class MaterialisationUtils {
         CompoundTag tag = stack.getOrCreateTag();
         tag.putInt("mt_color_0", handle.getToolHandleColor());
         tag.putInt("mt_color_1", pickaxeHead.getToolHeadColor());
-        tag.putInt("mt_maxdurability", MathHelper.floor(pickaxeHead.getPickaxeHeadDurability() * handle.getHandleDurabilityMultiplier()));
+        tag.putInt("mt_maxdurability", MathHelper.floor(pickaxeHead.getHeadDurability() * handle.getHandleDurabilityMultiplier()));
         tag.putInt("mt_mininglevel", MathHelper.ceil((handle.getMiningLevel() + pickaxeHead.getMiningLevel()) / 2f));
         tag.putFloat("mt_breakingspeed", pickaxeHead.getPickaxeHeadSpeed() * handle.getHandleBreakingSpeedMultiplier());
         tag.putFloat("mt_damage", pickaxeHead.getAttackDamage() + 2f);
@@ -209,7 +209,7 @@ public class MaterialisationUtils {
         CompoundTag tag = stack.getOrCreateTag();
         tag.putInt("mt_color_0", handle.getToolHandleColor());
         tag.putInt("mt_color_1", axeHead.getToolHeadColor());
-        tag.putInt("mt_maxdurability", MathHelper.floor(axeHead.getPickaxeHeadDurability() * handle.getHandleDurabilityMultiplier()));
+        tag.putInt("mt_maxdurability", MathHelper.floor(axeHead.getHeadDurability() * handle.getHandleDurabilityMultiplier()));
         tag.putInt("mt_mininglevel", MathHelper.ceil((handle.getMiningLevel() + axeHead.getMiningLevel()) / 2f));
         tag.putFloat("mt_breakingspeed", axeHead.getPickaxeHeadSpeed() * handle.getHandleBreakingSpeedMultiplier());
         tag.putFloat("mt_damage", axeHead.getAttackDamage() + 7f);
@@ -229,7 +229,7 @@ public class MaterialisationUtils {
         CompoundTag tag = stack.getOrCreateTag();
         tag.putInt("mt_color_0", handle.getToolHandleColor());
         tag.putInt("mt_color_1", shovelHead.getToolHeadColor());
-        tag.putInt("mt_maxdurability", MathHelper.floor(shovelHead.getPickaxeHeadDurability() * handle.getHandleDurabilityMultiplier()));
+        tag.putInt("mt_maxdurability", MathHelper.floor(shovelHead.getHeadDurability() * handle.getHandleDurabilityMultiplier()));
         tag.putInt("mt_mininglevel", MathHelper.ceil((handle.getMiningLevel() + shovelHead.getMiningLevel()) / 2f));
         tag.putFloat("mt_breakingspeed", shovelHead.getPickaxeHeadSpeed() * handle.getHandleBreakingSpeedMultiplier());
         tag.putFloat("mt_damage", shovelHead.getAttackDamage() + 2.5f);
@@ -249,7 +249,7 @@ public class MaterialisationUtils {
         CompoundTag tag = stack.getOrCreateTag();
         tag.putInt("mt_color_0", handle.getToolHandleColor());
         tag.putInt("mt_color_1", swordBlade.getToolHeadColor());
-        tag.putInt("mt_maxdurability", MathHelper.floor(swordBlade.getPickaxeHeadDurability() * handle.getHandleDurabilityMultiplier()));
+        tag.putInt("mt_maxdurability", MathHelper.floor(swordBlade.getHeadDurability() * handle.getHandleDurabilityMultiplier()));
         tag.putFloat("mt_damage", swordBlade.getAttackDamage() + 4f);
         tag.putBoolean("mt_done_tool", true);
         if (handle.isBright())

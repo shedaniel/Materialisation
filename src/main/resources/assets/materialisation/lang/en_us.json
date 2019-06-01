@@ -32,6 +32,7 @@
   "text.materialisation.tool_handle_speed_multiplier": "Mining Speed Multiplier: %s",
   "text.materialisation.head_part_speed": "Mining Speed: %s",
   "text.materialisation.head_part_durability": "Part Durability: %s",
+  "text.materialisation.head_part_damage": "Attack Damage: %s",
   "material.materialisation.wood": "Wooden",
   "material.materialisation.stone": "Stone",
   "material.materialisation.iron": "Iron",

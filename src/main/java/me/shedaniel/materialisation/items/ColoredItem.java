@@ -58,9 +58,25 @@ public class ColoredItem extends Item {
                     list.add(new TranslatableComponent("text.materialisation.tool_handle_speed_multiplier", MaterialisationUtils.getColoring(material.getHandleBreakingSpeedMultiplier()).toString() + "x" + material.getHandleBreakingSpeedMultiplier()));
                 } else if (stack.getItem() == Materialisation.PICKAXE_HEAD || stack.getItem() == Materialisation.AXE_HEAD || stack.getItem() == Materialisation.SHOVEL_HEAD) {
                     list.add(new TranslatableComponent("text.materialisation.head_part_speed", ChatFormat.YELLOW.toString() + material.getPickaxeHeadSpeed()));
-                    list.add(new TranslatableComponent("text.materialisation.head_part_durability", ChatFormat.YELLOW.toString() + material.getPickaxeHeadDurability()));
+                    list.add(new TranslatableComponent("text.materialisation.head_part_durability", ChatFormat.YELLOW.toString() + material.getHeadDurability()));
+                    list.add(new TranslatableComponent("text.materialisation.head_part_damage", ChatFormat.YELLOW.toString() + (getExtraDamage(stack.getItem()) + material.getAttackDamage())));
+                } else if (stack.getItem() == Materialisation.SWORD_BLADE) {
+                    list.add(new TranslatableComponent("text.materialisation.head_part_durability", ChatFormat.YELLOW.toString() + material.getHeadDurability()));
+                    list.add(new TranslatableComponent("text.materialisation.head_part_damage", ChatFormat.YELLOW.toString() + (getExtraDamage(stack.getItem()) + material.getAttackDamage())));
                 }
         }
+    }
+    
+    public float getExtraDamage(Item item) {
+        if (item == Materialisation.SWORD_BLADE)
+            return 4f;
+        if (item == Materialisation.PICKAXE_HEAD)
+            return 2f;
+        if (item == Materialisation.AXE_HEAD)
+            return 7f;
+        if (item == Materialisation.SHOVEL_HEAD)
+            return 2.5f;
+        return 0f;
     }
     
     @Override
