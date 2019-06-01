@@ -1,16 +1,34 @@
-plugins {
-    id 'fabric-loom' version '0.2.2-SNAPSHOT'
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            name = 'Fabric'
+            url = 'https://maven.fabricmc.net/'
+        }
+        maven {
+            name = "Forge"
+            url = "https://files.minecraftforge.net/maven/"
+        }
+        maven {
+            name = "Jitpack"
+            url = "https://jitpack.io/"
+        }
+    }
+    dependencies {
+        classpath 'com.github.Chocohead:fabric-loom:51f7373'
+    }
 }
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+apply plugin: net.fabricmc.loom.LoomGradlePlugin
 
-archivesBaseName = "MaterialisedTools"
+archivesBaseName = "Materialisation"
 version = "0.1.0"
 
 def minecraftVersion = "1.14.2"
 def yarnBuild = "2"
 def fabricVersion = "0.3.0+build.173"
+
+sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 
 minecraft {
 }
@@ -23,6 +41,14 @@ processResources {
 }
 
 repositories {
+    maven {
+        name = "Forge"
+        url = "https://files.minecraftforge.net/maven/"
+    }
+    maven {
+        name = "Jitpack"
+        url = "https://jitpack.io/"
+    }
     maven { url "https://tehnut.info/maven/" }
     maven { url "https://minecraft.curseforge.com/api/maven" }
     maven { url = 'http://maven.sargunv.s3-website-us-west-2.amazonaws.com/' }
@@ -30,7 +56,8 @@ repositories {
 
 dependencies {
     minecraft "com.mojang:minecraft:${minecraftVersion}"
-    mappings "net.fabricmc:yarn:${minecraftVersion}+build.${yarnBuild}"
+    mappings "net.fabricmc:yarn:${minecraftVersion}+build.${yarnBuild}:enigma@zip"
+    implementation "net.fabricmc:yarn:${minecraftVersion}+build.${yarnBuild}"
     modCompile "net.fabricmc:fabric-loader:0.4.8+build.154"
     modCompile "net.fabricmc.fabric-api:fabric-api:${fabricVersion}"
     modCompile "me.shedaniel:RoughlyEnoughItems:2.9.1+build.116"
