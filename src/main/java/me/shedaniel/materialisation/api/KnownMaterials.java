@@ -179,11 +179,9 @@ public class KnownMaterials extends ArrayList<KnownMaterial> {
         public int getRepairAmount(ItemStack stack) {
             Ingredient ingredient = null;
             for(Ingredient ingredient1 : getIngredients()) {
-                for(ItemStack itemStack : ingredient1.getStackArray()) {
-                    if (ItemStack.areEqualIgnoreDurability(itemStack, stack)) {
-                        ingredient = ingredient1;
-                        break;
-                    }
+                if (ingredient1.method_8093(stack)) {
+                    ingredient = ingredient1;
+                    break;
                 }
             }
             if (ingredient != null)
@@ -206,11 +204,9 @@ public class KnownMaterials extends ArrayList<KnownMaterial> {
         public float getRepairMultiplier(ItemStack stack) {
             Ingredient ingredient = null;
             for(Ingredient ingredient1 : getIngredients()) {
-                for(ItemStack itemStack : ingredient1.getStackArray()) {
-                    if (ItemStack.areEqualIgnoreDurability(itemStack, stack)) {
-                        ingredient = ingredient1;
-                        break;
-                    }
+                if (ingredient1.method_8093(stack)) {
+                    ingredient = ingredient1;
+                    break;
                 }
             }
             if (ingredient != null)

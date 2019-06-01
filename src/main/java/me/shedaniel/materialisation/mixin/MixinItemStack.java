@@ -4,6 +4,8 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.items.MaterialisedMiningTool;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -50,12 +52,13 @@ public abstract class MixinItemStack {
         }
     }
     
-    @ModifyVariable(method = "getTooltipText", at = @At(value = "INVOKE", ordinal = 0,
-                                                        target = "Lnet/minecraft/entity/attribute/EntityAttributeModifier;getOperation()Lnet/minecraft/entity/attribute/EntityAttributeModifier$Operation;"),
-                    name = "boolean_1")
-    private boolean getTooltipText(boolean a) {
-        if (getItem() instanceof MaterialisedMiningTool)
-            return true;
-        return a;
-    }
+//    @Environment(EnvType.CLIENT)
+//    @ModifyVariable(method = "getTooltipText", at = @At(value = "INVOKE", ordinal = 0,
+//                                                        target = "Lnet/minecraft/entity/attribute/EntityAttributeModifier;getOperation()Lnet/minecraft/entity/attribute/EntityAttributeModifier$Operation;"),
+//                    name = "boolean_1")
+//    private boolean getTooltipText(boolean a) {
+//        if (getItem() instanceof MaterialisedMiningTool)
+//            return true;
+//        return a;
+//    }
 }

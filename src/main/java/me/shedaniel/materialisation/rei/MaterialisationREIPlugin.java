@@ -7,8 +7,11 @@ import me.shedaniel.materialisation.api.KnownMaterials;
 import me.shedaniel.materialisation.items.ColoredItem;
 import me.shedaniel.rei.api.ItemRegistry;
 import me.shedaniel.rei.api.REIPluginEntry;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.util.Identifier;
 
+@Environment(EnvType.CLIENT)
 public class MaterialisationREIPlugin implements REIPluginEntry {
     
     private static final Identifier PLUGIN = new Identifier(ModReference.MOD_ID, "rei_plugin");

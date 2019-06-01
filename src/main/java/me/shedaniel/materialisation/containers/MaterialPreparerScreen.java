@@ -2,11 +2,14 @@ package me.shedaniel.materialisation.containers;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import me.shedaniel.materialisation.ModReference;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screen.ingame.AbstractContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Identifier;
 
+@Environment(EnvType.CLIENT)
 public class MaterialPreparerScreen extends AbstractContainerScreen<MaterialPreparerContainer> {
     
     private static final Identifier BG_TEX = new Identifier(ModReference.MOD_ID, "textures/gui/container/material_preparer.png");

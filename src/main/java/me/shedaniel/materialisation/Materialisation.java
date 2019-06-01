@@ -7,17 +7,13 @@ import me.shedaniel.materialisation.containers.MaterialisingTableContainer;
 import me.shedaniel.materialisation.items.*;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.minecraft.SharedConstants;
 import net.minecraft.block.Block;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.container.BlockContext;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -73,13 +69,10 @@ public class Materialisation implements ModInitializer {
         ServerSidePacketRegistry.INSTANCE.register(MATERIALISING_TABLE_RENAME, (packetContext, packetByteBuf) -> {
             if (packetContext.getPlayer().container instanceof MaterialisingTableContainer) {
                 MaterialisingTableContainer container = (MaterialisingTableContainer) packetContext.getPlayer().container;
-                String string_1 = SharedConstants.stripInvalidChars(packetByteBuf.readString());
+                String string_1 = SharedConstants.stripInvalidChars(packetByteBuf.readString(32767));
                 if (string_1.length() <= 35)
                     container.setNewItemName(string_1);
             }
-        });
-        ClientSidePacketRegistry.INSTANCE.register(MATERIALISING_TABLE_PLAY_SOUND, (packetContext, packetByteBuf) -> {
-            MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(SoundEvents.BLOCK_ANVIL_USE, 1, 1));
         });
         registerItem("materialised_pickaxe", MATERIALISED_PICKAXE);
         registerItem("materialised_axe", MATERIALISED_AXE);

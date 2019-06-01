@@ -4,12 +4,13 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MiningToolItemAccessor",
-    "MixinItemRenderer",
     "MixinPlayerInventory",
     "MixinItemStack",
     "MixinAnvilContainer"
   ],
-  "client": [],
+  "client": [
+    "MixinItemRenderer"
+  ],
   "injectors": {
     "defaultRequire": 1
   }

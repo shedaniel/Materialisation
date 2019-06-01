@@ -3,6 +3,8 @@ package me.shedaniel.materialisation.items;
 import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.ModReference;
 import me.shedaniel.materialisation.mixin.MiningToolItemAccessor;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormat;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.item.TooltipContext;
@@ -126,6 +128,7 @@ public class MaterialisedShovelItem extends ShovelItem implements MaterialisedMi
         return true;
     }
     
+    @Environment(EnvType.CLIENT)
     @Override
     public void buildTooltip(ItemStack stack, World world_1, List<Component> list_1, TooltipContext tooltipContext_1) {
         int toolDurability = MaterialisationUtils.getToolDurability(stack);

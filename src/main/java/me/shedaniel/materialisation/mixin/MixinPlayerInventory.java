@@ -1,6 +1,5 @@
 package me.shedaniel.materialisation.mixin;
 
-import me.shedaniel.cloth.api.ReflectionUtils;
 import me.shedaniel.materialisation.Materialisation;
 import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.items.MaterialisedMiningTool;
@@ -34,7 +33,7 @@ public class MixinPlayerInventory {
         for(int i = 0; i < tags.length; ++i)
             if (item.matches(tags[i]))
                 return TriState.of(MaterialisationUtils.getToolMiningLevel(stack) >= tagLevels[i]);
-        return ReflectionUtils.getField(entry, TriState.class, 2).orElse(TriState.DEFAULT);
+        return Materialisation.getReflectionField(entry, TriState.class, 2).orElse(TriState.DEFAULT);
     }
     
     /**

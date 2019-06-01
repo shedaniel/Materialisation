@@ -5,6 +5,8 @@ import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.items.MaterialisedAxeItem;
 import me.shedaniel.materialisation.items.MaterialisedPickaxeItem;
 import me.shedaniel.materialisation.items.MaterialisedShovelItem;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
@@ -17,6 +19,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+@Environment(EnvType.CLIENT)
 @Mixin(ItemRenderer.class)
 public abstract class MixinItemRenderer {
     

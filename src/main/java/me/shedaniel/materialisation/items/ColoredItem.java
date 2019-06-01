@@ -47,6 +47,7 @@ public class ColoredItem extends Item {
         return Optional.empty();
     }
     
+    @Environment(EnvType.CLIENT)
     @Override
     public void buildTooltip(ItemStack stack, World world_1, List<Component> list, TooltipContext tooltipContext_1) {
         super.buildTooltip(stack, world_1, list, tooltipContext_1);
