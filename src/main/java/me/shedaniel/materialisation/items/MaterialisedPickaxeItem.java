@@ -3,6 +3,7 @@ package me.shedaniel.materialisation.items;
 import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.ModReference;
 import me.shedaniel.materialisation.mixin.MiningToolItemAccessor;
+import net.minecraft.ChatFormat;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -112,9 +113,11 @@ public class MaterialisedPickaxeItem extends PickaxeItem implements Materialised
         int toolDurability = MaterialisationUtils.getToolDurability(stack);
         int maxDurability = MaterialisationUtils.getToolMaxDurability(stack);
         list_1.add(new TranslatableComponent("text.materialisation.max_durability", maxDurability));
-        if (toolDurability > 0)
-            list_1.add(new TranslatableComponent("text.materialisation.durability", toolDurability, MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(toolDurability / (float) maxDurability * 100)));
-        else
+        if (toolDurability > 0) {
+            float percentage = toolDurability / (float) maxDurability * 100;
+            ChatFormat coloringPercentage = MaterialisationUtils.getColoringPercentage(percentage);
+            list_1.add(new TranslatableComponent("text.materialisation.durability", coloringPercentage.toString() + toolDurability, coloringPercentage.toString() + MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(percentage) + ChatFormat.WHITE.toString()));
+        } else
             list_1.add(new TranslatableComponent("text.materialisation.broken"));
         list_1.add(new TranslatableComponent("text.materialisation.breaking_speed", MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(MaterialisationUtils.getToolBreakingSpeed(stack))));
         list_1.add(new TranslatableComponent("text.materialisation.mining_level", MaterialisationUtils.getToolMiningLevel(stack)));

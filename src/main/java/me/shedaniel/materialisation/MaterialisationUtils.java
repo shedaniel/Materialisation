@@ -2,6 +2,7 @@ package me.shedaniel.materialisation;
 
 import me.shedaniel.materialisation.api.KnownMaterial;
 import me.shedaniel.materialisation.api.KnownMaterials;
+import net.minecraft.ChatFormat;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.enchantment.UnbreakingEnchantment;
@@ -49,6 +50,22 @@ public class MaterialisationUtils {
             return Ingredient.EMPTY;
         }
     };
+    
+    public static ChatFormat getColoring(float f) {
+        if (f == 1f)
+            return ChatFormat.GOLD;
+        else if (f > 1f)
+            return ChatFormat.GREEN;
+        return ChatFormat.RED;
+    }
+    
+    public static ChatFormat getColoringPercentage(float f) {
+        if (f >= 70f)
+            return ChatFormat.GREEN;
+        else if (f >= 40f)
+            return ChatFormat.GOLD;
+        return ChatFormat.RED;
+    }
     
     public static float getToolBreakingSpeed(ItemStack stack) {
         return stack.getOrCreateTag().containsKey("mt_breakingspeed") ? stack.getOrCreateTag().getFloat("mt_breakingspeed") : 1f;
