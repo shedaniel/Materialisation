@@ -32,17 +32,20 @@ public class Materialisation implements ModInitializer {
     public static final Item MATERIALISED_AXE = new MaterialisedAxeItem(new Item.Settings());
     public static final Item MATERIALISED_SHOVEL = new MaterialisedShovelItem(new Item.Settings());
     public static final Item MATERIALISED_SWORD = new MaterialisedSwordItem(new Item.Settings());
+    public static final Item MATERIALISED_HAMMER = new MaterialisedHammerItem(new Item.Settings());
     public static final Item HANDLE = new ColoredItem(new Item.Settings());
     public static final Item AXE_HEAD = new ColoredItem(new Item.Settings());
     public static final Item PICKAXE_HEAD = new ColoredItem(new Item.Settings());
     public static final Item SHOVEL_HEAD = new ColoredItem(new Item.Settings());
     public static final Item SWORD_BLADE = new ColoredItem(new Item.Settings());
+    public static final Item HAMMER_HEAD = new ColoredItem(new Item.Settings());
     public static final Item BLANK_PATTERN = new PatternItem(new Item.Settings().itemGroup(ItemGroup.MATERIALS));
     public static final Item TOOL_HANDLE_PATTERN = new PatternItem(new Item.Settings().itemGroup(ItemGroup.MATERIALS));
     public static final Item PICKAXE_HEAD_PATTERN = new PatternItem(new Item.Settings().itemGroup(ItemGroup.MATERIALS));
     public static final Item AXE_HEAD_PATTERN = new PatternItem(new Item.Settings().itemGroup(ItemGroup.MATERIALS));
     public static final Item SHOVEL_HEAD_PATTERN = new PatternItem(new Item.Settings().itemGroup(ItemGroup.MATERIALS));
     public static final Item SWORD_BLADE_PATTERN = new PatternItem(new Item.Settings().itemGroup(ItemGroup.MATERIALS));
+    public static final Item HAMMER_HEAD_PATTERN = new PatternItem(new Item.Settings().itemGroup(ItemGroup.MATERIALS));
     
     public static <T> Optional<T> getReflectionField(Object parent, Class<T> clazz, int index) {
         try {
@@ -78,17 +81,20 @@ public class Materialisation implements ModInitializer {
         registerItem("materialised_axe", MATERIALISED_AXE);
         registerItem("materialised_shovel", MATERIALISED_SHOVEL);
         registerItem("materialised_sword", MATERIALISED_SWORD);
+        registerItem("materialised_hammer", MATERIALISED_HAMMER);
         registerItem("handle", HANDLE);
         registerItem("axe_head", AXE_HEAD);
         registerItem("pickaxe_head", PICKAXE_HEAD);
         registerItem("shovel_head", SHOVEL_HEAD);
         registerItem("sword_blade", SWORD_BLADE);
+        registerItem("hammer_head", HAMMER_HEAD);
         registerItem("blank_pattern", BLANK_PATTERN);
         registerItem("handle_pattern", TOOL_HANDLE_PATTERN);
         registerItem("pickaxe_head_pattern", PICKAXE_HEAD_PATTERN);
         registerItem("axe_head_pattern", AXE_HEAD_PATTERN);
         registerItem("shovel_head_pattern", SHOVEL_HEAD_PATTERN);
         registerItem("sword_blade_pattern", SWORD_BLADE_PATTERN);
+        registerItem("hammer_head_pattern", HAMMER_HEAD_PATTERN);
     }
     
     private void registerBlock(String name, Block block) {

@@ -6,6 +6,7 @@ import me.shedaniel.materialisation.api.KnownMaterial;
 import me.shedaniel.materialisation.mixin.MiningToolItemAccessor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.ChatFormat;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -22,36 +23,33 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.stat.Stats;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.RayTraceContext;
 import net.minecraft.world.World;
 
 import java.util.List;
 
-public class MaterialisedPickaxeItem extends PickaxeItem implements MaterialisedMiningTool {
+import static net.minecraft.util.math.Direction.Axis.*;
+
+public class MaterialisedHammerItem extends PickaxeItem implements MaterialisedMiningTool {
     
-    public MaterialisedPickaxeItem(Settings settings) {
-        super(MaterialisationUtils.DUMMY_MATERIAL, 0, -2.8F, settings.durability(0));
+    public MaterialisedHammerItem(Settings settings) {
+        super(MaterialisationUtils.DUMMY_MATERIAL, 0, -3.6F, settings.durability(0));
         addProperty(new Identifier(ModReference.MOD_ID, "handle_isbright"), (itemStack, world, livingEntity) -> {
             return itemStack.getOrCreateTag().containsKey("mt_handle_bright") ? 1f : 0f;
         });
         addProperty(new Identifier(ModReference.MOD_ID, "handle_isnotbright"), (itemStack, world, livingEntity) -> {
             return !itemStack.getOrCreateTag().containsKey("mt_handle_bright") ? 1f : 0f;
         });
-        addProperty(new Identifier(ModReference.MOD_ID, "pickaxe_head_isbright"), (itemStack, world, livingEntity) -> {
-            return itemStack.getOrCreateTag().containsKey("mt_pickaxe_head_bright") ? 1f : 0f;
+        addProperty(new Identifier(ModReference.MOD_ID, "hammer_head_isbright"), (itemStack, world, livingEntity) -> {
+            return itemStack.getOrCreateTag().containsKey("mt_hammer_head_bright") ? 1f : 0f;
         });
-        addProperty(new Identifier(ModReference.MOD_ID, "pickaxe_head_isnotbright"), (itemStack, world, livingEntity) -> {
-            return !itemStack.getOrCreateTag().containsKey("mt_pickaxe_head_bright") ? 1f : 0f;
+        addProperty(new Identifier(ModReference.MOD_ID, "hammer_head_isnotbright"), (itemStack, world, livingEntity) -> {
+            return !itemStack.getOrCreateTag().containsKey("mt_hammer_head_bright") ? 1f : 0f;
         });
-    }
-    
-    @Override
-    public int getEnchantability(ItemStack stack) {
-        if (!stack.getOrCreateTag().containsKey("mt_pickaxe_head_material") || !stack.getOrCreateTag().containsKey("mt_handle_material"))
-            return 0;
-        KnownMaterial handle = MaterialisationUtils.getMaterialFromString(stack.getOrCreateTag().getString("mt_handle_material"));
-        KnownMaterial head = MaterialisationUtils.getMaterialFromString(stack.getOrCreateTag().getString("mt_pickaxe_head_material"));
-        return (handle.getEnchantability() + head.getEnchantability()) / 2;
     }
     
     @Override
@@ -103,6 +101,7 @@ public class MaterialisedPickaxeItem extends PickaxeItem implements Materialised
         return true;
     }
     
+    
     @Override
     public boolean onBlockBroken(ItemStack stack, World world_1, BlockState blockState_1, BlockPos blockPos_1, LivingEntity livingEntity_1) {
         if (!world_1.isClient && blockState_1.getHardness(world_1, blockPos_1) != 0.0F)
@@ -118,6 +117,63 @@ public class MaterialisedPickaxeItem extends PickaxeItem implements Materialised
                         MaterialisationUtils.setToolDurability(stack, 0);
                     }
         return true;
+    }
+    
+    @Override
+    public int getEnchantability(ItemStack stack) {
+        if (!stack.getOrCreateTag().containsKey("mt_hammer_head_material") || !stack.getOrCreateTag().containsKey("mt_handle_material"))
+            return 0;
+        KnownMaterial handle = MaterialisationUtils.getMaterialFromString(stack.getOrCreateTag().getString("mt_handle_material"));
+        KnownMaterial head = MaterialisationUtils.getMaterialFromString(stack.getOrCreateTag().getString("mt_hammer_head_material"));
+        return (handle.getEnchantability() + head.getEnchantability()) / 2;
+    }
+    
+    @Override
+    public boolean beforeBlockBreak(BlockState blockState, World world, BlockPos pos, PlayerEntity player) {
+        ItemStack mainHandStack = player.getMainHandStack();
+        if (player.isSneaking() || MaterialisationUtils.getToolDurability(mainHandStack) <= 0 || !canBreak(mainHandStack, blockState))
+            return true;
+        // Taken from Entity#rayTrace
+        Vec3d vec3d_1 = player.getCameraPosVec(1);
+        Vec3d vec3d_2 = player.getRotationVec(1);
+        int range = 4;
+        Vec3d vec3d_3 = vec3d_1.add(vec3d_2.x * range, vec3d_2.y * range, vec3d_2.z * range);
+        BlockHitResult hitResult = world.rayTrace(new RayTraceContext(vec3d_1, vec3d_3, RayTraceContext.ShapeType.OUTLINE, true ? RayTraceContext.FluidHandling.ANY : RayTraceContext.FluidHandling.NONE, player));
+        Direction.Axis axis = hitResult.getSide().getAxis();
+        for(int i = -1; i <= 1; i++)
+            for(int j = -1; j <= 1; j++) {
+                if (i != 0 || j != 0) {
+                    if (MaterialisationUtils.getToolDurability(mainHandStack) <= 0)
+                        return true;
+                    BlockPos newPos = new BlockPos(axis == X ? pos.getX() : pos.getX() + i, axis == X ? pos.getY() + i : axis == Y ? pos.getY() : pos.getY() + j, axis != Z ? pos.getZ() + j : pos.getZ());
+                    BlockState newState = world.getBlockState(newPos);
+                    boolean canBreak = canBreak(mainHandStack, newState);
+                    if (!canBreak)
+                        continue;
+                    // Let's break the block!
+                    world.breakBlock(newPos, !player.isCreative());
+                    takeDamage(world, blockState, newPos, player, mainHandStack);
+                }
+            }
+        return true;
+    }
+    
+    private boolean canBreak(ItemStack stack, BlockState state) {
+        TriState triState = MaterialisationUtils.mt_handleIsEffectiveOn(stack, state);
+        if (triState != TriState.DEFAULT) {
+            // If we are dealing with 3rd party blocks
+            return triState.get();
+        } else {
+            // Lastly if we are not dealing with 3rd party blocks with durability left
+            return ((MaterialisedHammerItem) stack.getItem()).canEffectivelyBreak(stack, state);
+        }
+    }
+    
+    private void takeDamage(World world, BlockState blockState, BlockPos blockPos, PlayerEntity playerEntity, ItemStack stack) {
+        if (!world.isClient && blockState.getHardness(world, blockPos) != 0.0F)
+            if (!playerEntity.world.isClient && (!(playerEntity instanceof PlayerEntity) || !playerEntity.abilities.creativeMode))
+                if (MaterialisationUtils.getToolDurability(stack) > 0)
+                    MaterialisationUtils.applyDamage(stack, 1, playerEntity.getRand());
     }
     
     @Environment(EnvType.CLIENT)

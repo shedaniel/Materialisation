@@ -1,0 +1,14 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "materialisation:item/hammer_head"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "materialisation:bright": 1
+      },
+      "model": "materialisation:item/hammer_head_bright"
+    }
+  ]
+}

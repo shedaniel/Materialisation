@@ -25,17 +25,6 @@ public class MixinPlayerInventory {
     
     @Shadow public int selectedSlot;
     
-    private static TriState mt_handleIsEffectiveOn(ItemStack stack, BlockState state) {
-        ToolManager.Entry entry = (ToolManager.Entry) ToolManager.entry(state.getBlock());
-        Tag<Item>[] tags = Materialisation.getReflectionField(entry, Tag[].class, 0).orElse(new Tag[0]);
-        int[] tagLevels = Materialisation.getReflectionField(entry, int[].class, 1).orElse(new int[tags.length]);
-        Item item = stack.getItem();
-        for(int i = 0; i < tags.length; ++i)
-            if (item.matches(tags[i]))
-                return TriState.of(MaterialisationUtils.getToolMiningLevel(stack) >= tagLevels[i]);
-        return Materialisation.getReflectionField(entry, TriState.class, 2).orElse(TriState.DEFAULT);
-    }
-    
     /**
      * Applies the block breaking speed of tools, using the fabric api
      */
@@ -47,7 +36,7 @@ public class MixinPlayerInventory {
                 // If there is not durability left
                 callbackInfo.setReturnValue(-1f);
             } else {
-                TriState triState = mt_handleIsEffectiveOn(itemStack, state);
+                TriState triState = MaterialisationUtils.mt_handleIsEffectiveOn(itemStack, state);
                 if (triState != TriState.DEFAULT) {
                     // If we are dealing with 3rd party blocks
                     callbackInfo.setReturnValue(triState.get() ? MaterialisationUtils.getToolBreakingSpeed(itemStack) : 1.0F);
@@ -70,7 +59,7 @@ public class MixinPlayerInventory {
                 // If there is not durability left
                 callbackInfo.setReturnValue(false);
             } else {
-                TriState triState = mt_handleIsEffectiveOn(itemStack, state);
+                TriState triState = MaterialisationUtils.mt_handleIsEffectiveOn(itemStack, state);
                 if (triState != TriState.DEFAULT) {
                     // If we are dealing with 3rd party blocks
                     callbackInfo.setReturnValue(triState.get());

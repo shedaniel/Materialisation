@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "item": "materialisation:sword_blade_pattern"
+      "item": "materialisation:hammer_head_pattern"
     }
   ],
   "result": {

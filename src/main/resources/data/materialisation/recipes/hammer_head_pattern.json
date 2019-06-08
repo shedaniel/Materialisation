@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "materialisation:sword_blade_pattern"
+    }
+  ],
+  "result": {
+    "item": "materialisation:hammer_head_pattern"
+  }
+}

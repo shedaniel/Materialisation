@@ -6,7 +6,7 @@
     "MiningToolItemAccessor",
     "MixinPlayerInventory",
     "MixinItemStack",
-    "MixinAnvilContainer"
+    "MixinEnchantmentHelper"
   ],
   "client": [
     "MixinItemRenderer"

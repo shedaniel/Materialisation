@@ -2,14 +2,19 @@ package me.shedaniel.materialisation;
 
 import me.shedaniel.materialisation.api.KnownMaterial;
 import me.shedaniel.materialisation.api.KnownMaterials;
+import net.fabricmc.fabric.api.util.TriState;
+import net.fabricmc.fabric.impl.tools.ToolManager;
 import net.minecraft.ChatFormat;
+import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.enchantment.UnbreakingEnchantment;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolMaterial;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.tag.Tag;
 import net.minecraft.util.math.MathHelper;
 
 import java.text.DecimalFormat;
@@ -258,6 +263,48 @@ public class MaterialisationUtils {
             tag.putBoolean("mt_sword_blade_bright", true);
         tag.putString("mt_handle_material", handle.getName());
         tag.putString("mt_sword_blade_material", swordBlade.getName());
+        stack.setTag(tag);
+        return stack;
+    }
+    
+    public static ItemStack createHammer(KnownMaterial handle, KnownMaterial hammerHead) {
+        ItemStack stack = new ItemStack(Materialisation.MATERIALISED_HAMMER);
+        CompoundTag tag = stack.getOrCreateTag();
+        tag.putInt("mt_color_0", handle.getToolHandleColor());
+        tag.putInt("mt_color_1", hammerHead.getToolHeadColor());
+        tag.putInt("mt_maxdurability", MathHelper.floor(hammerHead.getHeadDurability() * handle.getHandleDurabilityMultiplier()));
+        tag.putInt("mt_mininglevel", MathHelper.ceil((handle.getMiningLevel() + hammerHead.getMiningLevel()) / 2f));
+        tag.putFloat("mt_breakingspeed", hammerHead.getPickaxeHeadSpeed() * handle.getHandleBreakingSpeedMultiplier() / 6f);
+        tag.putFloat("mt_damage", hammerHead.getAttackDamage() + 9f);
+        tag.putBoolean("mt_done_tool", true);
+        if (handle.isBright())
+            tag.putBoolean("mt_handle_bright", true);
+        if (hammerHead.isBright())
+            tag.putBoolean("mt_hammer_head_bright", true);
+        tag.putString("mt_handle_material", handle.getName());
+        tag.putString("mt_hammer_head_material", hammerHead.getName());
+        stack.setTag(tag);
+        return stack;
+    }
+    
+    public static TriState mt_handleIsEffectiveOn(ItemStack stack, BlockState state) {
+        ToolManager.Entry entry = (ToolManager.Entry) ToolManager.entry(state.getBlock());
+        Tag<Item>[] tags = Materialisation.getReflectionField(entry, Tag[].class, 0).orElse(new Tag[0]);
+        int[] tagLevels = Materialisation.getReflectionField(entry, int[].class, 1).orElse(new int[tags.length]);
+        Item item = stack.getItem();
+        for(int i = 0; i < tags.length; ++i)
+            if (item.matches(tags[i]))
+                return TriState.of(MaterialisationUtils.getToolMiningLevel(stack) >= tagLevels[i]);
+        return Materialisation.getReflectionField(entry, TriState.class, 2).orElse(TriState.DEFAULT);
+    }
+    
+    public static ItemStack createHammerHead(KnownMaterial material) {
+        ItemStack stack = new ItemStack(Materialisation.HAMMER_HEAD);
+        CompoundTag tag = stack.getOrCreateTag();
+        tag.putInt("mt_color_0", material.getToolHeadColor());
+        tag.putString("mt_material", material.getName());
+        if (material.isBright())
+            tag.putBoolean("mt_bright", true);
         stack.setTag(tag);
         return stack;
     }

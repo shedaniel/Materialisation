@@ -3,6 +3,7 @@ package me.shedaniel.materialisation.api;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
 
+import java.util.Map;
 import java.util.Set;
 
 public interface KnownMaterial extends KnownMaterials.RepairAmountGetter {
@@ -14,6 +15,13 @@ public interface KnownMaterial extends KnownMaterials.RepairAmountGetter {
     String getMaterialTranslateKey();
     
     Set<Ingredient> getIngredients();
+    
+    default int getEnchantability() {
+        return 0;
+    }
+    
+    @Deprecated
+    Map<Ingredient, Float> getIngredientMap();
     
     String getName();
     

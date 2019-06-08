@@ -4,8 +4,6 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.items.MaterialisedMiningTool;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -15,7 +13,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.UUID;
@@ -28,6 +25,9 @@ public abstract class MixinItemStack {
     
     @Shadow
     public abstract Item getItem();
+    
+    @Shadow
+    public abstract boolean hasEnchantments();
     
     /**
      * Disable italic on tools
@@ -52,13 +52,20 @@ public abstract class MixinItemStack {
         }
     }
     
-//    @Environment(EnvType.CLIENT)
-//    @ModifyVariable(method = "getTooltipText", at = @At(value = "INVOKE", ordinal = 0,
-//                                                        target = "Lnet/minecraft/entity/attribute/EntityAttributeModifier;getOperation()Lnet/minecraft/entity/attribute/EntityAttributeModifier$Operation;"),
-//                    name = "boolean_1")
-//    private boolean getTooltipText(boolean a) {
-//        if (getItem() instanceof MaterialisedMiningTool)
-//            return true;
-//        return a;
-//    }
+    @Inject(method = "isEnchantable", at = @At("HEAD"), cancellable = true)
+    public void isEnchantable(CallbackInfoReturnable<Boolean> returnable) {
+        if (getItem() instanceof MaterialisedMiningTool)
+            returnable.setReturnValue(!hasEnchantments());
+    }
+    
+    //    @Environment(EnvType.CLIENT)
+    //    @ModifyVariable(method = "getTooltipText", at = @At(value = "INVOKE", ordinal = 0,
+    //                                                        target = "Lnet/minecraft/entity/attribute/EntityAttributeModifier;getOperation()Lnet/minecraft/entity/attribute/EntityAttributeModifier$Operation;"),
+    //                    name = "boolean_1", remap = false)
+    //    private boolean getTooltipTextDev(boolean a) {
+    //        if (getItem() instanceof MaterialisedMiningTool)
+    //            return true;
+    //        return a;
+    //    }
+    
 }

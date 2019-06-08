@@ -2,6 +2,7 @@ package me.shedaniel.materialisation.items;
 
 import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.ModReference;
+import me.shedaniel.materialisation.api.KnownMaterial;
 import me.shedaniel.materialisation.mixin.MiningToolItemAccessor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -44,6 +45,15 @@ public class MaterialisedShovelItem extends ShovelItem implements MaterialisedMi
         addProperty(new Identifier(ModReference.MOD_ID, "shovel_head_isnotbright"), (itemStack, world, livingEntity) -> {
             return !itemStack.getOrCreateTag().containsKey("mt_shovel_head_bright") ? 1f : 0f;
         });
+    }
+    
+    @Override
+    public int getEnchantability(ItemStack stack) {
+        if (!stack.getOrCreateTag().containsKey("mt_shovel_head_material") || !stack.getOrCreateTag().containsKey("mt_handle_material"))
+            return 0;
+        KnownMaterial handle = MaterialisationUtils.getMaterialFromString(stack.getOrCreateTag().getString("mt_handle_material"));
+        KnownMaterial head = MaterialisationUtils.getMaterialFromString(stack.getOrCreateTag().getString("mt_shovel_head_material"));
+        return (handle.getEnchantability() + head.getEnchantability()) / 2;
     }
     
     @Override
