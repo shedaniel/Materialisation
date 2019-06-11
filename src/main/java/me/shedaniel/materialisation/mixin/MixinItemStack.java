@@ -15,13 +15,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.UUID;
-
 @Mixin(ItemStack.class)
 public abstract class MixinItemStack {
-    
-    private static final UUID MODIFIER_SWING_SPEED = UUID.fromString("FA233E1C-4180-4865-B01B-BCCE9785ACA3");
-    private static final UUID MODIFIER_DAMAGE = UUID.fromString("CB3F55D3-645C-4F38-A497-9C13A33DB5CF");
     
     @Shadow
     public abstract Item getItem();
@@ -45,8 +40,8 @@ public abstract class MixinItemStack {
         if (getItem() instanceof MaterialisedMiningTool) {
             HashMultimap<String, EntityAttributeModifier> multimap = HashMultimap.create();
             if (slot == EquipmentSlot.MAINHAND) {
-                multimap.put(EntityAttributes.ATTACK_SPEED.getId(), new EntityAttributeModifier(MODIFIER_SWING_SPEED, "Tool modifier", ((MaterialisedMiningTool) getItem()).getAttackSpeed(), EntityAttributeModifier.Operation.ADDITION));
-                multimap.put(EntityAttributes.ATTACK_DAMAGE.getId(), new EntityAttributeModifier(MODIFIER_DAMAGE, "Tool modifier", MaterialisationUtils.getToolAttackDamage((ItemStack) (Object) this), EntityAttributeModifier.Operation.ADDITION));
+                multimap.put(EntityAttributes.ATTACK_SPEED.getId(), new EntityAttributeModifier(MaterialisationUtils.getItemModifierSwingSpeed(), "Tool modifier", ((MaterialisedMiningTool) getItem()).getAttackSpeed(), EntityAttributeModifier.Operation.ADDITION));
+                multimap.put(EntityAttributes.ATTACK_DAMAGE.getId(), new EntityAttributeModifier(MaterialisationUtils.getItemModifierDamage(), "Tool modifier", MaterialisationUtils.getToolAttackDamage((ItemStack) (Object) this), EntityAttributeModifier.Operation.ADDITION));
             }
             callbackInfo.setReturnValue(multimap);
         }
@@ -57,15 +52,5 @@ public abstract class MixinItemStack {
         if (getItem() instanceof MaterialisedMiningTool)
             returnable.setReturnValue(!hasEnchantments());
     }
-    
-    //    @Environment(EnvType.CLIENT)
-    //    @ModifyVariable(method = "getTooltipText", at = @At(value = "INVOKE", ordinal = 0,
-    //                                                        target = "Lnet/minecraft/entity/attribute/EntityAttributeModifier;getOperation()Lnet/minecraft/entity/attribute/EntityAttributeModifier$Operation;"),
-    //                    name = "boolean_1", remap = false)
-    //    private boolean getTooltipTextDev(boolean a) {
-    //        if (getItem() instanceof MaterialisedMiningTool)
-    //            return true;
-    //        return a;
-    //    }
     
 }

@@ -24,7 +24,6 @@ public class MixinEnchantmentHelper {
         if (itemStack_1.getItem() instanceof MaterialisedMiningTool) {
             MaterialisedMiningTool item_1 = (MaterialisedMiningTool) itemStack_1.getItem();
             int int_3 = item_1.getEnchantability(itemStack_1);
-            System.out.println(int_3);
             if (int_3 <= 0) {
                 callbackInfo.setReturnValue(0);
             } else {
@@ -40,7 +39,8 @@ public class MixinEnchantmentHelper {
         }
     }
     
-    @Inject(method = "getEnchantments(Ljava/util/Random;Lnet/minecraft/item/ItemStack;IZ)Ljava/util/List;", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "getEnchantments(Ljava/util/Random;Lnet/minecraft/item/ItemStack;IZ)Ljava/util/List;",
+            at = @At("HEAD"), cancellable = true)
     private static void getEnchantments(Random random_1, ItemStack itemStack_1, int int_1, boolean boolean_1, CallbackInfoReturnable<List<InfoEnchantment>> callbackInfo) {
         if (itemStack_1.getItem() instanceof MaterialisedMiningTool) {
             MaterialisedMiningTool item_1 = (MaterialisedMiningTool) itemStack_1.getItem();

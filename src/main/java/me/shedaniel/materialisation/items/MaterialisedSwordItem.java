@@ -27,22 +27,32 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
+import static me.shedaniel.materialisation.MaterialisationUtils.isHandleBright;
+
 public class MaterialisedSwordItem extends SwordItem implements MaterialisedMiningTool {
     
     public MaterialisedSwordItem(Settings settings) {
         super(MaterialisationUtils.DUMMY_MATERIAL, 0, -2.4F, settings.durability(0));
         addProperty(new Identifier(ModReference.MOD_ID, "handle_isbright"), (itemStack, world, livingEntity) -> {
-            return itemStack.getOrCreateTag().containsKey("mt_handle_bright") ? 1f : 0f;
+            return isHandleBright(itemStack) ? 1f : 0f;
         });
         addProperty(new Identifier(ModReference.MOD_ID, "handle_isnotbright"), (itemStack, world, livingEntity) -> {
-            return !itemStack.getOrCreateTag().containsKey("mt_handle_bright") ? 1f : 0f;
+            return !isHandleBright(itemStack) ? 1f : 0f;
         });
         addProperty(new Identifier(ModReference.MOD_ID, "sword_head_isbright"), (itemStack, world, livingEntity) -> {
-            return itemStack.getOrCreateTag().containsKey("mt_sword_blade_bright") ? 1f : 0f;
+            return isHeadBright(itemStack) ? 1f : 0f;
         });
         addProperty(new Identifier(ModReference.MOD_ID, "sword_head_isnotbright"), (itemStack, world, livingEntity) -> {
-            return !itemStack.getOrCreateTag().containsKey("mt_sword_blade_bright") ? 1f : 0f;
+            return !isHeadBright(itemStack) ? 1f : 0f;
         });
+    }
+    
+    public boolean isHeadBright(ItemStack itemStack) {
+        if (itemStack.getOrCreateTag().containsKey("mt_sword_blade_bright"))
+            return true;
+        if (itemStack.getOrCreateTag().containsKey("mt_1_material"))
+            return MaterialisationUtils.getMatFromString(itemStack.getOrCreateTag().getString("mt_1_material")).map(KnownMaterial::isBright).orElse(false);
+        return MaterialisationUtils.getMatFromString(itemStack.getOrCreateTag().getString("mt_sword_blade_material")).map(KnownMaterial::isBright).orElse(false);
     }
     
     @Override

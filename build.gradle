@@ -1,28 +1,9 @@
-buildscript {
-    repositories {
-        jcenter()
-        maven {
-            name = 'Fabric'
-            url = 'https://maven.fabricmc.net/'
-        }
-        maven {
-            name = "Forge"
-            url = "https://files.minecraftforge.net/maven/"
-        }
-        maven {
-            name = "Jitpack"
-            url = "https://jitpack.io/"
-        }
-    }
-    dependencies {
-        classpath 'com.github.Chocohead:fabric-loom:51f7373'
-    }
+plugins {
+    id 'fabric-loom' version '0.2.4-SNAPSHOT'
 }
 
-apply plugin: net.fabricmc.loom.LoomGradlePlugin
-
 archivesBaseName = "Materialisation"
-version = "0.1.3"
+version = "0.1.4"
 
 def minecraftVersion = "1.14.2"
 def yarnBuild = "2"

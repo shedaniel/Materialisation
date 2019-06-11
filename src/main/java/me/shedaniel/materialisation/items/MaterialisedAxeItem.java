@@ -30,6 +30,8 @@ import net.minecraft.world.World;
 import java.util.List;
 import java.util.Set;
 
+import static me.shedaniel.materialisation.MaterialisationUtils.isHandleBright;
+
 public class MaterialisedAxeItem extends AxeItem implements MaterialisedMiningTool {
     
     private static final Set<Block> EFFECTIVE_BLOCKS = Sets.newHashSet(new Block[]{Blocks.OAK_PLANKS, Blocks.SPRUCE_PLANKS, Blocks.BIRCH_PLANKS, Blocks.JUNGLE_PLANKS, Blocks.ACACIA_PLANKS, Blocks.DARK_OAK_PLANKS, Blocks.BOOKSHELF, Blocks.OAK_WOOD, Blocks.SPRUCE_WOOD, Blocks.BIRCH_WOOD, Blocks.JUNGLE_WOOD, Blocks.ACACIA_WOOD, Blocks.DARK_OAK_WOOD, Blocks.OAK_LOG, Blocks.SPRUCE_LOG, Blocks.BIRCH_LOG, Blocks.JUNGLE_LOG, Blocks.ACACIA_LOG, Blocks.DARK_OAK_LOG, Blocks.CHEST, Blocks.PUMPKIN, Blocks.CARVED_PUMPKIN, Blocks.JACK_O_LANTERN, Blocks.MELON, Blocks.LADDER, Blocks.SCAFFOLDING, Blocks.OAK_BUTTON, Blocks.SPRUCE_BUTTON, Blocks.BIRCH_BUTTON, Blocks.JUNGLE_BUTTON, Blocks.DARK_OAK_BUTTON, Blocks.ACACIA_BUTTON, Blocks.OAK_PRESSURE_PLATE, Blocks.SPRUCE_PRESSURE_PLATE, Blocks.BIRCH_PRESSURE_PLATE, Blocks.JUNGLE_PRESSURE_PLATE, Blocks.DARK_OAK_PRESSURE_PLATE, Blocks.ACACIA_PRESSURE_PLATE});
@@ -37,17 +39,25 @@ public class MaterialisedAxeItem extends AxeItem implements MaterialisedMiningTo
     public MaterialisedAxeItem(Settings settings) {
         super(MaterialisationUtils.DUMMY_MATERIAL, 0, -3.1F, settings.durability(0));
         addProperty(new Identifier(ModReference.MOD_ID, "handle_isbright"), (itemStack, world, livingEntity) -> {
-            return itemStack.getOrCreateTag().containsKey("mt_handle_bright") ? 1f : 0f;
+            return isHandleBright(itemStack) ? 1f : 0f;
         });
         addProperty(new Identifier(ModReference.MOD_ID, "handle_isnotbright"), (itemStack, world, livingEntity) -> {
-            return !itemStack.getOrCreateTag().containsKey("mt_handle_bright") ? 1f : 0f;
+            return !isHandleBright(itemStack) ? 1f : 0f;
         });
         addProperty(new Identifier(ModReference.MOD_ID, "axe_head_isbright"), (itemStack, world, livingEntity) -> {
-            return itemStack.getOrCreateTag().containsKey("mt_axe_head_bright") ? 1f : 0f;
+            return isHeadBright(itemStack) ? 1f : 0f;
         });
         addProperty(new Identifier(ModReference.MOD_ID, "axe_head_isnotbright"), (itemStack, world, livingEntity) -> {
-            return !itemStack.getOrCreateTag().containsKey("mt_axe_head_bright") ? 1f : 0f;
+            return !isHeadBright(itemStack) ? 1f : 0f;
         });
+    }
+    
+    public boolean isHeadBright(ItemStack itemStack) {
+        if (itemStack.getOrCreateTag().containsKey("mt_axe_head_bright"))
+            return true;
+        if (itemStack.getOrCreateTag().containsKey("mt_1_material"))
+            return MaterialisationUtils.getMatFromString(itemStack.getOrCreateTag().getString("mt_1_material")).map(KnownMaterial::isBright).orElse(false);
+        return MaterialisationUtils.getMatFromString(itemStack.getOrCreateTag().getString("mt_axe_head_material")).map(KnownMaterial::isBright).orElse(false);
     }
     
     @Override

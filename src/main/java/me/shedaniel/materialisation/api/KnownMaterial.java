@@ -1,41 +1,38 @@
 package me.shedaniel.materialisation.api;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.Ingredient;
 
 import java.util.Map;
 import java.util.Set;
 
 public interface KnownMaterial extends KnownMaterials.RepairAmountGetter {
     
-    int getToolHandleColor();
-    
-    int getToolHeadColor();
+    int getToolColor();
     
     String getMaterialTranslateKey();
     
-    Set<Ingredient> getIngredients();
+    Set<BetterIngredient> getIngredients();
     
     default int getEnchantability() {
         return 0;
     }
     
     @Deprecated
-    Map<Ingredient, Float> getIngredientMap();
+    Map<BetterIngredient, Float> getIngredientMap();
     
     String getName();
     
     boolean isBright();
     
-    float getHandleDurabilityMultiplier();
+    float getDurabilityMultiplier();
     
-    float getHandleBreakingSpeedMultiplier();
+    float getBreakingSpeedMultiplier();
     
     float getAttackDamage();
     
-    int getHeadDurability();
+    int getToolDurability();
     
-    float getPickaxeHeadSpeed();
+    float getToolSpeed();
     
     int getMiningLevel();
     
@@ -44,7 +41,7 @@ public interface KnownMaterial extends KnownMaterials.RepairAmountGetter {
     float getRepairMultiplier(ItemStack stack);
     
     public static interface AmountGetter {
-        float getFrom(Ingredient ingredient);
+        float getFrom(BetterIngredient ingredient);
     }
     
 }

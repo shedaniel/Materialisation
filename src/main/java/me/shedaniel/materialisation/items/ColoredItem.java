@@ -18,6 +18,7 @@ import net.minecraft.world.World;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public class ColoredItem extends Item {
     
@@ -28,10 +29,31 @@ public class ColoredItem extends Item {
         });
     }
     
+    public static UUID getItemModifierDamage() {
+        return MODIFIER_DAMAGE;
+    }
+    
+    public static UUID getItemModifierSwingSpeed() {
+        return MODIFIER_SWING_SPEED;
+    }
+    
     @Environment(EnvType.CLIENT)
     public static Optional<String> getItemTranslationKey(ItemStack stack) {
         if (stack.getOrCreateTag().containsKey("mt_name_key")) {
             return Optional.ofNullable(stack.getOrCreateTag().getString("mt_name_key"));
+        } else if (stack.getOrCreateTag().containsKey("mt_0_material")) {
+            if (stack.getItem() == Materialisation.HANDLE)
+                return Optional.ofNullable(I18n.translate("item.materialisation.materialised_handle", I18n.translate("material.materialisation." + stack.getOrCreateTag().getString("mt_0_material"))));
+            if (stack.getItem() == Materialisation.PICKAXE_HEAD)
+                return Optional.ofNullable(I18n.translate("item.materialisation.materialised_pickaxe_head", I18n.translate("material.materialisation." + stack.getOrCreateTag().getString("mt_0_material"))));
+            if (stack.getItem() == Materialisation.AXE_HEAD)
+                return Optional.ofNullable(I18n.translate("item.materialisation.materialised_axe_head", I18n.translate("material.materialisation." + stack.getOrCreateTag().getString("mt_0_material"))));
+            if (stack.getItem() == Materialisation.SHOVEL_HEAD)
+                return Optional.ofNullable(I18n.translate("item.materialisation.materialised_shovel_head", I18n.translate("material.materialisation." + stack.getOrCreateTag().getString("mt_0_material"))));
+            if (stack.getItem() == Materialisation.SWORD_BLADE)
+                return Optional.ofNullable(I18n.translate("item.materialisation.materialised_sword_blade", I18n.translate("material.materialisation." + stack.getOrCreateTag().getString("mt_0_material"))));
+            if (stack.getItem() == Materialisation.HAMMER_HEAD)
+                return Optional.ofNullable(I18n.translate("item.materialisation.materialised_hammer_head", I18n.translate("material.materialisation." + stack.getOrCreateTag().getString("mt_0_material"))));
         } else if (stack.getOrCreateTag().containsKey("mt_material")) {
             if (stack.getItem() == Materialisation.HANDLE)
                 return Optional.ofNullable(I18n.translate("item.materialisation.materialised_handle", I18n.translate("material.materialisation." + stack.getOrCreateTag().getString("mt_material"))));
@@ -57,14 +79,14 @@ public class ColoredItem extends Item {
             KnownMaterial material = MaterialisationUtils.getMaterialFromPart(stack);
             if (material != null)
                 if (stack.getItem() == Materialisation.HANDLE) {
-                    list.add(new TranslatableComponent("text.materialisation.tool_handle_durability_multiplier", MaterialisationUtils.getColoring(material.getHandleDurabilityMultiplier()).toString() + "x" + material.getHandleDurabilityMultiplier()));
-                    list.add(new TranslatableComponent("text.materialisation.tool_handle_speed_multiplier", MaterialisationUtils.getColoring(material.getHandleBreakingSpeedMultiplier()).toString() + "x" + material.getHandleBreakingSpeedMultiplier()));
+                    list.add(new TranslatableComponent("text.materialisation.tool_handle_durability_multiplier", MaterialisationUtils.getColoring(material.getDurabilityMultiplier()).toString() + "x" + material.getDurabilityMultiplier()));
+                    list.add(new TranslatableComponent("text.materialisation.tool_handle_speed_multiplier", MaterialisationUtils.getColoring(material.getBreakingSpeedMultiplier()).toString() + "x" + material.getBreakingSpeedMultiplier()));
                 } else if (stack.getItem() == Materialisation.PICKAXE_HEAD || stack.getItem() == Materialisation.AXE_HEAD || stack.getItem() == Materialisation.SHOVEL_HEAD) {
-                    list.add(new TranslatableComponent("text.materialisation.head_part_speed", ChatFormat.YELLOW.toString() + material.getPickaxeHeadSpeed()));
-                    list.add(new TranslatableComponent("text.materialisation.head_part_durability", ChatFormat.YELLOW.toString() + material.getHeadDurability()));
+                    list.add(new TranslatableComponent("text.materialisation.head_part_speed", ChatFormat.YELLOW.toString() + material.getToolSpeed()));
+                    list.add(new TranslatableComponent("text.materialisation.head_part_durability", ChatFormat.YELLOW.toString() + material.getToolDurability()));
                     list.add(new TranslatableComponent("text.materialisation.head_part_damage", ChatFormat.YELLOW.toString() + (getExtraDamage(stack.getItem()) + material.getAttackDamage())));
                 } else if (stack.getItem() == Materialisation.SWORD_BLADE) {
-                    list.add(new TranslatableComponent("text.materialisation.head_part_durability", ChatFormat.YELLOW.toString() + material.getHeadDurability()));
+                    list.add(new TranslatableComponent("text.materialisation.head_part_durability", ChatFormat.YELLOW.toString() + material.getToolDurability()));
                     list.add(new TranslatableComponent("text.materialisation.head_part_damage", ChatFormat.YELLOW.toString() + (getExtraDamage(stack.getItem()) + material.getAttackDamage())));
                 }
         }

@@ -3,11 +3,9 @@ package me.shedaniel.materialisation.api;
 import com.google.common.collect.Maps;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.recipe.Ingredient;
 import net.minecraft.tag.ItemTags;
 import net.minecraft.util.math.MathHelper;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
@@ -23,19 +21,17 @@ public class KnownMaterials extends ArrayList<KnownMaterial> {
     private static final KnownMaterials MATERIALS = new KnownMaterials();
     
     static {
-        Color white = new Color(255, 255, 255);
-        Color gold = new Color(255, 239, 61);
-        WOOD = registerMaterial(getNewMaterial("wood").setEnchantability(15).addIngredient(Ingredient.fromTag(ItemTags.PLANKS), 1).addIngredient(Ingredient.ofItems(Items.STICK), .5f).addIngredient(Ingredient.fromTag(ItemTags.LOGS), 4).setFullAmount(100).setPickaxeHeadSpeed(2f).setHandleDurabilityMultiplier(1.1f).setToolHandleColor(33529892).setToolHeadColor(33530399).setHeadDurability(59));
-        STONE = registerMaterial(getNewMaterial("stone").setEnchantability(5).addIngredient(Ingredient.ofItems(Items.COBBLESTONE), 1).setAttackDamage(1).setFullAmount(100).setPickaxeHeadSpeed(4f).setHandleDurabilityMultiplier(0.4f).setHandleBreakingSpeedMultiplier(0.9f).setToolHandleColor(27962026).setToolHeadColor(-2960686).setHeadDurability(131).setMiningLevel(1));
-        IRON = registerMaterial(getNewMaterial("iron").setEnchantability(14).addIngredient(Ingredient.ofItems(Items.IRON_INGOT), 2).setAttackDamage(2).addIngredient(Ingredient.ofItems(Items.IRON_BLOCK), 18).setFullAmount(100).setBright(true).setPickaxeHeadSpeed(6f).setHandleDurabilityMultiplier(0.9f).setHandleBreakingSpeedMultiplier(1f).setToolHandleColor(white.getRGB()).setToolHeadColor(white.getRGB()).setHeadDurability(250).setMiningLevel(2));
-        GOLD = registerMaterial(getNewMaterial("gold").setEnchantability(22).addIngredient(Ingredient.ofItems(Items.GOLD_INGOT), 2).addIngredient(Ingredient.ofItems(Items.GOLD_BLOCK), 18).setFullAmount(10).setBright(true).setPickaxeHeadSpeed(12f).setHandleDurabilityMultiplier(0.2f).setHandleBreakingSpeedMultiplier(0.4f).setToolHandleColor(gold.getRGB()).setToolHeadColor(gold.getRGB()).setHeadDurability(32));
+        WOOD = getNewMaterial("wood").setEnchantability(15).addIngredient(BetterIngredient.fromTag(ItemTags.PLANKS), 1).addIngredient(BetterIngredient.fromItem(Items.STICK), .5f).addIngredient(BetterIngredient.fromTag(ItemTags.LOGS), 4).setFullAmount(100).setToolSpeed(2f).setDurabilityMultiplier(1.1f).setToolColor(33530399).setToolDurability(59);
+        STONE = getNewMaterial("stone").setEnchantability(5).addIngredient(BetterIngredient.fromItem(Items.COBBLESTONE), 1).setAttackDamage(1).setFullAmount(100).setToolSpeed(4f).setDurabilityMultiplier(0.4f).setBreakingSpeedMultiplier(0.9f).setToolColor(-2960686).setToolDurability(131).setMiningLevel(1);
+        IRON = getNewMaterial("iron").setEnchantability(14).addIngredient(BetterIngredient.fromItem(Items.IRON_INGOT), 2).setAttackDamage(2).addIngredient(BetterIngredient.fromItem(Items.IRON_BLOCK), 18).setFullAmount(100).setBright(true).setToolSpeed(6f).setDurabilityMultiplier(0.9f).setBreakingSpeedMultiplier(1f).setToolColor(0xFFFFFFFF).setToolDurability(250).setMiningLevel(2);
+        GOLD = getNewMaterial("gold").setEnchantability(22).addIngredient(BetterIngredient.fromItem(Items.GOLD_INGOT), 2).addIngredient(BetterIngredient.fromItem(Items.GOLD_BLOCK), 18).setFullAmount(10).setBright(true).setToolSpeed(12f).setDurabilityMultiplier(0.2f).setBreakingSpeedMultiplier(0.4f).setToolColor(0xffffef3d).setToolDurability(32);
     }
     
     public static Material getNewMaterial(String name) {
-        return new Material(name).setMaterialTranslateKey("material.materialisation." + name);
+        return new Material(name);
     }
     
-    public static Material registerMaterial(Material material) {
+    public static KnownMaterial registerMaterial(KnownMaterial material) {
         MATERIALS.add(material);
         return material;
     }
@@ -44,19 +40,23 @@ public class KnownMaterials extends ArrayList<KnownMaterial> {
         return MATERIALS.stream();
     }
     
+    public static void clearMaterials() {
+        MATERIALS.clear();
+    }
+    
     public static interface RepairAmountGetter {
         int getRepairAmount(ItemStack stack);
     }
     
     public static class Material implements KnownMaterial {
         
-        private int toolHandleColor = -1, toolHeadColor = -1, headDurability = 1, miningLevel = 0, enchantability = 0;
-        private float handleDurabilityMultiplier = 1f, handleBreakingSpeedMultiplier = 1f, pickaxeHeadSpeed = -1f, attackDamage = 0f;
-        private String materialTranslateKey = "", name;
+        private int toolColor = -1, toolDurability = 1, miningLevel = 0, enchantability = 0;
+        private float durabilityMultiplier = 1f, breakingSpeedMultiplier = 1f, toolSpeed = -1f, attackDamage = 0f;
+        private String name;
         private boolean bright = false;
-        private Map<Ingredient, Float> amountMultiplierMap = Maps.newHashMap();
+        private Map<BetterIngredient, Float> amountMultiplierMap = Maps.newHashMap();
         private AmountGetter amountGetter = ingredient -> {
-            Optional<Map.Entry<Ingredient, Float>> any = amountMultiplierMap.entrySet().stream().filter(entry -> entry.getKey().equals(ingredient)).findAny();
+            Optional<Map.Entry<BetterIngredient, Float>> any = amountMultiplierMap.entrySet().stream().filter(entry -> entry.getKey().equals(ingredient)).findAny();
             return any.map(Map.Entry::getValue).orElse(-1f);
         };
         private int fullAmount = -1;
@@ -85,7 +85,7 @@ public class KnownMaterials extends ArrayList<KnownMaterial> {
             return this;
         }
         
-        public Material addIngredient(Ingredient ingredient, float multiplier) {
+        public Material addIngredient(BetterIngredient ingredient, float multiplier) {
             amountMultiplierMap.put(ingredient, multiplier);
             return this;
         }
@@ -101,12 +101,12 @@ public class KnownMaterials extends ArrayList<KnownMaterial> {
         }
         
         @Override
-        public float getPickaxeHeadSpeed() {
-            return pickaxeHeadSpeed;
+        public float getToolSpeed() {
+            return toolSpeed;
         }
         
-        public Material setPickaxeHeadSpeed(float pickaxeHeadSpeed) {
-            this.pickaxeHeadSpeed = pickaxeHeadSpeed;
+        public Material setToolSpeed(float toolSpeed) {
+            this.toolSpeed = toolSpeed;
             return this;
         }
         
@@ -121,80 +121,65 @@ public class KnownMaterials extends ArrayList<KnownMaterial> {
         }
         
         @Override
-        public float getHandleBreakingSpeedMultiplier() {
-            return handleBreakingSpeedMultiplier;
+        public float getBreakingSpeedMultiplier() {
+            return breakingSpeedMultiplier;
         }
         
-        public Material setHandleBreakingSpeedMultiplier(float handleBreakingSpeedMultiplier) {
-            this.handleBreakingSpeedMultiplier = handleBreakingSpeedMultiplier;
+        public Material setBreakingSpeedMultiplier(float breakingSpeedMultiplier) {
+            this.breakingSpeedMultiplier = breakingSpeedMultiplier;
             return this;
         }
         
         @Override
-        public int getHeadDurability() {
-            return headDurability;
+        public int getToolDurability() {
+            return toolDurability;
         }
         
-        public Material setHeadDurability(int headDurability) {
-            this.headDurability = headDurability;
+        public Material setToolDurability(int toolDurability) {
+            this.toolDurability = toolDurability;
             return this;
         }
         
         @Override
-        public float getHandleDurabilityMultiplier() {
-            return handleDurabilityMultiplier;
+        public float getDurabilityMultiplier() {
+            return durabilityMultiplier;
         }
         
-        public Material setHandleDurabilityMultiplier(float handleDurabilityMultiplier) {
-            this.handleDurabilityMultiplier = handleDurabilityMultiplier;
+        public Material setDurabilityMultiplier(float durabilityMultiplier) {
+            this.durabilityMultiplier = durabilityMultiplier;
             return this;
         }
         
         @Override
-        public int getToolHandleColor() {
-            return toolHandleColor;
+        public int getToolColor() {
+            return toolColor;
         }
         
-        public Material setToolHandleColor(int toolHandleColor) {
-            this.toolHandleColor = toolHandleColor;
-            return this;
-        }
-        
-        @Override
-        public int getToolHeadColor() {
-            return toolHeadColor;
-        }
-        
-        public Material setToolHeadColor(int toolHeadColor) {
-            this.toolHeadColor = toolHeadColor;
+        public Material setToolColor(int toolColor) {
+            this.toolColor = toolColor;
             return this;
         }
         
         @Override
         public String getMaterialTranslateKey() {
-            return materialTranslateKey;
-        }
-        
-        public Material setMaterialTranslateKey(String materialTranslateKey) {
-            this.materialTranslateKey = materialTranslateKey;
-            return this;
+            return "material.materialisation." + name;
         }
         
         @Override
-        public Set<Ingredient> getIngredients() {
+        public Set<BetterIngredient> getIngredients() {
             return amountMultiplierMap.keySet();
         }
         
         @Override
-        public Map<Ingredient, Float> getIngredientMap() {
+        public Map<BetterIngredient, Float> getIngredientMap() {
             return amountMultiplierMap;
         }
         
         @Override
         public int getRepairAmount(ItemStack stack) {
-            Ingredient ingredient = null;
-            for(Ingredient ingredient1 : getIngredients()) {
-                if (ingredient1.method_8093(stack)) {
+            BetterIngredient ingredient = null;
+            for(BetterIngredient ingredient1 : getIngredients()) {
+                if (ingredient1.isIncluded(stack)) {
                     ingredient = ingredient1;
                     break;
                 }
@@ -217,9 +202,9 @@ public class KnownMaterials extends ArrayList<KnownMaterial> {
         
         @Override
         public float getRepairMultiplier(ItemStack stack) {
-            Ingredient ingredient = null;
-            for(Ingredient ingredient1 : getIngredients()) {
-                if (ingredient1.method_8093(stack)) {
+            BetterIngredient ingredient = null;
+            for(BetterIngredient ingredient1 : getIngredients()) {
+                if (ingredient1.isIncluded(stack)) {
                     ingredient = ingredient1;
                     break;
                 }

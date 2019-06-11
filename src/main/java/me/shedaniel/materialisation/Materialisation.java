@@ -2,6 +2,8 @@ package me.shedaniel.materialisation;
 
 import me.shedaniel.materialisation.blocks.MaterialPreparerBlock;
 import me.shedaniel.materialisation.blocks.MaterialisingTableBlock;
+import me.shedaniel.materialisation.config.ConfigHelper;
+import me.shedaniel.materialisation.config.MaterialisationConfig;
 import me.shedaniel.materialisation.containers.MaterialPreparerContainer;
 import me.shedaniel.materialisation.containers.MaterialisingTableContainer;
 import me.shedaniel.materialisation.items.*;
@@ -16,12 +18,18 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 public class Materialisation implements ModInitializer {
     
+    public static final Logger LOGGER = LogManager.getLogger();
     public static final Block MATERIALISING_TABLE = new MaterialisingTableBlock();
     public static final Block MATERIAL_PREPARER = new MaterialPreparerBlock();
     public static final Identifier MATERIAL_PREPARER_CONTAINER = new Identifier(ModReference.MOD_ID, "material_preparer");
@@ -46,6 +54,7 @@ public class Materialisation implements ModInitializer {
     public static final Item SHOVEL_HEAD_PATTERN = new PatternItem(new Item.Settings().itemGroup(ItemGroup.MATERIALS));
     public static final Item SWORD_BLADE_PATTERN = new PatternItem(new Item.Settings().itemGroup(ItemGroup.MATERIALS));
     public static final Item HAMMER_HEAD_PATTERN = new PatternItem(new Item.Settings().itemGroup(ItemGroup.MATERIALS));
+    public static MaterialisationConfig config;
     
     public static <T> Optional<T> getReflectionField(Object parent, Class<T> clazz, int index) {
         try {
@@ -54,7 +63,7 @@ public class Materialisation implements ModInitializer {
                 field.setAccessible(true);
             return Optional.ofNullable(clazz.cast(field.get(parent)));
         } catch (Exception e) {
-            System.out.printf("Reflection failed! Trying to get #" + index + " from %s", clazz.getName());
+            Materialisation.LOGGER.printf(Level.ERROR, "Reflection failed! Trying to get #%d from %s", index, clazz.getName());
             return Optional.empty();
         }
     }
@@ -95,6 +104,12 @@ public class Materialisation implements ModInitializer {
         registerItem("shovel_head_pattern", SHOVEL_HEAD_PATTERN);
         registerItem("sword_blade_pattern", SWORD_BLADE_PATTERN);
         registerItem("hammer_head_pattern", HAMMER_HEAD_PATTERN);
+        try {
+            ConfigHelper.loadDefault();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        CompletableFuture.runAsync(ConfigHelper::loadConfig, ConfigHelper.EXECUTOR_SERVICE);
     }
     
     private void registerBlock(String name, Block block) {

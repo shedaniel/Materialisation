@@ -104,6 +104,42 @@ public class MaterialisingTableContainer extends Container {
         ItemStack second = this.main.getInvStack(1);
         if (first.isEmpty()) {
             this.result.setInvStack(0, ItemStack.EMPTY);
+        } else if (first.getItem() instanceof MaterialisedMiningTool && first.getOrCreateTag().containsKey("mt_0_material") && first.getOrCreateTag().containsKey("mt_1_material")) {
+            // Fixing Special
+            ItemStack copy = first.copy();
+            int toolDurability = MaterialisationUtils.getToolDurability(first);
+            int maxDurability = MaterialisationUtils.getToolMaxDurability(first);
+            if (!second.isEmpty()) {
+                if (toolDurability >= maxDurability) {
+                    this.result.setInvStack(0, ItemStack.EMPTY);
+                    this.sendContentUpdates();
+                    return;
+                }
+                KnownMaterial material = null;
+                if (copy.getOrCreateTag().containsKey("mt_1_material"))
+                    material = MaterialisationUtils.getMaterialFromString(copy.getOrCreateTag().getString("mt_1_material"));
+                if (material == null) {
+                    this.result.setInvStack(0, ItemStack.EMPTY);
+                    this.sendContentUpdates();
+                    return;
+                }
+                int repairAmount = material.getRepairAmount(second);
+                if (repairAmount <= 0) {
+                    this.result.setInvStack(0, ItemStack.EMPTY);
+                    this.sendContentUpdates();
+                    return;
+                }
+                MaterialisationUtils.setToolDurability(copy, Math.min(maxDurability, toolDurability + repairAmount));
+            }
+            if (StringUtils.isBlank(this.itemName)) {
+                if (copy.hasDisplayName())
+                    copy.removeDisplayName();
+            } else if (!this.itemName.equals(copy.getDisplayName().getString()))
+                if (itemName.equals(copy.getItem().getTranslatedNameTrimmed(copy)))
+                    copy.removeDisplayName();
+                else
+                    copy.setDisplayName(new TextComponent(this.itemName));
+            this.result.setInvStack(0, copy);
         } else if (first.getItem() instanceof MaterialisedPickaxeItem) {
             // Fixing pickaxe
             ItemStack copy = first.copy();
