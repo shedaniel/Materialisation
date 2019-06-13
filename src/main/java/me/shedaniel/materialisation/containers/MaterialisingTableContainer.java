@@ -3,7 +3,7 @@ package me.shedaniel.materialisation.containers;
 import io.netty.buffer.Unpooled;
 import me.shedaniel.materialisation.Materialisation;
 import me.shedaniel.materialisation.MaterialisationUtils;
-import me.shedaniel.materialisation.api.KnownMaterial;
+import me.shedaniel.materialisation.api.PartMaterial;
 import me.shedaniel.materialisation.items.*;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.minecraft.container.BlockContext;
@@ -115,7 +115,7 @@ public class MaterialisingTableContainer extends Container {
                     this.sendContentUpdates();
                     return;
                 }
-                KnownMaterial material = null;
+                PartMaterial material = null;
                 if (copy.getOrCreateTag().containsKey("mt_1_material"))
                     material = MaterialisationUtils.getMaterialFromString(copy.getOrCreateTag().getString("mt_1_material"));
                 if (material == null) {
@@ -151,7 +151,7 @@ public class MaterialisingTableContainer extends Container {
                     this.sendContentUpdates();
                     return;
                 }
-                KnownMaterial material = null;
+                PartMaterial material = null;
                 if (copy.getOrCreateTag().containsKey("mt_pickaxe_head_material"))
                     material = MaterialisationUtils.getMaterialFromString(copy.getOrCreateTag().getString("mt_pickaxe_head_material"));
                 if (material == null) {
@@ -187,7 +187,7 @@ public class MaterialisingTableContainer extends Container {
                     this.sendContentUpdates();
                     return;
                 }
-                KnownMaterial material = null;
+                PartMaterial material = null;
                 if (copy.getOrCreateTag().containsKey("mt_axe_head_material"))
                     material = MaterialisationUtils.getMaterialFromString(copy.getOrCreateTag().getString("mt_axe_head_material"));
                 if (material == null) {
@@ -223,7 +223,7 @@ public class MaterialisingTableContainer extends Container {
                     this.sendContentUpdates();
                     return;
                 }
-                KnownMaterial material = null;
+                PartMaterial material = null;
                 if (copy.getOrCreateTag().containsKey("mt_shovel_head_material"))
                     material = MaterialisationUtils.getMaterialFromString(copy.getOrCreateTag().getString("mt_shovel_head_material"));
                 if (material == null) {
@@ -259,7 +259,7 @@ public class MaterialisingTableContainer extends Container {
                     this.sendContentUpdates();
                     return;
                 }
-                KnownMaterial material = null;
+                PartMaterial material = null;
                 if (copy.getOrCreateTag().containsKey("mt_sword_blade_material"))
                     material = MaterialisationUtils.getMaterialFromString(copy.getOrCreateTag().getString("mt_sword_blade_material"));
                 if (material == null) {
@@ -295,7 +295,7 @@ public class MaterialisingTableContainer extends Container {
                     this.sendContentUpdates();
                     return;
                 }
-                KnownMaterial material = null;
+                PartMaterial material = null;
                 if (copy.getOrCreateTag().containsKey("mt_hammer_head_material"))
                     material = MaterialisationUtils.getMaterialFromString(copy.getOrCreateTag().getString("mt_hammer_head_material"));
                 if (material == null) {
@@ -327,8 +327,8 @@ public class MaterialisingTableContainer extends Container {
                 head = 1;
             else if (first.getItem() == Materialisation.PICKAXE_HEAD)
                 handle = 1;
-            KnownMaterial handleMaterial = MaterialisationUtils.getMaterialFromPart(main.getInvStack(handle));
-            KnownMaterial headMaterial = MaterialisationUtils.getMaterialFromPart(main.getInvStack(head));
+            PartMaterial handleMaterial = MaterialisationUtils.getMaterialFromPart(main.getInvStack(handle));
+            PartMaterial headMaterial = MaterialisationUtils.getMaterialFromPart(main.getInvStack(head));
             if (handleMaterial == null || headMaterial == null) {
                 this.result.setInvStack(0, ItemStack.EMPTY);
             } else {
@@ -350,8 +350,8 @@ public class MaterialisingTableContainer extends Container {
                 head = 1;
             else if (first.getItem() == Materialisation.AXE_HEAD)
                 handle = 1;
-            KnownMaterial handleMaterial = MaterialisationUtils.getMaterialFromPart(main.getInvStack(handle));
-            KnownMaterial headMaterial = MaterialisationUtils.getMaterialFromPart(main.getInvStack(head));
+            PartMaterial handleMaterial = MaterialisationUtils.getMaterialFromPart(main.getInvStack(handle));
+            PartMaterial headMaterial = MaterialisationUtils.getMaterialFromPart(main.getInvStack(head));
             if (handleMaterial == null || headMaterial == null) {
                 this.result.setInvStack(0, ItemStack.EMPTY);
             } else {
@@ -373,8 +373,8 @@ public class MaterialisingTableContainer extends Container {
                 head = 1;
             else if (first.getItem() == Materialisation.SHOVEL_HEAD)
                 handle = 1;
-            KnownMaterial handleMaterial = MaterialisationUtils.getMaterialFromPart(main.getInvStack(handle));
-            KnownMaterial headMaterial = MaterialisationUtils.getMaterialFromPart(main.getInvStack(head));
+            PartMaterial handleMaterial = MaterialisationUtils.getMaterialFromPart(main.getInvStack(handle));
+            PartMaterial headMaterial = MaterialisationUtils.getMaterialFromPart(main.getInvStack(head));
             if (handleMaterial == null || headMaterial == null) {
                 this.result.setInvStack(0, ItemStack.EMPTY);
             } else {
@@ -396,8 +396,8 @@ public class MaterialisingTableContainer extends Container {
                 head = 1;
             else if (first.getItem() == Materialisation.SWORD_BLADE)
                 handle = 1;
-            KnownMaterial handleMaterial = MaterialisationUtils.getMaterialFromPart(main.getInvStack(handle));
-            KnownMaterial headMaterial = MaterialisationUtils.getMaterialFromPart(main.getInvStack(head));
+            PartMaterial handleMaterial = MaterialisationUtils.getMaterialFromPart(main.getInvStack(handle));
+            PartMaterial headMaterial = MaterialisationUtils.getMaterialFromPart(main.getInvStack(head));
             if (handleMaterial == null || headMaterial == null) {
                 this.result.setInvStack(0, ItemStack.EMPTY);
             } else {
@@ -419,8 +419,8 @@ public class MaterialisingTableContainer extends Container {
                 head = 1;
             else if (first.getItem() == Materialisation.HAMMER_HEAD)
                 handle = 1;
-            KnownMaterial handleMaterial = MaterialisationUtils.getMaterialFromPart(main.getInvStack(handle));
-            KnownMaterial headMaterial = MaterialisationUtils.getMaterialFromPart(main.getInvStack(head));
+            PartMaterial handleMaterial = MaterialisationUtils.getMaterialFromPart(main.getInvStack(handle));
+            PartMaterial headMaterial = MaterialisationUtils.getMaterialFromPart(main.getInvStack(head));
             if (handleMaterial == null || headMaterial == null) {
                 this.result.setInvStack(0, ItemStack.EMPTY);
             } else {

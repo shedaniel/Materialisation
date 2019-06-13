@@ -1,7 +1,7 @@
 package me.shedaniel.materialisation.config;
 
 import me.shedaniel.materialisation.api.BetterIngredient;
-import me.shedaniel.materialisation.api.KnownMaterial;
+import me.shedaniel.materialisation.api.PartMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 
@@ -23,38 +23,43 @@ public class MaterialisationConfig {
         }
     }
     
-    public static class ConfigMaterial implements KnownMaterial {
+    public static class ConfigMaterial implements PartMaterial {
+        public boolean enabled = true;
         public String toolColor;
-        public int toolDurability;
-        public int miningLevel;
-        public int enchantability;
-        public float durabilityMultiplier;
-        public float breakingSpeedMultiplier;
-        public float toolSpeed;
-        public float attackDamage;
+        // Will be rounded down
+        public double toolDurability;
+        // Will be rounded down
+        public double miningLevel;
+        // Will be rounded down
+        public double enchantability;
+        public double durabilityMultiplier;
+        public double breakingSpeedMultiplier;
+        public double toolSpeed;
+        public double attackDamage;
         public String name;
         public String materialTranslationKey;
         public boolean bright;
         public List<ConfigIngredients> ingredients;
-        public int fullAmount;
+        // Will be rounded down
+        public double fullAmount;
         private transient Integer color = -1;
         private transient Map<BetterIngredient, Float> ingredientFloatMap = null;
         
-        public ConfigMaterial(KnownMaterial knownMaterial) {
-            this.toolColor = knownMaterial.getToolColor() + "";
-            this.color = knownMaterial.getToolColor();
-            this.toolDurability = knownMaterial.getToolDurability();
-            this.miningLevel = knownMaterial.getMiningLevel();
-            this.enchantability = knownMaterial.getEnchantability();
-            this.durabilityMultiplier = knownMaterial.getDurabilityMultiplier();
-            this.breakingSpeedMultiplier = knownMaterial.getBreakingSpeedMultiplier();
-            this.toolSpeed = knownMaterial.getToolSpeed();
-            this.attackDamage = knownMaterial.getAttackDamage();
-            this.name = knownMaterial.getName();
-            this.materialTranslationKey = knownMaterial.getMaterialTranslateKey();
-            this.bright = knownMaterial.isBright();
-            this.ingredients = ConfigHelper.fromMap(knownMaterial.getIngredientMap());
-            this.fullAmount = knownMaterial.getFullAmount();
+        public ConfigMaterial(PartMaterial partMaterial) {
+            this.toolColor = partMaterial.getToolColor() + "";
+            this.color = partMaterial.getToolColor();
+            this.toolDurability = partMaterial.getToolDurability();
+            this.miningLevel = partMaterial.getMiningLevel();
+            this.enchantability = partMaterial.getEnchantability();
+            this.durabilityMultiplier = partMaterial.getDurabilityMultiplier();
+            this.breakingSpeedMultiplier = partMaterial.getBreakingSpeedMultiplier();
+            this.toolSpeed = partMaterial.getToolSpeed();
+            this.attackDamage = partMaterial.getAttackDamage();
+            this.name = partMaterial.getName();
+            this.materialTranslationKey = partMaterial.getMaterialTranslateKey();
+            this.bright = partMaterial.isBright();
+            this.ingredients = ConfigHelper.fromMap(partMaterial.getIngredientMap());
+            this.fullAmount = partMaterial.getFullAmount();
         }
         
         @Override
@@ -101,38 +106,38 @@ public class MaterialisationConfig {
         }
         
         @Override
-        public float getDurabilityMultiplier() {
+        public double getDurabilityMultiplier() {
             return durabilityMultiplier;
         }
         
         @Override
-        public float getBreakingSpeedMultiplier() {
+        public double getBreakingSpeedMultiplier() {
             return breakingSpeedMultiplier;
         }
         
         @Override
-        public float getAttackDamage() {
+        public double getAttackDamage() {
             return attackDamage;
         }
         
         @Override
         public int getToolDurability() {
-            return toolDurability;
+            return (int) toolDurability;
         }
         
         @Override
-        public float getToolSpeed() {
+        public double getToolSpeed() {
             return toolSpeed;
         }
         
         @Override
         public int getMiningLevel() {
-            return miningLevel;
+            return (int) miningLevel;
         }
         
         @Override
         public int getFullAmount() {
-            return fullAmount;
+            return (int) fullAmount;
         }
         
         @Override

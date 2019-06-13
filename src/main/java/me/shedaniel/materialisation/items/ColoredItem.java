@@ -3,7 +3,7 @@ package me.shedaniel.materialisation.items;
 import me.shedaniel.materialisation.Materialisation;
 import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.ModReference;
-import me.shedaniel.materialisation.api.KnownMaterial;
+import me.shedaniel.materialisation.api.PartMaterial;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormat;
@@ -76,7 +76,7 @@ public class ColoredItem extends Item {
     public void buildTooltip(ItemStack stack, World world_1, List<Component> list, TooltipContext tooltipContext_1) {
         super.buildTooltip(stack, world_1, list, tooltipContext_1);
         if (stack.getOrCreateTag().containsKey("mt_material")) {
-            KnownMaterial material = MaterialisationUtils.getMaterialFromPart(stack);
+            PartMaterial material = MaterialisationUtils.getMaterialFromPart(stack);
             if (material != null)
                 if (stack.getItem() == Materialisation.HANDLE) {
                     list.add(new TranslatableComponent("text.materialisation.tool_handle_durability_multiplier", MaterialisationUtils.getColoring(material.getDurabilityMultiplier()).toString() + "x" + material.getDurabilityMultiplier()));

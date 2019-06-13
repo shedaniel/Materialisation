@@ -20,6 +20,12 @@
     ],
     "rei_plugins": [
       "me.shedaniel.materialisation.rei.MaterialisationREIPlugin"
+    ],
+    "modmenu": [
+      "me.shedaniel.materialisation.modmenu.MaterialisationModMenu"
+    ],
+    "materialisation_default": [
+      "me.shedaniel.materialisation.MaterialisationDefaultMaterials"
     ]
   },
   "requires": {

@@ -2,7 +2,7 @@ package me.shedaniel.materialisation.items;
 
 import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.ModReference;
-import me.shedaniel.materialisation.api.KnownMaterial;
+import me.shedaniel.materialisation.api.PartMaterial;
 import me.shedaniel.materialisation.mixin.MiningToolItemAccessor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -57,8 +57,8 @@ public class MaterialisedHammerItem extends PickaxeItem implements MaterialisedM
         if (itemStack.getOrCreateTag().containsKey("mt_hammer_head_bright"))
             return true;
         if (itemStack.getOrCreateTag().containsKey("mt_1_material"))
-            return MaterialisationUtils.getMatFromString(itemStack.getOrCreateTag().getString("mt_1_material")).map(KnownMaterial::isBright).orElse(false);
-        return MaterialisationUtils.getMatFromString(itemStack.getOrCreateTag().getString("mt_hammer_head_material")).map(KnownMaterial::isBright).orElse(false);
+            return MaterialisationUtils.getMatFromString(itemStack.getOrCreateTag().getString("mt_1_material")).map(PartMaterial::isBright).orElse(false);
+        return MaterialisationUtils.getMatFromString(itemStack.getOrCreateTag().getString("mt_hammer_head_material")).map(PartMaterial::isBright).orElse(false);
     }
     
     @Override
@@ -132,8 +132,8 @@ public class MaterialisedHammerItem extends PickaxeItem implements MaterialisedM
     public int getEnchantability(ItemStack stack) {
         if (!stack.getOrCreateTag().containsKey("mt_hammer_head_material") || !stack.getOrCreateTag().containsKey("mt_handle_material"))
             return 0;
-        KnownMaterial handle = MaterialisationUtils.getMaterialFromString(stack.getOrCreateTag().getString("mt_handle_material"));
-        KnownMaterial head = MaterialisationUtils.getMaterialFromString(stack.getOrCreateTag().getString("mt_hammer_head_material"));
+        PartMaterial handle = MaterialisationUtils.getMaterialFromString(stack.getOrCreateTag().getString("mt_handle_material"));
+        PartMaterial head = MaterialisationUtils.getMaterialFromString(stack.getOrCreateTag().getString("mt_hammer_head_material"));
         return (handle.getEnchantability() + head.getEnchantability()) / 2;
     }
     

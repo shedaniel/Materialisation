@@ -2,8 +2,8 @@ package me.shedaniel.materialisation.containers;
 
 import me.shedaniel.materialisation.Materialisation;
 import me.shedaniel.materialisation.MaterialisationUtils;
-import me.shedaniel.materialisation.api.KnownMaterial;
-import me.shedaniel.materialisation.api.KnownMaterials;
+import me.shedaniel.materialisation.api.PartMaterial;
+import me.shedaniel.materialisation.api.PartMaterials;
 import me.shedaniel.materialisation.items.PatternItem;
 import net.minecraft.container.BlockContext;
 import net.minecraft.container.Container;
@@ -99,12 +99,12 @@ public class MaterialPreparerContainer extends Container {
             this.result.setInvStack(0, ItemStack.EMPTY);
         } else if (first.getItem() instanceof PatternItem && first.getItem() != Materialisation.BLANK_PATTERN) {
             if (first.getItem() == Materialisation.PICKAXE_HEAD_PATTERN) {
-                KnownMaterial material = null;
+                PartMaterial material = null;
                 float repairMultiplier = -1;
-                for(KnownMaterial knownMaterial : KnownMaterials.getKnownMaterials().collect(Collectors.toList())) {
-                    float repairAmount = knownMaterial.getRepairMultiplier(second);
+                for(PartMaterial partMaterial : PartMaterials.getKnownMaterials().collect(Collectors.toList())) {
+                    float repairAmount = partMaterial.getRepairMultiplier(second);
                     if (repairAmount > 0) {
-                        material = knownMaterial;
+                        material = partMaterial;
                         repairMultiplier = repairAmount;
                     }
                 }
@@ -120,12 +120,12 @@ public class MaterialPreparerContainer extends Container {
                     }
                 }
             } else if (first.getItem() == Materialisation.TOOL_HANDLE_PATTERN) {
-                KnownMaterial material = null;
+                PartMaterial material = null;
                 float repairMultiplier = -1;
-                for(KnownMaterial knownMaterial : KnownMaterials.getKnownMaterials().collect(Collectors.toList())) {
-                    float repairAmount = knownMaterial.getRepairMultiplier(second);
+                for(PartMaterial partMaterial : PartMaterials.getKnownMaterials().collect(Collectors.toList())) {
+                    float repairAmount = partMaterial.getRepairMultiplier(second);
                     if (repairAmount > 0) {
-                        material = knownMaterial;
+                        material = partMaterial;
                         repairMultiplier = repairAmount;
                     }
                 }
@@ -141,12 +141,12 @@ public class MaterialPreparerContainer extends Container {
                     }
                 }
             } else if (first.getItem() == Materialisation.AXE_HEAD_PATTERN) {
-                KnownMaterial material = null;
+                PartMaterial material = null;
                 float repairMultiplier = -1;
-                for(KnownMaterial knownMaterial : KnownMaterials.getKnownMaterials().collect(Collectors.toList())) {
-                    float repairAmount = knownMaterial.getRepairMultiplier(second);
+                for(PartMaterial partMaterial : PartMaterials.getKnownMaterials().collect(Collectors.toList())) {
+                    float repairAmount = partMaterial.getRepairMultiplier(second);
                     if (repairAmount > 0) {
-                        material = knownMaterial;
+                        material = partMaterial;
                         repairMultiplier = repairAmount;
                     }
                 }
@@ -162,12 +162,12 @@ public class MaterialPreparerContainer extends Container {
                     }
                 }
             } else if (first.getItem() == Materialisation.SHOVEL_HEAD_PATTERN) {
-                KnownMaterial material = null;
+                PartMaterial material = null;
                 float repairMultiplier = -1;
-                for(KnownMaterial knownMaterial : KnownMaterials.getKnownMaterials().collect(Collectors.toList())) {
-                    float repairAmount = knownMaterial.getRepairMultiplier(second);
+                for(PartMaterial partMaterial : PartMaterials.getKnownMaterials().collect(Collectors.toList())) {
+                    float repairAmount = partMaterial.getRepairMultiplier(second);
                     if (repairAmount > 0) {
-                        material = knownMaterial;
+                        material = partMaterial;
                         repairMultiplier = repairAmount;
                     }
                 }
@@ -183,12 +183,12 @@ public class MaterialPreparerContainer extends Container {
                     }
                 }
             } else if (first.getItem() == Materialisation.SWORD_BLADE_PATTERN) {
-                KnownMaterial material = null;
+                PartMaterial material = null;
                 float repairMultiplier = -1;
-                for(KnownMaterial knownMaterial : KnownMaterials.getKnownMaterials().collect(Collectors.toList())) {
-                    float repairAmount = knownMaterial.getRepairMultiplier(second);
+                for(PartMaterial partMaterial : PartMaterials.getKnownMaterials().collect(Collectors.toList())) {
+                    float repairAmount = partMaterial.getRepairMultiplier(second);
                     if (repairAmount > 0) {
-                        material = knownMaterial;
+                        material = partMaterial;
                         repairMultiplier = repairAmount;
                     }
                 }
@@ -204,12 +204,12 @@ public class MaterialPreparerContainer extends Container {
                     }
                 }
             } else if (first.getItem() == Materialisation.HAMMER_HEAD_PATTERN) {
-                KnownMaterial material = null;
+                PartMaterial material = null;
                 float repairMultiplier = -1;
-                for(KnownMaterial knownMaterial : KnownMaterials.getKnownMaterials().collect(Collectors.toList())) {
-                    float repairAmount = knownMaterial.getRepairMultiplier(second);
+                for(PartMaterial partMaterial : PartMaterials.getKnownMaterials().collect(Collectors.toList())) {
+                    float repairAmount = partMaterial.getRepairMultiplier(second);
                     if (repairAmount > 0) {
-                        material = knownMaterial;
+                        material = partMaterial;
                         repairMultiplier = repairAmount;
                     }
                 }

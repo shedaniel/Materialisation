@@ -5,7 +5,7 @@ import net.minecraft.item.ItemStack;
 import java.util.Map;
 import java.util.Set;
 
-public interface KnownMaterial extends KnownMaterials.RepairAmountGetter {
+public interface PartMaterial extends RepairAmountGetter {
     
     int getToolColor();
     
@@ -24,15 +24,15 @@ public interface KnownMaterial extends KnownMaterials.RepairAmountGetter {
     
     boolean isBright();
     
-    float getDurabilityMultiplier();
+    double getDurabilityMultiplier();
     
-    float getBreakingSpeedMultiplier();
+    double getBreakingSpeedMultiplier();
     
-    float getAttackDamage();
+    double getAttackDamage();
     
     int getToolDurability();
     
-    float getToolSpeed();
+    double getToolSpeed();
     
     int getMiningLevel();
     
