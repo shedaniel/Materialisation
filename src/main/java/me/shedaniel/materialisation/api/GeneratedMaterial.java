@@ -2,6 +2,7 @@ package me.shedaniel.materialisation.api;
 
 import com.google.common.collect.Maps;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
 import java.util.Map;
@@ -12,7 +13,7 @@ public class GeneratedMaterial implements PartMaterial {
     
     private int toolColor = -1, toolDurability = 1, miningLevel = 0, enchantability = 0;
     private float durabilityMultiplier = 1f, breakingSpeedMultiplier = 1f, toolSpeed = -1f, attackDamage = 0f;
-    private String name;
+    private Identifier name;
     private boolean bright = false;
     private Map<BetterIngredient, Float> amountMultiplierMap = Maps.newHashMap();
     private AmountGetter amountGetter = ingredient -> {
@@ -21,7 +22,7 @@ public class GeneratedMaterial implements PartMaterial {
     };
     private int fullAmount = -1;
     
-    GeneratedMaterial(String name) {
+    GeneratedMaterial(Identifier name) {
         this.name = name;
     }
     
@@ -35,6 +36,10 @@ public class GeneratedMaterial implements PartMaterial {
         return this;
     }
     
+    public GeneratedMaterial wAtta(float attackDamage) {
+        return setAttackDamage(attackDamage);
+    }
+    
     @Override
     public int getEnchantability() {
         return enchantability;
@@ -45,9 +50,17 @@ public class GeneratedMaterial implements PartMaterial {
         return this;
     }
     
+    public GeneratedMaterial wEnch(int enchantability) {
+        return setEnchantability(enchantability);
+    }
+    
     public GeneratedMaterial addIngredient(BetterIngredient ingredient, float multiplier) {
         amountMultiplierMap.put(ingredient, multiplier);
         return this;
+    }
+    
+    public GeneratedMaterial aIngr(BetterIngredient ingredient, float multiplier) {
+        return addIngredient(ingredient, multiplier);
     }
     
     @Override
@@ -70,6 +83,10 @@ public class GeneratedMaterial implements PartMaterial {
         return this;
     }
     
+    public GeneratedMaterial wSpeed(float toolSpeed) {
+        return setToolSpeed(toolSpeed);
+    }
+    
     @Override
     public int getMiningLevel() {
         return miningLevel;
@@ -88,6 +105,10 @@ public class GeneratedMaterial implements PartMaterial {
     public GeneratedMaterial setBreakingSpeedMultiplier(float breakingSpeedMultiplier) {
         this.breakingSpeedMultiplier = breakingSpeedMultiplier;
         return this;
+    }
+    
+    public GeneratedMaterial wSpeedMulti(float breakingSpeedMultiplier) {
+        return setBreakingSpeedMultiplier(breakingSpeedMultiplier);
     }
     
     @Override
@@ -110,6 +131,10 @@ public class GeneratedMaterial implements PartMaterial {
         return this;
     }
     
+    public GeneratedMaterial wDuraMulti(float durabilityMultiplier) {
+        return setDurabilityMultiplier(durabilityMultiplier);
+    }
+    
     @Override
     public int getToolColor() {
         return toolColor;
@@ -120,9 +145,13 @@ public class GeneratedMaterial implements PartMaterial {
         return this;
     }
     
+    public GeneratedMaterial wColor(int toolColor) {
+        return setToolColor(toolColor);
+    }
+    
     @Override
     public String getMaterialTranslateKey() {
-        return "material.materialisation." + name;
+        return "material.materialisation." + name.toString().replace(':', '.');
     }
     
     @Override
@@ -160,6 +189,10 @@ public class GeneratedMaterial implements PartMaterial {
         return this;
     }
     
+    public GeneratedMaterial wFull(int i) {
+        return setFullAmount(i);
+    }
+    
     @Override
     public float getRepairMultiplier(ItemStack stack) {
         BetterIngredient ingredient = null;
@@ -176,8 +209,7 @@ public class GeneratedMaterial implements PartMaterial {
     }
     
     @Override
-    public String getName() {
+    public Identifier getIdentifier() {
         return name;
     }
-    
 }

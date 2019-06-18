@@ -43,30 +43,30 @@ public class ColoredItem extends Item {
             return Optional.ofNullable(stack.getOrCreateTag().getString("mt_name_key"));
         } else if (stack.getOrCreateTag().containsKey("mt_0_material")) {
             if (stack.getItem() == Materialisation.HANDLE)
-                return Optional.ofNullable(I18n.translate("item.materialisation.materialised_handle", I18n.translate("material.materialisation." + stack.getOrCreateTag().getString("mt_0_material"))));
+                return Optional.ofNullable(I18n.translate("item.materialisation.materialised_handle", I18n.translate("material.materialisation." + stack.getOrCreateTag().getString("mt_0_material").replace(':', '.'))));
             if (stack.getItem() == Materialisation.PICKAXE_HEAD)
-                return Optional.ofNullable(I18n.translate("item.materialisation.materialised_pickaxe_head", I18n.translate("material.materialisation." + stack.getOrCreateTag().getString("mt_0_material"))));
+                return Optional.ofNullable(I18n.translate("item.materialisation.materialised_pickaxe_head", I18n.translate("material.materialisation." + stack.getOrCreateTag().getString("mt_0_material").replace(':', '.'))));
             if (stack.getItem() == Materialisation.AXE_HEAD)
-                return Optional.ofNullable(I18n.translate("item.materialisation.materialised_axe_head", I18n.translate("material.materialisation." + stack.getOrCreateTag().getString("mt_0_material"))));
+                return Optional.ofNullable(I18n.translate("item.materialisation.materialised_axe_head", I18n.translate("material.materialisation." + stack.getOrCreateTag().getString("mt_0_material").replace(':', '.'))));
             if (stack.getItem() == Materialisation.SHOVEL_HEAD)
-                return Optional.ofNullable(I18n.translate("item.materialisation.materialised_shovel_head", I18n.translate("material.materialisation." + stack.getOrCreateTag().getString("mt_0_material"))));
+                return Optional.ofNullable(I18n.translate("item.materialisation.materialised_shovel_head", I18n.translate("material.materialisation." + stack.getOrCreateTag().getString("mt_0_material").replace(':', '.'))));
             if (stack.getItem() == Materialisation.SWORD_BLADE)
-                return Optional.ofNullable(I18n.translate("item.materialisation.materialised_sword_blade", I18n.translate("material.materialisation." + stack.getOrCreateTag().getString("mt_0_material"))));
+                return Optional.ofNullable(I18n.translate("item.materialisation.materialised_sword_blade", I18n.translate("material.materialisation." + stack.getOrCreateTag().getString("mt_0_material").replace(':', '.'))));
             if (stack.getItem() == Materialisation.HAMMER_HEAD)
-                return Optional.ofNullable(I18n.translate("item.materialisation.materialised_hammer_head", I18n.translate("material.materialisation." + stack.getOrCreateTag().getString("mt_0_material"))));
+                return Optional.ofNullable(I18n.translate("item.materialisation.materialised_hammer_head", I18n.translate("material.materialisation." + stack.getOrCreateTag().getString("mt_0_material").replace(':', '.'))));
         } else if (stack.getOrCreateTag().containsKey("mt_material")) {
             if (stack.getItem() == Materialisation.HANDLE)
-                return Optional.ofNullable(I18n.translate("item.materialisation.materialised_handle", I18n.translate("material.materialisation." + stack.getOrCreateTag().getString("mt_material"))));
+                return Optional.ofNullable(I18n.translate("item.materialisation.materialised_handle", I18n.translate("material.materialisation." + stack.getOrCreateTag().getString("mt_material").replace(':', '.'))));
             if (stack.getItem() == Materialisation.PICKAXE_HEAD)
-                return Optional.ofNullable(I18n.translate("item.materialisation.materialised_pickaxe_head", I18n.translate("material.materialisation." + stack.getOrCreateTag().getString("mt_material"))));
+                return Optional.ofNullable(I18n.translate("item.materialisation.materialised_pickaxe_head", I18n.translate("material.materialisation." + stack.getOrCreateTag().getString("mt_material").replace(':', '.'))));
             if (stack.getItem() == Materialisation.AXE_HEAD)
-                return Optional.ofNullable(I18n.translate("item.materialisation.materialised_axe_head", I18n.translate("material.materialisation." + stack.getOrCreateTag().getString("mt_material"))));
+                return Optional.ofNullable(I18n.translate("item.materialisation.materialised_axe_head", I18n.translate("material.materialisation." + stack.getOrCreateTag().getString("mt_material").replace(':', '.'))));
             if (stack.getItem() == Materialisation.SHOVEL_HEAD)
-                return Optional.ofNullable(I18n.translate("item.materialisation.materialised_shovel_head", I18n.translate("material.materialisation." + stack.getOrCreateTag().getString("mt_material"))));
+                return Optional.ofNullable(I18n.translate("item.materialisation.materialised_shovel_head", I18n.translate("material.materialisation." + stack.getOrCreateTag().getString("mt_material").replace(':', '.'))));
             if (stack.getItem() == Materialisation.SWORD_BLADE)
-                return Optional.ofNullable(I18n.translate("item.materialisation.materialised_sword_blade", I18n.translate("material.materialisation." + stack.getOrCreateTag().getString("mt_material"))));
+                return Optional.ofNullable(I18n.translate("item.materialisation.materialised_sword_blade", I18n.translate("material.materialisation." + stack.getOrCreateTag().getString("mt_material").replace(':', '.'))));
             if (stack.getItem() == Materialisation.HAMMER_HEAD)
-                return Optional.ofNullable(I18n.translate("item.materialisation.materialised_hammer_head", I18n.translate("material.materialisation." + stack.getOrCreateTag().getString("mt_material"))));
+                return Optional.ofNullable(I18n.translate("item.materialisation.materialised_hammer_head", I18n.translate("material.materialisation." + stack.getOrCreateTag().getString("mt_material").replace(':', '.'))));
         }
         return Optional.empty();
     }
@@ -75,19 +75,33 @@ public class ColoredItem extends Item {
     @Override
     public void buildTooltip(ItemStack stack, World world_1, List<Component> list, TooltipContext tooltipContext_1) {
         super.buildTooltip(stack, world_1, list, tooltipContext_1);
-        if (stack.getOrCreateTag().containsKey("mt_material")) {
+        if (stack.getOrCreateTag().containsKey("mt_0_material")) {
             PartMaterial material = MaterialisationUtils.getMaterialFromPart(stack);
             if (material != null)
                 if (stack.getItem() == Materialisation.HANDLE) {
-                    list.add(new TranslatableComponent("text.materialisation.tool_handle_durability_multiplier", MaterialisationUtils.getColoring(material.getDurabilityMultiplier()).toString() + "x" + material.getDurabilityMultiplier()));
-                    list.add(new TranslatableComponent("text.materialisation.tool_handle_speed_multiplier", MaterialisationUtils.getColoring(material.getBreakingSpeedMultiplier()).toString() + "x" + material.getBreakingSpeedMultiplier()));
+                    list.add(new TranslatableComponent("text.materialisation.tool_handle_durability_multiplier", MaterialisationUtils.getColoring(material.getDurabilityMultiplier()).toString() + "x" + MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(material.getDurabilityMultiplier())));
+                    list.add(new TranslatableComponent("text.materialisation.tool_handle_speed_multiplier", MaterialisationUtils.getColoring(material.getBreakingSpeedMultiplier()).toString() + "x" + MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(material.getBreakingSpeedMultiplier())));
                 } else if (stack.getItem() == Materialisation.PICKAXE_HEAD || stack.getItem() == Materialisation.AXE_HEAD || stack.getItem() == Materialisation.SHOVEL_HEAD) {
-                    list.add(new TranslatableComponent("text.materialisation.head_part_speed", ChatFormat.YELLOW.toString() + material.getToolSpeed()));
-                    list.add(new TranslatableComponent("text.materialisation.head_part_durability", ChatFormat.YELLOW.toString() + material.getToolDurability()));
-                    list.add(new TranslatableComponent("text.materialisation.head_part_damage", ChatFormat.YELLOW.toString() + (getExtraDamage(stack.getItem()) + material.getAttackDamage())));
+                    list.add(new TranslatableComponent("text.materialisation.head_part_speed", ChatFormat.YELLOW.toString() + MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(material.getToolSpeed())));
+                    list.add(new TranslatableComponent("text.materialisation.head_part_durability", ChatFormat.YELLOW.toString() + MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(material.getToolDurability())));
+                    list.add(new TranslatableComponent("text.materialisation.head_part_damage", ChatFormat.YELLOW.toString() + MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(getExtraDamage(stack.getItem()) + material.getAttackDamage())));
                 } else if (stack.getItem() == Materialisation.SWORD_BLADE) {
-                    list.add(new TranslatableComponent("text.materialisation.head_part_durability", ChatFormat.YELLOW.toString() + material.getToolDurability()));
-                    list.add(new TranslatableComponent("text.materialisation.head_part_damage", ChatFormat.YELLOW.toString() + (getExtraDamage(stack.getItem()) + material.getAttackDamage())));
+                    list.add(new TranslatableComponent("text.materialisation.head_part_durability", ChatFormat.YELLOW.toString() + MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(material.getToolDurability())));
+                    list.add(new TranslatableComponent("text.materialisation.head_part_damage", ChatFormat.YELLOW.toString() + MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(getExtraDamage(stack.getItem()) + material.getAttackDamage())));
+                }
+        } else if (stack.getOrCreateTag().containsKey("mt_material")) {
+            PartMaterial material = MaterialisationUtils.getMaterialFromPart(stack);
+            if (material != null)
+                if (stack.getItem() == Materialisation.HANDLE) {
+                    list.add(new TranslatableComponent("text.materialisation.tool_handle_durability_multiplier", MaterialisationUtils.getColoring(material.getDurabilityMultiplier()).toString() + "x" + MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(material.getDurabilityMultiplier())));
+                    list.add(new TranslatableComponent("text.materialisation.tool_handle_speed_multiplier", MaterialisationUtils.getColoring(material.getBreakingSpeedMultiplier()).toString() + "x" + MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(material.getBreakingSpeedMultiplier())));
+                } else if (stack.getItem() == Materialisation.PICKAXE_HEAD || stack.getItem() == Materialisation.AXE_HEAD || stack.getItem() == Materialisation.SHOVEL_HEAD) {
+                    list.add(new TranslatableComponent("text.materialisation.head_part_speed", ChatFormat.YELLOW.toString() + MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(material.getToolSpeed())));
+                    list.add(new TranslatableComponent("text.materialisation.head_part_durability", ChatFormat.YELLOW.toString() + MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(material.getToolDurability())));
+                    list.add(new TranslatableComponent("text.materialisation.head_part_damage", ChatFormat.YELLOW.toString() + MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(getExtraDamage(stack.getItem()) + material.getAttackDamage())));
+                } else if (stack.getItem() == Materialisation.SWORD_BLADE) {
+                    list.add(new TranslatableComponent("text.materialisation.head_part_durability", ChatFormat.YELLOW.toString() + MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(material.getToolDurability())));
+                    list.add(new TranslatableComponent("text.materialisation.head_part_damage", ChatFormat.YELLOW.toString() + MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(getExtraDamage(stack.getItem()) + material.getAttackDamage())));
                 }
         }
     }

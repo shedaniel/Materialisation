@@ -1,6 +1,7 @@
 package me.shedaniel.materialisation.api;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Identifier;
 
 import java.util.Map;
 import java.util.Set;
@@ -17,10 +18,14 @@ public interface PartMaterial extends RepairAmountGetter {
         return 0;
     }
     
-    @Deprecated
     Map<BetterIngredient, Float> getIngredientMap();
     
-    String getName();
+    @Deprecated
+    default String getName() {
+        return getIdentifier().toString();
+    }
+    
+    Identifier getIdentifier();
     
     boolean isBright();
     

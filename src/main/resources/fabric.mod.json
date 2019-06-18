@@ -25,7 +25,8 @@
       "me.shedaniel.materialisation.modmenu.MaterialisationModMenu"
     ],
     "materialisation_default": [
-      "me.shedaniel.materialisation.MaterialisationDefaultMaterials"
+      "me.shedaniel.materialisation.materials.DefaultMaterials",
+      "me.shedaniel.materialisation.materials.CottonResourcesMaterials"
     ]
   },
   "requires": {

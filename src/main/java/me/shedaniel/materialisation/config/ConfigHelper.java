@@ -43,15 +43,22 @@ public class ConfigHelper {
     }
     
     public static void loadConfig() {
+        List<PartMaterial> defaultMaterials = Lists.newArrayList();
         List<ConfigMaterial> knownMaterials = Lists.newArrayList();
         List<JsonObject> overrides = Lists.newArrayList();
         try {
-            List<PartMaterial> defaultMaterials = Lists.newArrayList();
-            FabricLoader.getInstance().getEntrypoints("materialisation_default", DefaultMaterialSupplier.class).stream().map(DefaultMaterialSupplier::getMaterials).forEach(defaultMaterials::addAll);
+            FabricLoader.getInstance().getEntrypoints("materialisation_default", DefaultMaterialSupplier.class).stream().map(supplier -> {
+                try {
+                    return supplier.getMaterials();
+                } catch (Throwable throwable) {
+                    throwable.printStackTrace();
+                    return (List<PartMaterial>) Collections.EMPTY_LIST;
+                }
+            }).forEach(defaultMaterials::addAll);
             for(PartMaterial partMaterial : defaultMaterials) {
                 ConfigMaterial material = new ConfigMaterial(partMaterial);
                 knownMaterials.add(material);
-                Materialisation.LOGGER.info("[Materialisation] Loading default material: " + new Identifier(material.getName()).toString());
+                Materialisation.LOGGER.info("[Materialisation] Loading default material: " + material.getIdentifier().toString());
             }
             for(File file : MATERIALS_DIRECTORY.listFiles())
                 if (file.isFile() && file.getName().toLowerCase(Locale.ROOT).endsWith(".json")) {
@@ -94,7 +101,7 @@ public class ConfigHelper {
                                         break;
                                     }
                             if (!replaced)
-                                throw new NullPointerException("Failed to place field '" + key + "' of material " + material.getName() + "!");
+                                throw new NullPointerException("Failed to place field '" + key + "' of material " + material.getIdentifier().toString() + "!");
                         }
                 } catch (Exception e) {
                     Materialisation.LOGGER.error("[Materialisation] Failed to load override.", e);
@@ -106,21 +113,29 @@ public class ConfigHelper {
         for(ConfigMaterial knownMaterial : knownMaterials)
             if (knownMaterial.enabled) {
                 PartMaterials.registerMaterial(knownMaterial);
-                Materialisation.LOGGER.info("[Materialisation] Finished loading material: " + new Identifier(knownMaterial.getName()).toString());
+                Materialisation.LOGGER.info("[Materialisation] Finished loading material: " + knownMaterial.getIdentifier().toString());
             }
-        Materialisation.LOGGER.info("[Materialisation] Finished loading materials: " + PartMaterials.getKnownMaterials().map(PartMaterial::getName).collect(Collectors.joining(", ")));
-    }
-    
-    public static void saveConfig(ConfigMaterial material) throws IOException {
-        File file = new File(MATERIALS_DIRECTORY, material.getName().toLowerCase(Locale.ROOT) + ".json");
-        FileWriter writer = new FileWriter(file, false);
-        writer.write(GSON.toJson(material));
-        writer.close();
+        Materialisation.LOGGER.info("[Materialisation] Finished loading materials: " + PartMaterials.getKnownMaterials().map(PartMaterial::getIdentifier).map(Identifier::toString).collect(Collectors.joining(", ")));
+        if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
+            File autoGen = new File(CONFIG_DIRECTORY, "materialisation-dev-autogen");
+            autoGen.mkdirs();
+            for(File file : CONFIG_DIRECTORY.listFiles())
+                if (file.isFile() && file.getName().toLowerCase(Locale.ROOT).endsWith(".json"))
+                    file.delete();
+            for(PartMaterial defaultMaterial : defaultMaterials)
+                try {
+                    String s = GSON.toJson(new ConfigMaterial(defaultMaterial));
+                    FileWriter writer = new FileWriter(new File(autoGen, defaultMaterial.getIdentifier().toString() + ".json"), false);
+                    writer.write(s);
+                    writer.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+        }
     }
     
     private static void fillDefaultConfigs() throws IOException {
         MATERIALS_DIRECTORY.mkdirs();
-        // TODO: Save txt file
     }
     
     public static List<ConfigIngredients> fromMap(Map<BetterIngredient, Float> map) {

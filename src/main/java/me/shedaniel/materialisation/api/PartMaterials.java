@@ -11,11 +11,11 @@ public class PartMaterials {
     private static Map<String, PartMaterial> materials = Maps.newLinkedHashMap();
     
     public static GeneratedMaterial getNewMaterial(String name) {
-        return new GeneratedMaterial(name);
+        return new GeneratedMaterial(new Identifier(name));
     }
     
     public static PartMaterial registerMaterial(PartMaterial material) {
-        return materials.put(new Identifier(material.getName()).toString(), material);
+        return materials.put(material.getIdentifier().toString(), material);
     }
     
     public static Stream<PartMaterial> getKnownMaterials() {

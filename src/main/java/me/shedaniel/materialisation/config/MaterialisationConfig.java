@@ -3,6 +3,7 @@ package me.shedaniel.materialisation.config;
 import me.shedaniel.materialisation.api.BetterIngredient;
 import me.shedaniel.materialisation.api.PartMaterial;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
 import java.awt.*;
@@ -55,7 +56,7 @@ public class MaterialisationConfig {
             this.breakingSpeedMultiplier = partMaterial.getBreakingSpeedMultiplier();
             this.toolSpeed = partMaterial.getToolSpeed();
             this.attackDamage = partMaterial.getAttackDamage();
-            this.name = partMaterial.getName();
+            this.name = partMaterial.getIdentifier().toString();
             this.materialTranslationKey = partMaterial.getMaterialTranslateKey();
             this.bright = partMaterial.isBright();
             this.ingredients = ConfigHelper.fromMap(partMaterial.getIngredientMap());
@@ -80,7 +81,7 @@ public class MaterialisationConfig {
         public String getMaterialTranslateKey() {
             if (materialTranslationKey != null)
                 return materialTranslationKey;
-            return materialTranslationKey = "material.materialisation." + getName();
+            return materialTranslationKey = "material.materialisation." + getIdentifier().toString().replace(':', '.');
         }
         
         @Override
@@ -96,8 +97,8 @@ public class MaterialisationConfig {
         }
         
         @Override
-        public String getName() {
-            return name;
+        public Identifier getIdentifier() {
+            return new Identifier(name);
         }
         
         @Override

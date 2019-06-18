@@ -3,11 +3,12 @@ plugins {
 }
 
 archivesBaseName = "Materialisation"
-version = "0.1.5"
+version = "0.1.6"
 
 def minecraftVersion = "1.14.2"
 def yarnBuild = "2"
 def fabricVersion = "0.3.0+build.173"
+def cr_version = "1.2.0+1.14.2-SNAPSHOT"
 
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 
@@ -30,9 +31,12 @@ repositories {
         name = "Jitpack"
         url = "https://jitpack.io/"
     }
+    maven {
+        name = 'Cotton'
+        url 'http://server.bbkr.space:8081/artifactory/libs-snapshot'
+    }
     maven { url "https://tehnut.info/maven/" }
     maven { url "https://minecraft.curseforge.com/api/maven" }
-    maven { url = 'http://maven.sargunv.s3-website-us-west-2.amazonaws.com/' }
 }
 
 dependencies {
@@ -42,4 +46,5 @@ dependencies {
     modCompile "net.fabricmc:fabric-loader:0.4.8+build.154"
     modCompile "net.fabricmc.fabric-api:fabric-api:${fabricVersion}"
     modCompile "me.shedaniel:RoughlyEnoughItems:2.9.4+build.128"
+    modCompile "io.github.cottonmc:cotton-resources:${cr_version}"
 }

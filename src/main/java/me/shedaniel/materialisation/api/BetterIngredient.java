@@ -25,8 +25,16 @@ public class BetterIngredient {
         return new BetterIngredient(Type.ITEM, Registry.ITEM.getId(item).toString());
     }
     
+    public static BetterIngredient fromItem(Identifier item) {
+        return new BetterIngredient(Type.ITEM, item.toString());
+    }
+    
     public static BetterIngredient fromTag(Tag<Item> tag) {
         return new BetterIngredient(Type.TAG, tag.getId().toString());
+    }
+    
+    public static BetterIngredient fromTag(Identifier tag) {
+        return new BetterIngredient(Type.TAG, tag.toString());
     }
     
     @Override

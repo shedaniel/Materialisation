@@ -16,6 +16,7 @@ import net.minecraft.item.ToolMaterial;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.tag.Tag;
+import net.minecraft.util.Identifier;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -223,7 +224,7 @@ public class MaterialisationUtils {
     public static ItemStack createToolHandle(PartMaterial material) {
         ItemStack stack = new ItemStack(Materialisation.HANDLE);
         CompoundTag tag = stack.getOrCreateTag();
-        tag.putString("mt_0_material", material.getName());
+        tag.putString("mt_0_material", material.getIdentifier().toString());
         if (material.isBright())
             tag.putBoolean("mt_bright", true);
         stack.setTag(tag);
@@ -233,7 +234,7 @@ public class MaterialisationUtils {
     public static ItemStack createAxeHead(PartMaterial material) {
         ItemStack stack = new ItemStack(Materialisation.AXE_HEAD);
         CompoundTag tag = stack.getOrCreateTag();
-        tag.putString("mt_0_material", material.getName());
+        tag.putString("mt_0_material", material.getIdentifier().toString());
         if (material.isBright())
             tag.putBoolean("mt_bright", true);
         stack.setTag(tag);
@@ -243,7 +244,7 @@ public class MaterialisationUtils {
     public static ItemStack createPickaxeHead(PartMaterial material) {
         ItemStack stack = new ItemStack(Materialisation.PICKAXE_HEAD);
         CompoundTag tag = stack.getOrCreateTag();
-        tag.putString("mt_0_material", material.getName());
+        tag.putString("mt_0_material", material.getIdentifier().toString());
         if (material.isBright())
             tag.putBoolean("mt_bright", true);
         stack.setTag(tag);
@@ -253,7 +254,7 @@ public class MaterialisationUtils {
     public static ItemStack createShovelHead(PartMaterial material) {
         ItemStack stack = new ItemStack(Materialisation.SHOVEL_HEAD);
         CompoundTag tag = stack.getOrCreateTag();
-        tag.putString("mt_0_material", material.getName());
+        tag.putString("mt_0_material", material.getIdentifier().toString());
         if (material.isBright())
             tag.putBoolean("mt_bright", true);
         stack.setTag(tag);
@@ -263,7 +264,7 @@ public class MaterialisationUtils {
     public static ItemStack createSwordBlade(PartMaterial material) {
         ItemStack stack = new ItemStack(Materialisation.SWORD_BLADE);
         CompoundTag tag = stack.getOrCreateTag();
-        tag.putString("mt_0_material", material.getName());
+        tag.putString("mt_0_material", material.getIdentifier().toString());
         if (material.isBright())
             tag.putBoolean("mt_bright", true);
         stack.setTag(tag);
@@ -271,7 +272,9 @@ public class MaterialisationUtils {
     }
     
     public static PartMaterial getMaterialFromPart(ItemStack stack) {
-        if (stack.getOrCreateTag().containsKey("mt_material"))
+        if (stack.getOrCreateTag().containsKey("mt_0_material"))
+            return getMaterialFromString(stack.getOrCreateTag().getString("mt_0_material"));
+        else if (stack.getOrCreateTag().containsKey("mt_material"))
             return getMaterialFromString(stack.getOrCreateTag().getString("mt_material"));
         else
             return null;
@@ -282,9 +285,8 @@ public class MaterialisationUtils {
     }
     
     public static Optional<PartMaterial> getMatFromString(String s) {
-        Optional<PartMaterial> any = PartMaterials.getKnownMaterials().filter(mat -> mat.getName().equalsIgnoreCase(s)).findAny();
-        if (!any.isPresent())
-            Materialisation.LOGGER.error("[Materialisation] Can't find material: " + s + "! Client & Server Desync?");
+        Identifier identifier = new Identifier(s);
+        Optional<PartMaterial> any = PartMaterials.getKnownMaterials().filter(mat -> mat.getIdentifier().equals(identifier)).findAny();
         return any;
     }
     
@@ -300,8 +302,8 @@ public class MaterialisationUtils {
         ItemStack stack = new ItemStack(Materialisation.MATERIALISED_PICKAXE);
         CompoundTag tag = stack.getOrCreateTag();
         tag.putBoolean("mt_done_tool", true);
-        tag.putString("mt_0_material", handle.getName());
-        tag.putString("mt_1_material", pickaxeHead.getName());
+        tag.putString("mt_0_material", handle.getIdentifier().toString());
+        tag.putString("mt_1_material", pickaxeHead.getIdentifier().toString());
         stack.setTag(tag);
         return stack;
     }
@@ -310,8 +312,8 @@ public class MaterialisationUtils {
         ItemStack stack = new ItemStack(Materialisation.MATERIALISED_AXE);
         CompoundTag tag = stack.getOrCreateTag();
         tag.putBoolean("mt_done_tool", true);
-        tag.putString("mt_0_material", handle.getName());
-        tag.putString("mt_1_material", axeHead.getName());
+        tag.putString("mt_0_material", handle.getIdentifier().toString());
+        tag.putString("mt_1_material", axeHead.getIdentifier().toString());
         stack.setTag(tag);
         return stack;
     }
@@ -320,8 +322,8 @@ public class MaterialisationUtils {
         ItemStack stack = new ItemStack(Materialisation.MATERIALISED_SHOVEL);
         CompoundTag tag = stack.getOrCreateTag();
         tag.putBoolean("mt_done_tool", true);
-        tag.putString("mt_0_material", handle.getName());
-        tag.putString("mt_1_material", shovelHead.getName());
+        tag.putString("mt_0_material", handle.getIdentifier().toString());
+        tag.putString("mt_1_material", shovelHead.getIdentifier().toString());
         stack.setTag(tag);
         return stack;
     }
@@ -330,8 +332,8 @@ public class MaterialisationUtils {
         ItemStack stack = new ItemStack(Materialisation.MATERIALISED_SWORD);
         CompoundTag tag = stack.getOrCreateTag();
         tag.putBoolean("mt_done_tool", true);
-        tag.putString("mt_0_material", handle.getName());
-        tag.putString("mt_1_material", swordBlade.getName());
+        tag.putString("mt_0_material", handle.getIdentifier().toString());
+        tag.putString("mt_1_material", swordBlade.getIdentifier().toString());
         stack.setTag(tag);
         return stack;
     }
@@ -340,8 +342,8 @@ public class MaterialisationUtils {
         ItemStack stack = new ItemStack(Materialisation.MATERIALISED_HAMMER);
         CompoundTag tag = stack.getOrCreateTag();
         tag.putBoolean("mt_done_tool", true);
-        tag.putString("mt_0_material", handle.getName());
-        tag.putString("mt_1_material", hammerHead.getName());
+        tag.putString("mt_0_material", handle.getIdentifier().toString());
+        tag.putString("mt_1_material", hammerHead.getIdentifier().toString());
         stack.setTag(tag);
         return stack;
     }
@@ -360,7 +362,7 @@ public class MaterialisationUtils {
     public static ItemStack createHammerHead(PartMaterial material) {
         ItemStack stack = new ItemStack(Materialisation.HAMMER_HEAD);
         CompoundTag tag = stack.getOrCreateTag();
-        tag.putString("mt_0_material", material.getName());
+        tag.putString("mt_0_material", material.getIdentifier().toString());
         if (material.isBright())
             tag.putBoolean("mt_bright", true);
         stack.setTag(tag);
