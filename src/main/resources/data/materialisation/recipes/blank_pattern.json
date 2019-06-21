@@ -1,9 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "PPP",
-    "PSP",
-    "PPP"
+    "SPS",
+    "PLP",
+    "SPS"
   ],
   "key": {
     "P": {
@@ -11,6 +11,9 @@
     },
     "S": {
       "item": "minecraft:stick"
+    },
+    "L": {
+      "tag": "minecraft:logs"
     }
   },
   "result": {
