@@ -58,5 +58,8 @@
   "material.materialisation.cotton-resources.steel": "Steel",
   "material.materialisation.cotton-resources.brass": "Brass",
   "material.materialisation.cotton-resources.electrum": "Electrum",
-  "material.materialisation.cotton-resources.mercury": "Mercury"
+  "material.materialisation.cotton-resources.mercury": "Mercury",
+  "material.materialisation.netherthings.nether": "Nether",
+  "material.materialisation.netherthings.glowstone": "Glowstone",
+  "material.materialisation.netherthings.vibranium": "Vibranium"
 }
