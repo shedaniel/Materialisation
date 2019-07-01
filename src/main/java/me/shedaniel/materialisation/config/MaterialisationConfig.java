@@ -62,7 +62,12 @@ public class MaterialisationConfig {
             this.ingredients = ConfigHelper.fromMap(partMaterial.getIngredientMap());
             this.fullAmount = partMaterial.getFullAmount();
         }
-        
+    
+        @Override
+        public int getEnchantability() {
+            return (int) enchantability;
+        }
+    
         @Override
         public int getToolColor() {
             if (color != null)

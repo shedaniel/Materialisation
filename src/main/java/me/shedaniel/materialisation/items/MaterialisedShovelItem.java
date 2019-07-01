@@ -59,8 +59,13 @@ public class MaterialisedShovelItem extends ShovelItem implements MaterialisedMi
     
     @Override
     public int getEnchantability(ItemStack stack) {
-        if (!stack.getOrCreateTag().containsKey("mt_shovel_head_material") || !stack.getOrCreateTag().containsKey("mt_handle_material"))
-            return 0;
+        if (!stack.getOrCreateTag().containsKey("mt_shovel_head_material") || !stack.getOrCreateTag().containsKey("mt_handle_material")) {
+            if (!stack.getOrCreateTag().containsKey("mt_0_material") || !stack.getOrCreateTag().containsKey("mt_1_material"))
+                return 0;
+            PartMaterial handle = MaterialisationUtils.getMaterialFromString(stack.getOrCreateTag().getString("mt_0_material"));
+            PartMaterial head = MaterialisationUtils.getMaterialFromString(stack.getOrCreateTag().getString("mt_1_material"));
+            return (handle.getEnchantability() + head.getEnchantability()) / 2;
+        }
         PartMaterial handle = MaterialisationUtils.getMaterialFromString(stack.getOrCreateTag().getString("mt_handle_material"));
         PartMaterial head = MaterialisationUtils.getMaterialFromString(stack.getOrCreateTag().getString("mt_shovel_head_material"));
         return (handle.getEnchantability() + head.getEnchantability()) / 2;

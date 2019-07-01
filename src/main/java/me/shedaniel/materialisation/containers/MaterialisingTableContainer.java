@@ -412,6 +412,29 @@ public class MaterialisingTableContainer extends Container {
                         copy.setDisplayName(new TextComponent(this.itemName));
                 this.result.setInvStack(0, copy);
             }
+        }else if ((first.getItem() == Materialisation.MEGAAXE_HEAD && second.getItem() == Materialisation.HANDLE) || (first.getItem() == Materialisation.HANDLE && second.getItem() == Materialisation.MEGAAXE_HEAD)) {
+            // Crafting a mega axe
+            int handle = 0, head = 0;
+            if (first.getItem() == Materialisation.HANDLE)
+                head = 1;
+            else if (first.getItem() == Materialisation.MEGAAXE_HEAD)
+                handle = 1;
+            PartMaterial handleMaterial = MaterialisationUtils.getMaterialFromPart(main.getInvStack(handle));
+            PartMaterial headMaterial = MaterialisationUtils.getMaterialFromPart(main.getInvStack(head));
+            if (handleMaterial == null || headMaterial == null) {
+                this.result.setInvStack(0, ItemStack.EMPTY);
+            } else {
+                ItemStack copy = MaterialisationUtils.createMegaAxe(handleMaterial, headMaterial);
+                if (StringUtils.isBlank(this.itemName)) {
+                    if (copy.hasDisplayName())
+                        copy.removeDisplayName();
+                } else if (!this.itemName.equals(copy.getDisplayName().getString()))
+                    if (itemName.equals(copy.getItem().getTranslatedNameTrimmed(copy)))
+                        copy.removeDisplayName();
+                    else
+                        copy.setDisplayName(new TextComponent(this.itemName));
+                this.result.setInvStack(0, copy);
+            }
         } else if ((first.getItem() == Materialisation.HAMMER_HEAD && second.getItem() == Materialisation.HANDLE) || (first.getItem() == Materialisation.HANDLE && second.getItem() == Materialisation.HAMMER_HEAD)) {
             // Crafting a hammer
             int handle = 0, head = 0;

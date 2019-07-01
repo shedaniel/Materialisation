@@ -224,6 +224,27 @@ public class MaterialPreparerContainer extends Container {
                         this.result.setInvStack(0, MaterialisationUtils.createHammerHead(material));
                     }
                 }
+            } else if (first.getItem() == Materialisation.MEGAAXE_HEAD_PATTERN) {
+                PartMaterial material = null;
+                float repairMultiplier = -1;
+                for(PartMaterial partMaterial : PartMaterials.getKnownMaterials().collect(Collectors.toList())) {
+                    float repairAmount = partMaterial.getRepairMultiplier(second);
+                    if (repairAmount > 0) {
+                        material = partMaterial;
+                        repairMultiplier = repairAmount;
+                    }
+                }
+                if (material == null || repairMultiplier <= 0)
+                    this.result.setInvStack(0, ItemStack.EMPTY);
+                else {
+                    int itemsNeeded = MathHelper.ceil(64 / repairMultiplier);
+                    takingSecond = itemsNeeded;
+                    if (second.getAmount() < itemsNeeded) {
+                        this.result.setInvStack(0, ItemStack.EMPTY);
+                    } else {
+                        this.result.setInvStack(0, MaterialisationUtils.createMegaAxeHead(material));
+                    }
+                }
             } else {
                 this.result.setInvStack(0, ItemStack.EMPTY);
             }

@@ -54,6 +54,8 @@ public class ColoredItem extends Item {
                 return Optional.ofNullable(I18n.translate("item.materialisation.materialised_sword_blade", I18n.translate("material.materialisation." + stack.getOrCreateTag().getString("mt_0_material").replace(':', '.'))));
             if (stack.getItem() == Materialisation.HAMMER_HEAD)
                 return Optional.ofNullable(I18n.translate("item.materialisation.materialised_hammer_head", I18n.translate("material.materialisation." + stack.getOrCreateTag().getString("mt_0_material").replace(':', '.'))));
+            if (stack.getItem() == Materialisation.MEGAAXE_HEAD)
+                return Optional.ofNullable(I18n.translate("item.materialisation.materialised_megaaxe_head", I18n.translate("material.materialisation." + stack.getOrCreateTag().getString("mt_0_material").replace(':', '.'))));
         } else if (stack.getOrCreateTag().containsKey("mt_material")) {
             if (stack.getItem() == Materialisation.HANDLE)
                 return Optional.ofNullable(I18n.translate("item.materialisation.materialised_handle", I18n.translate("material.materialisation." + stack.getOrCreateTag().getString("mt_material").replace(':', '.'))));
@@ -88,6 +90,14 @@ public class ColoredItem extends Item {
                 } else if (stack.getItem() == Materialisation.SWORD_BLADE) {
                     list.add(new TranslatableComponent("text.materialisation.head_part_durability", ChatFormat.YELLOW.toString() + MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(material.getToolDurability())));
                     list.add(new TranslatableComponent("text.materialisation.head_part_damage", ChatFormat.YELLOW.toString() + MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(getExtraDamage(stack.getItem()) + material.getAttackDamage())));
+                } else if (stack.getItem() == Materialisation.HAMMER_HEAD) {
+                    list.add(new TranslatableComponent("text.materialisation.head_part_speed", ChatFormat.YELLOW.toString() + MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(material.getToolSpeed() / 6f)));
+                    list.add(new TranslatableComponent("text.materialisation.head_part_durability", ChatFormat.YELLOW.toString() + MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(material.getToolDurability())));
+                    list.add(new TranslatableComponent("text.materialisation.head_part_damage", ChatFormat.YELLOW.toString() + MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(getExtraDamage(stack.getItem()) + material.getAttackDamage())));
+                } else if (stack.getItem() == Materialisation.MEGAAXE_HEAD) {
+                    list.add(new TranslatableComponent("text.materialisation.head_part_speed", ChatFormat.YELLOW.toString() + MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(material.getToolSpeed() / 6.5f)));
+                    list.add(new TranslatableComponent("text.materialisation.head_part_durability", ChatFormat.YELLOW.toString() + MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(material.getToolDurability())));
+                    list.add(new TranslatableComponent("text.materialisation.head_part_damage", ChatFormat.YELLOW.toString() + MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(getExtraDamage(stack.getItem()) + material.getAttackDamage())));
                 }
         } else if (stack.getOrCreateTag().containsKey("mt_material")) {
             PartMaterial material = MaterialisationUtils.getMaterialFromPart(stack);
@@ -102,6 +112,10 @@ public class ColoredItem extends Item {
                 } else if (stack.getItem() == Materialisation.SWORD_BLADE) {
                     list.add(new TranslatableComponent("text.materialisation.head_part_durability", ChatFormat.YELLOW.toString() + MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(material.getToolDurability())));
                     list.add(new TranslatableComponent("text.materialisation.head_part_damage", ChatFormat.YELLOW.toString() + MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(getExtraDamage(stack.getItem()) + material.getAttackDamage())));
+                } else if (stack.getItem() == Materialisation.HAMMER_HEAD) {
+                    list.add(new TranslatableComponent("text.materialisation.head_part_speed", ChatFormat.YELLOW.toString() + MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(material.getToolSpeed() / 6f)));
+                    list.add(new TranslatableComponent("text.materialisation.head_part_durability", ChatFormat.YELLOW.toString() + MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(material.getToolDurability())));
+                    list.add(new TranslatableComponent("text.materialisation.head_part_damage", ChatFormat.YELLOW.toString() + MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(getExtraDamage(stack.getItem()) + material.getAttackDamage())));
                 }
         }
     }
@@ -113,6 +127,10 @@ public class ColoredItem extends Item {
             return 2f;
         if (item == Materialisation.AXE_HEAD)
             return 7f;
+        if (item == Materialisation.MEGAAXE_HEAD)
+            return 10f;
+        if (item == Materialisation.HAMMER_HEAD)
+            return 9f;
         if (item == Materialisation.SHOVEL_HEAD)
             return 2.5f;
         return 0f;

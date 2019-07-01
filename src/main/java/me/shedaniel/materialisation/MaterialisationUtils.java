@@ -80,6 +80,8 @@ public class MaterialisationUtils {
     public static float getToolBreakingSpeed(ItemStack stack) {
         if (stack.getOrCreateTag().containsKey("mt_0_material") && stack.getOrCreateTag().containsKey("mt_1_material") && stack.getItem() == Materialisation.MATERIALISED_HAMMER)
             return getMatFromString(stack.getOrCreateTag().getString("mt_0_material")).map(PartMaterial::getBreakingSpeedMultiplier).orElse(0d).floatValue() * getMatFromString(stack.getOrCreateTag().getString("mt_1_material")).map(PartMaterial::getToolSpeed).orElse(0d).floatValue() / 6f;
+        if (stack.getOrCreateTag().containsKey("mt_0_material") && stack.getOrCreateTag().containsKey("mt_1_material") && stack.getItem() == Materialisation.MATERIALISED_MEGAAXE)
+            return getMatFromString(stack.getOrCreateTag().getString("mt_0_material")).map(PartMaterial::getBreakingSpeedMultiplier).orElse(0d).floatValue() * getMatFromString(stack.getOrCreateTag().getString("mt_1_material")).map(PartMaterial::getToolSpeed).orElse(0d).floatValue() / 6.5f;
         if (stack.getOrCreateTag().containsKey("mt_0_material") && stack.getOrCreateTag().containsKey("mt_1_material"))
             return getMatFromString(stack.getOrCreateTag().getString("mt_0_material")).map(PartMaterial::getBreakingSpeedMultiplier).orElse(0d).floatValue() * getMatFromString(stack.getOrCreateTag().getString("mt_1_material")).map(PartMaterial::getToolSpeed).orElse(0d).floatValue();
         if (stack.getOrCreateTag().containsKey("mt_handle_material") && stack.getOrCreateTag().containsKey("mt_axe_head_material"))
@@ -153,6 +155,9 @@ public class MaterialisationUtils {
             if (material == null && stack.getOrCreateTag().containsKey("mt_pickaxe_head_material"))
                 material = getMatFromString(stack.getOrCreateTag().getString("mt_pickaxe_head_material")).orElse(null);
             return material == null ? 0 : (float) material.getAttackDamage() + 2f;
+        }
+        if (stack.getItem() == Materialisation.MATERIALISED_MEGAAXE) {
+            return material == null ? 0 : (float) material.getAttackDamage() + 10f;
         }
         if (stack.getItem() == Materialisation.MATERIALISED_SWORD) {
             if (material == null && stack.getOrCreateTag().containsKey("mt_sword_blade_material"))
@@ -294,8 +299,12 @@ public class MaterialisationUtils {
         if (itemStack.getOrCreateTag().containsKey("mt_handle_bright"))
             return true;
         if (itemStack.getOrCreateTag().containsKey("mt_0_material"))
-            return MaterialisationUtils.getMatFromString(itemStack.getOrCreateTag().getString("mt_0_material")).map(PartMaterial::isBright).orElse(false);
+            return isNewHandleBright(itemStack);
         return MaterialisationUtils.getMatFromString(itemStack.getOrCreateTag().getString("mt_handle_material")).map(PartMaterial::isBright).orElse(false);
+    }
+    
+    public static boolean isNewHandleBright(ItemStack itemStack) {
+        return MaterialisationUtils.getMatFromString(itemStack.getOrCreateTag().getString("mt_0_material")).map(PartMaterial::isBright).orElse(false);
     }
     
     public static ItemStack createPickaxe(PartMaterial handle, PartMaterial pickaxeHead) {
@@ -344,6 +353,26 @@ public class MaterialisationUtils {
         tag.putBoolean("mt_done_tool", true);
         tag.putString("mt_0_material", handle.getIdentifier().toString());
         tag.putString("mt_1_material", hammerHead.getIdentifier().toString());
+        stack.setTag(tag);
+        return stack;
+    }
+    
+    public static ItemStack createMegaAxe(PartMaterial handle, PartMaterial megaAxeHead) {
+        ItemStack stack = new ItemStack(Materialisation.MATERIALISED_MEGAAXE);
+        CompoundTag tag = stack.getOrCreateTag();
+        tag.putBoolean("mt_done_tool", true);
+        tag.putString("mt_0_material", handle.getIdentifier().toString());
+        tag.putString("mt_1_material", megaAxeHead.getIdentifier().toString());
+        stack.setTag(tag);
+        return stack;
+    }
+    
+    public static ItemStack createMegaAxeHead(PartMaterial material) {
+        ItemStack stack = new ItemStack(Materialisation.MEGAAXE_HEAD);
+        CompoundTag tag = stack.getOrCreateTag();
+        tag.putString("mt_0_material", material.getIdentifier().toString());
+        if (material.isBright())
+            tag.putBoolean("mt_bright", true);
         stack.setTag(tag);
         return stack;
     }

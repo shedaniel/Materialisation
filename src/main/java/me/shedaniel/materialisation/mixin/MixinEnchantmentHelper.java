@@ -24,6 +24,7 @@ public class MixinEnchantmentHelper {
         if (itemStack_1.getItem() instanceof MaterialisedMiningTool) {
             MaterialisedMiningTool item_1 = (MaterialisedMiningTool) itemStack_1.getItem();
             int int_3 = item_1.getEnchantability(itemStack_1);
+            System.out.println(int_3);
             if (int_3 <= 0) {
                 callbackInfo.setReturnValue(0);
             } else {
@@ -46,6 +47,7 @@ public class MixinEnchantmentHelper {
             MaterialisedMiningTool item_1 = (MaterialisedMiningTool) itemStack_1.getItem();
             List<InfoEnchantment> list_1 = Lists.newArrayList();
             int int_2 = item_1.getEnchantability(itemStack_1);
+            System.out.println(int_2);
             if (int_2 <= 0) {
                 callbackInfo.setReturnValue(list_1);
             } else {

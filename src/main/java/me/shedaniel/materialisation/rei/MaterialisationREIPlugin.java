@@ -55,12 +55,18 @@ public class MaterialisationREIPlugin implements REIPluginEntry {
             itemStacks.forEach(stack -> stack.setAmount(MathHelper.ceil(16f / aFloat)));
             recipeHelper.registerDisplay(MATERIAL_PREPARER, new MaterialPreparerDisplay(new ItemStack(Materialisation.HAMMER_HEAD_PATTERN), itemStacks, MaterialisationUtils.createHammerHead(knownMaterial)));
         }));
+        PartMaterials.getKnownMaterials().forEach(knownMaterial -> knownMaterial.getIngredientMap().forEach((ingredient, aFloat) -> {
+            List<ItemStack> itemStacks = ingredient.getStacksList().stream().map(ItemStack::copy).collect(Collectors.toList());
+            itemStacks.forEach(stack -> stack.setAmount(MathHelper.ceil(64f / aFloat)));
+            recipeHelper.registerDisplay(MATERIAL_PREPARER, new MaterialPreparerDisplay(new ItemStack(Materialisation.MEGAAXE_HEAD_PATTERN), itemStacks, MaterialisationUtils.createMegaAxeHead(knownMaterial)));
+        }));
         PartMaterials.getKnownMaterials().forEach(handle -> PartMaterials.getKnownMaterials().forEach(head -> {
             recipeHelper.registerDisplay(MATERIALISING_TABLE, new MaterialisingTableDisplay(MaterialisationUtils.createToolHandle(handle), MaterialisationUtils.createAxeHead(head), MaterialisationUtils.createAxe(handle, head)));
             recipeHelper.registerDisplay(MATERIALISING_TABLE, new MaterialisingTableDisplay(MaterialisationUtils.createToolHandle(handle), MaterialisationUtils.createPickaxeHead(head), MaterialisationUtils.createPickaxe(handle, head)));
             recipeHelper.registerDisplay(MATERIALISING_TABLE, new MaterialisingTableDisplay(MaterialisationUtils.createToolHandle(handle), MaterialisationUtils.createShovelHead(head), MaterialisationUtils.createShovel(handle, head)));
             recipeHelper.registerDisplay(MATERIALISING_TABLE, new MaterialisingTableDisplay(MaterialisationUtils.createToolHandle(handle), MaterialisationUtils.createSwordBlade(head), MaterialisationUtils.createSword(handle, head)));
             recipeHelper.registerDisplay(MATERIALISING_TABLE, new MaterialisingTableDisplay(MaterialisationUtils.createToolHandle(handle), MaterialisationUtils.createHammerHead(head), MaterialisationUtils.createHammer(handle, head)));
+            recipeHelper.registerDisplay(MATERIALISING_TABLE, new MaterialisingTableDisplay(MaterialisationUtils.createToolHandle(handle), MaterialisationUtils.createMegaAxeHead(head), MaterialisationUtils.createMegaAxe(handle, head)));
         }));
     }
     
@@ -73,16 +79,19 @@ public class MaterialisationREIPlugin implements REIPluginEntry {
         PartMaterials.getKnownMaterials().map(MaterialisationUtils::createShovelHead).forEach(stack -> itemRegistry.registerItemStack(Materialisation.SHOVEL_HEAD, stack));
         PartMaterials.getKnownMaterials().map(MaterialisationUtils::createSwordBlade).forEach(stack -> itemRegistry.registerItemStack(Materialisation.SWORD_BLADE, stack));
         PartMaterials.getKnownMaterials().map(MaterialisationUtils::createHammerHead).forEach(stack -> itemRegistry.registerItemStack(Materialisation.HAMMER_HEAD, stack));
-        PartMaterials.getKnownMaterials().forEach(handle -> PartMaterials.getKnownMaterials().forEach(pickaxeHead -> itemRegistry.registerItemStack(Materialisation.MATERIALISED_PICKAXE, MaterialisationUtils.createPickaxe(handle, pickaxeHead))));
-        PartMaterials.getKnownMaterials().forEach(handle -> PartMaterials.getKnownMaterials().forEach(axeHead -> itemRegistry.registerItemStack(Materialisation.MATERIALISED_AXE, MaterialisationUtils.createAxe(handle, axeHead))));
-        PartMaterials.getKnownMaterials().forEach(handle -> PartMaterials.getKnownMaterials().forEach(shovelHead -> itemRegistry.registerItemStack(Materialisation.MATERIALISED_SHOVEL, MaterialisationUtils.createShovel(handle, shovelHead))));
-        PartMaterials.getKnownMaterials().forEach(handle -> PartMaterials.getKnownMaterials().forEach(swordBlade -> itemRegistry.registerItemStack(Materialisation.MATERIALISED_SWORD, MaterialisationUtils.createSword(handle, swordBlade))));
-        PartMaterials.getKnownMaterials().forEach(handle -> PartMaterials.getKnownMaterials().forEach(hammerHead -> itemRegistry.registerItemStack(Materialisation.MATERIALISED_HAMMER, MaterialisationUtils.createHammer(handle, hammerHead))));
+        PartMaterials.getKnownMaterials().map(MaterialisationUtils::createMegaAxeHead).forEach(stack -> itemRegistry.registerItemStack(Materialisation.MEGAAXE_HEAD, stack));
+        PartMaterials.getKnownMaterials().forEach(material -> itemRegistry.registerItemStack(Materialisation.MATERIALISED_PICKAXE, MaterialisationUtils.createPickaxe(material, material)));
+        PartMaterials.getKnownMaterials().forEach(material -> itemRegistry.registerItemStack(Materialisation.MATERIALISED_AXE, MaterialisationUtils.createAxe(material, material)));
+        PartMaterials.getKnownMaterials().forEach(material -> itemRegistry.registerItemStack(Materialisation.MATERIALISED_SHOVEL, MaterialisationUtils.createShovel(material, material)));
+        PartMaterials.getKnownMaterials().forEach(material -> itemRegistry.registerItemStack(Materialisation.MATERIALISED_SWORD, MaterialisationUtils.createSword(material, material)));
+        PartMaterials.getKnownMaterials().forEach(material -> itemRegistry.registerItemStack(Materialisation.MATERIALISED_HAMMER, MaterialisationUtils.createHammer(material, material)));
+        PartMaterials.getKnownMaterials().forEach(material -> itemRegistry.registerItemStack(Materialisation.MATERIALISED_MEGAAXE, MaterialisationUtils.createMegaAxe(material, material)));
         itemRegistry.getModifiableItemList().removeIf(stack -> stack.getItem() == Materialisation.MATERIALISED_PICKAXE && !stack.getOrCreateTag().containsKey("mt_done_tool") && !stack.getOrCreateTag().getBoolean("mt_done_tool"));
         itemRegistry.getModifiableItemList().removeIf(stack -> stack.getItem() == Materialisation.MATERIALISED_AXE && !stack.getOrCreateTag().containsKey("mt_done_tool") && !stack.getOrCreateTag().getBoolean("mt_done_tool"));
         itemRegistry.getModifiableItemList().removeIf(stack -> stack.getItem() == Materialisation.MATERIALISED_SHOVEL && !stack.getOrCreateTag().containsKey("mt_done_tool") && !stack.getOrCreateTag().getBoolean("mt_done_tool"));
         itemRegistry.getModifiableItemList().removeIf(stack -> stack.getItem() == Materialisation.MATERIALISED_SWORD && !stack.getOrCreateTag().containsKey("mt_done_tool") && !stack.getOrCreateTag().getBoolean("mt_done_tool"));
         itemRegistry.getModifiableItemList().removeIf(stack -> stack.getItem() == Materialisation.MATERIALISED_HAMMER && !stack.getOrCreateTag().containsKey("mt_done_tool") && !stack.getOrCreateTag().getBoolean("mt_done_tool"));
+        itemRegistry.getModifiableItemList().removeIf(stack -> stack.getItem() == Materialisation.MATERIALISED_MEGAAXE && !stack.getOrCreateTag().containsKey("mt_done_tool") && !stack.getOrCreateTag().getBoolean("mt_done_tool"));
         itemRegistry.getModifiableItemList().removeIf(stack -> stack.getItem() instanceof ColoredItem && !stack.getOrCreateTag().containsKey("mt_name_key") && !stack.getOrCreateTag().containsKey("mt_0_material") && !stack.getOrCreateTag().containsKey("mt_material"));
     }
     

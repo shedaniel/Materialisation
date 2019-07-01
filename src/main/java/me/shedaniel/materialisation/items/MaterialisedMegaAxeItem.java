@@ -1,5 +1,6 @@
 package me.shedaniel.materialisation.items;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.ModReference;
@@ -7,6 +8,7 @@ import me.shedaniel.materialisation.api.PartMaterial;
 import me.shedaniel.materialisation.mixin.MiningToolItemAccessor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.ChatFormat;
 import net.minecraft.block.*;
 import net.minecraft.client.item.TooltipContext;
@@ -22,55 +24,119 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
+import net.minecraft.tag.BlockTags;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
-import static me.shedaniel.materialisation.MaterialisationUtils.isHandleBright;
+import static me.shedaniel.materialisation.MaterialisationUtils.isNewHandleBright;
 
-public class MaterialisedAxeItem extends AxeItem implements MaterialisedMiningTool {
+public class MaterialisedMegaAxeItem extends AxeItem implements MaterialisedMiningTool {
     
     private static final Set<Block> EFFECTIVE_BLOCKS = Sets.newHashSet(new Block[]{Blocks.OAK_PLANKS, Blocks.SPRUCE_PLANKS, Blocks.BIRCH_PLANKS, Blocks.JUNGLE_PLANKS, Blocks.ACACIA_PLANKS, Blocks.DARK_OAK_PLANKS, Blocks.BOOKSHELF, Blocks.OAK_WOOD, Blocks.SPRUCE_WOOD, Blocks.BIRCH_WOOD, Blocks.JUNGLE_WOOD, Blocks.ACACIA_WOOD, Blocks.DARK_OAK_WOOD, Blocks.OAK_LOG, Blocks.SPRUCE_LOG, Blocks.BIRCH_LOG, Blocks.JUNGLE_LOG, Blocks.ACACIA_LOG, Blocks.DARK_OAK_LOG, Blocks.CHEST, Blocks.PUMPKIN, Blocks.CARVED_PUMPKIN, Blocks.JACK_O_LANTERN, Blocks.MELON, Blocks.LADDER, Blocks.SCAFFOLDING, Blocks.OAK_BUTTON, Blocks.SPRUCE_BUTTON, Blocks.BIRCH_BUTTON, Blocks.JUNGLE_BUTTON, Blocks.DARK_OAK_BUTTON, Blocks.ACACIA_BUTTON, Blocks.OAK_PRESSURE_PLATE, Blocks.SPRUCE_PRESSURE_PLATE, Blocks.BIRCH_PRESSURE_PLATE, Blocks.JUNGLE_PRESSURE_PLATE, Blocks.DARK_OAK_PRESSURE_PLATE, Blocks.ACACIA_PRESSURE_PLATE});
     
-    public MaterialisedAxeItem(Settings settings) {
-        super(MaterialisationUtils.DUMMY_MATERIAL, 0, -3.1F, settings.durability(0));
+    public MaterialisedMegaAxeItem(Settings settings) {
+        super(MaterialisationUtils.DUMMY_MATERIAL, 0, -3.65F, settings.durability(0));
         addProperty(new Identifier(ModReference.MOD_ID, "handle_isbright"), (itemStack, world, livingEntity) -> {
-            return isHandleBright(itemStack) ? 1f : 0f;
+            return isNewHandleBright(itemStack) ? 1f : 0f;
         });
         addProperty(new Identifier(ModReference.MOD_ID, "handle_isnotbright"), (itemStack, world, livingEntity) -> {
-            return !isHandleBright(itemStack) ? 1f : 0f;
+            return !isNewHandleBright(itemStack) ? 1f : 0f;
         });
-        addProperty(new Identifier(ModReference.MOD_ID, "axe_head_isbright"), (itemStack, world, livingEntity) -> {
+        addProperty(new Identifier(ModReference.MOD_ID, "megaaxe_head_isbright"), (itemStack, world, livingEntity) -> {
             return isHeadBright(itemStack) ? 1f : 0f;
         });
-        addProperty(new Identifier(ModReference.MOD_ID, "axe_head_isnotbright"), (itemStack, world, livingEntity) -> {
+        addProperty(new Identifier(ModReference.MOD_ID, "megaaxe_head_isnotbright"), (itemStack, world, livingEntity) -> {
             return !isHeadBright(itemStack) ? 1f : 0f;
         });
     }
     
     public boolean isHeadBright(ItemStack itemStack) {
-        if (itemStack.getOrCreateTag().containsKey("mt_axe_head_bright"))
+        return MaterialisationUtils.getMatFromString(itemStack.getOrCreateTag().getString("mt_1_material")).map(PartMaterial::isBright).orElse(false);
+    }
+    
+    @Override
+    public boolean beforeBlockBreak(BlockState blockState, World world, BlockPos pos, PlayerEntity player) {
+        if (world.isClient)
             return true;
-        if (itemStack.getOrCreateTag().containsKey("mt_1_material"))
-            return MaterialisationUtils.getMatFromString(itemStack.getOrCreateTag().getString("mt_1_material")).map(PartMaterial::isBright).orElse(false);
-        return MaterialisationUtils.getMatFromString(itemStack.getOrCreateTag().getString("mt_axe_head_material")).map(PartMaterial::isBright).orElse(false);
+        ItemStack mainHandStack = player.getMainHandStack();
+        if (player.isSneaking() || MaterialisationUtils.getToolDurability(mainHandStack) <= 0 || !isLogs(blockState))
+            return true;
+        Block log = blockState.getBlock();
+        AtomicReference<Block> leaves = new AtomicReference<>(null);
+        List<BlockPos> posList = Lists.newArrayList();
+        for(int x = -1; x <= 1; x++)
+            for(int y = -1; y <= 1; y++)
+                for(int z = -1; z <= 1; z++) {
+                    BlockPos add = pos.add(x, y, z);
+                    if (x != 0 || y != 0 || z != 0)
+                        tryBreak(posList, world, add, player, mainHandStack, pos, log, leaves);
+                }
+        return true;
+    }
+    
+    public void tryBreak(List<BlockPos> posList, World world, BlockPos blockPos, PlayerEntity player, ItemStack stack, BlockPos ogPos, Block log, AtomicReference<Block> leaves) {
+        if (posList.contains(blockPos) || blockPos.getManhattanDistance(ogPos) > 14 || MaterialisationUtils.getToolDurability(stack) <= 0)
+            return;
+        posList.add(blockPos);
+        BlockState state = world.getBlockState(blockPos);
+        Block block = state.getBlock();
+        if (Objects.isNull(leaves.get()) && isLeaves(state))
+            leaves.set(block);
+        boolean equalsLog = block.equals(log);
+        if (!equalsLog && !block.equals(leaves.get()))
+            return;
+        if (equalsLog && canBreak(stack, state)) {
+            world.breakBlock(blockPos, !player.isCreative());
+            takeDamage(world, state, blockPos, player, stack);
+        }
+        for(int x = -1; x <= 1; x++)
+            for(int y = -1; y <= 1; y++)
+                for(int z = -1; z <= 1; z++) {
+                    BlockPos add = blockPos.add(x, y, z);
+                    if (x != 0 || y != 0 || z != 0)
+                        tryBreak(posList, world, add, player, stack, ogPos, log, leaves);
+                }
+    }
+    
+    private boolean canBreak(ItemStack stack, BlockState state) {
+        TriState triState = MaterialisationUtils.mt_handleIsEffectiveOn(stack, state);
+        if (triState != TriState.DEFAULT) {
+            // If we are dealing with 3rd party blocks
+            return triState.get();
+        } else {
+            // Lastly if we are not dealing with 3rd party blocks with durability left
+            return ((MaterialisedMegaAxeItem) stack.getItem()).canEffectivelyBreak(stack, state);
+        }
+    }
+    
+    private void takeDamage(World world, BlockState blockState, BlockPos blockPos, PlayerEntity playerEntity, ItemStack stack) {
+        if (!world.isClient && blockState.getHardness(world, blockPos) != 0.0F)
+            if (!playerEntity.world.isClient && (!(playerEntity instanceof PlayerEntity) || !playerEntity.abilities.creativeMode))
+                if (MaterialisationUtils.getToolDurability(stack) > 0)
+                    MaterialisationUtils.applyDamage(stack, 1, playerEntity.getRand());
+    }
+    
+    private boolean isLogs(BlockState state) {
+        return BlockTags.LOGS.contains(state.getBlock());
+    }
+    
+    private boolean isLeaves(BlockState state) {
+        return BlockTags.LEAVES.contains(state.getBlock());
     }
     
     @Override
     public int getEnchantability(ItemStack stack) {
-        if (!stack.getOrCreateTag().containsKey("mt_axe_head_material") || !stack.getOrCreateTag().containsKey("mt_handle_material")) {
-            if (!stack.getOrCreateTag().containsKey("mt_0_material") || !stack.getOrCreateTag().containsKey("mt_1_material"))
-                return 0;
-            PartMaterial handle = MaterialisationUtils.getMaterialFromString(stack.getOrCreateTag().getString("mt_0_material"));
-            PartMaterial head = MaterialisationUtils.getMaterialFromString(stack.getOrCreateTag().getString("mt_1_material"));
-            return (handle.getEnchantability() + head.getEnchantability()) / 2;
-        }
-        PartMaterial handle = MaterialisationUtils.getMaterialFromString(stack.getOrCreateTag().getString("mt_handle_material"));
-        PartMaterial head = MaterialisationUtils.getMaterialFromString(stack.getOrCreateTag().getString("mt_axe_head_material"));
+        if (!stack.getOrCreateTag().containsKey("mt_0_material") || !stack.getOrCreateTag().containsKey("mt_1_material"))
+            return 0;
+        PartMaterial handle = MaterialisationUtils.getMaterialFromString(stack.getOrCreateTag().getString("mt_0_material"));
+        PartMaterial head = MaterialisationUtils.getMaterialFromString(stack.getOrCreateTag().getString("mt_1_material"));
         return (handle.getEnchantability() + head.getEnchantability()) / 2;
     }
     

@@ -28,6 +28,6 @@ public class MaterialisationClient implements ClientModInitializer {
         ClientSidePacketRegistry.INSTANCE.register(Materialisation.MATERIALISING_TABLE_PLAY_SOUND, (packetContext, packetByteBuf) -> {
             MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(SoundEvents.BLOCK_ANVIL_USE, 1, 1));
         });
-        ColorProviderRegistryImpl.ITEM.register(MaterialisationUtils::getItemLayerColor, Materialisation.MATERIALISED_PICKAXE, Materialisation.MATERIALISED_SHOVEL, Materialisation.MATERIALISED_AXE, Materialisation.MATERIALISED_SWORD, Materialisation.MATERIALISED_HAMMER, Materialisation.HAMMER_HEAD, Materialisation.HANDLE, Materialisation.SWORD_BLADE, Materialisation.SHOVEL_HEAD, Materialisation.PICKAXE_HEAD, Materialisation.AXE_HEAD);
+        ColorProviderRegistryImpl.ITEM.register(MaterialisationUtils::getItemLayerColor, Materialisation.MATERIALISED_MEGAAXE, Materialisation.MEGAAXE_HEAD, Materialisation.MATERIALISED_PICKAXE, Materialisation.MATERIALISED_SHOVEL, Materialisation.MATERIALISED_AXE, Materialisation.MATERIALISED_SWORD, Materialisation.MATERIALISED_HAMMER, Materialisation.HAMMER_HEAD, Materialisation.HANDLE, Materialisation.SWORD_BLADE, Materialisation.SHOVEL_HEAD, Materialisation.PICKAXE_HEAD, Materialisation.AXE_HEAD);
     }
 }

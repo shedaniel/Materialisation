@@ -1,0 +1,14 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "materialisation:item/megaaxe_head"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "materialisation:bright": 1
+      },
+      "model": "materialisation:item/megaaxe_head_bright"
+    }
+  ]
+}
