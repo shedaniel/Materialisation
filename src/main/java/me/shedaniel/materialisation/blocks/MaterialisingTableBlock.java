@@ -29,7 +29,7 @@ public class MaterialisingTableBlock extends HorizontalFacingBlock {
     
     @Override
     public BlockState getPlacementState(ItemPlacementContext placementContext) {
-        return getDefaultState().with(FACING, placementContext.getPlayerHorizontalFacing().getOpposite());
+        return getDefaultState().with(FACING, placementContext.getPlayerFacing().getOpposite());
     }
     
     @Override

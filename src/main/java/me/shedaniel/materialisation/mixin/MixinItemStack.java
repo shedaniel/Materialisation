@@ -9,6 +9,7 @@ import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -24,17 +25,20 @@ public abstract class MixinItemStack {
     @Shadow
     public abstract boolean hasEnchantments();
     
+    @Shadow
+    public abstract CompoundTag getTag();
+    
     /**
      * Disable italic on tools
      */
-    @Inject(method = "hasDisplayName", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "hasCustomName", at = @At("HEAD"), cancellable = true)
     public void hasDisplayName(CallbackInfoReturnable<Boolean> callbackInfo) {
         if (getItem() instanceof MaterialisedMiningTool)
             callbackInfo.setReturnValue(false);
     }
     
     @Inject(method = "getAttributeModifiers", at = @At(value = "INVOKE",
-                                                       target = "Lnet/minecraft/item/Item;getAttributeModifiers(Lnet/minecraft/entity/EquipmentSlot;)Lcom/google/common/collect/Multimap;",
+                                                       target = "Lnet/minecraft/item/Item;getModifiers(Lnet/minecraft/entity/EquipmentSlot;)Lcom/google/common/collect/Multimap;",
                                                        shift = At.Shift.BEFORE), cancellable = true)
     public void getAttributeModifiers(EquipmentSlot slot, CallbackInfoReturnable<Multimap<String, EntityAttributeModifier>> callbackInfo) {
         if (getItem() instanceof MaterialisedMiningTool) {
@@ -51,6 +55,14 @@ public abstract class MixinItemStack {
     public void isEnchantable(CallbackInfoReturnable<Boolean> returnable) {
         if (getItem() instanceof MaterialisedMiningTool)
             returnable.setReturnValue(!hasEnchantments());
+    }
+    
+    @Inject(method = "isDamageable", at = @At("HEAD"), cancellable = true)
+    public void isDamageable(CallbackInfoReturnable<Boolean> returnable) {
+        if (getItem() instanceof MaterialisedMiningTool) {
+            CompoundTag compoundTag_1 = getTag();
+            returnable.setReturnValue(compoundTag_1 == null || !compoundTag_1.getBoolean("Unbreakable"));
+        }
     }
     
 }

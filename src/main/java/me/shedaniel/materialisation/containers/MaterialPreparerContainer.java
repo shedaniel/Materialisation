@@ -54,15 +54,15 @@ public class MaterialPreparerContainer extends Container {
             }
             
             public boolean canTakeItems(PlayerEntity playerEntity_1) {
-                return hasStack() && main.getInvStack(0).getAmount() >= takingFirst && main.getInvStack(1).getAmount() >= takingSecond;
+                return hasStack() && main.getInvStack(0).getCount() >= takingFirst && main.getInvStack(1).getCount() >= takingSecond;
             }
             
             public ItemStack onTakeItem(PlayerEntity playerEntity_1, ItemStack itemStack_1) {
                 ItemStack first = main.getInvStack(0);
-                first.subtractAmount(takingFirst);
+                first.decrement(takingFirst);
                 main.setInvStack(0, first);
                 ItemStack second = main.getInvStack(1);
-                second.subtractAmount(takingSecond);
+                second.decrement(takingSecond);
                 main.setInvStack(1, second);
                 return itemStack_1;
             }
@@ -113,7 +113,7 @@ public class MaterialPreparerContainer extends Container {
                 else {
                     int itemsNeeded = MathHelper.ceil(4 / repairMultiplier);
                     takingSecond = itemsNeeded;
-                    if (second.getAmount() < itemsNeeded) {
+                    if (second.getCount() < itemsNeeded) {
                         this.result.setInvStack(0, ItemStack.EMPTY);
                     } else {
                         this.result.setInvStack(0, MaterialisationUtils.createPickaxeHead(material));
@@ -134,7 +134,7 @@ public class MaterialPreparerContainer extends Container {
                 else {
                     int itemsNeeded = MathHelper.ceil(1 / repairMultiplier);
                     takingSecond = itemsNeeded;
-                    if (second.getAmount() < itemsNeeded) {
+                    if (second.getCount() < itemsNeeded) {
                         this.result.setInvStack(0, ItemStack.EMPTY);
                     } else {
                         this.result.setInvStack(0, MaterialisationUtils.createToolHandle(material));
@@ -155,7 +155,7 @@ public class MaterialPreparerContainer extends Container {
                 else {
                     int itemsNeeded = MathHelper.ceil(4 / repairMultiplier);
                     takingSecond = itemsNeeded;
-                    if (second.getAmount() < itemsNeeded) {
+                    if (second.getCount() < itemsNeeded) {
                         this.result.setInvStack(0, ItemStack.EMPTY);
                     } else {
                         this.result.setInvStack(0, MaterialisationUtils.createAxeHead(material));
@@ -176,7 +176,7 @@ public class MaterialPreparerContainer extends Container {
                 else {
                     int itemsNeeded = MathHelper.ceil(4 / repairMultiplier);
                     takingSecond = itemsNeeded;
-                    if (second.getAmount() < itemsNeeded) {
+                    if (second.getCount() < itemsNeeded) {
                         this.result.setInvStack(0, ItemStack.EMPTY);
                     } else {
                         this.result.setInvStack(0, MaterialisationUtils.createShovelHead(material));
@@ -197,7 +197,7 @@ public class MaterialPreparerContainer extends Container {
                 else {
                     int itemsNeeded = MathHelper.ceil(4 / repairMultiplier);
                     takingSecond = itemsNeeded;
-                    if (second.getAmount() < itemsNeeded) {
+                    if (second.getCount() < itemsNeeded) {
                         this.result.setInvStack(0, ItemStack.EMPTY);
                     } else {
                         this.result.setInvStack(0, MaterialisationUtils.createSwordBlade(material));
@@ -218,7 +218,7 @@ public class MaterialPreparerContainer extends Container {
                 else {
                     int itemsNeeded = MathHelper.ceil(16 / repairMultiplier);
                     takingSecond = itemsNeeded;
-                    if (second.getAmount() < itemsNeeded) {
+                    if (second.getCount() < itemsNeeded) {
                         this.result.setInvStack(0, ItemStack.EMPTY);
                     } else {
                         this.result.setInvStack(0, MaterialisationUtils.createHammerHead(material));
@@ -239,7 +239,7 @@ public class MaterialPreparerContainer extends Container {
                 else {
                     int itemsNeeded = MathHelper.ceil(64 / repairMultiplier);
                     takingSecond = itemsNeeded;
-                    if (second.getAmount() < itemsNeeded) {
+                    if (second.getCount() < itemsNeeded) {
                         this.result.setInvStack(0, ItemStack.EMPTY);
                     } else {
                         this.result.setInvStack(0, MaterialisationUtils.createMegaAxeHead(material));
@@ -289,7 +289,7 @@ public class MaterialPreparerContainer extends Container {
                 slot_1.markDirty();
             }
             
-            if (itemStack_2.getAmount() == itemStack_1.getAmount()) {
+            if (itemStack_2.getCount() == itemStack_1.getCount()) {
                 return ItemStack.EMPTY;
             }
             

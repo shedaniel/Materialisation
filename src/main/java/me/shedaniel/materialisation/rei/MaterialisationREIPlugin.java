@@ -39,12 +39,12 @@ public class MaterialisationREIPlugin implements REIPluginEntry {
     public void registerRecipeDisplays(RecipeHelper recipeHelper) {
         PartMaterials.getKnownMaterials().forEach(knownMaterial -> knownMaterial.getIngredientMap().forEach((ingredient, aFloat) -> {
             List<ItemStack> itemStacks = ingredient.getStacksList().stream().map(ItemStack::copy).collect(Collectors.toList());
-            itemStacks.forEach(stack -> stack.setAmount(MathHelper.ceil(1f / aFloat)));
+            itemStacks.forEach(stack -> stack.setCount(MathHelper.ceil(1f / aFloat)));
             recipeHelper.registerDisplay(MATERIAL_PREPARER, new MaterialPreparerDisplay(new ItemStack(Materialisation.TOOL_HANDLE_PATTERN), itemStacks, MaterialisationUtils.createToolHandle(knownMaterial)));
         }));
         PartMaterials.getKnownMaterials().forEach(knownMaterial -> knownMaterial.getIngredientMap().forEach((ingredient, aFloat) -> {
             List<ItemStack> itemStacks = ingredient.getStacksList().stream().map(ItemStack::copy).collect(Collectors.toList());
-            itemStacks.forEach(stack -> stack.setAmount(MathHelper.ceil(4f / aFloat)));
+            itemStacks.forEach(stack -> stack.setCount(MathHelper.ceil(4f / aFloat)));
             recipeHelper.registerDisplay(MATERIAL_PREPARER, new MaterialPreparerDisplay(new ItemStack(Materialisation.AXE_HEAD_PATTERN), itemStacks, MaterialisationUtils.createAxeHead(knownMaterial)));
             recipeHelper.registerDisplay(MATERIAL_PREPARER, new MaterialPreparerDisplay(new ItemStack(Materialisation.PICKAXE_HEAD_PATTERN), itemStacks, MaterialisationUtils.createPickaxeHead(knownMaterial)));
             recipeHelper.registerDisplay(MATERIAL_PREPARER, new MaterialPreparerDisplay(new ItemStack(Materialisation.SHOVEL_HEAD_PATTERN), itemStacks, MaterialisationUtils.createShovelHead(knownMaterial)));
@@ -52,12 +52,12 @@ public class MaterialisationREIPlugin implements REIPluginEntry {
         }));
         PartMaterials.getKnownMaterials().forEach(knownMaterial -> knownMaterial.getIngredientMap().forEach((ingredient, aFloat) -> {
             List<ItemStack> itemStacks = ingredient.getStacksList().stream().map(ItemStack::copy).collect(Collectors.toList());
-            itemStacks.forEach(stack -> stack.setAmount(MathHelper.ceil(16f / aFloat)));
+            itemStacks.forEach(stack -> stack.setCount(MathHelper.ceil(16f / aFloat)));
             recipeHelper.registerDisplay(MATERIAL_PREPARER, new MaterialPreparerDisplay(new ItemStack(Materialisation.HAMMER_HEAD_PATTERN), itemStacks, MaterialisationUtils.createHammerHead(knownMaterial)));
         }));
         PartMaterials.getKnownMaterials().forEach(knownMaterial -> knownMaterial.getIngredientMap().forEach((ingredient, aFloat) -> {
             List<ItemStack> itemStacks = ingredient.getStacksList().stream().map(ItemStack::copy).collect(Collectors.toList());
-            itemStacks.forEach(stack -> stack.setAmount(MathHelper.ceil(64f / aFloat)));
+            itemStacks.forEach(stack -> stack.setCount(MathHelper.ceil(64f / aFloat)));
             recipeHelper.registerDisplay(MATERIAL_PREPARER, new MaterialPreparerDisplay(new ItemStack(Materialisation.MEGAAXE_HEAD_PATTERN), itemStacks, MaterialisationUtils.createMegaAxeHead(knownMaterial)));
         }));
         PartMaterials.getKnownMaterials().forEach(handle -> PartMaterials.getKnownMaterials().forEach(head -> {

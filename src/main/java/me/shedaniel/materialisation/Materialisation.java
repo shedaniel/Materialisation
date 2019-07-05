@@ -49,14 +49,14 @@ public class Materialisation implements ModInitializer {
     public static final Item SWORD_BLADE = new ColoredItem(new Item.Settings());
     public static final Item HAMMER_HEAD = new ColoredItem(new Item.Settings());
     public static final Item MEGAAXE_HEAD = new ColoredItem(new Item.Settings());
-    public static final Item BLANK_PATTERN = new PatternItem(new Item.Settings().itemGroup(ItemGroup.MATERIALS));
-    public static final Item TOOL_HANDLE_PATTERN = new PatternItem(new Item.Settings().itemGroup(ItemGroup.MATERIALS));
-    public static final Item PICKAXE_HEAD_PATTERN = new PatternItem(new Item.Settings().itemGroup(ItemGroup.MATERIALS));
-    public static final Item AXE_HEAD_PATTERN = new PatternItem(new Item.Settings().itemGroup(ItemGroup.MATERIALS));
-    public static final Item SHOVEL_HEAD_PATTERN = new PatternItem(new Item.Settings().itemGroup(ItemGroup.MATERIALS));
-    public static final Item SWORD_BLADE_PATTERN = new PatternItem(new Item.Settings().itemGroup(ItemGroup.MATERIALS));
-    public static final Item HAMMER_HEAD_PATTERN = new PatternItem(new Item.Settings().itemGroup(ItemGroup.MATERIALS));
-    public static final Item MEGAAXE_HEAD_PATTERN = new PatternItem(new Item.Settings().itemGroup(ItemGroup.MATERIALS));
+    public static final Item BLANK_PATTERN = new PatternItem(new Item.Settings().group(ItemGroup.MATERIALS));
+    public static final Item TOOL_HANDLE_PATTERN = new PatternItem(new Item.Settings().group(ItemGroup.MATERIALS));
+    public static final Item PICKAXE_HEAD_PATTERN = new PatternItem(new Item.Settings().group(ItemGroup.MATERIALS));
+    public static final Item AXE_HEAD_PATTERN = new PatternItem(new Item.Settings().group(ItemGroup.MATERIALS));
+    public static final Item SHOVEL_HEAD_PATTERN = new PatternItem(new Item.Settings().group(ItemGroup.MATERIALS));
+    public static final Item SWORD_BLADE_PATTERN = new PatternItem(new Item.Settings().group(ItemGroup.MATERIALS));
+    public static final Item HAMMER_HEAD_PATTERN = new PatternItem(new Item.Settings().group(ItemGroup.MATERIALS));
+    public static final Item MEGAAXE_HEAD_PATTERN = new PatternItem(new Item.Settings().group(ItemGroup.MATERIALS));
     public static MaterialisationConfig config;
     
     public static <T> Optional<T> getReflectionField(Object parent, Class<T> clazz, int index) {
@@ -123,7 +123,7 @@ public class Materialisation implements ModInitializer {
     }
     
     private void registerBlock(String name, Block block, ItemGroup group) {
-        registerBlock(name, block, new Item.Settings().itemGroup(group));
+        registerBlock(name, block, new Item.Settings().group(group));
     }
     
     private void registerBlock(String name, Block block, Item.Settings settings) {

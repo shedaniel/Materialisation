@@ -16,7 +16,7 @@ import net.minecraft.container.ContainerListener;
 import net.minecraft.container.Slot;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.chat.Component;
+import net.minecraft.text.Text;
 import net.minecraft.util.DefaultedList;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
@@ -27,7 +27,7 @@ public class MaterialisingTableScreen extends AbstractContainerScreen<Materialis
     private static final Identifier BG_TEX = new Identifier(ModReference.MOD_ID, "textures/gui/container/materialising_table.png");
     private TextFieldWidget nameField;
     
-    public MaterialisingTableScreen(MaterialisingTableContainer container, PlayerInventory inventory, Component title) {
+    public MaterialisingTableScreen(MaterialisingTableContainer container, PlayerInventory inventory, Text title) {
         super(container, inventory, title);
     }
     
@@ -76,7 +76,7 @@ public class MaterialisingTableScreen extends AbstractContainerScreen<Materialis
     protected void drawForeground(int int_1, int int_2) {
         GlStateManager.disableLighting();
         GlStateManager.disableBlend();
-        this.font.draw(this.title.getFormattedText(), 6f, 6f, 4210752);
+        this.font.draw(this.title.asFormattedString(), 6f, 6f, 4210752);
         GlStateManager.enableLighting();
     }
     
@@ -84,7 +84,7 @@ public class MaterialisingTableScreen extends AbstractContainerScreen<Materialis
         if (!string_1.isEmpty()) {
             String string_2 = string_1;
             Slot slot_1 = this.container.getSlot(2);
-            if (slot_1 != null && slot_1.hasStack() && !slot_1.getStack().hasDisplayName() && string_1.equals(slot_1.getStack().getDisplayName().getString())) {
+            if (slot_1 != null && slot_1.hasStack() && !slot_1.getStack().hasCustomName() && string_1.equals(slot_1.getStack().getName().getString())) {
                 string_2 = "";
             }
             
@@ -127,7 +127,7 @@ public class MaterialisingTableScreen extends AbstractContainerScreen<Materialis
     public void onContainerSlotUpdate(Container container, int i, ItemStack itemStack) {
         if (i == 2) {
             this.nameField.setChangedListener(null);
-            this.nameField.setText(!container.getSlot(i).hasStack() ? "" : itemStack.getDisplayName().getString());
+            this.nameField.setText(!container.getSlot(i).hasStack() ? "" : itemStack.getName().getString());
             this.nameField.setIsEditable(!itemStack.isEmpty());
             this.nameField.setChangedListener(this::onChangeName);
         }

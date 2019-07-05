@@ -6,7 +6,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screen.ingame.AbstractContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.chat.Component;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
@@ -14,7 +14,7 @@ public class MaterialPreparerScreen extends AbstractContainerScreen<MaterialPrep
     
     private static final Identifier BG_TEX = new Identifier(ModReference.MOD_ID, "textures/gui/container/material_preparer.png");
     
-    public MaterialPreparerScreen(MaterialPreparerContainer container, PlayerInventory inventory, Component title) {
+    public MaterialPreparerScreen(MaterialPreparerContainer container, PlayerInventory inventory, Text title) {
         super(container, inventory, title);
     }
     
@@ -37,7 +37,7 @@ public class MaterialPreparerScreen extends AbstractContainerScreen<MaterialPrep
     protected void drawForeground(int int_1, int int_2) {
         GlStateManager.disableLighting();
         GlStateManager.disableBlend();
-        this.font.draw(this.title.getFormattedText(), 6f, 6f, 4210752);
+        this.font.draw(this.title.asFormattedString(), 6f, 6f, 4210752);
         GlStateManager.enableLighting();
     }
     

@@ -5,7 +5,6 @@ import me.shedaniel.materialisation.ModReference;
 import me.shedaniel.materialisation.api.PartMaterial;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.ChatFormat;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -17,10 +16,11 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.stat.Stats;
 import net.minecraft.tag.BlockTags;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -32,17 +32,17 @@ import static me.shedaniel.materialisation.MaterialisationUtils.isHandleBright;
 public class MaterialisedSwordItem extends SwordItem implements MaterialisedMiningTool {
     
     public MaterialisedSwordItem(Settings settings) {
-        super(MaterialisationUtils.DUMMY_MATERIAL, 0, -2.4F, settings.durability(0));
-        addProperty(new Identifier(ModReference.MOD_ID, "handle_isbright"), (itemStack, world, livingEntity) -> {
+        super(MaterialisationUtils.DUMMY_MATERIAL, 0, -2.4F, settings.maxDamage(0));
+        addPropertyGetter(new Identifier(ModReference.MOD_ID, "handle_isbright"), (itemStack, world, livingEntity) -> {
             return isHandleBright(itemStack) ? 1f : 0f;
         });
-        addProperty(new Identifier(ModReference.MOD_ID, "handle_isnotbright"), (itemStack, world, livingEntity) -> {
+        addPropertyGetter(new Identifier(ModReference.MOD_ID, "handle_isnotbright"), (itemStack, world, livingEntity) -> {
             return !isHandleBright(itemStack) ? 1f : 0f;
         });
-        addProperty(new Identifier(ModReference.MOD_ID, "sword_head_isbright"), (itemStack, world, livingEntity) -> {
+        addPropertyGetter(new Identifier(ModReference.MOD_ID, "sword_head_isbright"), (itemStack, world, livingEntity) -> {
             return isHeadBright(itemStack) ? 1f : 0f;
         });
-        addProperty(new Identifier(ModReference.MOD_ID, "sword_head_isnotbright"), (itemStack, world, livingEntity) -> {
+        addPropertyGetter(new Identifier(ModReference.MOD_ID, "sword_head_isnotbright"), (itemStack, world, livingEntity) -> {
             return !isHeadBright(itemStack) ? 1f : 0f;
         });
     }
@@ -96,13 +96,13 @@ public class MaterialisedSwordItem extends SwordItem implements MaterialisedMini
     }
     
     @Override
-    public boolean onEntityDamaged(ItemStack stack, LivingEntity livingEntity_1, LivingEntity livingEntity_2) {
+    public boolean postHit(ItemStack stack, LivingEntity livingEntity_1, LivingEntity livingEntity_2) {
         if (!livingEntity_1.world.isClient && (!(livingEntity_1 instanceof PlayerEntity) || !((PlayerEntity) livingEntity_1).abilities.creativeMode))
             if (MaterialisationUtils.getToolDurability(stack) > 0)
                 if (MaterialisationUtils.applyDamage(stack, 1, livingEntity_1.getRand())) {
                     livingEntity_1.sendEquipmentBreakStatus(EquipmentSlot.MAINHAND);
                     Item item_1 = stack.getItem();
-                    stack.subtractAmount(1);
+                    stack.decrement(1);
                     if (livingEntity_1 instanceof PlayerEntity) {
                         ((PlayerEntity) livingEntity_1).incrementStat(Stats.BROKEN.getOrCreateStat(item_1));
                     }
@@ -112,14 +112,14 @@ public class MaterialisedSwordItem extends SwordItem implements MaterialisedMini
     }
     
     @Override
-    public boolean onBlockBroken(ItemStack stack, World world_1, BlockState blockState_1, BlockPos blockPos_1, LivingEntity livingEntity_1) {
+    public boolean postMine(ItemStack stack, World world_1, BlockState blockState_1, BlockPos blockPos_1, LivingEntity livingEntity_1) {
         if (!world_1.isClient && blockState_1.getHardness(world_1, blockPos_1) != 0.0F)
             if (!livingEntity_1.world.isClient && (!(livingEntity_1 instanceof PlayerEntity) || !((PlayerEntity) livingEntity_1).abilities.creativeMode))
                 if (MaterialisationUtils.getToolDurability(stack) > 0)
                     if (MaterialisationUtils.applyDamage(stack, 2, livingEntity_1.getRand())) {
                         livingEntity_1.sendEquipmentBreakStatus(EquipmentSlot.MAINHAND);
                         Item item_1 = stack.getItem();
-                        stack.subtractAmount(1);
+                        stack.decrement(1);
                         if (livingEntity_1 instanceof PlayerEntity) {
                             ((PlayerEntity) livingEntity_1).incrementStat(Stats.BROKEN.getOrCreateStat(item_1));
                         }
@@ -130,16 +130,16 @@ public class MaterialisedSwordItem extends SwordItem implements MaterialisedMini
     
     @Environment(EnvType.CLIENT)
     @Override
-    public void buildTooltip(ItemStack stack, World world_1, List<Component> list_1, TooltipContext tooltipContext_1) {
+    public void appendTooltip(ItemStack stack, World world_1, List<Text> list_1, TooltipContext tooltipContext_1) {
         int toolDurability = MaterialisationUtils.getToolDurability(stack);
         int maxDurability = MaterialisationUtils.getToolMaxDurability(stack);
-        list_1.add(new TranslatableComponent("text.materialisation.max_durability", maxDurability));
+        list_1.add(new TranslatableText("text.materialisation.max_durability", maxDurability));
         if (toolDurability > 0) {
             float percentage = toolDurability / (float) maxDurability * 100;
-            ChatFormat coloringPercentage = MaterialisationUtils.getColoringPercentage(percentage);
-            list_1.add(new TranslatableComponent("text.materialisation.durability", coloringPercentage.toString() + toolDurability, coloringPercentage.toString() + MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(percentage) + ChatFormat.WHITE.toString()));
+            Formatting coloringPercentage = MaterialisationUtils.getColoringPercentage(percentage);
+            list_1.add(new TranslatableText("text.materialisation.durability", coloringPercentage.toString() + toolDurability, coloringPercentage.toString() + MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(percentage) + Formatting.WHITE.toString()));
         } else
-            list_1.add(new TranslatableComponent("text.materialisation.broken"));
+            list_1.add(new TranslatableText("text.materialisation.broken"));
     }
     
 }

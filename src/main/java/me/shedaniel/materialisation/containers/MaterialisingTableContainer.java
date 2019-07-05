@@ -15,7 +15,7 @@ import net.minecraft.inventory.BasicInventory;
 import net.minecraft.inventory.CraftingResultInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.PacketByteBuf;
 import org.apache.commons.lang3.StringUtils;
 
@@ -55,7 +55,7 @@ public class MaterialisingTableContainer extends Container {
             public ItemStack onTakeItem(PlayerEntity playerEntity_1, ItemStack itemStack_1) {
                 main.setInvStack(0, ItemStack.EMPTY);
                 ItemStack stack = main.getInvStack(1);
-                stack.subtractAmount(1);
+                stack.decrement(1);
                 main.setInvStack(1, stack);
                 context.run((world, blockPos) -> {
                     ServerSidePacketRegistry.INSTANCE.sendToPlayer(playerEntity_1, Materialisation.MATERIALISING_TABLE_PLAY_SOUND, new PacketByteBuf(Unpooled.buffer()));
@@ -83,9 +83,9 @@ public class MaterialisingTableContainer extends Container {
         if (this.getSlot(2).hasStack()) {
             ItemStack itemStack_1 = this.getSlot(2).getStack();
             if (StringUtils.isBlank(string_1)) {
-                itemStack_1.removeDisplayName();
+                itemStack_1.removeCustomName();
             } else {
-                itemStack_1.setDisplayName(new TextComponent(this.itemName));
+                itemStack_1.setCustomName(new LiteralText(this.itemName));
             }
         }
         this.updateResult();
@@ -132,13 +132,13 @@ public class MaterialisingTableContainer extends Container {
                 MaterialisationUtils.setToolDurability(copy, Math.min(maxDurability, toolDurability + repairAmount));
             }
             if (StringUtils.isBlank(this.itemName)) {
-                if (copy.hasDisplayName())
-                    copy.removeDisplayName();
-            } else if (!this.itemName.equals(copy.getDisplayName().getString()))
-                if (itemName.equals(copy.getItem().getTranslatedNameTrimmed(copy)))
-                    copy.removeDisplayName();
+                if (copy.hasCustomName())
+                    copy.removeCustomName();
+            } else if (!this.itemName.equals(copy.getName().getString()))
+                if (itemName.equals(copy.getItem().getName(copy)))
+                    copy.removeCustomName();
                 else
-                    copy.setDisplayName(new TextComponent(this.itemName));
+                    copy.setCustomName(new LiteralText(this.itemName));
             this.result.setInvStack(0, copy);
         } else if (first.getItem() instanceof MaterialisedPickaxeItem) {
             // Fixing pickaxe
@@ -168,13 +168,13 @@ public class MaterialisingTableContainer extends Container {
                 MaterialisationUtils.setToolDurability(copy, Math.min(maxDurability, toolDurability + repairAmount));
             }
             if (StringUtils.isBlank(this.itemName)) {
-                if (copy.hasDisplayName())
-                    copy.removeDisplayName();
-            } else if (!this.itemName.equals(copy.getDisplayName().getString()))
-                if (itemName.equals(copy.getItem().getTranslatedNameTrimmed(copy)))
-                    copy.removeDisplayName();
+                if (copy.hasCustomName())
+                    copy.removeCustomName();
+            } else if (!this.itemName.equals(copy.getName().getString()))
+                if (itemName.equals(copy.getItem().getName(copy)))
+                    copy.removeCustomName();
                 else
-                    copy.setDisplayName(new TextComponent(this.itemName));
+                    copy.setCustomName(new LiteralText(this.itemName));
             this.result.setInvStack(0, copy);
         } else if (first.getItem() instanceof MaterialisedAxeItem) {
             // Fixing axe
@@ -204,13 +204,13 @@ public class MaterialisingTableContainer extends Container {
                 MaterialisationUtils.setToolDurability(copy, Math.min(maxDurability, toolDurability + repairAmount));
             }
             if (StringUtils.isBlank(this.itemName)) {
-                if (copy.hasDisplayName())
-                    copy.removeDisplayName();
-            } else if (!this.itemName.equals(copy.getDisplayName().getString()))
-                if (itemName.equals(copy.getItem().getTranslatedNameTrimmed(copy)))
-                    copy.removeDisplayName();
+                if (copy.hasCustomName())
+                    copy.removeCustomName();
+            } else if (!this.itemName.equals(copy.getName().getString()))
+                if (itemName.equals(copy.getItem().getName(copy)))
+                    copy.removeCustomName();
                 else
-                    copy.setDisplayName(new TextComponent(this.itemName));
+                    copy.setCustomName(new LiteralText(this.itemName));
             this.result.setInvStack(0, copy);
         } else if (first.getItem() instanceof MaterialisedShovelItem) {
             // Fixing shovel
@@ -240,13 +240,13 @@ public class MaterialisingTableContainer extends Container {
                 MaterialisationUtils.setToolDurability(copy, Math.min(maxDurability, toolDurability + repairAmount));
             }
             if (StringUtils.isBlank(this.itemName)) {
-                if (copy.hasDisplayName())
-                    copy.removeDisplayName();
-            } else if (!this.itemName.equals(copy.getDisplayName().getString()))
-                if (itemName.equals(copy.getItem().getTranslatedNameTrimmed(copy)))
-                    copy.removeDisplayName();
+                if (copy.hasCustomName())
+                    copy.removeCustomName();
+            } else if (!this.itemName.equals(copy.getName().getString()))
+                if (itemName.equals(copy.getItem().getName(copy)))
+                    copy.removeCustomName();
                 else
-                    copy.setDisplayName(new TextComponent(this.itemName));
+                    copy.setCustomName(new LiteralText(this.itemName));
             this.result.setInvStack(0, copy);
         } else if (first.getItem() instanceof MaterialisedSwordItem) {
             // Fixing sword
@@ -276,13 +276,13 @@ public class MaterialisingTableContainer extends Container {
                 MaterialisationUtils.setToolDurability(copy, Math.min(maxDurability, toolDurability + repairAmount));
             }
             if (StringUtils.isBlank(this.itemName)) {
-                if (copy.hasDisplayName())
-                    copy.removeDisplayName();
-            } else if (!this.itemName.equals(copy.getDisplayName().getString()))
-                if (itemName.equals(copy.getItem().getTranslatedNameTrimmed(copy)))
-                    copy.removeDisplayName();
+                if (copy.hasCustomName())
+                    copy.removeCustomName();
+            } else if (!this.itemName.equals(copy.getName().getString()))
+                if (itemName.equals(copy.getItem().getName(copy)))
+                    copy.removeCustomName();
                 else
-                    copy.setDisplayName(new TextComponent(this.itemName));
+                    copy.setCustomName(new LiteralText(this.itemName));
             this.result.setInvStack(0, copy);
         } else if (first.getItem() instanceof MaterialisedHammerItem) {
             // Fixing hammer
@@ -312,13 +312,13 @@ public class MaterialisingTableContainer extends Container {
                 MaterialisationUtils.setToolDurability(copy, Math.min(maxDurability, toolDurability + repairAmount));
             }
             if (StringUtils.isBlank(this.itemName)) {
-                if (copy.hasDisplayName())
-                    copy.removeDisplayName();
-            } else if (!this.itemName.equals(copy.getDisplayName().getString()))
-                if (itemName.equals(copy.getItem().getTranslatedNameTrimmed(copy)))
-                    copy.removeDisplayName();
+                if (copy.hasCustomName())
+                    copy.removeCustomName();
+            } else if (!this.itemName.equals(copy.getName().getString()))
+                if (itemName.equals(copy.getItem().getName(copy)))
+                    copy.removeCustomName();
                 else
-                    copy.setDisplayName(new TextComponent(this.itemName));
+                    copy.setCustomName(new LiteralText(this.itemName));
             this.result.setInvStack(0, copy);
         } else if ((first.getItem() == Materialisation.PICKAXE_HEAD && second.getItem() == Materialisation.HANDLE) || (first.getItem() == Materialisation.HANDLE && second.getItem() == Materialisation.PICKAXE_HEAD)) {
             // Crafting a pickaxe
@@ -334,13 +334,13 @@ public class MaterialisingTableContainer extends Container {
             } else {
                 ItemStack copy = MaterialisationUtils.createPickaxe(handleMaterial, headMaterial);
                 if (StringUtils.isBlank(this.itemName)) {
-                    if (copy.hasDisplayName())
-                        copy.removeDisplayName();
-                } else if (!this.itemName.equals(copy.getDisplayName().getString()))
-                    if (itemName.equals(copy.getItem().getTranslatedNameTrimmed(copy)))
-                        copy.removeDisplayName();
+                    if (copy.hasCustomName())
+                        copy.removeCustomName();
+                } else if (!this.itemName.equals(copy.getName().getString()))
+                    if (itemName.equals(copy.getItem().getName(copy)))
+                        copy.removeCustomName();
                     else
-                        copy.setDisplayName(new TextComponent(this.itemName));
+                        copy.setCustomName(new LiteralText(this.itemName));
                 this.result.setInvStack(0, copy);
             }
         } else if ((first.getItem() == Materialisation.AXE_HEAD && second.getItem() == Materialisation.HANDLE) || (first.getItem() == Materialisation.HANDLE && second.getItem() == Materialisation.AXE_HEAD)) {
@@ -357,13 +357,13 @@ public class MaterialisingTableContainer extends Container {
             } else {
                 ItemStack copy = MaterialisationUtils.createAxe(handleMaterial, headMaterial);
                 if (StringUtils.isBlank(this.itemName)) {
-                    if (copy.hasDisplayName())
-                        copy.removeDisplayName();
-                } else if (!this.itemName.equals(copy.getDisplayName().getString()))
-                    if (itemName.equals(copy.getItem().getTranslatedNameTrimmed(copy)))
-                        copy.removeDisplayName();
+                    if (copy.hasCustomName())
+                        copy.removeCustomName();
+                } else if (!this.itemName.equals(copy.getName().getString()))
+                    if (itemName.equals(copy.getItem().getName(copy)))
+                        copy.removeCustomName();
                     else
-                        copy.setDisplayName(new TextComponent(this.itemName));
+                        copy.setCustomName(new LiteralText(this.itemName));
                 this.result.setInvStack(0, copy);
             }
         } else if ((first.getItem() == Materialisation.SHOVEL_HEAD && second.getItem() == Materialisation.HANDLE) || (first.getItem() == Materialisation.HANDLE && second.getItem() == Materialisation.SHOVEL_HEAD)) {
@@ -380,13 +380,13 @@ public class MaterialisingTableContainer extends Container {
             } else {
                 ItemStack copy = MaterialisationUtils.createShovel(handleMaterial, headMaterial);
                 if (StringUtils.isBlank(this.itemName)) {
-                    if (copy.hasDisplayName())
-                        copy.removeDisplayName();
-                } else if (!this.itemName.equals(copy.getDisplayName().getString()))
-                    if (itemName.equals(copy.getItem().getTranslatedNameTrimmed(copy)))
-                        copy.removeDisplayName();
+                    if (copy.hasCustomName())
+                        copy.removeCustomName();
+                } else if (!this.itemName.equals(copy.getName().getString()))
+                    if (itemName.equals(copy.getItem().getName(copy)))
+                        copy.removeCustomName();
                     else
-                        copy.setDisplayName(new TextComponent(this.itemName));
+                        copy.setCustomName(new LiteralText(this.itemName));
                 this.result.setInvStack(0, copy);
             }
         } else if ((first.getItem() == Materialisation.SWORD_BLADE && second.getItem() == Materialisation.HANDLE) || (first.getItem() == Materialisation.HANDLE && second.getItem() == Materialisation.SWORD_BLADE)) {
@@ -403,13 +403,13 @@ public class MaterialisingTableContainer extends Container {
             } else {
                 ItemStack copy = MaterialisationUtils.createSword(handleMaterial, headMaterial);
                 if (StringUtils.isBlank(this.itemName)) {
-                    if (copy.hasDisplayName())
-                        copy.removeDisplayName();
-                } else if (!this.itemName.equals(copy.getDisplayName().getString()))
-                    if (itemName.equals(copy.getItem().getTranslatedNameTrimmed(copy)))
-                        copy.removeDisplayName();
+                    if (copy.hasCustomName())
+                        copy.removeCustomName();
+                } else if (!this.itemName.equals(copy.getName().getString()))
+                    if (itemName.equals(copy.getItem().getName(copy)))
+                        copy.removeCustomName();
                     else
-                        copy.setDisplayName(new TextComponent(this.itemName));
+                        copy.setCustomName(new LiteralText(this.itemName));
                 this.result.setInvStack(0, copy);
             }
         }else if ((first.getItem() == Materialisation.MEGAAXE_HEAD && second.getItem() == Materialisation.HANDLE) || (first.getItem() == Materialisation.HANDLE && second.getItem() == Materialisation.MEGAAXE_HEAD)) {
@@ -426,13 +426,13 @@ public class MaterialisingTableContainer extends Container {
             } else {
                 ItemStack copy = MaterialisationUtils.createMegaAxe(handleMaterial, headMaterial);
                 if (StringUtils.isBlank(this.itemName)) {
-                    if (copy.hasDisplayName())
-                        copy.removeDisplayName();
-                } else if (!this.itemName.equals(copy.getDisplayName().getString()))
-                    if (itemName.equals(copy.getItem().getTranslatedNameTrimmed(copy)))
-                        copy.removeDisplayName();
+                    if (copy.hasCustomName())
+                        copy.removeCustomName();
+                } else if (!this.itemName.equals(copy.getName().getString()))
+                    if (itemName.equals(copy.getItem().getName(copy)))
+                        copy.removeCustomName();
                     else
-                        copy.setDisplayName(new TextComponent(this.itemName));
+                        copy.setCustomName(new LiteralText(this.itemName));
                 this.result.setInvStack(0, copy);
             }
         } else if ((first.getItem() == Materialisation.HAMMER_HEAD && second.getItem() == Materialisation.HANDLE) || (first.getItem() == Materialisation.HANDLE && second.getItem() == Materialisation.HAMMER_HEAD)) {
@@ -449,13 +449,13 @@ public class MaterialisingTableContainer extends Container {
             } else {
                 ItemStack copy = MaterialisationUtils.createHammer(handleMaterial, headMaterial);
                 if (StringUtils.isBlank(this.itemName)) {
-                    if (copy.hasDisplayName())
-                        copy.removeDisplayName();
-                } else if (!this.itemName.equals(copy.getDisplayName().getString()))
-                    if (itemName.equals(copy.getItem().getTranslatedNameTrimmed(copy)))
-                        copy.removeDisplayName();
+                    if (copy.hasCustomName())
+                        copy.removeCustomName();
+                } else if (!this.itemName.equals(copy.getName().getString()))
+                    if (itemName.equals(copy.getItem().getName(copy)))
+                        copy.removeCustomName();
                     else
-                        copy.setDisplayName(new TextComponent(this.itemName));
+                        copy.setCustomName(new LiteralText(this.itemName));
                 this.result.setInvStack(0, copy);
             }
         } else {
@@ -499,7 +499,7 @@ public class MaterialisingTableContainer extends Container {
                 slot_1.markDirty();
             }
             
-            if (itemStack_2.getAmount() == itemStack_1.getAmount()) {
+            if (itemStack_2.getCount() == itemStack_1.getCount()) {
                 return ItemStack.EMPTY;
             }
             

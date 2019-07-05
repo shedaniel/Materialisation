@@ -2,10 +2,7 @@ package me.shedaniel.materialisation.mixin;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import me.shedaniel.materialisation.MaterialisationUtils;
-import me.shedaniel.materialisation.items.MaterialisedAxeItem;
 import me.shedaniel.materialisation.items.MaterialisedMiningTool;
-import me.shedaniel.materialisation.items.MaterialisedPickaxeItem;
-import me.shedaniel.materialisation.items.MaterialisedShovelItem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.font.TextRenderer;
