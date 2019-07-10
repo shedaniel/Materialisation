@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "package": "me.shedaniel.materialisation.mixin.optifine",
+  "compatibilityLevel": "JAVA_8",
+  "client": [
+    "MixinTitleScreen"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

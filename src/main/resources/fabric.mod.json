@@ -7,6 +7,7 @@
   "authors": [
     "Danielshe"
   ],
+  "icon": "icon.png",
   "contact": {
     "sources": "https://github.com/shedaniel/MaterialisedTools",
     "issues": "https://github.com/shedaniel/MaterialisedTools/issues"
@@ -34,6 +35,6 @@
     "fabricloader": ">=0.4.0"
   },
   "mixins": [
-    "materialisation.mixins.json"
+    "materialisation.plugin.mixins.json"
   ]
 }

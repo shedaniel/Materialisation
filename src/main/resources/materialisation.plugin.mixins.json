@@ -2,12 +2,8 @@
   "required": true,
   "package": "me.shedaniel.materialisation.mixin",
   "compatibilityLevel": "JAVA_8",
-  "mixins": [
-    "MiningToolItemAccessor",
-    "MixinPlayerInventory",
-    "MixinItemStack",
-    "MixinEnchantmentHelper"
-  ],
+  "plugin": "me.shedaniel.materialisation.MaterialisationMixinPlugin",
+  "refmap": "materialisation.plugin.refmap.json",
   "injectors": {
     "defaultRequire": 1
   }
