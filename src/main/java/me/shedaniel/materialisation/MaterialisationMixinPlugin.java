@@ -52,7 +52,6 @@ public class MaterialisationMixinPlugin implements IMixinConfigPlugin {
                     if ((method.name.equals("renderGuiItemOverlay") || method.name.equals("method_4022")) && method.desc.contains("String")) {
                         InsnList instructions = method.instructions;
                         AbstractInsnNode first = instructions.get(0);
-                        instructions.insertBefore(first, new VarInsnNode(Opcodes.ALOAD, 1)); // TextRenderer
                         instructions.insertBefore(first, new VarInsnNode(Opcodes.ALOAD, 2)); // ItemStack
                         instructions.insertBefore(first, new VarInsnNode(Opcodes.ILOAD, 3)); // x
                         instructions.insertBefore(first, new VarInsnNode(Opcodes.ILOAD, 4)); // y
