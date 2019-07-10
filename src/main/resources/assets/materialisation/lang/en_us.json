@@ -30,6 +30,7 @@
   "item.materialisation.pickaxe_head_pattern": "Pickaxe Head Pattern",
   "item.materialisation.megaaxe_head_pattern": "Mega Axe Head Pattern",
   "item.materialisation.sword_blade_pattern": "Sword Blade Pattern",
+  "item.materialisation.hammer_head_pattern": "Hammer Head Pattern",
   "container.materialisation.materialising_table": "Materialising Table",
   "container.materialisation.material_preparer": "Material Preparer",
   "text.materialisation.broken": "Current Durability: §cBroken",
