@@ -1,6 +1,7 @@
 {
+  "priority": 1010,
   "required": true,
-  "package": "me.shedaniel.materialisation.mixin",
+  "package": "me.shedaniel.materialisation.optifine.mixin",
   "compatibilityLevel": "JAVA_8",
   "plugin": "me.shedaniel.materialisation.MaterialisationMixinPlugin",
   "refmap": "materialisation.plugin.refmap.json",
