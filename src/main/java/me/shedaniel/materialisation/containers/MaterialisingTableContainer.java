@@ -53,8 +53,10 @@ public class MaterialisingTableContainer extends Container {
             }
             
             public ItemStack onTakeItem(PlayerEntity playerEntity_1, ItemStack itemStack_1) {
-                main.setInvStack(0, ItemStack.EMPTY);
-                ItemStack stack = main.getInvStack(1);
+                ItemStack stack = main.getInvStack(0).copy();
+                stack.decrement(1);
+                main.setInvStack(0, stack);
+                stack = main.getInvStack(1).copy();
                 stack.decrement(1);
                 main.setInvStack(1, stack);
                 context.run((world, blockPos) -> {
@@ -412,7 +414,7 @@ public class MaterialisingTableContainer extends Container {
                         copy.setCustomName(new LiteralText(this.itemName));
                 this.result.setInvStack(0, copy);
             }
-        }else if ((first.getItem() == Materialisation.MEGAAXE_HEAD && second.getItem() == Materialisation.HANDLE) || (first.getItem() == Materialisation.HANDLE && second.getItem() == Materialisation.MEGAAXE_HEAD)) {
+        } else if ((first.getItem() == Materialisation.MEGAAXE_HEAD && second.getItem() == Materialisation.HANDLE) || (first.getItem() == Materialisation.HANDLE && second.getItem() == Materialisation.MEGAAXE_HEAD)) {
             // Crafting a mega axe
             int handle = 0, head = 0;
             if (first.getItem() == Materialisation.HANDLE)
