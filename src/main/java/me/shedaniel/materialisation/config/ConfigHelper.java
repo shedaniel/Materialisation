@@ -30,9 +30,8 @@ import java.util.stream.Collectors;
 public class ConfigHelper {
     
     public static final ExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "Materialisation"));
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     public static final File CONFIG_DIRECTORY = new File(FabricLoader.getInstance().getConfigDirectory(), "materialisation");
-    public static final File OPTIFINE_IGNORE_FILE = new File(CONFIG_DIRECTORY, ".ignoreoptifine");
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final File MATERIALS_DIRECTORY = new File(CONFIG_DIRECTORY, "material");
     private static final File OLD_MATERIALS_DIRECTORY = new File(CONFIG_DIRECTORY, "materials");
     

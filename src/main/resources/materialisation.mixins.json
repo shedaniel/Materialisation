@@ -1,10 +1,10 @@
 {
+  "priority": 1010,
   "required": true,
   "package": "me.shedaniel.materialisation.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MiningToolItemAccessor",
-    "MixinPlayerInventory",
     "MixinItemStack",
     "MixinEnchantmentHelper"
   ],

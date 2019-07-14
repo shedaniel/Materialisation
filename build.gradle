@@ -3,7 +3,7 @@ plugins {
 }
 
 archivesBaseName = "Materialisation"
-version = "0.3.3"
+version = "0.3.4"
 
 def minecraftVersion = "1.14.3"
 def yarnBuild = "1"
@@ -52,10 +52,10 @@ dependencies {
     //    modImplementation "nether-things:netherthings:${netherthings_version}"
 
     // OptiFabric
-    modRuntime "optifabric:optifabric:0.4.0"
-    modRuntime 'org.zeroturnaround:zt-zip:1.13'
-    modRuntime('net.fabricmc:stitch:0.2.1.61') {
-        transitive = false
-    }
-    modRuntime 'com.github.Chocohead:Fabric-ASM:c4ad22d'
+//    modRuntime "optifabric:optifabric:0.4.0"
+//    modRuntime 'org.zeroturnaround:zt-zip:1.13'
+//    modRuntime('net.fabricmc:stitch:0.2.1.61') {
+//        transitive = false
+//    }
+//    modRuntime 'com.github.Chocohead:Fabric-ASM:c4ad22d'
 }

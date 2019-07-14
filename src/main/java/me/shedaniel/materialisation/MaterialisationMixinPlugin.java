@@ -33,7 +33,6 @@ public class MaterialisationMixinPlugin implements IMixinConfigPlugin {
     
     @Override
     public List<String> getMixins() {
-        Mixins.addConfiguration("materialisation.mixins.json");
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT)
             if (FabricLoader.getInstance().isModLoaded("optifabric")) {
                 System.out.println("[Materialisation] oh f**k it's time to support optifine...");
