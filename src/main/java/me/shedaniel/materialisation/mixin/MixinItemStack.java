@@ -12,10 +12,12 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.math.MathHelper;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ItemStack.class)
@@ -107,6 +109,36 @@ public abstract class MixinItemStack {
         if (getItem() instanceof MaterialisedMiningTool) {
             CompoundTag compoundTag_1 = getTag();
             returnable.setReturnValue(compoundTag_1 == null || !compoundTag_1.getBoolean("Unbreakable"));
+        }
+    }
+    
+    @Inject(method = "isDamaged", at = @At("HEAD"), cancellable = true)
+    public void isDamaged(CallbackInfoReturnable<Boolean> returnable) {
+        if (getItem() instanceof MaterialisedMiningTool)
+            returnable.setReturnValue(false);
+    }
+    
+    @Inject(method = "getDamage", at = @At("HEAD"), cancellable = true)
+    public void getDamage(CallbackInfoReturnable<Integer> returnable) {
+        if (getItem() instanceof MaterialisedMiningTool) {
+            int maxDurability = MaterialisationUtils.getToolMaxDurability((ItemStack) (Object) this);
+            returnable.setReturnValue(maxDurability - MaterialisationUtils.getToolDurability((ItemStack) (Object) this) - 1);
+        }
+    }
+    
+    @Inject(method = "getMaxDamage", at = @At("HEAD"), cancellable = true)
+    public void getMaxDamage(CallbackInfoReturnable<Integer> returnable) {
+        if (getItem() instanceof MaterialisedMiningTool)
+            returnable.setReturnValue(MaterialisationUtils.getToolMaxDurability((ItemStack) (Object) this) + 1);
+    }
+    
+    @Inject(method = "setDamage", at = @At("HEAD"), cancellable = true)
+    public void setDamage(int damage, CallbackInfo info) {
+        if (getItem() instanceof MaterialisedMiningTool) {
+            int maxDurability = MaterialisationUtils.getToolMaxDurability((ItemStack) (Object) this);
+            //            MaterialisationUtils.setToolDurability((ItemStack) (Object) this, maxDurability - MathHelper.clamp(damage, 0, maxDurability));
+            MaterialisationUtils.setToolDurability((ItemStack) (Object) this, MathHelper.clamp(damage + 1, 1, maxDurability + 1));
+            info.cancel();
         }
     }
     
