@@ -136,8 +136,8 @@ public abstract class MixinItemStack {
     public void setDamage(int damage, CallbackInfo info) {
         if (getItem() instanceof MaterialisedMiningTool) {
             int maxDurability = MaterialisationUtils.getToolMaxDurability((ItemStack) (Object) this);
-            //            MaterialisationUtils.setToolDurability((ItemStack) (Object) this, maxDurability - MathHelper.clamp(damage, 0, maxDurability));
-            MaterialisationUtils.setToolDurability((ItemStack) (Object) this, MathHelper.clamp(damage + 1, 1, maxDurability + 1));
+            MaterialisationUtils.setToolDurability((ItemStack) (Object) this, maxDurability - MathHelper.clamp(damage, 0, maxDurability));
+            //            MaterialisationUtils.setToolDurability((ItemStack) (Object) this, MathHelper.clamp(damage + 1, 1, maxDurability + 1));
             info.cancel();
         }
     }

@@ -1,5 +1,5 @@
 {
-  "priority": 1010,
+  "priority": 990,
   "required": true,
   "package": "me.shedaniel.materialisation.mixin",
   "compatibilityLevel": "JAVA_8",

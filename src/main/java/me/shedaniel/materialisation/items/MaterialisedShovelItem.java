@@ -107,7 +107,7 @@ public class MaterialisedShovelItem extends ShovelItem implements MaterialisedMi
     
     @Override
     public boolean canEffectivelyBreak(ItemStack itemStack, BlockState state) {
-        return ((MiningToolItemAccessor) itemStack.getItem()).getEffectiveBlocks().contains(state.getBlock()) || itemStack.isEffectiveOn(state);
+        return ((MiningToolItemAccessor) itemStack.getItem()).getEffectiveBlocks().contains(state.getBlock()) || isEffectiveOn(state);
     }
     
     @Override

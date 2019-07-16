@@ -124,7 +124,12 @@ public class MaterialisationUtils {
     }
     
     public static int getToolDurability(ItemStack stack) {
-        return stack.hasTag() && stack.getTag().containsKey("mt_durability") ? stack.getTag().getInt("mt_durability") : getToolMaxDurability(stack);
+        if (!stack.hasTag())
+            return getToolMaxDurability(stack);
+        CompoundTag tag = stack.getTag();
+        if (tag.containsKey("mt_durability"))
+            return stack.getTag().getInt("mt_durability");
+        return getToolMaxDurability(stack);
     }
     
     public static int getToolMaxDurability(ItemStack stack) {
