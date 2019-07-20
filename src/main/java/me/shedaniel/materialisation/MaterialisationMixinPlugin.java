@@ -2,6 +2,7 @@ package me.shedaniel.materialisation;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.MappingResolver;
 import org.spongepowered.asm.lib.Opcodes;
 import org.spongepowered.asm.lib.tree.*;
 import org.spongepowered.asm.mixin.Mixins;
@@ -45,20 +46,22 @@ public class MaterialisationMixinPlugin implements IMixinConfigPlugin {
     
     @Override
     public void preApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
+        MappingResolver mappingResolver = FabricLoader.getInstance().getMappingResolver();
+        String itemRenderer = mappingResolver.mapClassName("intermediary", "net.minecraft.class_918");
+        String textRenderer = mappingResolver.mapClassName("intermediary", "net.minecraft.class_327");
+        String itemStack = mappingResolver.mapClassName("intermediary", "net.minecraft.class_1799");
+        String description = "(L" + textRenderer.replace('.', '/') + ";L" + itemStack.replace('.', '/') + ";IILjava/lang/String;)V";
+        String renderGuiItemOverlay = mappingResolver.mapMethodName("intermediary", "net.minecraft.class_918", "method_4022", "(Lnet/minecraft/class_327;Lnet/minecraft/class_1799;IILjava/lang/String;)V");
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT || FabricLoader.getInstance().isModLoaded("optifabric")) {
-            if (targetClassName.equals("net.minecraft.client.render.item.ItemRenderer") || targetClassName.equals("net.minecraft.class_918"))
+            if (targetClassName.equals(itemRenderer))
                 for(MethodNode method : targetClass.methods) {
-                    if ((method.name.equals("renderGuiItemOverlay") || method.name.equals("method_4022")) && method.desc.contains("String")) {
+                    if (method.name.equals(renderGuiItemOverlay) && method.desc.equals(description)) {
                         InsnList instructions = method.instructions;
                         AbstractInsnNode first = instructions.get(0);
                         instructions.insertBefore(first, new VarInsnNode(Opcodes.ALOAD, 2)); // ItemStack
                         instructions.insertBefore(first, new VarInsnNode(Opcodes.ILOAD, 3)); // x
                         instructions.insertBefore(first, new VarInsnNode(Opcodes.ILOAD, 4)); // y
-                        MethodInsnNode render;
-                        if (targetClassName.equals("net.minecraft.class_918"))
-                            render = new MethodInsnNode(Opcodes.INVOKESTATIC, "me/shedaniel/materialisation/optifine/RealItemRenderer", "renderGuiItemOverlay", "(Lnet/minecraft/class_1799;II)V", false);
-                        else
-                            render = new MethodInsnNode(Opcodes.INVOKESTATIC, "me/shedaniel/materialisation/optifine/RealItemRenderer", "renderGuiItemOverlay", "(Lnet/minecraft/item/ItemStack;II)V", false);
+                        MethodInsnNode render = new MethodInsnNode(Opcodes.INVOKESTATIC, "me/shedaniel/materialisation/optifine/RealItemRenderer", "renderGuiItemOverlay", "(L" + itemStack.replace('.', '/') + ";II)V", false);
                         instructions.insertBefore(first, render);
                         break;
                     }
