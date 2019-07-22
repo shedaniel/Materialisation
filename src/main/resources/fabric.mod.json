@@ -31,7 +31,7 @@
       "me.shedaniel.materialisation.materials.NetherThingsMaterials"
     ]
   },
-  "requires": {
+  "depends": {
     "fabricloader": ">=0.4.0"
   },
   "mixins": [
