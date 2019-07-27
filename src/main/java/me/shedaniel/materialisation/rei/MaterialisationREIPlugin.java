@@ -19,22 +19,22 @@ import java.util.stream.Collectors;
 
 @Environment(EnvType.CLIENT)
 public class MaterialisationREIPlugin implements REIPluginEntry {
-    
+
     public static final Identifier PLUGIN = new Identifier(ModReference.MOD_ID, "rei_plugin");
     public static final Identifier MATERIAL_PREPARER = new Identifier(ModReference.MOD_ID, "material_preparer");
     public static final Identifier MATERIALISING_TABLE = new Identifier(ModReference.MOD_ID, "materialising_table");
-    
+
     @Override
     public Identifier getPluginIdentifier() {
         return PLUGIN;
     }
-    
+
     @Override
     public void registerPluginCategories(RecipeHelper recipeHelper) {
         recipeHelper.registerCategory(new MaterialPreparerCategory());
         recipeHelper.registerCategory(new MaterialisingTableCategory());
     }
-    
+
     @Override
     public void registerRecipeDisplays(RecipeHelper recipeHelper) {
         PartMaterials.getKnownMaterials().forEach(knownMaterial -> knownMaterial.getIngredientMap().forEach((ingredient, aFloat) -> {
@@ -69,7 +69,7 @@ public class MaterialisationREIPlugin implements REIPluginEntry {
             recipeHelper.registerDisplay(MATERIALISING_TABLE, new MaterialisingTableDisplay(MaterialisationUtils.createToolHandle(handle), MaterialisationUtils.createMegaAxeHead(head), MaterialisationUtils.createMegaAxe(handle, head)));
         }));
     }
-    
+
     @SuppressWarnings("deprecation")
     @Override
     public void registerItems(ItemRegistry itemRegistry) {
@@ -94,5 +94,5 @@ public class MaterialisationREIPlugin implements REIPluginEntry {
         itemRegistry.getModifiableItemList().removeIf(stack -> stack.getItem() == Materialisation.MATERIALISED_MEGAAXE && !stack.getOrCreateTag().containsKey("mt_done_tool") && !stack.getOrCreateTag().getBoolean("mt_done_tool"));
         itemRegistry.getModifiableItemList().removeIf(stack -> stack.getItem() instanceof ColoredItem && !stack.getOrCreateTag().containsKey("mt_name_key") && !stack.getOrCreateTag().containsKey("mt_0_material") && !stack.getOrCreateTag().containsKey("mt_material"));
     }
-    
+
 }

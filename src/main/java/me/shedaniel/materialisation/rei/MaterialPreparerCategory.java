@@ -24,29 +24,29 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class MaterialPreparerCategory implements RecipeCategory<MaterialPreparerDisplay> {
-    
+
     public static final ItemStackRenderer ICON = Renderable.fromItemStack(new ItemStack(Materialisation.MATERIAL_PREPARER));
-    
+
     @Override
     public Identifier getIdentifier() {
         return MaterialisationREIPlugin.MATERIAL_PREPARER;
     }
-    
+
     @Override
     public String getCategoryName() {
         return I18n.translate("category.materialisation.material_preparer");
     }
-    
+
     @Override
     public Renderer getIcon() {
         return ICON;
     }
-    
+
     @Override
     public boolean checkTags() {
         return true;
     }
-    
+
     @Override
     public List<Widget> setupDisplay(Supplier<MaterialPreparerDisplay> recipeDisplaySupplier, Rectangle bounds) {
         final Point startPoint = new Point((int) bounds.getCenterX() - 41, (int) bounds.getCenterY() - 13);
@@ -66,22 +66,22 @@ public class MaterialPreparerCategory implements RecipeCategory<MaterialPreparer
         widgets.add(new SlotWidget(startPoint.x + 61, startPoint.y + 5, Collections.singletonList(display.getResult()), false, true, true));
         return widgets;
     }
-    
+
     @Override
     public DisplaySettings getDisplaySettings() {
         return new DisplaySettings<MaterialPreparerDisplay>() {
             public int getDisplayHeight(RecipeCategory category) {
                 return 36;
             }
-            
+
             public int getDisplayWidth(RecipeCategory category, MaterialPreparerDisplay display) {
                 return 150;
             }
-            
+
             public int getMaximumRecipePerPage(RecipeCategory category) {
                 return 99;
             }
         };
     }
-    
+
 }

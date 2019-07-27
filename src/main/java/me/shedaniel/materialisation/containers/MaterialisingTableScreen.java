@@ -23,14 +23,14 @@ import net.minecraft.util.PacketByteBuf;
 
 @Environment(EnvType.CLIENT)
 public class MaterialisingTableScreen extends AbstractContainerScreen<MaterialisingTableContainer> implements ContainerListener {
-    
+
     private static final Identifier BG_TEX = new Identifier(ModReference.MOD_ID, "textures/gui/container/materialising_table.png");
     private TextFieldWidget nameField;
-    
+
     public MaterialisingTableScreen(MaterialisingTableContainer container, PlayerInventory inventory, Text title) {
         super(container, inventory, title);
     }
-    
+
     @Override
     protected void init() {
         super.init();
@@ -49,21 +49,21 @@ public class MaterialisingTableScreen extends AbstractContainerScreen<Materialis
         this.container.addListener(this);
         this.setInitialFocus(this.nameField);
     }
-    
+
     @Override
     public void resize(MinecraftClient minecraftClient_1, int int_1, int int_2) {
         String string_1 = this.nameField.getText();
         this.init(minecraftClient_1, int_1, int_2);
         this.nameField.setText(string_1);
     }
-    
+
     @Override
     public void removed() {
         super.removed();
         this.minecraft.keyboard.enableRepeatEvents(false);
         this.container.removeListener(this);
     }
-    
+
     @Override
     public boolean keyPressed(int int_1, int int_2, int int_3) {
         if (int_1 == 256) {
@@ -71,7 +71,7 @@ public class MaterialisingTableScreen extends AbstractContainerScreen<Materialis
         }
         return !this.nameField.keyPressed(int_1, int_2, int_3) && !this.nameField.method_20315() ? super.keyPressed(int_1, int_2, int_3) : true;
     }
-    
+
     @Override
     protected void drawForeground(int int_1, int int_2) {
         GlStateManager.disableLighting();
@@ -79,7 +79,7 @@ public class MaterialisingTableScreen extends AbstractContainerScreen<Materialis
         this.font.draw(this.title.asFormattedString(), 6f, 6f, 4210752);
         GlStateManager.enableLighting();
     }
-    
+
     private void onChangeName(String string_1) {
         if (!string_1.isEmpty()) {
             String string_2 = string_1;
@@ -87,14 +87,14 @@ public class MaterialisingTableScreen extends AbstractContainerScreen<Materialis
             if (slot_1 != null && slot_1.hasStack() && !slot_1.getStack().hasCustomName() && string_1.equals(slot_1.getStack().getName().getString())) {
                 string_2 = "";
             }
-            
+
             this.container.setNewItemName(string_2);
             PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
             buf.writeString(string_2);
             ClientSidePacketRegistry.INSTANCE.sendToServer(Materialisation.MATERIALISING_TABLE_RENAME, buf);
         }
     }
-    
+
     @Override
     protected void drawBackground(float v, int i, int i1) {
         GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -107,7 +107,7 @@ public class MaterialisingTableScreen extends AbstractContainerScreen<Materialis
             this.blit(int_3 + 99, int_4 + 45, this.containerWidth, 0, 28, 21);
         }
     }
-    
+
     @Override
     public void render(int int_1, int int_2, float float_1) {
         renderBackground();
@@ -117,12 +117,12 @@ public class MaterialisingTableScreen extends AbstractContainerScreen<Materialis
         GlStateManager.disableBlend();
         this.nameField.render(int_1, int_2, float_1);
     }
-    
+
     @Override
     public void onContainerRegistered(Container container, DefaultedList<ItemStack> defaultedList) {
         this.onContainerSlotUpdate(container, 2, container.getSlot(2).getStack());
     }
-    
+
     @Override
     public void onContainerSlotUpdate(Container container, int i, ItemStack itemStack) {
         if (i == 2) {
@@ -132,10 +132,10 @@ public class MaterialisingTableScreen extends AbstractContainerScreen<Materialis
             this.nameField.setChangedListener(this::onChangeName);
         }
     }
-    
+
     @Override
     public void onContainerPropertyUpdate(Container container, int i, int i1) {
-    
+
     }
-    
+
 }

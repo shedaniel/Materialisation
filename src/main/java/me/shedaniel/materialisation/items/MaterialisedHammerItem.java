@@ -36,7 +36,7 @@ import static me.shedaniel.materialisation.MaterialisationUtils.isHandleBright;
 import static net.minecraft.util.math.Direction.Axis.*;
 
 public class MaterialisedHammerItem extends PickaxeItem implements MaterialisedMiningTool {
-    
+
     public MaterialisedHammerItem(Settings settings) {
         super(MaterialisationUtils.DUMMY_MATERIAL, 0, -3.6F, settings.maxDamage(0));
         addPropertyGetter(new Identifier(ModReference.MOD_ID, "handle_isbright"), (itemStack, world, livingEntity) -> {
@@ -52,7 +52,7 @@ public class MaterialisedHammerItem extends PickaxeItem implements MaterialisedM
             return !isHeadBright(itemStack) ? 1f : 0f;
         });
     }
-    
+
     public boolean isHeadBright(ItemStack itemStack) {
         if (itemStack.getOrCreateTag().containsKey("mt_hammer_head_bright"))
             return true;
@@ -60,7 +60,7 @@ public class MaterialisedHammerItem extends PickaxeItem implements MaterialisedM
             return MaterialisationUtils.getMatFromString(itemStack.getOrCreateTag().getString("mt_1_material")).map(PartMaterial::isBright).orElse(false);
         return MaterialisationUtils.getMatFromString(itemStack.getOrCreateTag().getString("mt_hammer_head_material")).map(PartMaterial::isBright).orElse(false);
     }
-    
+
     @Override
     public boolean canEffectivelyBreak(ItemStack stack, BlockState state) {
         Block block_1 = state.getBlock();
@@ -77,23 +77,23 @@ public class MaterialisedHammerItem extends PickaxeItem implements MaterialisedM
             return int_1 >= 2;
         }
     }
-    
+
     @Override
     public float getToolBlockBreakingSpeed(ItemStack stack, BlockState state) {
         Material material = state.getMaterial();
         return material != Material.METAL && material != Material.ANVIL && material != Material.STONE ? (((MiningToolItemAccessor) stack.getItem()).getEffectiveBlocks().contains(state.getBlock()) ? MaterialisationUtils.getToolBreakingSpeed(stack) : 1.0F) : MaterialisationUtils.getToolBreakingSpeed(stack);
     }
-    
+
     @Override
     public double getAttackSpeed() {
         return attackSpeed;
     }
-    
+
     @Override
     public boolean canRepair(ItemStack itemStack_1, ItemStack itemStack_2) {
         return false;
     }
-    
+
     @Override
     public boolean postHit(ItemStack stack, LivingEntity livingEntity_1, LivingEntity livingEntity_2) {
         if (!livingEntity_1.world.isClient && (!(livingEntity_1 instanceof PlayerEntity) || !((PlayerEntity) livingEntity_1).abilities.creativeMode))
@@ -109,8 +109,8 @@ public class MaterialisedHammerItem extends PickaxeItem implements MaterialisedM
                 }
         return true;
     }
-    
-    
+
+
     @Override
     public boolean postMine(ItemStack stack, World world_1, BlockState blockState_1, BlockPos blockPos_1, LivingEntity livingEntity_1) {
         if (!world_1.isClient && blockState_1.getHardness(world_1, blockPos_1) != 0.0F)
@@ -127,7 +127,7 @@ public class MaterialisedHammerItem extends PickaxeItem implements MaterialisedM
                     }
         return true;
     }
-    
+
     @Override
     public int getEnchantability(ItemStack stack) {
         if (!stack.getOrCreateTag().containsKey("mt_hammer_head_material") || !stack.getOrCreateTag().containsKey("mt_handle_material")) {
@@ -141,7 +141,7 @@ public class MaterialisedHammerItem extends PickaxeItem implements MaterialisedM
         PartMaterial head = MaterialisationUtils.getMaterialFromString(stack.getOrCreateTag().getString("mt_hammer_head_material"));
         return (handle.getEnchantability() + head.getEnchantability()) / 2;
     }
-    
+
     @Override
     public boolean canMine(BlockState blockState, World world, BlockPos pos, PlayerEntity player) {
         if (world.isClient)
@@ -156,8 +156,8 @@ public class MaterialisedHammerItem extends PickaxeItem implements MaterialisedM
         Vec3d vec3d_3 = vec3d_1.add(vec3d_2.x * range, vec3d_2.y * range, vec3d_2.z * range);
         BlockHitResult hitResult = world.rayTrace(new RayTraceContext(vec3d_1, vec3d_3, RayTraceContext.ShapeType.OUTLINE, true ? RayTraceContext.FluidHandling.ANY : RayTraceContext.FluidHandling.NONE, player));
         Direction.Axis axis = hitResult.getSide().getAxis();
-        for(int i = -1; i <= 1; i++)
-            for(int j = -1; j <= 1; j++) {
+        for (int i = -1; i <= 1; i++)
+            for (int j = -1; j <= 1; j++) {
                 if (i != 0 || j != 0) {
                     if (MaterialisationUtils.getToolDurability(mainHandStack) <= 0)
                         return true;
@@ -173,7 +173,7 @@ public class MaterialisedHammerItem extends PickaxeItem implements MaterialisedM
             }
         return true;
     }
-    
+
     private boolean canBreak(ItemStack stack, BlockState state) {
         TriState triState = MaterialisationUtils.mt_handleIsEffectiveOn(stack, state);
         if (triState != TriState.DEFAULT) {
@@ -184,14 +184,14 @@ public class MaterialisedHammerItem extends PickaxeItem implements MaterialisedM
             return ((MaterialisedHammerItem) stack.getItem()).canEffectivelyBreak(stack, state);
         }
     }
-    
+
     private void takeDamage(World world, BlockState blockState, BlockPos blockPos, PlayerEntity playerEntity, ItemStack stack) {
         if (!world.isClient && blockState.getHardness(world, blockPos) != 0.0F)
             if (!playerEntity.world.isClient && (!(playerEntity instanceof PlayerEntity) || !playerEntity.abilities.creativeMode))
                 if (MaterialisationUtils.getToolDurability(stack) > 0)
                     MaterialisationUtils.applyDamage(stack, 1, playerEntity.getRand());
     }
-    
+
     @Environment(EnvType.CLIENT)
     @Override
     public void appendTooltip(ItemStack stack, World world_1, List<Text> list_1, TooltipContext tooltipContext_1) {
@@ -207,5 +207,5 @@ public class MaterialisedHammerItem extends PickaxeItem implements MaterialisedM
         list_1.add(new TranslatableText("text.materialisation.breaking_speed", MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(MaterialisationUtils.getToolBreakingSpeed(stack))));
         list_1.add(new TranslatableText("text.materialisation.mining_level", MaterialisationUtils.getToolMiningLevel(stack)));
     }
-    
+
 }

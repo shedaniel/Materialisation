@@ -17,21 +17,21 @@ public class MaterialisationMixinPlugin implements IMixinConfigPlugin {
     @Override
     public void onLoad(String mixinPackage) {
     }
-    
+
     @Override
     public String getRefMapperConfig() {
         return null;
     }
-    
+
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         return true;
     }
-    
+
     @Override
     public void acceptTargets(Set<String> myTargets, Set<String> otherTargets) {
     }
-    
+
     @Override
     public List<String> getMixins() {
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT)
@@ -43,7 +43,7 @@ public class MaterialisationMixinPlugin implements IMixinConfigPlugin {
             }
         return null;
     }
-    
+
     @Override
     public void preApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
         MappingResolver mappingResolver = FabricLoader.getInstance().getMappingResolver();
@@ -54,7 +54,7 @@ public class MaterialisationMixinPlugin implements IMixinConfigPlugin {
         String renderGuiItemOverlay = mappingResolver.mapMethodName("intermediary", "net.minecraft.class_918", "method_4022", "(Lnet/minecraft/class_327;Lnet/minecraft/class_1799;IILjava/lang/String;)V");
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT || FabricLoader.getInstance().isModLoaded("optifabric")) {
             if (targetClassName.equals(itemRenderer))
-                for(MethodNode method : targetClass.methods) {
+                for (MethodNode method : targetClass.methods) {
                     if (method.name.equals(renderGuiItemOverlay) && method.desc.equals(description)) {
                         InsnList instructions = method.instructions;
                         AbstractInsnNode first = instructions.get(0);
@@ -68,7 +68,7 @@ public class MaterialisationMixinPlugin implements IMixinConfigPlugin {
                 }
         }
     }
-    
+
     @Override
     public void postApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
     }

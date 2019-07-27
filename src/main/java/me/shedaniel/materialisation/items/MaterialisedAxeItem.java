@@ -33,9 +33,9 @@ import java.util.Set;
 import static me.shedaniel.materialisation.MaterialisationUtils.isHandleBright;
 
 public class MaterialisedAxeItem extends AxeItem implements MaterialisedMiningTool {
-    
+
     private static final Set<Block> EFFECTIVE_BLOCKS = Sets.newHashSet(new Block[]{Blocks.OAK_PLANKS, Blocks.SPRUCE_PLANKS, Blocks.BIRCH_PLANKS, Blocks.JUNGLE_PLANKS, Blocks.ACACIA_PLANKS, Blocks.DARK_OAK_PLANKS, Blocks.BOOKSHELF, Blocks.OAK_WOOD, Blocks.SPRUCE_WOOD, Blocks.BIRCH_WOOD, Blocks.JUNGLE_WOOD, Blocks.ACACIA_WOOD, Blocks.DARK_OAK_WOOD, Blocks.OAK_LOG, Blocks.SPRUCE_LOG, Blocks.BIRCH_LOG, Blocks.JUNGLE_LOG, Blocks.ACACIA_LOG, Blocks.DARK_OAK_LOG, Blocks.CHEST, Blocks.PUMPKIN, Blocks.CARVED_PUMPKIN, Blocks.JACK_O_LANTERN, Blocks.MELON, Blocks.LADDER, Blocks.SCAFFOLDING, Blocks.OAK_BUTTON, Blocks.SPRUCE_BUTTON, Blocks.BIRCH_BUTTON, Blocks.JUNGLE_BUTTON, Blocks.DARK_OAK_BUTTON, Blocks.ACACIA_BUTTON, Blocks.OAK_PRESSURE_PLATE, Blocks.SPRUCE_PRESSURE_PLATE, Blocks.BIRCH_PRESSURE_PLATE, Blocks.JUNGLE_PRESSURE_PLATE, Blocks.DARK_OAK_PRESSURE_PLATE, Blocks.ACACIA_PRESSURE_PLATE});
-    
+
     public MaterialisedAxeItem(Settings settings) {
         super(MaterialisationUtils.DUMMY_MATERIAL, 0, -3.1F, settings.maxDamage(0));
         addPropertyGetter(new Identifier(ModReference.MOD_ID, "handle_isbright"), (itemStack, world, livingEntity) -> {
@@ -51,7 +51,7 @@ public class MaterialisedAxeItem extends AxeItem implements MaterialisedMiningTo
             return !isHeadBright(itemStack) ? 1f : 0f;
         });
     }
-    
+
     public boolean isHeadBright(ItemStack itemStack) {
         if (itemStack.getOrCreateTag().containsKey("mt_axe_head_bright"))
             return true;
@@ -59,7 +59,7 @@ public class MaterialisedAxeItem extends AxeItem implements MaterialisedMiningTo
             return MaterialisationUtils.getMatFromString(itemStack.getOrCreateTag().getString("mt_1_material")).map(PartMaterial::isBright).orElse(false);
         return MaterialisationUtils.getMatFromString(itemStack.getOrCreateTag().getString("mt_axe_head_material")).map(PartMaterial::isBright).orElse(false);
     }
-    
+
     @Override
     public int getEnchantability(ItemStack stack) {
         if (!stack.getOrCreateTag().containsKey("mt_axe_head_material") || !stack.getOrCreateTag().containsKey("mt_handle_material")) {
@@ -73,23 +73,23 @@ public class MaterialisedAxeItem extends AxeItem implements MaterialisedMiningTo
         PartMaterial head = MaterialisationUtils.getMaterialFromString(stack.getOrCreateTag().getString("mt_axe_head_material"));
         return (handle.getEnchantability() + head.getEnchantability()) / 2;
     }
-    
+
     @Override
     public float getToolBlockBreakingSpeed(ItemStack stack, BlockState state) {
         Material material_1 = state.getMaterial();
         return material_1 != Material.WOOD && material_1 != Material.PLANT && material_1 != Material.REPLACEABLE_PLANT && material_1 != Material.BAMBOO ? (((MiningToolItemAccessor) stack.getItem()).getEffectiveBlocks().contains(state.getBlock()) ? MaterialisationUtils.getToolBreakingSpeed(stack) : 1.0F) : MaterialisationUtils.getToolBreakingSpeed(stack);
     }
-    
+
     @Override
     public double getAttackSpeed() {
         return attackSpeed;
     }
-    
+
     @Override
     public boolean canEffectivelyBreak(ItemStack itemStack, BlockState state) {
         return EFFECTIVE_BLOCKS.contains(state.getBlock());
     }
-    
+
     @Override
     public ActionResult useOnBlock(ItemUsageContext context) {
         World world = context.getWorld();
@@ -117,12 +117,12 @@ public class MaterialisedAxeItem extends AxeItem implements MaterialisedMiningTo
         }
         return ActionResult.PASS;
     }
-    
+
     @Override
     public boolean canRepair(ItemStack itemStack_1, ItemStack itemStack_2) {
         return false;
     }
-    
+
     @Override
     public boolean postHit(ItemStack stack, LivingEntity livingEntity_1, LivingEntity livingEntity_2) {
         if (!livingEntity_1.world.isClient && (!(livingEntity_1 instanceof PlayerEntity) || !((PlayerEntity) livingEntity_1).abilities.creativeMode))
@@ -138,7 +138,7 @@ public class MaterialisedAxeItem extends AxeItem implements MaterialisedMiningTo
                 }
         return true;
     }
-    
+
     @Override
     public boolean postMine(ItemStack stack, World world_1, BlockState blockState_1, BlockPos blockPos_1, LivingEntity livingEntity_1) {
         if (!world_1.isClient && blockState_1.getHardness(world_1, blockPos_1) != 0.0F)
@@ -155,7 +155,7 @@ public class MaterialisedAxeItem extends AxeItem implements MaterialisedMiningTo
                     }
         return true;
     }
-    
+
     @Environment(EnvType.CLIENT)
     @Override
     public void appendTooltip(ItemStack stack, World world_1, List<Text> list_1, TooltipContext tooltipContext_1) {
@@ -171,5 +171,5 @@ public class MaterialisedAxeItem extends AxeItem implements MaterialisedMiningTo
         list_1.add(new TranslatableText("text.materialisation.breaking_speed", MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(MaterialisationUtils.getToolBreakingSpeed(stack))));
         list_1.add(new TranslatableText("text.materialisation.mining_level", MaterialisationUtils.getToolMiningLevel(stack)));
     }
-    
+
 }

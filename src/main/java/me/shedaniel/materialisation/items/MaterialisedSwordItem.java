@@ -30,7 +30,7 @@ import java.util.List;
 import static me.shedaniel.materialisation.MaterialisationUtils.isHandleBright;
 
 public class MaterialisedSwordItem extends SwordItem implements MaterialisedMiningTool {
-    
+
     public MaterialisedSwordItem(Settings settings) {
         super(MaterialisationUtils.DUMMY_MATERIAL, 0, -2.4F, settings.maxDamage(0));
         addPropertyGetter(new Identifier(ModReference.MOD_ID, "handle_isbright"), (itemStack, world, livingEntity) -> {
@@ -46,7 +46,7 @@ public class MaterialisedSwordItem extends SwordItem implements MaterialisedMini
             return !isHeadBright(itemStack) ? 1f : 0f;
         });
     }
-    
+
     public boolean isHeadBright(ItemStack itemStack) {
         if (itemStack.getOrCreateTag().containsKey("mt_sword_blade_bright"))
             return true;
@@ -54,7 +54,7 @@ public class MaterialisedSwordItem extends SwordItem implements MaterialisedMini
             return MaterialisationUtils.getMatFromString(itemStack.getOrCreateTag().getString("mt_1_material")).map(PartMaterial::isBright).orElse(false);
         return MaterialisationUtils.getMatFromString(itemStack.getOrCreateTag().getString("mt_sword_blade_material")).map(PartMaterial::isBright).orElse(false);
     }
-    
+
     @Override
     public int getEnchantability(ItemStack stack) {
         if (!stack.getOrCreateTag().containsKey("mt_sword_blade_material") || !stack.getOrCreateTag().containsKey("mt_handle_material")) {
@@ -68,7 +68,7 @@ public class MaterialisedSwordItem extends SwordItem implements MaterialisedMini
         PartMaterial head = MaterialisationUtils.getMaterialFromString(stack.getOrCreateTag().getString("mt_sword_blade_material"));
         return (handle.getEnchantability() + head.getEnchantability()) / 2;
     }
-    
+
     @Override
     public float getToolBlockBreakingSpeed(ItemStack stack, BlockState state) {
         Block block_1 = state.getBlock();
@@ -79,22 +79,22 @@ public class MaterialisedSwordItem extends SwordItem implements MaterialisedMini
             return material_1 != Material.PLANT && material_1 != Material.REPLACEABLE_PLANT && material_1 != Material.UNUSED_PLANT && !state.matches(BlockTags.LEAVES) && material_1 != Material.PUMPKIN ? 1.0F : 1.5F;
         }
     }
-    
+
     @Override
     public double getAttackSpeed() {
         return -2.4f;
     }
-    
+
     @Override
     public boolean canEffectivelyBreak(ItemStack itemStack, BlockState state) {
         return state.getBlock() == Blocks.COBWEB;
     }
-    
+
     @Override
     public boolean canRepair(ItemStack itemStack_1, ItemStack itemStack_2) {
         return false;
     }
-    
+
     @Override
     public boolean postHit(ItemStack stack, LivingEntity livingEntity_1, LivingEntity livingEntity_2) {
         if (!livingEntity_1.world.isClient && (!(livingEntity_1 instanceof PlayerEntity) || !((PlayerEntity) livingEntity_1).abilities.creativeMode))
@@ -110,7 +110,7 @@ public class MaterialisedSwordItem extends SwordItem implements MaterialisedMini
                 }
         return true;
     }
-    
+
     @Override
     public boolean postMine(ItemStack stack, World world_1, BlockState blockState_1, BlockPos blockPos_1, LivingEntity livingEntity_1) {
         if (!world_1.isClient && blockState_1.getHardness(world_1, blockPos_1) != 0.0F)
@@ -127,7 +127,7 @@ public class MaterialisedSwordItem extends SwordItem implements MaterialisedMini
                     }
         return true;
     }
-    
+
     @Environment(EnvType.CLIENT)
     @Override
     public void appendTooltip(ItemStack stack, World world_1, List<Text> list_1, TooltipContext tooltipContext_1) {
@@ -141,5 +141,5 @@ public class MaterialisedSwordItem extends SwordItem implements MaterialisedMini
         } else
             list_1.add(new TranslatableText("text.materialisation.broken"));
     }
-    
+
 }

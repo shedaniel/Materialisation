@@ -27,40 +27,40 @@ import java.util.UUID;
 import static net.minecraft.util.math.MathHelper.floor;
 
 public class MaterialisationUtils {
-    
+
     public static final NumberFormat TWO_DECIMAL_FORMATTER = new DecimalFormat("#.##");
     public static final ToolMaterial DUMMY_MATERIAL = new ToolMaterial() {
         @Override
         public int getDurability() {
             return 0;
         }
-        
+
         @Override
         public float getMiningSpeed() {
             return 1;
         }
-        
+
         @Override
         public float getAttackDamage() {
             return 0;
         }
-        
+
         @Override
         public int getMiningLevel() {
             return 0;
         }
-        
+
         @Override
         public int getEnchantability() {
             return 0;
         }
-        
+
         @Override
         public Ingredient getRepairIngredient() {
             return Ingredient.EMPTY;
         }
     };
-    
+
     public static Formatting getColoring(double f) {
         if (f == 1d)
             return Formatting.GOLD;
@@ -68,7 +68,7 @@ public class MaterialisationUtils {
             return Formatting.GREEN;
         return Formatting.RED;
     }
-    
+
     public static Formatting getColoringPercentage(double f) {
         if (f >= 70d)
             return Formatting.GREEN;
@@ -76,7 +76,7 @@ public class MaterialisationUtils {
             return Formatting.GOLD;
         return Formatting.RED;
     }
-    
+
     public static float getToolBreakingSpeed(ItemStack stack) {
         if (!stack.hasTag())
             return 0;
@@ -101,7 +101,7 @@ public class MaterialisationUtils {
             return tag.getFloat("mt_breakingspeed");
         return 0f;
     }
-    
+
     public static int getToolMiningLevel(ItemStack stack) {
         if (!stack.hasTag())
             return 0;
@@ -122,7 +122,7 @@ public class MaterialisationUtils {
             return tag.getInt("mt_mininglevel");
         return 0;
     }
-    
+
     public static int getToolDurability(ItemStack stack) {
         if (!stack.hasTag())
             return getToolMaxDurability(stack);
@@ -131,7 +131,7 @@ public class MaterialisationUtils {
             return stack.getTag().getInt("mt_durability");
         return getToolMaxDurability(stack);
     }
-    
+
     public static int getToolMaxDurability(ItemStack stack) {
         if (!stack.hasTag())
             return 1;
@@ -152,7 +152,7 @@ public class MaterialisationUtils {
             return tag.getInt("mt_maxdurability");
         return 1;
     }
-    
+
     public static float getToolAttackDamage(ItemStack stack) {
         if (!stack.hasTag())
             return 0;
@@ -190,7 +190,7 @@ public class MaterialisationUtils {
             return tag.getFloat("mt_damage");
         return 0f;
     }
-    
+
     public static int getItemLayerColor(ItemStack stack, int layer) {
         if (!stack.hasTag())
             return -1;
@@ -217,13 +217,13 @@ public class MaterialisationUtils {
                 return getMatFromString(tag.getString("mt_hammer_head_material")).map(PartMaterial::getToolColor).orElse(-1);
         return -1;
     }
-    
+
     public static void setToolDurability(ItemStack stack, int i) {
         CompoundTag tag = stack.getOrCreateTag();
         tag.putInt("mt_durability", Math.min(i, getToolMaxDurability(stack)));
         stack.setTag(tag);
     }
-    
+
     public static boolean applyDamage(ItemStack stack, int int_1, Random random_1) {
         if (getToolDurability(stack) <= 0) {
             return false;
@@ -232,7 +232,7 @@ public class MaterialisationUtils {
             if (int_1 > 0) {
                 int_2 = EnchantmentHelper.getLevel(Enchantments.UNBREAKING, stack);
                 int int_3 = 0;
-                for(int int_4 = 0; int_2 > 0 && int_4 < int_1; ++int_4)
+                for (int int_4 = 0; int_2 > 0 && int_4 < int_1; ++int_4)
                     if (UnbreakingEnchantment.shouldPreventDamage(stack, int_2, random_1))
                         ++int_3;
                 int_1 -= int_3;
@@ -244,7 +244,7 @@ public class MaterialisationUtils {
             return int_2 < getToolDurability(stack);
         }
     }
-    
+
     public static ItemStack createToolHandle(PartMaterial material) {
         ItemStack stack = new ItemStack(Materialisation.HANDLE);
         CompoundTag tag = stack.getOrCreateTag();
@@ -254,7 +254,7 @@ public class MaterialisationUtils {
         stack.setTag(tag);
         return stack;
     }
-    
+
     public static ItemStack createAxeHead(PartMaterial material) {
         ItemStack stack = new ItemStack(Materialisation.AXE_HEAD);
         CompoundTag tag = stack.getOrCreateTag();
@@ -264,7 +264,7 @@ public class MaterialisationUtils {
         stack.setTag(tag);
         return stack;
     }
-    
+
     public static ItemStack createPickaxeHead(PartMaterial material) {
         ItemStack stack = new ItemStack(Materialisation.PICKAXE_HEAD);
         CompoundTag tag = stack.getOrCreateTag();
@@ -274,7 +274,7 @@ public class MaterialisationUtils {
         stack.setTag(tag);
         return stack;
     }
-    
+
     public static ItemStack createShovelHead(PartMaterial material) {
         ItemStack stack = new ItemStack(Materialisation.SHOVEL_HEAD);
         CompoundTag tag = stack.getOrCreateTag();
@@ -284,7 +284,7 @@ public class MaterialisationUtils {
         stack.setTag(tag);
         return stack;
     }
-    
+
     public static ItemStack createSwordBlade(PartMaterial material) {
         ItemStack stack = new ItemStack(Materialisation.SWORD_BLADE);
         CompoundTag tag = stack.getOrCreateTag();
@@ -294,7 +294,7 @@ public class MaterialisationUtils {
         stack.setTag(tag);
         return stack;
     }
-    
+
     public static PartMaterial getMaterialFromPart(ItemStack stack) {
         if (stack.getOrCreateTag().containsKey("mt_0_material"))
             return getMaterialFromString(stack.getOrCreateTag().getString("mt_0_material"));
@@ -303,17 +303,17 @@ public class MaterialisationUtils {
         else
             return null;
     }
-    
+
     public static PartMaterial getMaterialFromString(String s) {
         return getMatFromString(s).orElse(null);
     }
-    
+
     public static Optional<PartMaterial> getMatFromString(String s) {
         Identifier identifier = new Identifier(s);
         Optional<PartMaterial> any = PartMaterials.getKnownMaterials().filter(mat -> mat.getIdentifier().equals(identifier)).findAny();
         return any;
     }
-    
+
     public static boolean isHandleBright(ItemStack itemStack) {
         if (itemStack.getOrCreateTag().containsKey("mt_handle_bright"))
             return true;
@@ -321,11 +321,11 @@ public class MaterialisationUtils {
             return isNewHandleBright(itemStack);
         return MaterialisationUtils.getMatFromString(itemStack.getOrCreateTag().getString("mt_handle_material")).map(PartMaterial::isBright).orElse(false);
     }
-    
+
     public static boolean isNewHandleBright(ItemStack itemStack) {
         return MaterialisationUtils.getMatFromString(itemStack.getOrCreateTag().getString("mt_0_material")).map(PartMaterial::isBright).orElse(false);
     }
-    
+
     public static ItemStack createPickaxe(PartMaterial handle, PartMaterial pickaxeHead) {
         ItemStack stack = new ItemStack(Materialisation.MATERIALISED_PICKAXE);
         CompoundTag tag = stack.getOrCreateTag();
@@ -335,7 +335,7 @@ public class MaterialisationUtils {
         stack.setTag(tag);
         return stack;
     }
-    
+
     public static ItemStack createAxe(PartMaterial handle, PartMaterial axeHead) {
         ItemStack stack = new ItemStack(Materialisation.MATERIALISED_AXE);
         CompoundTag tag = stack.getOrCreateTag();
@@ -345,7 +345,7 @@ public class MaterialisationUtils {
         stack.setTag(tag);
         return stack;
     }
-    
+
     public static ItemStack createShovel(PartMaterial handle, PartMaterial shovelHead) {
         ItemStack stack = new ItemStack(Materialisation.MATERIALISED_SHOVEL);
         CompoundTag tag = stack.getOrCreateTag();
@@ -355,7 +355,7 @@ public class MaterialisationUtils {
         stack.setTag(tag);
         return stack;
     }
-    
+
     public static ItemStack createSword(PartMaterial handle, PartMaterial swordBlade) {
         ItemStack stack = new ItemStack(Materialisation.MATERIALISED_SWORD);
         CompoundTag tag = stack.getOrCreateTag();
@@ -365,7 +365,7 @@ public class MaterialisationUtils {
         stack.setTag(tag);
         return stack;
     }
-    
+
     public static ItemStack createHammer(PartMaterial handle, PartMaterial hammerHead) {
         ItemStack stack = new ItemStack(Materialisation.MATERIALISED_HAMMER);
         CompoundTag tag = stack.getOrCreateTag();
@@ -375,7 +375,7 @@ public class MaterialisationUtils {
         stack.setTag(tag);
         return stack;
     }
-    
+
     public static ItemStack createMegaAxe(PartMaterial handle, PartMaterial megaAxeHead) {
         ItemStack stack = new ItemStack(Materialisation.MATERIALISED_MEGAAXE);
         CompoundTag tag = stack.getOrCreateTag();
@@ -385,7 +385,7 @@ public class MaterialisationUtils {
         stack.setTag(tag);
         return stack;
     }
-    
+
     public static ItemStack createMegaAxeHead(PartMaterial material) {
         ItemStack stack = new ItemStack(Materialisation.MEGAAXE_HEAD);
         CompoundTag tag = stack.getOrCreateTag();
@@ -395,18 +395,18 @@ public class MaterialisationUtils {
         stack.setTag(tag);
         return stack;
     }
-    
+
     public static TriState mt_handleIsEffectiveOn(ItemStack stack, BlockState state) {
         ToolManager.Entry entry = (ToolManager.Entry) ToolManager.entry(state.getBlock());
         Tag<Item>[] tags = Materialisation.getReflectionField(entry, Tag[].class, 0).orElse(new Tag[0]);
         int[] tagLevels = Materialisation.getReflectionField(entry, int[].class, 1).orElse(new int[tags.length]);
         Item item = stack.getItem();
-        for(int i = 0; i < tags.length; ++i)
+        for (int i = 0; i < tags.length; ++i)
             if (item.isIn(tags[i]))
                 return TriState.of(MaterialisationUtils.getToolMiningLevel(stack) >= tagLevels[i]);
         return Materialisation.getReflectionField(entry, TriState.class, 2).orElse(TriState.DEFAULT);
     }
-    
+
     public static ItemStack createHammerHead(PartMaterial material) {
         ItemStack stack = new ItemStack(Materialisation.HAMMER_HEAD);
         CompoundTag tag = stack.getOrCreateTag();
@@ -416,13 +416,13 @@ public class MaterialisationUtils {
         stack.setTag(tag);
         return stack;
     }
-    
+
     public static UUID getItemModifierDamage() {
         return ColoredItem.getItemModifierDamage();
     }
-    
+
     public static UUID getItemModifierSwingSpeed() {
         return ColoredItem.getItemModifierSwingSpeed();
     }
-    
+
 }

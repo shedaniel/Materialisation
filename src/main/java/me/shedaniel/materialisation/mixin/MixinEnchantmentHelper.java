@@ -18,7 +18,7 @@ import java.util.Random;
 
 @Mixin(EnchantmentHelper.class)
 public class MixinEnchantmentHelper {
-    
+
     @Inject(method = "calculateEnchantmentPower", at = @At("HEAD"), cancellable = true)
     private static void calc(Random random_1, int int_1, int int_2, ItemStack itemStack_1, CallbackInfoReturnable<Integer> callbackInfo) {
         if (itemStack_1.getItem() instanceof MaterialisedMiningTool) {
@@ -39,7 +39,7 @@ public class MixinEnchantmentHelper {
             }
         }
     }
-    
+
     @Inject(method = "getEnchantments(Ljava/util/Random;Lnet/minecraft/item/ItemStack;IZ)Ljava/util/List;",
             at = @At("HEAD"), cancellable = true)
     private static void getEnchantments(Random random_1, ItemStack itemStack_1, int int_1, boolean boolean_1, CallbackInfoReturnable<List<InfoEnchantment>> callbackInfo) {
@@ -57,29 +57,29 @@ public class MixinEnchantmentHelper {
                 List<InfoEnchantment> list_2 = EnchantmentHelper.getHighestApplicableEnchantmentsAtPower(int_1, itemStack_1, boolean_1);
                 if (!list_2.isEmpty()) {
                     list_1.add(WeightedPicker.getRandom(random_1, list_2));
-                    
+
                     while (random_1.nextInt(50) <= int_1) {
                         int_1 = int_1 * 4 / 5 + 1;
                         list_2 = EnchantmentHelper.getHighestApplicableEnchantmentsAtPower(int_1, itemStack_1, boolean_1);
                         Iterator var9 = list_1.iterator();
-                        
+
                         while (var9.hasNext()) {
                             InfoEnchantment infoEnchantment_1 = (InfoEnchantment) var9.next();
                             EnchantmentHelper.remove(list_2, infoEnchantment_1);
                         }
-                        
+
                         if (list_2.isEmpty()) {
                             break;
                         }
-                        
+
                         list_1.add(WeightedPicker.getRandom(random_1, list_2));
                         int_1 /= 2;
                     }
                 }
-                
+
                 callbackInfo.setReturnValue(list_1);
             }
         }
     }
-    
+
 }

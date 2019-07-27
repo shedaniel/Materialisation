@@ -13,17 +13,17 @@ import java.util.Optional;
 import java.util.Set;
 
 public class MaterialisationConfig {
-    
+
     public static class ConfigIngredients {
         public BetterIngredient ingredient;
         public float multiplier;
-        
+
         public ConfigIngredients(BetterIngredient ingredient, float multiplier) {
             this.ingredient = ingredient;
             this.multiplier = multiplier;
         }
     }
-    
+
     public static class ConfigMaterial implements PartMaterial {
         public boolean enabled = true;
         public String toolColor;
@@ -45,7 +45,7 @@ public class MaterialisationConfig {
         public double fullAmount;
         private transient Integer color = -1;
         private transient Map<BetterIngredient, Float> ingredientFloatMap = null;
-        
+
         public ConfigMaterial(PartMaterial partMaterial) {
             this.toolColor = partMaterial.getToolColor() + "";
             this.color = partMaterial.getToolColor();
@@ -62,12 +62,12 @@ public class MaterialisationConfig {
             this.ingredients = ConfigHelper.fromMap(partMaterial.getIngredientMap());
             this.fullAmount = partMaterial.getFullAmount();
         }
-    
+
         @Override
         public int getEnchantability() {
             return (int) enchantability;
         }
-    
+
         @Override
         public int getToolColor() {
             if (color != null)
@@ -81,75 +81,75 @@ public class MaterialisationConfig {
             }
             return color = Color.decode(toolColor).getRGB();
         }
-        
+
         @Override
         public String getMaterialTranslateKey() {
             if (materialTranslationKey != null)
                 return materialTranslationKey;
             return materialTranslationKey = "material.materialisation." + getIdentifier().toString().replace(':', '.');
         }
-        
+
         @Override
         public Set<BetterIngredient> getIngredients() {
             return getIngredientMap().keySet();
         }
-        
+
         @Override
         public Map<BetterIngredient, Float> getIngredientMap() {
             if (ingredientFloatMap != null)
                 return ingredientFloatMap;
             return ingredientFloatMap = ConfigHelper.fromJson(ingredients);
         }
-        
+
         @Override
         public Identifier getIdentifier() {
             return new Identifier(name);
         }
-        
+
         @Override
         public boolean isBright() {
             return bright;
         }
-        
+
         @Override
         public double getDurabilityMultiplier() {
             return durabilityMultiplier;
         }
-        
+
         @Override
         public double getBreakingSpeedMultiplier() {
             return breakingSpeedMultiplier;
         }
-        
+
         @Override
         public double getAttackDamage() {
             return attackDamage;
         }
-        
+
         @Override
         public int getToolDurability() {
             return (int) toolDurability;
         }
-        
+
         @Override
         public double getToolSpeed() {
             return toolSpeed;
         }
-        
+
         @Override
         public int getMiningLevel() {
             return (int) miningLevel;
         }
-        
+
         @Override
         public int getFullAmount() {
             return (int) fullAmount;
         }
-        
+
         @Override
         public float getRepairMultiplier(ItemStack stack) {
             BetterIngredient ingredient = null;
-            for(BetterIngredient ingredient1 : getIngredients()) {
+            for (BetterIngredient ingredient1 : getIngredients()) {
                 if (ingredient1.isIncluded(stack)) {
                     ingredient = ingredient1;
                     break;
@@ -162,11 +162,11 @@ public class MaterialisationConfig {
             } else
                 return -1;
         }
-        
+
         @Override
         public int getRepairAmount(ItemStack stack) {
             BetterIngredient ingredient = null;
-            for(BetterIngredient ingredient1 : getIngredients()) {
+            for (BetterIngredient ingredient1 : getIngredients()) {
                 if (ingredient1.isIncluded(stack)) {
                     ingredient = ingredient1;
                     break;
@@ -182,7 +182,7 @@ public class MaterialisationConfig {
                 return -1;
         }
     }
-    
+
 }
 
 

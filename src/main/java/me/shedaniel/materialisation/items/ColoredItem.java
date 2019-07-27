@@ -21,22 +21,22 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class ColoredItem extends Item {
-    
+
     public ColoredItem(Settings item$Settings_1) {
         super(item$Settings_1);
         addPropertyGetter(new Identifier(ModReference.MOD_ID, "bright"), (itemStack, world, livingEntity) -> {
             return itemStack.getOrCreateTag().containsKey("mt_bright") ? 1f : 0f;
         });
     }
-    
+
     public static UUID getItemModifierDamage() {
         return ATTACK_DAMAGE_MODIFIER_UUID;
     }
-    
+
     public static UUID getItemModifierSwingSpeed() {
         return ATTACK_SPEED_MODIFIER_UUID;
     }
-    
+
     @Environment(EnvType.CLIENT)
     public static Optional<String> getItemTranslationKey(ItemStack stack) {
         if (stack.getOrCreateTag().containsKey("mt_name_key")) {
@@ -72,7 +72,7 @@ public class ColoredItem extends Item {
         }
         return Optional.empty();
     }
-    
+
     @Environment(EnvType.CLIENT)
     @Override
     public void appendTooltip(ItemStack stack, World world_1, List<Text> list, TooltipContext tooltipContext_1) {
@@ -119,7 +119,7 @@ public class ColoredItem extends Item {
                 }
         }
     }
-    
+
     public float getExtraDamage(Item item) {
         if (item == Materialisation.SWORD_BLADE)
             return 4f;
@@ -135,10 +135,10 @@ public class ColoredItem extends Item {
             return 2.5f;
         return 0f;
     }
-    
+
     @Override
     public Text getName(ItemStack itemStack_1) {
         return getItemTranslationKey(itemStack_1).map(s -> (Text) new TranslatableText(s)).orElse(super.getName(itemStack_1));
     }
-    
+
 }

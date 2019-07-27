@@ -3,7 +3,7 @@ plugins {
 }
 
 archivesBaseName = "Materialisation"
-version = "0.4.1"
+version = "0.5.0"
 
 def minecraftVersion = "1.14.3"
 def yarnBuild = "1"
@@ -44,11 +44,19 @@ dependencies {
     minecraft "com.mojang:minecraft:${minecraftVersion}"
     mappings "net.fabricmc:yarn:${minecraftVersion}+build.${yarnBuild}:enigma@zip"
     implementation "net.fabricmc:yarn:${minecraftVersion}+build.${yarnBuild}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:0.3.0+build.191"
+    modImplementation ("net.fabricmc.fabric-api:fabric-api:0.3.0+build.198") {
+        force = true
+    }
     modImplementation "net.fabricmc:fabric-loader:0.4.8+build.154"
 
+    // Cloth
+    modImplementation "me.shedaniel.cloth:config-2:0.4.1"
+    include "me.shedaniel.cloth:config-2:0.4.1"
+
     // Mod Compat
-    modImplementation "me.shedaniel:RoughlyEnoughItems:2.9.6+build.138"
+    modImplementation("me.shedaniel:RoughlyEnoughItems:2.9.6+build.138") {
+        exclude module: "ClothConfig2"
+    }
     //    modRuntime "io.github.cottonmc:cotton-resources:${cr_version}"
     modRuntime "nether-things:netherthings:${netherthings_version}"
     modRuntime "fabric-more-enchantments:MoEnchantments:1.5.9"
