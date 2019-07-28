@@ -163,7 +163,7 @@ public class MaterialisedHammerItem extends PickaxeItem implements MaterialisedM
                         return true;
                     BlockPos newPos = new BlockPos(axis == X ? pos.getX() : pos.getX() + i, axis == X ? pos.getY() + i : axis == Y ? pos.getY() : pos.getY() + j, axis != Z ? pos.getZ() + j : pos.getZ());
                     BlockState newState = world.getBlockState(newPos);
-                    boolean canBreak = canBreak(mainHandStack, newState);
+                    boolean canBreak = newState.getHardness(world, newPos) >= 0 && canBreak(mainHandStack, newState);
                     if (!canBreak)
                         continue;
                     // Let's break the block!
