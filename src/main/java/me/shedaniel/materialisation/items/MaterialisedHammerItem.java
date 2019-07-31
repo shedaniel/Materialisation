@@ -11,10 +11,13 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.Material;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.item.TooltipContext;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.PickaxeItem;
@@ -167,11 +170,25 @@ public class MaterialisedHammerItem extends PickaxeItem implements MaterialisedM
                     if (!canBreak)
                         continue;
                     // Let's break the block!
-                    world.breakBlock(newPos, !player.isCreative());
+                    breakBlock(world, newState, newPos, !player.isCreative(), player, mainHandStack);
                     takeDamage(world, blockState, newPos, player, mainHandStack);
                 }
             }
         return true;
+    }
+
+    public boolean breakBlock(World world, BlockState blockState_1, BlockPos blockPos_1, boolean boolean_1, Entity entity_1, ItemStack itemStack_1) {
+        if (blockState_1.isAir()) {
+            return false;
+        } else {
+            FluidState fluidState_1 = world.getFluidState(blockPos_1);
+            world.playLevelEvent(2001, blockPos_1, Block.getRawIdFromState(blockState_1));
+            if (boolean_1) {
+                BlockEntity blockEntity_1 = blockState_1.getBlock().hasBlockEntity() ? world.getBlockEntity(blockPos_1) : null;
+                Block.dropStacks(blockState_1, world, blockPos_1, blockEntity_1, entity_1, itemStack_1);
+            }
+            return world.setBlockState(blockPos_1, fluidState_1.getBlockState(), 3);
+        }
     }
 
     private boolean canBreak(ItemStack stack, BlockState state) {
