@@ -6,11 +6,12 @@ import me.shedaniel.materialisation.ModReference;
 import me.shedaniel.materialisation.api.PartMaterial;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.item.TooltipContext;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
@@ -36,32 +37,6 @@ public class ColoredItem extends Item {
 
     public static UUID getItemModifierSwingSpeed() {
         return ATTACK_SPEED_MODIFIER_UUID;
-    }
-
-    @Environment(EnvType.CLIENT)
-    public static Optional<String> getItemTranslationKey(ItemStack stack) {
-        CompoundTag tag = stack.getOrCreateTag();
-        if (tag.containsKey("mt_name_key")) {
-            return Optional.ofNullable(tag.getString("mt_name_key"));
-        } else if (tag.containsKey("mt_0_material") || tag.containsKey("mt_material")) {
-            PartMaterial material = MaterialisationUtils.getMaterialFromPart(stack);
-            if (material != null)
-                if (stack.getItem() == Materialisation.HANDLE)
-                    return Optional.ofNullable(I18n.translate("item.materialisation.materialised_handle", I18n.translate(material.getMaterialTranslateKey())));
-                else if (stack.getItem() == Materialisation.PICKAXE_HEAD)
-                    return Optional.ofNullable(I18n.translate("item.materialisation.materialised_pickaxe_head", I18n.translate(material.getMaterialTranslateKey())));
-                else if (stack.getItem() == Materialisation.AXE_HEAD)
-                    return Optional.ofNullable(I18n.translate("item.materialisation.materialised_axe_head", I18n.translate(material.getMaterialTranslateKey())));
-                else if (stack.getItem() == Materialisation.SHOVEL_HEAD)
-                    return Optional.ofNullable(I18n.translate("item.materialisation.materialised_shovel_head", I18n.translate(material.getMaterialTranslateKey())));
-                else if (stack.getItem() == Materialisation.SWORD_BLADE)
-                    return Optional.ofNullable(I18n.translate("item.materialisation.materialised_sword_blade", I18n.translate(material.getMaterialTranslateKey())));
-                else if (stack.getItem() == Materialisation.HAMMER_HEAD)
-                    return Optional.ofNullable(I18n.translate("item.materialisation.materialised_hammer_head", I18n.translate(material.getMaterialTranslateKey())));
-                else if (stack.getItem() == Materialisation.MEGAAXE_HEAD)
-                    return Optional.ofNullable(I18n.translate("item.materialisation.materialised_megaaxe_head", I18n.translate(material.getMaterialTranslateKey())));
-        }
-        return Optional.empty();
     }
 
     @Environment(EnvType.CLIENT)
@@ -112,7 +87,16 @@ public class ColoredItem extends Item {
 
     @Override
     public Text getName(ItemStack itemStack_1) {
-        return getItemTranslationKey(itemStack_1).map(s -> (Text) new TranslatableText(s)).orElse(super.getName(itemStack_1));
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT)
+            try {
+                Optional<String> s = (Optional<String>) Class.forName("me.shedaniel.materialisation.MaterialisationClient").getDeclaredMethod("getItemTranslationKey", ItemStack.class).invoke(null, itemStack_1);
+                if (s.isPresent())
+                    return new LiteralText(s.get());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        return new TranslatableText(this.getTranslationKey(itemStack_1));
+//        return getItemTranslationKey(itemStack_1).map(s -> (Text) new TranslatableText(s)).orElse(super.getName(itemStack_1));
     }
 
 }
