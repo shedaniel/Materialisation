@@ -9,11 +9,11 @@ import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.sound.PositionedSoundInstance;
+import net.minecraft.client.util.Rect2i;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
-import java.awt.*;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -49,7 +49,7 @@ public class MaterialisationMaterialListWidget extends DynamicElementListWidget<
 
         @Override
         public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
-            widget.bounds = new Rectangle(x, y, entryWidth, getItemHeight());
+            widget.bounds = new Rect2i(x, y, entryWidth, getItemHeight());
             widget.render(mouseX, mouseY, delta);
         }
 
@@ -66,23 +66,23 @@ public class MaterialisationMaterialListWidget extends DynamicElementListWidget<
         public abstract void onClick();
 
         public class PackWidget implements Element, Drawable {
-            private Rectangle bounds;
+            private Rect2i bounds;
             private boolean focused;
 
             @Override
             public void render(int mouseX, int mouseY, float delta) {
                 GlStateManager.disableAlphaTest();
-                fill(bounds.x, bounds.y, bounds.x + bounds.width, bounds.y + bounds.height, 0x15FFFFFF);
+                fill(bounds.getX(), bounds.getY(), bounds.getX() + bounds.getWidth(), bounds.getY() + bounds.getHeight(), 0x15FFFFFF);
                 boolean isHovered = focused || bounds.contains(mouseX, mouseY);
-                drawString(MinecraftClient.getInstance().textRenderer, (isHovered ? Formatting.UNDERLINE.toString() : "") + packInfo.getDisplayName(), bounds.x + 5, bounds.y + 6, 16777215);
-                Iterator<String> var7 = MinecraftClient.getInstance().textRenderer.wrapStringToWidthAsList(trimEndNewlines(packInfo.getDescription()), bounds.width - 10).stream().limit(2).iterator();
-                int int_2 = bounds.y + 6 + 11;
+                drawString(MinecraftClient.getInstance().textRenderer, (isHovered ? Formatting.UNDERLINE.toString() : "") + packInfo.getDisplayName(), bounds.getX() + 5, bounds.getY() + 6, 16777215);
+                Iterator<String> var7 = MinecraftClient.getInstance().textRenderer.wrapStringToWidthAsList(trimEndNewlines(packInfo.getDescription()), bounds.getWidth() - 10).stream().limit(2).iterator();
+                int int_2 = bounds.getY() + 6 + 11;
                 for (int lolWot = 0; var7.hasNext(); int_2 += 9) {
                     String string_2 = (String) var7.next();
-                    float float_1 = (float) (bounds.x + 5);
+                    float float_1 = (float) (bounds.getX() + 5);
                     if (MinecraftClient.getInstance().textRenderer.isRightToLeft()) {
                         int int_5 = MinecraftClient.getInstance().textRenderer.getStringWidth(MinecraftClient.getInstance().textRenderer.mirror(string_2));
-                        float_1 += (float) (bounds.width - 10 - int_5);
+                        float_1 += (float) (bounds.getWidth() - 10 - int_5);
                     }
                     MinecraftClient.getInstance().textRenderer.draw(string_2, float_1, (float) int_2, 0xEEFFFFFF);
                 }
@@ -91,7 +91,7 @@ public class MaterialisationMaterialListWidget extends DynamicElementListWidget<
             @Override
             public boolean mouseClicked(double double_1, double double_2, int int_1) {
                 if (int_1 == 0) {
-                    boolean boolean_1 = bounds.contains(double_1, double_2);
+                    boolean boolean_1 = bounds.contains((int) double_1, (int) double_2);
                     if (boolean_1) {
                         MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                         onClick();
@@ -140,7 +140,7 @@ public class MaterialisationMaterialListWidget extends DynamicElementListWidget<
 
         @Override
         public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
-            widget.bounds = new Rectangle(x, y, entryWidth, getItemHeight());
+            widget.bounds = new Rect2i(x, y, entryWidth, getItemHeight());
             widget.render(mouseX, mouseY, delta);
         }
 
@@ -157,19 +157,19 @@ public class MaterialisationMaterialListWidget extends DynamicElementListWidget<
         public abstract void onClick();
 
         public class MaterialWidget implements Element, Drawable {
-            private Rectangle bounds;
+            private Rect2i bounds;
             private boolean focused;
 
             @Override
             public void render(int mouseX, int mouseY, float delta) {
                 boolean isHovered = focused || bounds.contains(mouseX, mouseY);
-                drawString(MinecraftClient.getInstance().textRenderer, (isHovered ? Formatting.UNDERLINE.toString() : "") + I18n.translate(partMaterial.getMaterialTranslateKey()), bounds.x + 5, bounds.y + 5, 16777215);
+                drawString(MinecraftClient.getInstance().textRenderer, (isHovered ? Formatting.UNDERLINE.toString() : "") + I18n.translate(partMaterial.getMaterialTranslateKey()), bounds.getX() + 5, bounds.getY() + 5, 16777215);
             }
 
             @Override
             public boolean mouseClicked(double double_1, double double_2, int int_1) {
                 if (int_1 == 0) {
-                    boolean boolean_1 = bounds.contains(double_1, double_2);
+                    boolean boolean_1 = bounds.contains((int) double_1, (int) double_2);
                     if (boolean_1) {
                         MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                         onClick();

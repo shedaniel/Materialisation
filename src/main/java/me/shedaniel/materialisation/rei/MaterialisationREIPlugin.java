@@ -5,11 +5,14 @@ import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.ModReference;
 import me.shedaniel.materialisation.api.PartMaterials;
 import me.shedaniel.materialisation.items.ColoredItem;
-import me.shedaniel.rei.api.ItemRegistry;
-import me.shedaniel.rei.api.REIPluginEntry;
+import me.shedaniel.rei.api.Entry;
+import me.shedaniel.rei.api.EntryRegistry;
 import me.shedaniel.rei.api.RecipeHelper;
+import me.shedaniel.rei.api.plugins.REIPluginV0;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.loader.api.SemanticVersion;
+import net.fabricmc.loader.util.version.VersionParsingException;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
@@ -18,7 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Environment(EnvType.CLIENT)
-public class MaterialisationREIPlugin implements REIPluginEntry {
+public class MaterialisationREIPlugin implements REIPluginV0 {
 
     public static final Identifier PLUGIN = new Identifier(ModReference.MOD_ID, "rei_plugin");
     public static final Identifier MATERIAL_PREPARER = new Identifier(ModReference.MOD_ID, "material_preparer");
@@ -27,6 +30,11 @@ public class MaterialisationREIPlugin implements REIPluginEntry {
     @Override
     public Identifier getPluginIdentifier() {
         return PLUGIN;
+    }
+
+    @Override
+    public SemanticVersion getMinimumVersion() throws VersionParsingException {
+        return SemanticVersion.parse("3.0-pre");
     }
 
     @Override
@@ -72,27 +80,27 @@ public class MaterialisationREIPlugin implements REIPluginEntry {
 
     @SuppressWarnings("deprecation")
     @Override
-    public void registerItems(ItemRegistry itemRegistry) {
-        PartMaterials.getKnownMaterials().map(MaterialisationUtils::createToolHandle).forEach(stack -> itemRegistry.registerItemStack(Materialisation.HANDLE, stack));
-        PartMaterials.getKnownMaterials().map(MaterialisationUtils::createPickaxeHead).forEach(stack -> itemRegistry.registerItemStack(Materialisation.PICKAXE_HEAD, stack));
-        PartMaterials.getKnownMaterials().map(MaterialisationUtils::createAxeHead).forEach(stack -> itemRegistry.registerItemStack(Materialisation.AXE_HEAD, stack));
-        PartMaterials.getKnownMaterials().map(MaterialisationUtils::createShovelHead).forEach(stack -> itemRegistry.registerItemStack(Materialisation.SHOVEL_HEAD, stack));
-        PartMaterials.getKnownMaterials().map(MaterialisationUtils::createSwordBlade).forEach(stack -> itemRegistry.registerItemStack(Materialisation.SWORD_BLADE, stack));
-        PartMaterials.getKnownMaterials().map(MaterialisationUtils::createHammerHead).forEach(stack -> itemRegistry.registerItemStack(Materialisation.HAMMER_HEAD, stack));
-        PartMaterials.getKnownMaterials().map(MaterialisationUtils::createMegaAxeHead).forEach(stack -> itemRegistry.registerItemStack(Materialisation.MEGAAXE_HEAD, stack));
-        PartMaterials.getKnownMaterials().forEach(material -> itemRegistry.registerItemStack(Materialisation.MATERIALISED_PICKAXE, MaterialisationUtils.createPickaxe(material, material)));
-        PartMaterials.getKnownMaterials().forEach(material -> itemRegistry.registerItemStack(Materialisation.MATERIALISED_AXE, MaterialisationUtils.createAxe(material, material)));
-        PartMaterials.getKnownMaterials().forEach(material -> itemRegistry.registerItemStack(Materialisation.MATERIALISED_SHOVEL, MaterialisationUtils.createShovel(material, material)));
-        PartMaterials.getKnownMaterials().forEach(material -> itemRegistry.registerItemStack(Materialisation.MATERIALISED_SWORD, MaterialisationUtils.createSword(material, material)));
-        PartMaterials.getKnownMaterials().forEach(material -> itemRegistry.registerItemStack(Materialisation.MATERIALISED_HAMMER, MaterialisationUtils.createHammer(material, material)));
-        PartMaterials.getKnownMaterials().forEach(material -> itemRegistry.registerItemStack(Materialisation.MATERIALISED_MEGAAXE, MaterialisationUtils.createMegaAxe(material, material)));
-        itemRegistry.getModifiableItemList().removeIf(stack -> stack.getItem() == Materialisation.MATERIALISED_PICKAXE && !stack.getOrCreateTag().containsKey("mt_done_tool") && !stack.getOrCreateTag().getBoolean("mt_done_tool"));
-        itemRegistry.getModifiableItemList().removeIf(stack -> stack.getItem() == Materialisation.MATERIALISED_AXE && !stack.getOrCreateTag().containsKey("mt_done_tool") && !stack.getOrCreateTag().getBoolean("mt_done_tool"));
-        itemRegistry.getModifiableItemList().removeIf(stack -> stack.getItem() == Materialisation.MATERIALISED_SHOVEL && !stack.getOrCreateTag().containsKey("mt_done_tool") && !stack.getOrCreateTag().getBoolean("mt_done_tool"));
-        itemRegistry.getModifiableItemList().removeIf(stack -> stack.getItem() == Materialisation.MATERIALISED_SWORD && !stack.getOrCreateTag().containsKey("mt_done_tool") && !stack.getOrCreateTag().getBoolean("mt_done_tool"));
-        itemRegistry.getModifiableItemList().removeIf(stack -> stack.getItem() == Materialisation.MATERIALISED_HAMMER && !stack.getOrCreateTag().containsKey("mt_done_tool") && !stack.getOrCreateTag().getBoolean("mt_done_tool"));
-        itemRegistry.getModifiableItemList().removeIf(stack -> stack.getItem() == Materialisation.MATERIALISED_MEGAAXE && !stack.getOrCreateTag().containsKey("mt_done_tool") && !stack.getOrCreateTag().getBoolean("mt_done_tool"));
-        itemRegistry.getModifiableItemList().removeIf(stack -> stack.getItem() instanceof ColoredItem && !stack.getOrCreateTag().containsKey("mt_name_key") && !stack.getOrCreateTag().containsKey("mt_0_material") && !stack.getOrCreateTag().containsKey("mt_material"));
+    public void registerEntries(EntryRegistry entryRegistry) {
+        PartMaterials.getKnownMaterials().map(MaterialisationUtils::createToolHandle).forEach(stack -> entryRegistry.registerItemStack(Materialisation.HANDLE, stack));
+        PartMaterials.getKnownMaterials().map(MaterialisationUtils::createPickaxeHead).forEach(stack -> entryRegistry.registerItemStack(Materialisation.PICKAXE_HEAD, stack));
+        PartMaterials.getKnownMaterials().map(MaterialisationUtils::createAxeHead).forEach(stack -> entryRegistry.registerItemStack(Materialisation.AXE_HEAD, stack));
+        PartMaterials.getKnownMaterials().map(MaterialisationUtils::createShovelHead).forEach(stack -> entryRegistry.registerItemStack(Materialisation.SHOVEL_HEAD, stack));
+        PartMaterials.getKnownMaterials().map(MaterialisationUtils::createSwordBlade).forEach(stack -> entryRegistry.registerItemStack(Materialisation.SWORD_BLADE, stack));
+        PartMaterials.getKnownMaterials().map(MaterialisationUtils::createHammerHead).forEach(stack -> entryRegistry.registerItemStack(Materialisation.HAMMER_HEAD, stack));
+        PartMaterials.getKnownMaterials().map(MaterialisationUtils::createMegaAxeHead).forEach(stack -> entryRegistry.registerItemStack(Materialisation.MEGAAXE_HEAD, stack));
+        PartMaterials.getKnownMaterials().forEach(material -> entryRegistry.registerItemStack(Materialisation.MATERIALISED_PICKAXE, MaterialisationUtils.createPickaxe(material, material)));
+        PartMaterials.getKnownMaterials().forEach(material -> entryRegistry.registerItemStack(Materialisation.MATERIALISED_AXE, MaterialisationUtils.createAxe(material, material)));
+        PartMaterials.getKnownMaterials().forEach(material -> entryRegistry.registerItemStack(Materialisation.MATERIALISED_SHOVEL, MaterialisationUtils.createShovel(material, material)));
+        PartMaterials.getKnownMaterials().forEach(material -> entryRegistry.registerItemStack(Materialisation.MATERIALISED_SWORD, MaterialisationUtils.createSword(material, material)));
+        PartMaterials.getKnownMaterials().forEach(material -> entryRegistry.registerItemStack(Materialisation.MATERIALISED_HAMMER, MaterialisationUtils.createHammer(material, material)));
+        PartMaterials.getKnownMaterials().forEach(material -> entryRegistry.registerItemStack(Materialisation.MATERIALISED_MEGAAXE, MaterialisationUtils.createMegaAxe(material, material)));
+        entryRegistry.getModifiableEntryList().removeIf(entry -> entry.getEntryType() == Entry.Type.ITEM && entry.getItemStack().getItem() == Materialisation.MATERIALISED_PICKAXE && !entry.getItemStack().getOrCreateTag().containsKey("mt_done_tool") && !entry.getItemStack().getOrCreateTag().getBoolean("mt_done_tool"));
+        entryRegistry.getModifiableEntryList().removeIf(entry -> entry.getEntryType() == Entry.Type.ITEM && entry.getItemStack().getItem() == Materialisation.MATERIALISED_AXE && !entry.getItemStack().getOrCreateTag().containsKey("mt_done_tool") && !entry.getItemStack().getOrCreateTag().getBoolean("mt_done_tool"));
+        entryRegistry.getModifiableEntryList().removeIf(entry -> entry.getEntryType() == Entry.Type.ITEM && entry.getItemStack().getItem() == Materialisation.MATERIALISED_SHOVEL && !entry.getItemStack().getOrCreateTag().containsKey("mt_done_tool") && !entry.getItemStack().getOrCreateTag().getBoolean("mt_done_tool"));
+        entryRegistry.getModifiableEntryList().removeIf(entry -> entry.getEntryType() == Entry.Type.ITEM && entry.getItemStack().getItem() == Materialisation.MATERIALISED_SWORD && !entry.getItemStack().getOrCreateTag().containsKey("mt_done_tool") && !entry.getItemStack().getOrCreateTag().getBoolean("mt_done_tool"));
+        entryRegistry.getModifiableEntryList().removeIf(entry -> entry.getEntryType() == Entry.Type.ITEM && entry.getItemStack().getItem() == Materialisation.MATERIALISED_HAMMER && !entry.getItemStack().getOrCreateTag().containsKey("mt_done_tool") && !entry.getItemStack().getOrCreateTag().getBoolean("mt_done_tool"));
+        entryRegistry.getModifiableEntryList().removeIf(entry -> entry.getEntryType() == Entry.Type.ITEM && entry.getItemStack().getItem() == Materialisation.MATERIALISED_MEGAAXE && !entry.getItemStack().getOrCreateTag().containsKey("mt_done_tool") && !entry.getItemStack().getOrCreateTag().getBoolean("mt_done_tool"));
+        entryRegistry.getModifiableEntryList().removeIf(entry -> entry.getEntryType() == Entry.Type.ITEM && entry.getItemStack().getItem() instanceof ColoredItem && !entry.getItemStack().getOrCreateTag().containsKey("mt_name_key") && !entry.getItemStack().getOrCreateTag().containsKey("mt_0_material") && !entry.getItemStack().getOrCreateTag().containsKey("mt_material"));
     }
 
 }

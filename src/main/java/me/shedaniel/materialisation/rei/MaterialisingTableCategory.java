@@ -3,11 +3,11 @@ package me.shedaniel.materialisation.rei;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.GlStateManager;
 import me.shedaniel.materialisation.Materialisation;
-import me.shedaniel.rei.api.DisplaySettings;
+import me.shedaniel.math.api.Point;
+import me.shedaniel.math.api.Rectangle;
 import me.shedaniel.rei.api.RecipeCategory;
-import me.shedaniel.rei.api.Renderable;
 import me.shedaniel.rei.api.Renderer;
-import me.shedaniel.rei.gui.renderables.ItemStackRenderer;
+import me.shedaniel.rei.gui.renderers.ItemStackRenderer;
 import me.shedaniel.rei.gui.widget.CategoryBaseWidget;
 import me.shedaniel.rei.gui.widget.SlotWidget;
 import me.shedaniel.rei.gui.widget.Widget;
@@ -18,14 +18,12 @@ import net.minecraft.client.resource.language.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
-import java.awt.*;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
 public class MaterialisingTableCategory implements RecipeCategory<MaterialisingTableDisplay> {
 
-    public static final ItemStackRenderer ICON = Renderable.fromItemStack(new ItemStack(Materialisation.MATERIALISING_TABLE));
+    public static final ItemStackRenderer ICON = Renderer.fromItemStack(new ItemStack(Materialisation.MATERIALISING_TABLE));
 
     @Override
     public Identifier getIdentifier() {
@@ -49,7 +47,7 @@ public class MaterialisingTableCategory implements RecipeCategory<MaterialisingT
 
     @Override
     public List<Widget> setupDisplay(Supplier<MaterialisingTableDisplay> recipeDisplaySupplier, Rectangle bounds) {
-        final Point startPoint = new Point((int) bounds.getCenterX() - 41, (int) bounds.getCenterY() - 13);
+        final Point startPoint = new Point(bounds.getCenterX() - 41, bounds.getCenterY() - 13);
         List<Widget> widgets = Lists.newArrayList(new CategoryBaseWidget(bounds) {
             @Override
             public void render(int mouseX, int mouseY, float delta) {
@@ -61,27 +59,15 @@ public class MaterialisingTableCategory implements RecipeCategory<MaterialisingT
             }
         });
         MaterialisingTableDisplay display = recipeDisplaySupplier.get();
-        widgets.add(new SlotWidget(startPoint.x + 4 - 22, startPoint.y + 5, Collections.singletonList(display.getFirst()), true, true, true));
-        widgets.add(new SlotWidget(startPoint.x + 4, startPoint.y + 5, display.getSecond(), true, true, true));
-        widgets.add(new SlotWidget(startPoint.x + 61, startPoint.y + 5, Collections.singletonList(display.getResult()), false, true, true));
+        widgets.add(new SlotWidget(startPoint.x + 4 - 22, startPoint.y + 5, Renderer.fromItemStack(display.getFirst()), true, true, true));
+        widgets.add(new SlotWidget(startPoint.x + 4, startPoint.y + 5, Renderer.fromItemStacks(display.getSecond()), true, true, true));
+        widgets.add(new SlotWidget(startPoint.x + 61, startPoint.y + 5, Renderer.fromItemStack(display.getResult()), false, true, true));
         return widgets;
     }
 
     @Override
-    public DisplaySettings getDisplaySettings() {
-        return new DisplaySettings<MaterialisingTableDisplay>() {
-            public int getDisplayHeight(RecipeCategory category) {
-                return 36;
-            }
-
-            public int getDisplayWidth(RecipeCategory category, MaterialisingTableDisplay display) {
-                return 150;
-            }
-
-            public int getMaximumRecipePerPage(RecipeCategory category) {
-                return 99;
-            }
-        };
+    public int getDisplayHeight() {
+        return 36;
     }
 
 }

@@ -7,7 +7,6 @@ import net.minecraft.util.Identifier;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 public class MaterialPreparerDisplay implements RecipeDisplay {
 
@@ -30,11 +29,6 @@ public class MaterialPreparerDisplay implements RecipeDisplay {
 
     public ItemStack getResult() {
         return result;
-    }
-
-    @Override
-    public Optional getRecipe() {
-        return Optional.empty();
     }
 
     @Override

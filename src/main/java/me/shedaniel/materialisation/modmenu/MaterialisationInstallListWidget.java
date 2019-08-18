@@ -13,11 +13,11 @@ import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.sound.PositionedSoundInstance;
+import net.minecraft.client.util.Rect2i;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.SystemUtil;
 
-import java.awt.*;
 import java.util.Collections;
 import java.util.List;
 
@@ -50,7 +50,7 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
     public static class PackEntry extends Entry {
         private OnlinePack onlinePack;
         private MaterialisationInstallListWidget listWidget;
-        private Rectangle bounds;
+        private Rect2i bounds;
         private ButtonWidget clickWidget;
 
         public PackEntry(MaterialisationInstallListWidget listWidget, OnlinePack onlinePack) {
@@ -68,7 +68,7 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
 
         @Override
         public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
-            this.bounds = new Rectangle(x, y, entryWidth, entryHeight);
+            this.bounds = new Rect2i(x, y, entryWidth, entryHeight);
             if (listWidget.visible && listWidget.selected == this) {
                 int itemMinX = listWidget.left + listWidget.width / 2 - listWidget.getItemWidth() / 2;
                 int itemMaxX = itemMinX + listWidget.getItemWidth();
@@ -111,7 +111,7 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
         @Override
         public boolean mouseClicked(double double_1, double double_2, int int_1) {
             boolean a = super.mouseClicked(double_1, double_2, int_1);
-            if (bounds.contains(double_1, double_2) && int_1 == 0) {
+            if (bounds.contains((int) double_1, (int) double_2) && int_1 == 0) {
                 if (!a)
                     MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                 listWidget.selected = this;

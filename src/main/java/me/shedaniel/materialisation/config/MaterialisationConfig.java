@@ -6,7 +6,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
-import java.awt.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -77,9 +76,12 @@ public class MaterialisationConfig {
                 int r = Integer.valueOf(toolColor.substring(3, 5), 16);
                 int g = Integer.valueOf(toolColor.substring(5, 7), 16);
                 int b = Integer.valueOf(toolColor.substring(7, 9), 16);
-                return color = new Color(r, g, b, a).getRGB();
+                return color = ((a & 0xFF) << 24) |
+                        ((r & 0xFF) << 16) |
+                        ((g & 0xFF) << 8) |
+                        ((b & 0xFF) << 0);
             }
-            return color = Color.decode(toolColor).getRGB();
+            return color = Integer.decode(toolColor);
         }
 
         @Override
