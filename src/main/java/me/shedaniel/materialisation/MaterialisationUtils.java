@@ -1,5 +1,6 @@
 package me.shedaniel.materialisation;
 
+import me.shedaniel.materialisation.api.MaterialsPack;
 import me.shedaniel.materialisation.api.PartMaterial;
 import me.shedaniel.materialisation.api.PartMaterials;
 import me.shedaniel.materialisation.items.ColoredItem;
@@ -16,10 +17,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
@@ -125,7 +126,7 @@ public class MaterialisationUtils {
 
     public static int getToolDurability(ItemStack stack) {
         if (!stack.hasTag())
-            return getToolMaxDurability(stack);
+            return 1;
         CompoundTag tag = stack.getTag();
         if (tag.containsKey("mt_durability"))
             return stack.getTag().getInt("mt_durability");
@@ -308,10 +309,17 @@ public class MaterialisationUtils {
         return getMatFromString(s).orElse(null);
     }
 
+    @SuppressWarnings("deprecation")
     public static Optional<PartMaterial> getMatFromString(String s) {
-        Identifier identifier = new Identifier(s);
-        Optional<PartMaterial> any = PartMaterials.getKnownMaterials().filter(mat -> mat.getIdentifier().equals(identifier)).findAny();
-        return any;
+        s = s.contains(":") ? s : "minecraft:" + s;
+        for (Map.Entry<String, MaterialsPack> entry : PartMaterials.getMaterialsMap().entrySet()) {
+            for (Map.Entry<String, PartMaterial> materialEntry : entry.getValue().getKnownMaterialMap().entrySet()) {
+                PartMaterial value = materialEntry.getValue();
+                if (value.getIdentifier().toString().equals(s))
+                    return Optional.of(value);
+            }
+        }
+        return Optional.empty();
     }
 
     public static boolean isHandleBright(ItemStack itemStack) {

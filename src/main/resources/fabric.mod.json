@@ -19,7 +19,7 @@
     "client": [
       "me.shedaniel.materialisation.MaterialisationClient"
     ],
-    "rei_plugins": [
+    "rei_plugins_v0": [
       "me.shedaniel.materialisation.rei.MaterialisationREIPlugin"
     ],
     "modmenu": [

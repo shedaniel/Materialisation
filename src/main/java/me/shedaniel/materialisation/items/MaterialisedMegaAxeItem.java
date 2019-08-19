@@ -46,14 +46,8 @@ public class MaterialisedMegaAxeItem extends AxeItem implements MaterialisedMini
         addPropertyGetter(new Identifier(ModReference.MOD_ID, "handle_isbright"), (itemStack, world, livingEntity) -> {
             return isNewHandleBright(itemStack) ? 1f : 0f;
         });
-        addPropertyGetter(new Identifier(ModReference.MOD_ID, "handle_isnotbright"), (itemStack, world, livingEntity) -> {
-            return !isNewHandleBright(itemStack) ? 1f : 0f;
-        });
         addPropertyGetter(new Identifier(ModReference.MOD_ID, "megaaxe_head_isbright"), (itemStack, world, livingEntity) -> {
             return isHeadBright(itemStack) ? 1f : 0f;
-        });
-        addPropertyGetter(new Identifier(ModReference.MOD_ID, "megaaxe_head_isnotbright"), (itemStack, world, livingEntity) -> {
-            return !isHeadBright(itemStack) ? 1f : 0f;
         });
     }
 

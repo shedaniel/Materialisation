@@ -36,14 +36,8 @@ public class MaterialisedSwordItem extends SwordItem implements MaterialisedMini
         addPropertyGetter(new Identifier(ModReference.MOD_ID, "handle_isbright"), (itemStack, world, livingEntity) -> {
             return isHandleBright(itemStack) ? 1f : 0f;
         });
-        addPropertyGetter(new Identifier(ModReference.MOD_ID, "handle_isnotbright"), (itemStack, world, livingEntity) -> {
-            return !isHandleBright(itemStack) ? 1f : 0f;
-        });
         addPropertyGetter(new Identifier(ModReference.MOD_ID, "sword_head_isbright"), (itemStack, world, livingEntity) -> {
             return isHeadBright(itemStack) ? 1f : 0f;
-        });
-        addPropertyGetter(new Identifier(ModReference.MOD_ID, "sword_head_isnotbright"), (itemStack, world, livingEntity) -> {
-            return !isHeadBright(itemStack) ? 1f : 0f;
         });
     }
 

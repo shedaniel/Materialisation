@@ -9,6 +9,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemPropertyGetter;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.LiteralText;
@@ -24,11 +25,13 @@ import java.util.UUID;
 
 public class ColoredItem extends Item {
 
+    private static final ItemPropertyGetter COLORED_ITEM_BRIGHT_ITEM = (itemStack, world, livingEntity) -> {
+        return !itemStack.hasTag() ? 0f : itemStack.getTag().containsKey("mt_bright") ? 1f : 0f;
+    };
+
     public ColoredItem(Settings item$Settings_1) {
         super(item$Settings_1);
-        addPropertyGetter(new Identifier(ModReference.MOD_ID, "bright"), (itemStack, world, livingEntity) -> {
-            return itemStack.getOrCreateTag().containsKey("mt_bright") ? 1f : 0f;
-        });
+        addPropertyGetter(new Identifier(ModReference.MOD_ID, "bright"), COLORED_ITEM_BRIGHT_ITEM);
     }
 
     public static UUID getItemModifierDamage() {

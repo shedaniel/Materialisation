@@ -48,7 +48,8 @@ public class ConfigPack implements MaterialsPack {
         return materialMap.entrySet().stream().map(Map.Entry::getValue);
     }
 
-    public Map<String, PartMaterial> getMaterialMap() {
+    @Override
+    public Map<String, PartMaterial> getKnownMaterialMap() {
         return materialMap;
     }
 

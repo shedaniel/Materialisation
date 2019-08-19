@@ -14,7 +14,7 @@
     },
     {
       "predicate": {
-        "materialisation:handle_isnotbright": 1,
+        "materialisation:handle_isbright": 0,
         "materialisation:hammer_head_isbright": 1
       },
       "model": "materialisation:item/materialised_hammer_only_head"
@@ -22,7 +22,7 @@
     {
       "predicate": {
         "materialisation:handle_isbright": 1,
-        "materialisation:hammer_head_isnotbright": 1
+        "materialisation:hammer_head_isbright": 0
       },
       "model": "materialisation:item/materialised_hammer_only_handle"
     }

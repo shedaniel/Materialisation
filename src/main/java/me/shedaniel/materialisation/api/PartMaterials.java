@@ -28,7 +28,7 @@ public class PartMaterials {
 
     @Deprecated
     public static PartMaterial registerMaterial(PartMaterial material) {
-        return getDefaultPack().getMaterialMap().put(material.getIdentifier().toString(), material);
+        return getDefaultPack().getKnownMaterialMap().put(material.getIdentifier().toString(), material);
     }
 
     public static ConfigPack getDefaultPack() {
@@ -43,6 +43,11 @@ public class PartMaterials {
         List<PartMaterial> list = Lists.newArrayList();
         MATERIALS.entrySet().stream().map(Map.Entry::getValue).map(MaterialsPack::getKnownMaterials).map(stream -> stream.collect(Collectors.toList())).forEach(list::addAll);
         return list.stream();
+    }
+
+    @Deprecated
+    public static Map<String, MaterialsPack> getMaterialsMap() {
+        return MATERIALS;
     }
 
     public static Stream<MaterialsPack> getMaterialPacks() {

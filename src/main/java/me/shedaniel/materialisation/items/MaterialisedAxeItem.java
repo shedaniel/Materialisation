@@ -16,6 +16,7 @@ import net.minecraft.item.AxeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
@@ -41,36 +42,32 @@ public class MaterialisedAxeItem extends AxeItem implements MaterialisedMiningTo
         addPropertyGetter(new Identifier(ModReference.MOD_ID, "handle_isbright"), (itemStack, world, livingEntity) -> {
             return isHandleBright(itemStack) ? 1f : 0f;
         });
-        addPropertyGetter(new Identifier(ModReference.MOD_ID, "handle_isnotbright"), (itemStack, world, livingEntity) -> {
-            return !isHandleBright(itemStack) ? 1f : 0f;
-        });
         addPropertyGetter(new Identifier(ModReference.MOD_ID, "axe_head_isbright"), (itemStack, world, livingEntity) -> {
             return isHeadBright(itemStack) ? 1f : 0f;
-        });
-        addPropertyGetter(new Identifier(ModReference.MOD_ID, "axe_head_isnotbright"), (itemStack, world, livingEntity) -> {
-            return !isHeadBright(itemStack) ? 1f : 0f;
         });
     }
 
     public boolean isHeadBright(ItemStack itemStack) {
-        if (itemStack.getOrCreateTag().containsKey("mt_axe_head_bright"))
+        CompoundTag tag = itemStack.getOrCreateTag();
+        if (tag.containsKey("mt_axe_head_bright"))
             return true;
-        if (itemStack.getOrCreateTag().containsKey("mt_1_material"))
-            return MaterialisationUtils.getMatFromString(itemStack.getOrCreateTag().getString("mt_1_material")).map(PartMaterial::isBright).orElse(false);
-        return MaterialisationUtils.getMatFromString(itemStack.getOrCreateTag().getString("mt_axe_head_material")).map(PartMaterial::isBright).orElse(false);
+        if (tag.containsKey("mt_1_material"))
+            return MaterialisationUtils.getMatFromString(tag.getString("mt_1_material")).map(PartMaterial::isBright).orElse(false);
+        return MaterialisationUtils.getMatFromString(tag.getString("mt_axe_head_material")).map(PartMaterial::isBright).orElse(false);
     }
 
     @Override
     public int getEnchantability(ItemStack stack) {
-        if (!stack.getOrCreateTag().containsKey("mt_axe_head_material") || !stack.getOrCreateTag().containsKey("mt_handle_material")) {
-            if (!stack.getOrCreateTag().containsKey("mt_0_material") || !stack.getOrCreateTag().containsKey("mt_1_material"))
+        CompoundTag tag = stack.getOrCreateTag();
+        if (!tag.containsKey("mt_axe_head_material") || !tag.containsKey("mt_handle_material")) {
+            if (!tag.containsKey("mt_0_material") || !tag.containsKey("mt_1_material"))
                 return 0;
-            PartMaterial handle = MaterialisationUtils.getMaterialFromString(stack.getOrCreateTag().getString("mt_0_material"));
-            PartMaterial head = MaterialisationUtils.getMaterialFromString(stack.getOrCreateTag().getString("mt_1_material"));
+            PartMaterial handle = MaterialisationUtils.getMaterialFromString(tag.getString("mt_0_material"));
+            PartMaterial head = MaterialisationUtils.getMaterialFromString(tag.getString("mt_1_material"));
             return (handle.getEnchantability() + head.getEnchantability()) / 2;
         }
-        PartMaterial handle = MaterialisationUtils.getMaterialFromString(stack.getOrCreateTag().getString("mt_handle_material"));
-        PartMaterial head = MaterialisationUtils.getMaterialFromString(stack.getOrCreateTag().getString("mt_axe_head_material"));
+        PartMaterial handle = MaterialisationUtils.getMaterialFromString(tag.getString("mt_handle_material"));
+        PartMaterial head = MaterialisationUtils.getMaterialFromString(tag.getString("mt_axe_head_material"));
         return (handle.getEnchantability() + head.getEnchantability()) / 2;
     }
 

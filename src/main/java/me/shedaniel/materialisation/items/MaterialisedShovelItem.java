@@ -38,14 +38,8 @@ public class MaterialisedShovelItem extends ShovelItem implements MaterialisedMi
         addPropertyGetter(new Identifier(ModReference.MOD_ID, "handle_isbright"), (itemStack, world, livingEntity) -> {
             return isHandleBright(itemStack) ? 1f : 0f;
         });
-        addPropertyGetter(new Identifier(ModReference.MOD_ID, "handle_isnotbright"), (itemStack, world, livingEntity) -> {
-            return !isHandleBright(itemStack) ? 1f : 0f;
-        });
         addPropertyGetter(new Identifier(ModReference.MOD_ID, "shovel_head_isbright"), (itemStack, world, livingEntity) -> {
             return isHeadBright(itemStack) ? 1f : 0f;
-        });
-        addPropertyGetter(new Identifier(ModReference.MOD_ID, "shovel_head_isnotbright"), (itemStack, world, livingEntity) -> {
-            return !isHeadBright(itemStack) ? 1f : 0f;
         });
     }
 

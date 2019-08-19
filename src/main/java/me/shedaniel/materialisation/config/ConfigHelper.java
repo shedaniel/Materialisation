@@ -196,7 +196,7 @@ public class ConfigHelper {
                 ConfigPack pack = knownMaterial.getLeft();
                 ConfigMaterial right = knownMaterial.getRight();
                 if (right.enabled)
-                    pack.getMaterialMap().put(right.name, right);
+                    pack.getKnownMaterialMap().put(right.name, right);
             }
             List<MaterialsPack> packs = Lists.newArrayList();
             for (MaterialsPack loadedPack : loadedPacks) {
