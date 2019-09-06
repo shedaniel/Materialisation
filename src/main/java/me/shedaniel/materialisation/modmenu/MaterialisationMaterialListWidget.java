@@ -30,7 +30,7 @@ public class MaterialisationMaterialListWidget extends DynamicElementListWidget<
 
     @Override
     protected int getScrollbarPosition() {
-        return width - 6;
+        return left + width - 6;
     }
 
     @Override

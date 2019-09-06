@@ -5,6 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tag.ItemTags;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Lazy;
 import net.minecraft.util.registry.Registry;
 
 import java.util.Arrays;
@@ -14,7 +15,11 @@ import java.util.stream.Collectors;
 public class BetterIngredient {
     public Type type;
     public String content;
-    private transient ItemStack[] cache;
+    private transient Lazy<ItemStack[]> stacks = new Lazy<>(() -> {
+        if (type == Type.ITEM)
+            return new ItemStack[]{new ItemStack(Registry.ITEM.get(new Identifier(content)))};
+        return new ItemTags.CachingTag(new Identifier(content)).values().stream().map(ItemStack::new).collect(Collectors.toList()).toArray(new ItemStack[0]);
+    });
 
     public BetterIngredient(Type type, String content) {
         this.type = type;
@@ -47,11 +52,7 @@ public class BetterIngredient {
     }
 
     public ItemStack[] getStacks() {
-        if (cache != null)
-            return cache;
-        if (type == Type.ITEM)
-            return cache = new ItemStack[]{new ItemStack(Registry.ITEM.get(new Identifier(content)))};
-        return cache = new ItemTags.CachingTag(new Identifier(content)).values().stream().map(ItemStack::new).collect(Collectors.toList()).toArray(new ItemStack[0]);
+        return stacks.get();
     }
 
     public List<ItemStack> getStacksList() {

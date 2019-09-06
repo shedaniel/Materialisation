@@ -6,6 +6,7 @@ import me.shedaniel.materialisation.api.PartMaterial;
 import me.shedaniel.materialisation.config.ConfigPackInfo;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
@@ -30,7 +31,7 @@ public class MaterialisationDescriptionListWidget extends DynamicElementListWidg
 
     @Override
     protected int getScrollbarPosition() {
-        return width - 6;
+        return left + width - 6;
     }
 
     @Override
@@ -63,10 +64,9 @@ public class MaterialisationDescriptionListWidget extends DynamicElementListWidg
         }
     }
 
-    public void addMaterial(PartMaterial partMaterial) {
+    public void addMaterial(MaterialisationMaterialsScreen og, PartMaterial partMaterial) {
         clearItems();
-        addItem(new TextEntry(new TranslatableText(partMaterial.getMaterialTranslateKey()).formatted(Formatting.UNDERLINE, Formatting.BOLD)));
-        addItem(new EmptyEntry(5));
+        addItem(new TitleMaterialOverrideEntry(og, partMaterial, new TranslatableText(partMaterial.getMaterialTranslateKey()).formatted(Formatting.UNDERLINE, Formatting.BOLD)));
         DecimalFormat df = new DecimalFormat("#.##");
         addItem(new ColorEntry(I18n.translate("config.text.materialisation.color"), partMaterial.isBright() ? partMaterial.getToolColor() : darkerColor(darkerColor(partMaterial.getToolColor()))));
         addItem(new TextEntry(new TranslatableText("config.text.materialisation.identifier", partMaterial.getIdentifier().toString()).formatted(Formatting.GRAY)));
@@ -121,8 +121,39 @@ public class MaterialisationDescriptionListWidget extends DynamicElementListWidg
         }
     }
 
+    public static class TitleMaterialOverrideEntry extends Entry {
+        protected String s;
+        private ButtonWidget overrideButton;
+
+        public TitleMaterialOverrideEntry(MaterialisationMaterialsScreen og, PartMaterial partMaterial, Text text) {
+            this.s = text.asFormattedString();
+            String btnText = I18n.translate("config.button.materialisation.create_override");
+            overrideButton = new ButtonWidget(0, 0, MinecraftClient.getInstance().textRenderer.getStringWidth(btnText) + 10, 20, btnText, widget -> {
+                MinecraftClient.getInstance().openScreen(new MaterialisationCreateOverrideNameScreen(og, MinecraftClient.getInstance().currentScreen, partMaterial));
+            });
+        }
+
+        @Override
+        public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
+            MinecraftClient.getInstance().textRenderer.drawWithShadow(s, x, y + 10, 16777215);
+            overrideButton.x = x + entryWidth - overrideButton.getWidth();
+            overrideButton.y = y;
+            overrideButton.render(mouseX, mouseY, delta);
+        }
+
+        @Override
+        public int getItemHeight() {
+            return 21;
+        }
+
+        @Override
+        public List<? extends Element> children() {
+            return Collections.singletonList(overrideButton);
+        }
+    }
+
     public static class TextEntry extends Entry {
-        private String s;
+        protected String s;
 
         public TextEntry(String s) {
             this.s = s;

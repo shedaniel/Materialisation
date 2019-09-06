@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static me.shedaniel.materialisation.modmenu.MaterialisationMaterialsScreen.overlayBackground;
+
 public class MaterialisationInstallScreen extends Screen {
     public static final List<OnlinePack> ONLINE_PACKS = Lists.newArrayList();
     public static boolean loaded = false;
@@ -114,32 +116,7 @@ public class MaterialisationInstallScreen extends Screen {
     public void render(int mouseX, int mouseY, float delta) {
         renderDirtBackground(0);
         listWidget.render(mouseX, mouseY, delta);
-//        overlayBackground(0, 0, width, 28, 64, 64, 64, 255, 255);
-//        overlayBackground(0, height - 28, width, height, 64, 64, 64, 255, 255);
-//        GlStateManager.enableBlend();
-//        GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ZERO, GlStateManager.DestFactor.ONE);
-//        GlStateManager.disableAlphaTest();
-//        GlStateManager.shadeModel(7425);
-//        GlStateManager.disableTexture();
-//        Tessellator tessellator = Tessellator.getInstance();
-//        BufferBuilder buffer = tessellator.getBufferBuilder();
-//        buffer.begin(7, VertexFormats.POSITION_UV_COLOR);
-//        buffer.vertex(0, 28 + 4, 0.0D).texture(0.0D, 1.0D).color(0, 0, 0, 0).next();
-//        buffer.vertex(this.width, 28 + 4, 0.0D).texture(1.0D, 1.0D).color(0, 0, 0, 0).next();
-//        buffer.vertex(this.width, 28, 0.0D).texture(1.0D, 0.0D).color(0, 0, 0, 255).next();
-//        buffer.vertex(0, 28, 0.0D).texture(0.0D, 0.0D).color(0, 0, 0, 255).next();
-//        tessellator.draw();
-//        buffer.begin(7, VertexFormats.POSITION_UV_COLOR);
-//        int i1 = height - 28, i2 = height - 28 - 4;
-//        buffer.vertex(0, i2, 0.0D).texture(0.0D, 1.0D).color(0, 0, 0, 0).next();
-//        buffer.vertex(this.width, i2, 0.0D).texture(1.0D, 1.0D).color(0, 0, 0, 0).next();
-//        buffer.vertex(this.width, i1, 0.0D).texture(1.0D, 0.0D).color(0, 0, 0, 255).next();
-//        buffer.vertex(0, i1, 0.0D).texture(0.0D, 0.0D).color(0, 0, 0, 255).next();
-//        tessellator.draw();
-//        GlStateManager.enableTexture();
-//        GlStateManager.shadeModel(7424);
-//        GlStateManager.enableAlphaTest();
-//        GlStateManager.disableBlend();
+        overlayBackground(0, height - 28, width, height, 64, 64, 64, 255, 255);
         drawCenteredString(font, title.asFormattedString(), width / 2, 10, 16777215);
         super.render(mouseX, mouseY, delta);
     }

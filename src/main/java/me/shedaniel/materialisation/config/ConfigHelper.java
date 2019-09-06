@@ -28,9 +28,10 @@ public class ConfigHelper {
 
     public static final ExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "Materialisation"));
     public static final File CONFIG_DIRECTORY = new File(FabricLoader.getInstance().getConfigDirectory(), "materialisation");
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     public static final File MATERIALS_DIRECTORY = new File(CONFIG_DIRECTORY, "material");
+    public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final File OLD_MATERIALS_DIRECTORY = new File(CONFIG_DIRECTORY, "materials");
+    public static boolean loading = false;
 
     public static void loadDefault() throws IOException {
         if (OLD_MATERIALS_DIRECTORY.exists())
@@ -40,6 +41,7 @@ public class ConfigHelper {
     }
 
     public static void loadConfig() {
+        loading = true;
         try {
             List<PartMaterial> defaultMaterials = Lists.newArrayList();
             List<MaterialsPack> defaultPacks = Lists.newArrayList();
@@ -61,8 +63,12 @@ public class ConfigHelper {
                     }
                 });
                 for (MaterialsPack defaultPack : defaultPacks) {
-                    loadedPacks.add(defaultPack);
-                    Materialisation.LOGGER.info("[Materialisation] Loading default pack: " + defaultPack.getIdentifier().toString());
+                    ConfigPack pack = new ConfigPack(defaultPack.getConfigPackInfo(), Maps.newLinkedHashMap());
+                    loadedPacks.add(pack);
+                    for (Map.Entry<String, PartMaterial> entry : defaultPack.getKnownMaterialMap().entrySet()) {
+                        knownMaterials.add(new Pair<>(pack, new ConfigMaterial(entry.getValue())));
+                    }
+                    Materialisation.LOGGER.info("[Materialisation] Loading default pack: " + pack.getIdentifier().toString());
                 }
                 for (PartMaterial partMaterial : defaultMaterials) {
                     ConfigMaterial material = new ConfigMaterial(partMaterial);
@@ -169,10 +175,15 @@ public class ConfigHelper {
                         Identifier identifier = new Identifier(override.get("name").getAsString());
                         for (Map.Entry<String, JsonElement> entry : override.entrySet())
                             if (!entry.getKey().equalsIgnoreCase("type") && !entry.getKey().equalsIgnoreCase("name") && !entry.getKey().equalsIgnoreCase("priority")) {
-                                Optional<ConfigMaterial> any = knownMaterials.stream().map(Pair::getRight).filter(material -> new Identifier(material.name).equals(identifier)).findAny();
-                                if (!any.isPresent())
+                                ConfigMaterial material = null;
+                                for (Pair<ConfigPack, ConfigMaterial> knownMaterial : knownMaterials) {
+                                    if (new Identifier(knownMaterial.getRight().name).equals(identifier)) {
+                                        material = knownMaterial.getRight();
+                                        break;
+                                    }
+                                }
+                                if (material == null)
                                     throw new NullPointerException("Material " + identifier.toString() + " not found!");
-                                ConfigMaterial material = any.get();
                                 String key = entry.getKey();
                                 boolean replaced = false;
                                 for (Field declaredField : ConfigMaterial.class.getDeclaredFields())
@@ -247,8 +258,8 @@ public class ConfigHelper {
             }
         } catch (Throwable throwable) {
             throwable.printStackTrace();
-            System.exit(0);
         }
+        loading = false;
     }
 
     private static void fillDefaultConfigs() throws IOException {

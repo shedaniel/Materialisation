@@ -3,6 +3,7 @@ package me.shedaniel.materialisation.modmenu;
 import com.mojang.blaze3d.platform.GlStateManager;
 import me.shedaniel.materialisation.api.PartMaterial;
 import me.shedaniel.materialisation.api.PartMaterials;
+import me.shedaniel.materialisation.config.ConfigHelper;
 import me.shedaniel.materialisation.config.ConfigPack;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
@@ -15,11 +16,12 @@ import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.TranslatableText;
 
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 public class MaterialisationMaterialsScreen extends Screen {
 
     private Object lastDescription;
-    private Screen parent;
+    Screen parent;
     private MaterialisationMaterialListWidget materialList;
     private MaterialisationDescriptionListWidget descriptionList;
 
@@ -42,6 +44,14 @@ public class MaterialisationMaterialsScreen extends Screen {
     }
 
     @Override
+    public void tick() {
+        super.tick();
+        if (ConfigHelper.loading) {
+            MinecraftClient.getInstance().openScreen(new MaterialisationLoadingConfigScreen(this, parent));
+        }
+    }
+
+    @Override
     public boolean keyPressed(int int_1, int int_2, int int_3) {
         if (int_1 == 256 && this.shouldCloseOnEsc()) {
             minecraft.openScreen(parent);
@@ -56,7 +66,13 @@ public class MaterialisationMaterialsScreen extends Screen {
         addButton(new ButtonWidget(width - 104, 4, 100, 20, I18n.translate("config.button.materialisation.install"), var1 -> {
             minecraft.openScreen(new MaterialisationInstallScreen(this));
         }));
-        addButton(new ButtonWidget(4, 4, 100, 20, I18n.translate("gui.back"), var1 -> {
+        addButton(new ButtonWidget(59, 4, 85, 20, I18n.translate("config.button.materialisation.reload"), var1 -> {
+            if (!ConfigHelper.loading) {
+                MinecraftClient.getInstance().openScreen(new MaterialisationLoadingConfigScreen(this, parent));
+                CompletableFuture.runAsync(ConfigHelper::loadConfig, ConfigHelper.EXECUTOR_SERVICE);
+            }
+        }));
+        addButton(new ButtonWidget(4, 4, 50, 20, I18n.translate("gui.back"), var1 -> {
             minecraft.openScreen(parent);
         }));
         children.add(materialList = new MaterialisationMaterialListWidget(minecraft, width / 2 - 10, height - 38, 28 + 5, height - 5, DrawableHelper.BACKGROUND_LOCATION));
@@ -67,7 +83,7 @@ public class MaterialisationMaterialsScreen extends Screen {
             if (lastDescription instanceof ConfigPack)
                 descriptionList.addPack(((ConfigPack) lastDescription).getConfigPackInfo(), (ConfigPack) lastDescription);
             if (lastDescription instanceof PartMaterial)
-                descriptionList.addMaterial((PartMaterial) lastDescription);
+                descriptionList.addMaterial(this, (PartMaterial) lastDescription);
         }
         ConfigPack defaultPack = PartMaterials.getDefaultPack();
         PartMaterials.getMaterialPacks().forEach(materialsPack -> {
@@ -85,7 +101,7 @@ public class MaterialisationMaterialsScreen extends Screen {
                     @Override
                     public void onClick() {
                         lastDescription = partMaterial;
-                        descriptionList.addMaterial(partMaterial);
+                        descriptionList.addMaterial(MaterialisationMaterialsScreen.this, partMaterial);
                     }
                 });
             });
@@ -103,7 +119,7 @@ public class MaterialisationMaterialsScreen extends Screen {
                     @Override
                     public void onClick() {
                         lastDescription = partMaterial;
-                        descriptionList.addMaterial(partMaterial);
+                        descriptionList.addMaterial(MaterialisationMaterialsScreen.this, partMaterial);
                     }
                 });
             });
