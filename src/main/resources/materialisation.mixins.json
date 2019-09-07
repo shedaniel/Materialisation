@@ -6,7 +6,8 @@
   "mixins": [
     "MiningToolItemAccessor",
     "MixinItemStack",
-    "MixinEnchantmentHelper"
+    "MixinEnchantmentHelper",
+    "MixinEnchantmentTarget"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -267,12 +267,12 @@ public class ConfigHelper {
     }
 
     public static List<ConfigIngredients> fromMap(Map<BetterIngredient, Float> map) {
-        return map.entrySet().stream().map(entry -> new ConfigIngredients(entry.getKey(), entry.getValue())).collect(Collectors.toList());
+        return map.entrySet().stream().map(entry -> new ConfigIngredients(entry.getKey().toConfigIngredient(), entry.getValue())).collect(Collectors.toList());
     }
 
     public static Map<BetterIngredient, Float> fromJson(List<ConfigIngredients> jsonObjects) {
         LinkedHashMap<BetterIngredient, Float> map = Maps.newLinkedHashMap();
-        jsonObjects.forEach(configIngredients -> map.put(configIngredients.ingredient, configIngredients.multiplier));
+        jsonObjects.forEach(configIngredients -> map.put(configIngredients.ingredient.toBetterIngredient(), configIngredients.multiplier));
         return map;
     }
 

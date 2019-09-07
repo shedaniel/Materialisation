@@ -1,5 +1,6 @@
 package me.shedaniel.materialisation.api;
 
+import me.shedaniel.materialisation.config.MaterialisationConfig;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tag.ItemTags;
@@ -40,6 +41,10 @@ public class BetterIngredient {
 
     public static BetterIngredient fromTag(Identifier tag) {
         return new BetterIngredient(Type.TAG, tag.toString());
+    }
+
+    public MaterialisationConfig.ConfigIngredient toConfigIngredient() {
+        return new MaterialisationConfig.ConfigIngredient(type, content);
     }
 
     @Override

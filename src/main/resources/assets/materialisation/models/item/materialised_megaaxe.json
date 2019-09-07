@@ -7,13 +7,6 @@
   "overrides": [
     {
       "predicate": {
-        "materialisation:handle_isbright": 1,
-        "materialisation:megaaxe_head_isbright": 1
-      },
-      "model": "materialisation:item/materialised_megaaxe_both"
-    },
-    {
-      "predicate": {
         "materialisation:handle_isbright": 0,
         "materialisation:megaaxe_head_isbright": 1
       },
@@ -25,6 +18,13 @@
         "materialisation:megaaxe_head_isbright": 0
       },
       "model": "materialisation:item/materialised_megaaxe_only_handle"
+    },
+    {
+      "predicate": {
+        "materialisation:handle_isbright": 1,
+        "materialisation:megaaxe_head_isbright": 1
+      },
+      "model": "materialisation:item/materialised_megaaxe_both"
     }
   ]
 }

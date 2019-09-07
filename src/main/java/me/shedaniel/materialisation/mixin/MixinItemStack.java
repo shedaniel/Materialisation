@@ -114,8 +114,8 @@ public abstract class MixinItemStack {
 
     @Inject(method = "isDamaged", at = @At("HEAD"), cancellable = true)
     public void isDamaged(CallbackInfoReturnable<Boolean> returnable) {
-        if (getItem() instanceof MaterialisedMiningTool)
-            returnable.setReturnValue(false);
+//        if (getItem() instanceof MaterialisedMiningTool)
+//            returnable.setReturnValue(true);
     }
 
     @Inject(method = "getDamage", at = @At("HEAD"), cancellable = true)
@@ -129,7 +129,7 @@ public abstract class MixinItemStack {
     @Inject(method = "getMaxDamage", at = @At("HEAD"), cancellable = true)
     public void getMaxDamage(CallbackInfoReturnable<Integer> returnable) {
         if (getItem() instanceof MaterialisedMiningTool)
-            returnable.setReturnValue(MaterialisationUtils.getToolMaxDurability((ItemStack) (Object) this) + 1);
+            returnable.setReturnValue(MaterialisationUtils.getToolMaxDurability((ItemStack) (Object) this));
     }
 
     @Inject(method = "setDamage", at = @At("HEAD"), cancellable = true)

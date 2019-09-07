@@ -13,11 +13,25 @@ import java.util.Set;
 
 public class MaterialisationConfig {
 
+    public static class ConfigIngredient {
+        public BetterIngredient.Type type;
+        public String content;
+
+        public ConfigIngredient(BetterIngredient.Type type, String content) {
+            this.type = type;
+            this.content = content;
+        }
+
+        public BetterIngredient toBetterIngredient() {
+            return new BetterIngredient(type, content);
+        }
+    }
+
     public static class ConfigIngredients {
-        public BetterIngredient ingredient;
+        public ConfigIngredient ingredient;
         public float multiplier;
 
-        public ConfigIngredients(BetterIngredient ingredient, float multiplier) {
+        public ConfigIngredients(ConfigIngredient ingredient, float multiplier) {
             this.ingredient = ingredient;
             this.multiplier = multiplier;
         }
