@@ -3,6 +3,7 @@ package me.shedaniel.materialisation;
 import me.shedaniel.materialisation.api.MaterialsPack;
 import me.shedaniel.materialisation.api.PartMaterial;
 import me.shedaniel.materialisation.api.PartMaterials;
+import me.shedaniel.materialisation.config.ConfigHelper;
 import me.shedaniel.materialisation.items.ColoredItem;
 import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.tools.ToolManager;
@@ -311,15 +312,25 @@ public class MaterialisationUtils {
 
     @SuppressWarnings("deprecation")
     public static Optional<PartMaterial> getMatFromString(String s) {
-        s = s.contains(":") ? s : "minecraft:" + s;
+        {
+            PartMaterial cache = ConfigHelper.MATERIAL_CACHE.get(s);
+            if (cache != null)
+                return Optional.of(cache);
+        }
+        String ss = s.contains(":") ? s : "minecraft:" + s;
         for (Map.Entry<String, MaterialsPack> entry : PartMaterials.getMaterialsMap().entrySet()) {
             for (Map.Entry<String, PartMaterial> materialEntry : entry.getValue().getKnownMaterialMap().entrySet()) {
                 PartMaterial value = materialEntry.getValue();
-                if (value.getIdentifier().toString().equals(s))
-                    return Optional.of(value);
+                if (value.getIdentifier().toString().equals(ss))
+                    return Optional.of(cacheMaterialFromString(s, value));
             }
         }
         return Optional.empty();
+    }
+
+    private static PartMaterial cacheMaterialFromString(String s, PartMaterial material) {
+        ConfigHelper.MATERIAL_CACHE.put(s, material);
+        return material;
     }
 
     public static boolean isHandleBright(ItemStack itemStack) {

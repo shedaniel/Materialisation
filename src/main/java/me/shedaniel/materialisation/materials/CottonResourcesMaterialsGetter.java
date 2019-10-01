@@ -35,8 +35,8 @@ public class CottonResourcesMaterialsGetter {
         put(materials, newMat("steel").wEnch(16).aIngr(fromTag(tryParse("c:steel_ingot")), 2).aIngr(fromTag(tryParse("c:steel_block")), 18).wAtta(3).wFull(150).wSpeed(8).wDuraMulti(1.1f).wSpeedMulti(.8f).setBright(false).wColor(0xff777777).setToolDurability(600).setMiningLevel(2));
         put(materials, newMat("brass").wEnch(16).aIngr(fromTag(tryParse("c:brass_ingot")), 2).aIngr(fromTag(tryParse("c:brass_block")), 18).wAtta(2.5f).wFull(100).wSpeed(5.5f).wDuraMulti(.9f).wSpeedMulti(1.1f).setBright(true).wColor(0xffffd000).setToolDurability(400).setMiningLevel(2));
         put(materials, newMat("electrum").wEnch(16).aIngr(fromTag(tryParse("c:electrum_ingot")), 2).aIngr(fromTag(tryParse("c:electrum_block")), 18).wAtta(3).wFull(110).wSpeed(6).wDuraMulti(.9f).wSpeedMulti(1f).setBright(true).wColor(0xffead470).setToolDurability(440).setMiningLevel(2));
-        put(materials, newMat("mercury").wEnch(16).aIngr(fromTag(tryParse("c:mercury")), 2).wAtta(0).wFull(13).wSpeed(2).wDuraMulti(.1f).wSpeedMulti(.13f).setBright(false).wColor(0xffff0000).setToolDurability(50).setMiningLevel(0));
-        ConfigPackInfo packInfo = new ConfigPackInfo("Cotton Resources Materials", "cotton-resources:material", Collections.singletonList("cotton-resources"), Collections.singletonList("Danielshe"), "0.1.0");
+//        put(materials, newMat("mercury").wEnch(16).aIngr(fromTag(tryParse("c:mercury")), 2).wAtta(0).wFull(13).wSpeed(2).wDuraMulti(.1f).wSpeedMulti(.13f).setBright(false).wColor(0xffff0000).setToolDurability(50).setMiningLevel(0));
+        ConfigPackInfo packInfo = new ConfigPackInfo("Cotton Resources Materials", "cotton-resources:material", Collections.singletonList("cotton-resources"), Collections.singletonList("Danielshe"), "0.2.0");
         return Collections.singletonList(new ConfigPack(packInfo.withDescription("Adds the materials from Cotton Resources."), materials));
     }
 

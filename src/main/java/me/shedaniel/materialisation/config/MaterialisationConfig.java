@@ -58,6 +58,7 @@ public class MaterialisationConfig {
         public double fullAmount;
         private transient Integer color = -1;
         private transient Map<BetterIngredient, Float> ingredientFloatMap = null;
+        private transient Identifier identifierCache = null;
 
         public ConfigMaterial(PartMaterial partMaterial) {
             this.toolColor = partMaterial.getToolColor() + "";
@@ -119,7 +120,9 @@ public class MaterialisationConfig {
 
         @Override
         public Identifier getIdentifier() {
-            return new Identifier(name);
+            if (identifierCache != null)
+                return identifierCache;
+            return identifierCache = new Identifier(name);
         }
 
         @Override

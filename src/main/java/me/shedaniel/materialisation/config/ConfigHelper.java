@@ -32,6 +32,7 @@ public class ConfigHelper {
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final File OLD_MATERIALS_DIRECTORY = new File(CONFIG_DIRECTORY, "materials");
     public static boolean loading = false;
+    public static final Map<String, PartMaterial> MATERIAL_CACHE = new HashMap<>();
 
     public static void loadDefault() throws IOException {
         if (OLD_MATERIALS_DIRECTORY.exists())
@@ -48,6 +49,7 @@ public class ConfigHelper {
             List<MaterialsPack> loadedPacks = Lists.newArrayList();
             List<Pair<ConfigPack, ConfigMaterial>> knownMaterials = Lists.newArrayList();
             List<JsonObject> overrides = Lists.newArrayList();
+            MATERIAL_CACHE.clear();
             PartMaterials.clearMaterials();
             try {
                 FabricLoader.getInstance().getEntrypoints("materialisation_default", DefaultMaterialSupplier.class).stream().forEach(supplier -> {
@@ -259,6 +261,7 @@ public class ConfigHelper {
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         }
+        MATERIAL_CACHE.clear();
         loading = false;
     }
 

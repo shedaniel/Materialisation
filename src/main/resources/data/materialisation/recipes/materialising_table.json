@@ -1,22 +1,22 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "III",
-    "iDi",
-    "CiC"
+    " # ",
+    "IFI",
+    "CIC"
   ],
   "key": {
-    "C": {
-      "item": "minecraft:cobblestone"
-    },
-    "D": {
-      "item": "minecraft:diamond"
-    },
-    "i": {
-      "item": "minecraft:iron_ingot"
+    "#": {
+      "tag": "minecraft:logs"
     },
     "I": {
-      "item": "minecraft:iron_block"
+      "item": "minecraft:iron_nugget"
+    },
+    "F": {
+      "item": "minecraft:flint"
+    },
+    "C": {
+      "item": "minecraft:cobblestone"
     }
   },
   "result": {
