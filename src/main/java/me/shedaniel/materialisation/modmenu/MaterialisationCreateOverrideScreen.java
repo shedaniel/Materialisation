@@ -14,8 +14,10 @@ import net.minecraft.text.TranslatableText;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 public class MaterialisationCreateOverrideScreen extends Screen {
+    public static final Pattern HEX_COLOR = Pattern.compile("^#([A-Fa-f0-9]{8})$");
     private MaterialisationMaterialsScreen og;
     private Screen parent;
     private PartMaterial partMaterial;
@@ -56,7 +58,7 @@ public class MaterialisationCreateOverrideScreen extends Screen {
             entries = listWidget.children();
         } else {
             entries.add(new BooleanEditEntry("enabled", true));
-            entries.add(new StringEditEntry("toolColor", "#" + toStringColor(partMaterial.getToolColor())));
+            entries.add(new StringEditEntry("toolColor", "#" + toStringColor(partMaterial.getToolColor()), HEX_COLOR));
             entries.add(new IntEditEntry("toolDurability", partMaterial.getToolDurability()));
             entries.add(new IntEditEntry("miningLevel", partMaterial.getMiningLevel()));
             entries.add(new IntEditEntry("enchantability", partMaterial.getEnchantability()));
