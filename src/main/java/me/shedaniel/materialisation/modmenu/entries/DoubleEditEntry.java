@@ -9,6 +9,7 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.resource.language.I18n;
 
 import java.text.DecimalFormat;
+import java.text.ParsePosition;
 import java.util.List;
 
 public class DoubleEditEntry extends MaterialisationCreateOverrideListWidget.EditEntry {
@@ -17,6 +18,7 @@ public class DoubleEditEntry extends MaterialisationCreateOverrideListWidget.Edi
     private TextFieldWidget buttonWidget;
     private ButtonWidget resetButton;
     private List<Element> widgets;
+    private ParsePosition parsePosition = new ParsePosition(0);
     private static final DecimalFormat DF = new DecimalFormat("#.##");
 
     public DoubleEditEntry(String s, double defaultValue) {
@@ -25,12 +27,7 @@ public class DoubleEditEntry extends MaterialisationCreateOverrideListWidget.Edi
         this.buttonWidget = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, 0, 0, 150, 16, "") {
             @Override
             public void render(int int_1, int int_2, float float_1) {
-                try {
-                    double i = Double.valueOf(getText());
-                    setEditableColor(14737632);
-                } catch (NumberFormatException ex) {
-                    setEditableColor(16733525);
-                }
+                setEditableColor(isValid() ? 0xe0e0e0 : 0xff5555);
                 super.render(int_1, int_2, float_1);
             }
         };
@@ -70,22 +67,20 @@ public class DoubleEditEntry extends MaterialisationCreateOverrideListWidget.Edi
 
     @Override
     public Double getValue() {
-        try {
-            double i = Double.valueOf(buttonWidget.getText());
-            return i;
-        } catch (NumberFormatException ex) {
-            return Double.valueOf(defaultValue);
+        parsePosition.setIndex(0);
+        Number value = DF.parse(buttonWidget.getText(), parsePosition);
+        if (parsePosition.getIndex() != 0) {
+            return value.doubleValue();
         }
+        return defaultValue;
     }
 
     @Override
     public boolean isValid() {
-        try {
-            double i = Double.valueOf(buttonWidget.getText());
-            return true;
-        } catch (NumberFormatException ex) {
-            return false;
-        }
+        parsePosition.setIndex(0);
+        String text = buttonWidget.getText();
+        DF.parse(text, parsePosition);
+        return parsePosition.getIndex() == text.length();
     }
 
     @Override

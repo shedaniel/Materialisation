@@ -9,21 +9,28 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.resource.language.I18n;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class StringEditEntry extends MaterialisationCreateOverrideListWidget.EditEntry {
 
     private String defaultValue;
+    private Pattern validation;
     private TextFieldWidget buttonWidget;
     private ButtonWidget resetButton;
     private List<Element> widgets;
 
     public StringEditEntry(String s, String defaultValue) {
+        this(s, defaultValue, null);
+    }
+
+    public StringEditEntry(String s, String defaultValue, Pattern validation) {
         super(s);
         this.defaultValue = defaultValue;
+        this.validation = validation;
         this.buttonWidget = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, 0, 0, 150, 16, "") {
             @Override
             public void render(int int_1, int int_2, float float_1) {
-                setEditableColor(14737632);
+                setEditableColor(isValid() ? 0xe0e0e0 : 0xff5555);
                 super.render(int_1, int_2, float_1);
             }
         };
@@ -62,13 +69,13 @@ public class StringEditEntry extends MaterialisationCreateOverrideListWidget.Edi
     }
 
     @Override
-    public Object getValue() {
+    public String getValue() {
         return buttonWidget.getText();
     }
 
     @Override
     public boolean isValid() {
-        return true;
+        return validation == null || validation.matcher(getValue()).matches();
     }
 
     @Override
