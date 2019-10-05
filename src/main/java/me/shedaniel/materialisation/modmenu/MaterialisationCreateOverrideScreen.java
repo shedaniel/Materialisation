@@ -17,7 +17,7 @@ import java.util.Locale;
 import java.util.regex.Pattern;
 
 public class MaterialisationCreateOverrideScreen extends Screen {
-    public static final Pattern HEX_COLOR = Pattern.compile("^#([A-Fa-f0-9]{8})$");
+    public static final Pattern HEX_COLOR = Pattern.compile("^#([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6}|[A-Fa-f0-9]{8})$");
     private MaterialisationMaterialsScreen og;
     private Screen parent;
     private PartMaterial partMaterial;
