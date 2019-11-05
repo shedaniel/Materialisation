@@ -134,10 +134,19 @@ public class MaterialisationUtils {
         return getToolMaxDurability(stack);
     }
 
+    public static void setToolMaxDurability(ItemStack stack, int durability) {
+        CompoundTag tag = stack.getOrCreateTag();
+        tag.putInt("mt_maxdurability", durability);
+        stack.setTag(tag);
+    }
+
+
     public static int getToolMaxDurability(ItemStack stack) {
         if (!stack.hasTag())
             return 1;
         CompoundTag tag = stack.getTag();
+        if (tag.containsKey("mt_maxdurability"))
+            return tag.getInt("mt_maxdurability");
         if (tag.containsKey("mt_0_material") && tag.containsKey("mt_1_material"))
             return floor(getMatFromString(tag.getString("mt_0_material")).map(PartMaterial::getDurabilityMultiplier).orElse(0d) * getMatFromString(tag.getString("mt_1_material")).map(PartMaterial::getToolDurability).orElse(0));
         if (tag.containsKey("mt_handle_material") && tag.containsKey("mt_axe_head_material"))
@@ -150,8 +159,6 @@ public class MaterialisationUtils {
             return floor(getMatFromString(tag.getString("mt_handle_material")).map(PartMaterial::getDurabilityMultiplier).orElse(0d) * getMatFromString(tag.getString("mt_shovel_head_material")).map(PartMaterial::getToolDurability).orElse(0));
         if (tag.containsKey("mt_handle_material") && tag.containsKey("mt_sword_blade_material"))
             return floor(getMatFromString(tag.getString("mt_handle_material")).map(PartMaterial::getDurabilityMultiplier).orElse(0d) * getMatFromString(tag.getString("mt_sword_blade_material")).map(PartMaterial::getToolDurability).orElse(0));
-        if (tag.containsKey("mt_maxdurability"))
-            return tag.getInt("mt_maxdurability");
         return 1;
     }
 

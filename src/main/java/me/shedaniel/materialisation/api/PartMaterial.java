@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 public interface PartMaterial extends RepairAmountGetter {
+    int getModifierSlotsCount();
 
     int getToolColor();
 

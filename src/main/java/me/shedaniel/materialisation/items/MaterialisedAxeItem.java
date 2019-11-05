@@ -1,6 +1,7 @@
 package me.shedaniel.materialisation.items;
 
 import com.google.common.collect.Sets;
+import me.shedaniel.materialisation.Materialisation;
 import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.ModReference;
 import me.shedaniel.materialisation.api.PartMaterial;
@@ -28,6 +29,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -39,12 +42,10 @@ public class MaterialisedAxeItem extends AxeItem implements MaterialisedMiningTo
 
     public MaterialisedAxeItem(Settings settings) {
         super(MaterialisationUtils.DUMMY_MATERIAL, 0, -3.1F, settings.maxDamage(0));
-        addPropertyGetter(new Identifier(ModReference.MOD_ID, "handle_isbright"), (itemStack, world, livingEntity) -> {
-            return isHandleBright(itemStack) ? 1f : 0f;
-        });
-        addPropertyGetter(new Identifier(ModReference.MOD_ID, "axe_head_isbright"), (itemStack, world, livingEntity) -> {
-            return isHeadBright(itemStack) ? 1f : 0f;
-        });
+        addPropertyGetter(new Identifier(ModReference.MOD_ID, "handle_isbright"),
+                (itemStack, world, livingEntity) -> isHandleBright(itemStack) ? 1f : 0f);
+        addPropertyGetter(new Identifier(ModReference.MOD_ID, "axe_head_isbright"),
+                (itemStack, world, livingEntity) -> isHeadBright(itemStack) ? 1f : 0f);
     }
 
     public boolean isHeadBright(ItemStack itemStack) {
@@ -155,18 +156,19 @@ public class MaterialisedAxeItem extends AxeItem implements MaterialisedMiningTo
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void appendTooltip(ItemStack stack, World world_1, List<Text> list_1, TooltipContext tooltipContext_1) {
+    public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
         int toolDurability = MaterialisationUtils.getToolDurability(stack);
         int maxDurability = MaterialisationUtils.getToolMaxDurability(stack);
-        list_1.add(new TranslatableText("text.materialisation.max_durability", maxDurability));
+        tooltip.add(new TranslatableText("text.materialisation.max_durability", maxDurability));
         if (toolDurability > 0) {
             float percentage = toolDurability / (float) maxDurability * 100;
             Formatting coloringPercentage = MaterialisationUtils.getColoringPercentage(percentage);
-            list_1.add(new TranslatableText("text.materialisation.durability", coloringPercentage.toString() + toolDurability, coloringPercentage.toString() + MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(percentage) + Formatting.WHITE.toString()));
+            tooltip.add(new TranslatableText("text.materialisation.durability", coloringPercentage.toString() + toolDurability, coloringPercentage.toString() + MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(percentage) + Formatting.WHITE.toString()));
         } else
-            list_1.add(new TranslatableText("text.materialisation.broken"));
-        list_1.add(new TranslatableText("text.materialisation.breaking_speed", MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(MaterialisationUtils.getToolBreakingSpeed(stack))));
-        list_1.add(new TranslatableText("text.materialisation.mining_level", MaterialisationUtils.getToolMiningLevel(stack)));
+            tooltip.add(new TranslatableText("text.materialisation.broken"));
+        tooltip.add(new TranslatableText("text.materialisation.breaking_speed", MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(MaterialisationUtils.getToolBreakingSpeed(stack))));
+        tooltip.add(new TranslatableText("text.materialisation.mining_level", MaterialisationUtils.getToolMiningLevel(stack)));
+        tooltip.add(new TranslatableText("text.materialisation.modifier_slots_count", getModifierSlotsCount(stack)));
     }
 
 }

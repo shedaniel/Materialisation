@@ -38,6 +38,7 @@
   "text.materialisation.durability": "Current Durability: %s§f (%s§f%%)",
   "text.materialisation.breaking_speed": "Breaking Speed: %.2f",
   "text.materialisation.mining_level": "Mining Level: %d",
+  "text.materialisation.modifier_slots_count": "Modifier Slots Count: %d",
   "text.materialisation.tool_handle_durability_multiplier": "Durability Multiplier: %s",
   "text.materialisation.tool_handle_speed_multiplier": "Mining Speed Multiplier: %s",
   "text.materialisation.head_part_speed": "Mining Speed: %s",

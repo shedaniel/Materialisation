@@ -19,7 +19,21 @@ public class CottonResourcesMaterialsGetter {
 
     public static List<MaterialsPack> get() {
         Map<String, PartMaterial> materials = Maps.newLinkedHashMap();
-        put(materials, newMat("copper").wEnch(12).aIngr(fromTag(tryParse("c:copper_ingot")), 2).aIngr(fromTag(tryParse("c:copper_block")), 18).wAtta(1).wFull(100).wSpeed(5.3f).wDuraMulti(1.05f).wSpeedMulti(1f).setBright(true).wColor(0xffffa21f).setToolDurability(275).setMiningLevel(1));
+        put(materials, newMat("copper")
+                .setEnchantability(12)
+                .addIngredient(fromTag(tryParse("c:copper_ingot")), 2)
+                .addIngredient(fromTag(tryParse("c:copper_block")), 18)
+                .setAttackDamage(1)
+                .setFullAmount(100)
+                .setToolSpeed(5.3f)
+                .setDurabilityMultiplier(1.05f)
+                .setBreakingSpeedMultiplier(1f)
+                .setBright(true)
+                .setToolColor(0xffffa21f)
+                .setToolDurability(275)
+                .setMiningLevel(1)
+                .setModifierSlotsCount(1)
+        );
         put(materials, newMat("silver").wEnch(16).aIngr(fromTag(tryParse("c:silver_ingot")), 2).aIngr(fromTag(tryParse("c:silver_block")), 18).wAtta(3).wFull(100).wSpeed(5f).wDuraMulti(.9f).wSpeedMulti(1f).setBright(true).wColor(0xff9387ff).setToolDurability(325).setMiningLevel(1));
         put(materials, newMat("lead").wEnch(16).aIngr(fromTag(tryParse("c:lead_ingot")), 2).aIngr(fromTag(tryParse("c:lead_block")), 18).wAtta(1.5f).wFull(100).wSpeed(5.25f).wDuraMulti(.7f).wSpeedMulti(.6f).setBright(false).wColor(0xffaf96cc).setToolDurability(375).setMiningLevel(1));
         put(materials, newMat("zinc").wEnch(16).aIngr(fromTag(tryParse("c:zinc_ingot")), 2).aIngr(fromTag(tryParse("c:zinc_block")), 18).wAtta(1).wFull(100).wSpeed(4.75f).wDuraMulti(.8f).wSpeedMulti(.5f).setBright(true).wColor(0xffd1fff7).setToolDurability(200).setMiningLevel(1));

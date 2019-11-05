@@ -56,6 +56,7 @@ public class MaterialisationConfig {
         public List<ConfigIngredients> ingredients;
         // Will be rounded down
         public double fullAmount;
+        public int modifierSlotsCount;
         private transient Integer color = -1;
         private transient Map<BetterIngredient, Float> ingredientFloatMap = null;
         private transient Identifier identifierCache = null;
@@ -75,11 +76,17 @@ public class MaterialisationConfig {
             this.bright = partMaterial.isBright();
             this.ingredients = ConfigHelper.fromMap(partMaterial.getIngredientMap());
             this.fullAmount = partMaterial.getFullAmount();
+            this.modifierSlotsCount = partMaterial.getModifierSlotsCount();
         }
 
         @Override
         public int getEnchantability() {
             return (int) enchantability;
+        }
+
+        @Override
+        public int getModifierSlotsCount() {
+            return modifierSlotsCount;
         }
 
         @Override

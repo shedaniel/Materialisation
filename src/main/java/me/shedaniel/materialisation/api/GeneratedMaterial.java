@@ -21,6 +21,7 @@ public class GeneratedMaterial implements PartMaterial {
         return any.map(Map.Entry::getValue).orElse(-1f);
     };
     private int fullAmount = -1;
+    private int modifierSlotsCount = 0;
 
     GeneratedMaterial(Identifier name) {
         this.name = name;
@@ -133,6 +134,16 @@ public class GeneratedMaterial implements PartMaterial {
 
     public GeneratedMaterial wDuraMulti(float durabilityMultiplier) {
         return setDurabilityMultiplier(durabilityMultiplier);
+    }
+
+    @Override
+    public int getModifierSlotsCount() {
+        return modifierSlotsCount;
+    }
+
+    public GeneratedMaterial setModifierSlotsCount(int modifierSlotsCount) {
+        this.modifierSlotsCount = modifierSlotsCount;
+        return this;
     }
 
     @Override

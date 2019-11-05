@@ -3,6 +3,7 @@ package me.shedaniel.materialisation.containers;
 import io.netty.buffer.Unpooled;
 import me.shedaniel.materialisation.Materialisation;
 import me.shedaniel.materialisation.MaterialisationUtils;
+import me.shedaniel.materialisation.MtModifiers;
 import me.shedaniel.materialisation.api.PartMaterial;
 import me.shedaniel.materialisation.items.*;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
@@ -15,6 +16,7 @@ import net.minecraft.inventory.BasicInventory;
 import net.minecraft.inventory.CraftingResultInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.PacketByteBuf;
 import org.apache.commons.lang3.StringUtils;
@@ -74,10 +76,13 @@ public class MaterialisingTableContainer extends Container {
     }
 
     @Override
-    public boolean canUse(PlayerEntity playerEntity) {
-        return this.context.run((world, blockPos) -> {
-            return world.getBlockState(blockPos).getBlock() != Materialisation.MATERIALISING_TABLE ? false : playerEntity.squaredDistanceTo(blockPos.getX() + .5D, blockPos.getY() + .5D, blockPos.getZ() + .5D) < 64D;
-        }, true);
+    public boolean canUse(PlayerEntity player) {
+        return this.context.run(
+                (world, pos) ->
+                        world.getBlockState(pos).getBlock() == Materialisation.MATERIALISING_TABLE
+                                && player.squaredDistanceTo(pos.getX() + .5D, pos.getY() + .5D, pos.getZ() + .5D) < 64D,
+                true
+        );
     }
 
     public void setNewItemName(String string_1) {
@@ -106,7 +111,26 @@ public class MaterialisingTableContainer extends Container {
         ItemStack second = this.main.getInvStack(1);
         if (first.isEmpty()) {
             this.result.setInvStack(0, ItemStack.EMPTY);
-        } else if (first.getItem() instanceof MaterialisedMiningTool && first.getOrCreateTag().containsKey("mt_0_material") && first.getOrCreateTag().containsKey("mt_1_material")) {
+            return;
+        }
+
+        if (first.getItem() instanceof MaterialisedMiningTool
+                && second.getItem() == Items.DIAMOND
+        ) {
+            ItemStack copy = first.copy();
+            MaterialisationUtils.setToolMaxDurability(
+                    copy,
+                    MaterialisationUtils.getToolMaxDurability(copy) + MtModifiers.DIAMOND.getAdditionalDurability()
+            );
+            MaterialisationUtils.setToolDurability(
+                    copy,
+                    MaterialisationUtils.getToolMaxDurability(copy) + MtModifiers.DIAMOND.getAdditionalDurability()
+            );
+            this.result.setInvStack(0, copy);
+        } else if (first.getItem() instanceof MaterialisedMiningTool
+                && first.getOrCreateTag().containsKey("mt_0_material")
+                && first.getOrCreateTag().containsKey("mt_1_material")
+        ) {
             // Fixing Special
             ItemStack copy = first.copy();
             int toolDurability = MaterialisationUtils.getToolDurability(first);
@@ -477,7 +501,7 @@ public class MaterialisingTableContainer extends Container {
     @Override
     public ItemStack transferSlot(PlayerEntity playerEntity_1, int int_1) {
         ItemStack itemStack_1 = ItemStack.EMPTY;
-        Slot slot_1 = (Slot) this.slotList.get(int_1);
+        Slot slot_1 = this.slotList.get(int_1);
         if (slot_1 != null && slot_1.hasStack()) {
             ItemStack itemStack_2 = slot_1.getStack();
             itemStack_1 = itemStack_2.copy();
