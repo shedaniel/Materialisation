@@ -3,7 +3,8 @@ package me.shedaniel.materialisation.containers;
 import io.netty.buffer.Unpooled;
 import me.shedaniel.materialisation.Materialisation;
 import me.shedaniel.materialisation.MaterialisationUtils;
-import me.shedaniel.materialisation.MtModifiers;
+import me.shedaniel.materialisation.api.modifier.Modifier;
+import me.shedaniel.materialisation.api.modifier.Modifiers;
 import me.shedaniel.materialisation.api.PartMaterial;
 import me.shedaniel.materialisation.items.*;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
@@ -16,7 +17,6 @@ import net.minecraft.inventory.BasicInventory;
 import net.minecraft.inventory.CraftingResultInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.PacketByteBuf;
 import org.apache.commons.lang3.StringUtils;
@@ -109,24 +109,13 @@ public class MaterialisingTableContainer extends Container {
     private void updateResult() {
         ItemStack first = this.main.getInvStack(0);
         ItemStack second = this.main.getInvStack(1);
-        if (first.isEmpty()) {
+        if (first.isEmpty() || second.isEmpty()) {
             this.result.setInvStack(0, ItemStack.EMPTY);
             return;
         }
 
-        if (first.getItem() instanceof MaterialisedMiningTool
-                && second.getItem() == Items.DIAMOND
-        ) {
-            ItemStack copy = first.copy();
-            MaterialisationUtils.setToolMaxDurability(
-                    copy,
-                    MaterialisationUtils.getToolMaxDurability(copy) + MtModifiers.DIAMOND.getAdditionalDurability()
-            );
-            MaterialisationUtils.setToolDurability(
-                    copy,
-                    MaterialisationUtils.getToolMaxDurability(copy) + MtModifiers.DIAMOND.getAdditionalDurability()
-            );
-            this.result.setInvStack(0, copy);
+        if (first.getItem() instanceof MaterialisedMiningTool && Modifiers.isModifier(second.getItem())) {
+            applyModifiers(first.copy(), Modifiers.fromItem(second.getItem()));
         } else if (first.getItem() instanceof MaterialisedMiningTool
                 && first.getOrCreateTag().containsKey("mt_0_material")
                 && first.getOrCreateTag().containsKey("mt_1_material")
@@ -488,6 +477,30 @@ public class MaterialisingTableContainer extends Container {
             this.result.setInvStack(0, ItemStack.EMPTY);
         }
         this.sendContentUpdates();
+    }
+
+    private void applyModifiers(ItemStack stack, Modifier modifier) {
+        if (MaterialisationUtils.getModifierSlotsCount(stack) == 0) {
+            this.result.setInvStack(0, ItemStack.EMPTY);
+            this.sendContentUpdates();
+            return;
+        }
+
+        MaterialisationUtils.setModifierSlotsCount(stack,
+                MaterialisationUtils.getModifierSlotsCount(stack) + modifier.getExtraModifierSlots() - 1);
+        MaterialisationUtils.setToolMaxDurability(stack,
+                (int) (MaterialisationUtils.getToolMaxDurability(stack) * modifier.getDurabilityMultiplier())
+                        + modifier.getExtraDurability());
+        MaterialisationUtils.setToolMiningSpeed(stack,
+                (int) (MaterialisationUtils.getToolBreakingSpeed(stack) * modifier.getMiningSpeedMultiplier())
+                        + modifier.getExtraMiningSpeed());
+        MaterialisationUtils.setToolAttackDamage(stack,
+                (int) (MaterialisationUtils.getToolAttackDamage(stack) * modifier.getAttackDamageMultiplier())
+                        + modifier.getExtraDurability());
+        MaterialisationUtils.setToolMiningLevel(stack,
+                MaterialisationUtils.getToolMiningLevel(stack) + modifier.getExtraDurability());
+
+        this.result.setInvStack(0, stack);
     }
 
     @Override

@@ -2,7 +2,6 @@ package me.shedaniel.materialisation.items;
 
 import me.shedaniel.materialisation.Materialisation;
 import me.shedaniel.materialisation.MaterialisationUtils;
-import me.shedaniel.materialisation.api.Modifier;
 import me.shedaniel.materialisation.api.PartMaterial;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
@@ -13,9 +12,7 @@ import java.util.Collections;
 import java.util.List;
 
 public interface MaterialisedMiningTool {
-    default String getInternalName() {
-        return "axe";
-    }
+    String getInternalName();
 
     default List<PartMaterial> getPartMaterials(ItemStack stack) {
         CompoundTag tag = stack.getOrCreateTag();
@@ -34,12 +31,8 @@ public interface MaterialisedMiningTool {
         return materials;
     }
 
-    default int getModifierSlotsCount(ItemStack stack) {
+    default int getDefaultModifierSlotsCount(ItemStack stack) {
         return getPartMaterials(stack).stream().mapToInt(PartMaterial::getModifierSlotsCount).sum();
-    }
-
-    default int getFreeModifierSlotsCount(ItemStack stack) {
-        return getModifierSlotsCount(stack);
     }
 
     boolean canEffectivelyBreak(ItemStack itemStack, BlockState state);

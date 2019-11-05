@@ -80,6 +80,11 @@ public class MaterialisedSwordItem extends SwordItem implements MaterialisedMini
     }
 
     @Override
+    public String getInternalName() {
+        return "sword_blade";
+    }
+
+    @Override
     public boolean canEffectivelyBreak(ItemStack itemStack, BlockState state) {
         return state.getBlock() == Blocks.COBWEB;
     }
@@ -124,16 +129,17 @@ public class MaterialisedSwordItem extends SwordItem implements MaterialisedMini
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void appendTooltip(ItemStack stack, World world_1, List<Text> list_1, TooltipContext tooltipContext_1) {
+    public void appendTooltip(ItemStack stack, World world_1, List<Text> tooltip, TooltipContext tooltipContext_1) {
         int toolDurability = MaterialisationUtils.getToolDurability(stack);
         int maxDurability = MaterialisationUtils.getToolMaxDurability(stack);
-        list_1.add(new TranslatableText("text.materialisation.max_durability", maxDurability));
+        tooltip.add(new TranslatableText("text.materialisation.max_durability", maxDurability));
         if (toolDurability > 0) {
             float percentage = toolDurability / (float) maxDurability * 100;
             Formatting coloringPercentage = MaterialisationUtils.getColoringPercentage(percentage);
-            list_1.add(new TranslatableText("text.materialisation.durability", coloringPercentage.toString() + toolDurability, coloringPercentage.toString() + MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(percentage) + Formatting.WHITE.toString()));
+            tooltip.add(new TranslatableText("text.materialisation.durability", coloringPercentage.toString() + toolDurability, coloringPercentage.toString() + MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(percentage) + Formatting.WHITE.toString()));
         } else
-            list_1.add(new TranslatableText("text.materialisation.broken"));
+            tooltip.add(new TranslatableText("text.materialisation.broken"));
+        tooltip.add(new TranslatableText("text.materialisation.modifier_slots_count", MaterialisationUtils.getModifierSlotsCount(stack)));
     }
 
 }

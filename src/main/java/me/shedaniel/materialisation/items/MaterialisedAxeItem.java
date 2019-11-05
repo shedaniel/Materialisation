@@ -84,6 +84,11 @@ public class MaterialisedAxeItem extends AxeItem implements MaterialisedMiningTo
     }
 
     @Override
+    public String getInternalName() {
+        return "axe";
+    }
+
+    @Override
     public boolean canEffectivelyBreak(ItemStack itemStack, BlockState state) {
         return EFFECTIVE_BLOCKS.contains(state.getBlock());
     }
@@ -168,7 +173,7 @@ public class MaterialisedAxeItem extends AxeItem implements MaterialisedMiningTo
             tooltip.add(new TranslatableText("text.materialisation.broken"));
         tooltip.add(new TranslatableText("text.materialisation.breaking_speed", MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(MaterialisationUtils.getToolBreakingSpeed(stack))));
         tooltip.add(new TranslatableText("text.materialisation.mining_level", MaterialisationUtils.getToolMiningLevel(stack)));
-        tooltip.add(new TranslatableText("text.materialisation.modifier_slots_count", getModifierSlotsCount(stack)));
+        tooltip.add(new TranslatableText("text.materialisation.modifier_slots_count", MaterialisationUtils.getModifierSlotsCount(stack)));
     }
 
 }

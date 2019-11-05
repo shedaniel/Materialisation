@@ -5,6 +5,7 @@ import me.shedaniel.materialisation.api.PartMaterial;
 import me.shedaniel.materialisation.api.PartMaterials;
 import me.shedaniel.materialisation.config.ConfigHelper;
 import me.shedaniel.materialisation.items.ColoredItem;
+import me.shedaniel.materialisation.items.MaterialisedMiningTool;
 import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.tools.ToolManager;
 import net.minecraft.block.BlockState;
@@ -79,10 +80,29 @@ public class MaterialisationUtils {
         return Formatting.RED;
     }
 
+    public static int getModifierSlotsCount(ItemStack stack) {
+        if (!stack.hasTag())
+            return 0;
+        CompoundTag tag = stack.getTag();
+        if (tag.containsKey("mt_modifier_slots_count")) {
+            return tag.getInt("mt_modifier_slots_count");
+        }
+
+        return ((MaterialisedMiningTool) stack.getItem()).getDefaultModifierSlotsCount(stack);
+    }
+
+    public static void setModifierSlotsCount(ItemStack stack, int count) {
+        CompoundTag tag = stack.getOrCreateTag();
+        tag.putInt("mt_modifier_slots_count", count);
+        stack.setTag(tag);
+    }
+
     public static float getToolBreakingSpeed(ItemStack stack) {
         if (!stack.hasTag())
             return 0;
         CompoundTag tag = stack.getTag();
+        if (tag.containsKey("mt_breakingspeed"))
+            return tag.getFloat("mt_breakingspeed");
         if (tag.containsKey("mt_0_material") && tag.containsKey("mt_1_material") && stack.getItem() == Materialisation.MATERIALISED_HAMMER)
             return getMatFromString(tag.getString("mt_0_material")).map(PartMaterial::getBreakingSpeedMultiplier).orElse(0d).floatValue() * getMatFromString(tag.getString("mt_1_material")).map(PartMaterial::getToolSpeed).orElse(0d).floatValue() / 6f;
         if (tag.containsKey("mt_0_material") && tag.containsKey("mt_1_material") && stack.getItem() == Materialisation.MATERIALISED_MEGAAXE)
@@ -99,15 +119,21 @@ public class MaterialisationUtils {
             return getMatFromString(tag.getString("mt_handle_material")).map(PartMaterial::getBreakingSpeedMultiplier).orElse(0d).floatValue() * getMatFromString(tag.getString("mt_shovel_head_material")).map(PartMaterial::getToolSpeed).orElse(0d).floatValue();
         if (tag.containsKey("mt_handle_material") && tag.containsKey("mt_sword_blade_material"))
             return getMatFromString(tag.getString("mt_handle_material")).map(PartMaterial::getBreakingSpeedMultiplier).orElse(0d).floatValue() * getMatFromString(tag.getString("mt_sword_blade_material")).map(PartMaterial::getToolSpeed).orElse(0d).floatValue();
-        if (tag.containsKey("mt_breakingspeed"))
-            return tag.getFloat("mt_breakingspeed");
         return 0f;
+    }
+
+    public static void setToolMiningSpeed(ItemStack stack, int speed) {
+        CompoundTag tag = stack.getOrCreateTag();
+        tag.putInt("mt_breakingspeed", speed);
+        stack.setTag(tag);
     }
 
     public static int getToolMiningLevel(ItemStack stack) {
         if (!stack.hasTag())
             return 0;
         CompoundTag tag = stack.getTag();
+        if (tag.containsKey("mt_mininglevel"))
+            return tag.getInt("mt_mininglevel");
         if (tag.containsKey("mt_1_material"))
             return getMatFromString(tag.getString("mt_1_material")).map(PartMaterial::getMiningLevel).orElse(0);
         if (tag.containsKey("mt_axe_head_material"))
@@ -120,9 +146,13 @@ public class MaterialisationUtils {
             return getMatFromString(tag.getString("mt_shovel_head_material")).map(PartMaterial::getMiningLevel).orElse(0);
         if (tag.containsKey("mt_sword_blade_material"))
             return getMatFromString(tag.getString("mt_sword_blade_material")).map(PartMaterial::getMiningLevel).orElse(0);
-        if (tag.containsKey("mt_mininglevel"))
-            return tag.getInt("mt_mininglevel");
         return 0;
+    }
+
+    public static void setToolMiningLevel(ItemStack stack, int level) {
+        CompoundTag tag = stack.getOrCreateTag();
+        tag.putInt("mt_mininglevel", level);
+        stack.setTag(tag);
     }
 
     public static int getToolDurability(ItemStack stack) {
@@ -166,6 +196,8 @@ public class MaterialisationUtils {
         if (!stack.hasTag())
             return 0;
         CompoundTag tag = stack.getTag();
+        if (tag.containsKey("mt_damage"))
+            return tag.getFloat("mt_damage");
         PartMaterial material = tag.containsKey("mt_1_material") ? getMatFromString(tag.getString("mt_1_material")).orElse(null) : null;
         if (stack.getItem() == Materialisation.MATERIALISED_AXE) {
             if (material == null && tag.containsKey("mt_axe_head_material"))
@@ -195,9 +227,13 @@ public class MaterialisationUtils {
                 material = getMatFromString(tag.getString("mt_shovel_head_material")).orElse(null);
             return material == null ? 0 : (float) material.getAttackDamage() + 2.5f;
         }
-        if (tag.containsKey("mt_damage"))
-            return tag.getFloat("mt_damage");
         return 0f;
+    }
+
+    public static void setToolAttackDamage(ItemStack stack, int damage) {
+        CompoundTag tag = stack.getOrCreateTag();
+        tag.putInt("mt_damage", damage);
+        stack.setTag(tag);
     }
 
     public static int getItemLayerColor(ItemStack stack, int layer) {
