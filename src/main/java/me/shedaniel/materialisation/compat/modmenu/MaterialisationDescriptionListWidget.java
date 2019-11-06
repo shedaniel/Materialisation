@@ -75,7 +75,7 @@ public class MaterialisationDescriptionListWidget extends DynamicElementListWidg
         addItem(new TextEntry(I18n.translate("config.text.materialisation.mining_level", partMaterial.getMiningLevel())));
         addItem(new TextEntry(I18n.translate("config.text.materialisation.tool_speed", df.format(partMaterial.getToolSpeed()))));
         addItem(new TextEntry(I18n.translate("config.text.materialisation.attack_damage", df.format(partMaterial.getAttackDamage()))));
-        addItem(new TextEntry(I18n.translate("config.text.materialisation.tool_speed_multiplier", df.format(partMaterial.getBreakingSpeedMultiplier()))));
+        addItem(new TextEntry(I18n.translate("config.text.materialisation.tool_speed_multiplier", df.format(partMaterial.getMiningSpeedMultiplier()))));
         addItem(new TextEntry(I18n.translate("config.text.materialisation.durability_multiplier", df.format(partMaterial.getDurabilityMultiplier()))));
     }
 

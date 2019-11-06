@@ -99,7 +99,7 @@ public class GeneratedMaterial implements PartMaterial {
     }
 
     @Override
-    public double getBreakingSpeedMultiplier() {
+    public double getMiningSpeedMultiplier() {
         return breakingSpeedMultiplier;
     }
 

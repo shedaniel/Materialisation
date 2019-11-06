@@ -68,7 +68,7 @@ public class MaterialisationConfig {
             this.miningLevel = partMaterial.getMiningLevel();
             this.enchantability = partMaterial.getEnchantability();
             this.durabilityMultiplier = partMaterial.getDurabilityMultiplier();
-            this.breakingSpeedMultiplier = partMaterial.getBreakingSpeedMultiplier();
+            this.breakingSpeedMultiplier = partMaterial.getMiningSpeedMultiplier();
             this.toolSpeed = partMaterial.getToolSpeed();
             this.attackDamage = partMaterial.getAttackDamage();
             this.name = partMaterial.getIdentifier().toString();
@@ -143,7 +143,7 @@ public class MaterialisationConfig {
         }
 
         @Override
-        public double getBreakingSpeedMultiplier() {
+        public double getMiningSpeedMultiplier() {
             return breakingSpeedMultiplier;
         }
 

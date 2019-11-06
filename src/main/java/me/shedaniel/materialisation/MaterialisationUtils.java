@@ -72,29 +72,12 @@ public class MaterialisationUtils {
         return Formatting.RED;
     }
 
-    public static Formatting getColoringPercentage(double f) {
-        if (f >= 70d)
+    public static Formatting getDurabilityColoring(double durabilityPercentage) {
+        if (durabilityPercentage >= 70d)
             return Formatting.GREEN;
-        else if (f >= 40d)
+        else if (durabilityPercentage >= 40d)
             return Formatting.GOLD;
         return Formatting.RED;
-    }
-
-    public static int getModifierSlotsCount(ItemStack stack) {
-        if (!stack.hasTag())
-            return 0;
-        CompoundTag tag = stack.getTag();
-        if (tag.containsKey("mt_modifier_slots_count")) {
-            return tag.getInt("mt_modifier_slots_count");
-        }
-
-        return ((MaterialisedMiningTool) stack.getItem()).getDefaultModifierSlotsCount(stack);
-    }
-
-    public static void setModifierSlotsCount(ItemStack stack, int count) {
-        CompoundTag tag = stack.getOrCreateTag();
-        tag.putInt("mt_modifier_slots_count", count);
-        stack.setTag(tag);
     }
 
     public static float getToolBreakingSpeed(ItemStack stack) {
@@ -104,21 +87,21 @@ public class MaterialisationUtils {
         if (tag.containsKey("mt_breakingspeed"))
             return tag.getFloat("mt_breakingspeed");
         if (tag.containsKey("mt_0_material") && tag.containsKey("mt_1_material") && stack.getItem() == Materialisation.MATERIALISED_HAMMER)
-            return getMatFromString(tag.getString("mt_0_material")).map(PartMaterial::getBreakingSpeedMultiplier).orElse(0d).floatValue() * getMatFromString(tag.getString("mt_1_material")).map(PartMaterial::getToolSpeed).orElse(0d).floatValue() / 6f;
+            return getMatFromString(tag.getString("mt_0_material")).map(PartMaterial::getMiningSpeedMultiplier).orElse(0d).floatValue() * getMatFromString(tag.getString("mt_1_material")).map(PartMaterial::getToolSpeed).orElse(0d).floatValue() / 6f;
         if (tag.containsKey("mt_0_material") && tag.containsKey("mt_1_material") && stack.getItem() == Materialisation.MATERIALISED_MEGAAXE)
-            return getMatFromString(tag.getString("mt_0_material")).map(PartMaterial::getBreakingSpeedMultiplier).orElse(0d).floatValue() * getMatFromString(tag.getString("mt_1_material")).map(PartMaterial::getToolSpeed).orElse(0d).floatValue() / 6.5f;
+            return getMatFromString(tag.getString("mt_0_material")).map(PartMaterial::getMiningSpeedMultiplier).orElse(0d).floatValue() * getMatFromString(tag.getString("mt_1_material")).map(PartMaterial::getToolSpeed).orElse(0d).floatValue() / 6.5f;
         if (tag.containsKey("mt_0_material") && tag.containsKey("mt_1_material"))
-            return getMatFromString(tag.getString("mt_0_material")).map(PartMaterial::getBreakingSpeedMultiplier).orElse(0d).floatValue() * getMatFromString(tag.getString("mt_1_material")).map(PartMaterial::getToolSpeed).orElse(0d).floatValue();
+            return getMatFromString(tag.getString("mt_0_material")).map(PartMaterial::getMiningSpeedMultiplier).orElse(0d).floatValue() * getMatFromString(tag.getString("mt_1_material")).map(PartMaterial::getToolSpeed).orElse(0d).floatValue();
         if (tag.containsKey("mt_handle_material") && tag.containsKey("mt_axe_head_material"))
-            return getMatFromString(tag.getString("mt_handle_material")).map(PartMaterial::getBreakingSpeedMultiplier).orElse(0d).floatValue() * getMatFromString(tag.getString("mt_axe_head_material")).map(PartMaterial::getToolSpeed).orElse(0d).floatValue();
+            return getMatFromString(tag.getString("mt_handle_material")).map(PartMaterial::getMiningSpeedMultiplier).orElse(0d).floatValue() * getMatFromString(tag.getString("mt_axe_head_material")).map(PartMaterial::getToolSpeed).orElse(0d).floatValue();
         if (tag.containsKey("mt_handle_material") && tag.containsKey("mt_hammer_head_material"))
-            return getMatFromString(tag.getString("mt_handle_material")).map(PartMaterial::getBreakingSpeedMultiplier).orElse(0d).floatValue() * getMatFromString(tag.getString("mt_hammer_head_material")).map(PartMaterial::getToolSpeed).orElse(0d).floatValue() / 6f;
+            return getMatFromString(tag.getString("mt_handle_material")).map(PartMaterial::getMiningSpeedMultiplier).orElse(0d).floatValue() * getMatFromString(tag.getString("mt_hammer_head_material")).map(PartMaterial::getToolSpeed).orElse(0d).floatValue() / 6f;
         if (tag.containsKey("mt_handle_material") && tag.containsKey("mt_pickaxe_head_material"))
-            return getMatFromString(tag.getString("mt_handle_material")).map(PartMaterial::getBreakingSpeedMultiplier).orElse(0d).floatValue() * getMatFromString(tag.getString("mt_pickaxe_head_material")).map(PartMaterial::getToolSpeed).orElse(0d).floatValue();
+            return getMatFromString(tag.getString("mt_handle_material")).map(PartMaterial::getMiningSpeedMultiplier).orElse(0d).floatValue() * getMatFromString(tag.getString("mt_pickaxe_head_material")).map(PartMaterial::getToolSpeed).orElse(0d).floatValue();
         if (tag.containsKey("mt_handle_material") && tag.containsKey("mt_shovel_head_material"))
-            return getMatFromString(tag.getString("mt_handle_material")).map(PartMaterial::getBreakingSpeedMultiplier).orElse(0d).floatValue() * getMatFromString(tag.getString("mt_shovel_head_material")).map(PartMaterial::getToolSpeed).orElse(0d).floatValue();
+            return getMatFromString(tag.getString("mt_handle_material")).map(PartMaterial::getMiningSpeedMultiplier).orElse(0d).floatValue() * getMatFromString(tag.getString("mt_shovel_head_material")).map(PartMaterial::getToolSpeed).orElse(0d).floatValue();
         if (tag.containsKey("mt_handle_material") && tag.containsKey("mt_sword_blade_material"))
-            return getMatFromString(tag.getString("mt_handle_material")).map(PartMaterial::getBreakingSpeedMultiplier).orElse(0d).floatValue() * getMatFromString(tag.getString("mt_sword_blade_material")).map(PartMaterial::getToolSpeed).orElse(0d).floatValue();
+            return getMatFromString(tag.getString("mt_handle_material")).map(PartMaterial::getMiningSpeedMultiplier).orElse(0d).floatValue() * getMatFromString(tag.getString("mt_sword_blade_material")).map(PartMaterial::getToolSpeed).orElse(0d).floatValue();
         return 0f;
     }
 
@@ -377,15 +360,11 @@ public class MaterialisationUtils {
     }
 
     public static boolean isHandleBright(ItemStack itemStack) {
-        if (itemStack.getOrCreateTag().containsKey("mt_handle_bright"))
-            return true;
-        if (itemStack.getOrCreateTag().containsKey("mt_0_material"))
-            return isNewHandleBright(itemStack);
-        return MaterialisationUtils.getMatFromString(itemStack.getOrCreateTag().getString("mt_handle_material")).map(PartMaterial::isBright).orElse(false);
+        return MaterialisationUtils.getMatFromString(itemStack.getOrCreateTag().getString("mt_0_material")).map(PartMaterial::isBright).orElse(false);
     }
 
-    public static boolean isNewHandleBright(ItemStack itemStack) {
-        return MaterialisationUtils.getMatFromString(itemStack.getOrCreateTag().getString("mt_0_material")).map(PartMaterial::isBright).orElse(false);
+    public static boolean isHeadBright(ItemStack itemStack) {
+        return MaterialisationUtils.getMatFromString(itemStack.getOrCreateTag().getString("mt_1_material")).map(PartMaterial::isBright).orElse(false);
     }
 
     public static ItemStack createPickaxe(PartMaterial handle, PartMaterial pickaxeHead) {

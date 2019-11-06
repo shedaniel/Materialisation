@@ -32,7 +32,7 @@ public interface PartMaterial extends RepairAmountGetter {
 
     double getDurabilityMultiplier();
 
-    double getBreakingSpeedMultiplier();
+    double getMiningSpeedMultiplier();
 
     double getAttackDamage();
 

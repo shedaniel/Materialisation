@@ -54,34 +54,6 @@ public class MaterialisedAxeItem extends AxeItem implements MaterialisedMiningTo
     public MaterialisedAxeItem(Settings settings) {
         super(MaterialisationUtils.DUMMY_MATERIAL, 0, -3.1F, settings.maxDamage(0));
         this.init();
-//        addPropertyGetter(new Identifier(Materialisation.MOD_ID, "handle_isbright"),
-//                (itemStack, world, livingEntity) -> isHandleBright(itemStack) ? 1f : 0f);
-//        addPropertyGetter(new Identifier(Materialisation.MOD_ID, "axe_head_isbright"),
-//                (itemStack, world, livingEntity) -> isHeadBright(itemStack) ? 1f : 0f);
-    }
-
-    public boolean isHeadBright(ItemStack itemStack) {
-        CompoundTag tag = itemStack.getOrCreateTag();
-        if (tag.containsKey("mt_axe_head_bright"))
-            return true;
-        if (tag.containsKey("mt_1_material"))
-            return MaterialisationUtils.getMatFromString(tag.getString("mt_1_material")).map(PartMaterial::isBright).orElse(false);
-        return MaterialisationUtils.getMatFromString(tag.getString("mt_axe_head_material")).map(PartMaterial::isBright).orElse(false);
-    }
-
-    @Override
-    public int getEnchantability(ItemStack stack) {
-        CompoundTag tag = stack.getOrCreateTag();
-        if (!tag.containsKey("mt_axe_head_material") || !tag.containsKey("mt_handle_material")) {
-            if (!tag.containsKey("mt_0_material") || !tag.containsKey("mt_1_material"))
-                return 0;
-            PartMaterial handle = MaterialisationUtils.getMaterialFromString(tag.getString("mt_0_material"));
-            PartMaterial head = MaterialisationUtils.getMaterialFromString(tag.getString("mt_1_material"));
-            return (handle.getEnchantability() + head.getEnchantability()) / 2;
-        }
-        PartMaterial handle = MaterialisationUtils.getMaterialFromString(tag.getString("mt_handle_material"));
-        PartMaterial head = MaterialisationUtils.getMaterialFromString(tag.getString("mt_axe_head_material"));
-        return (handle.getEnchantability() + head.getEnchantability()) / 2;
     }
 
     @Override
@@ -96,11 +68,6 @@ public class MaterialisedAxeItem extends AxeItem implements MaterialisedMiningTo
     }
 
     @Override
-    public String getInternalName() {
-        return "axe";
-    }
-
-    @Override
     public boolean canEffectivelyBreak(ItemStack itemStack, BlockState state) {
         return EFFECTIVE_BLOCKS.contains(state.getBlock());
     }
@@ -108,23 +75,22 @@ public class MaterialisedAxeItem extends AxeItem implements MaterialisedMiningTo
     @Override
     public ActionResult useOnBlock(ItemUsageContext context) {
         World world = context.getWorld();
-        BlockPos blockPos = context.getBlockPos();
-        ItemStack itemStack = context.getStack();
-        BlockState blockState = world.getBlockState(blockPos);
-        Block block = STRIPPED_BLOCKS.get(blockState.getBlock());
-        if (MaterialisationUtils.getToolDurability(itemStack) > 0 && block != null) {
-            PlayerEntity playerEntity_1 = context.getPlayer();
-            world.playSound(playerEntity_1, blockPos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
+        BlockPos pos = context.getBlockPos();
+        ItemStack stack = context.getStack();
+        BlockState state = world.getBlockState(pos);
+        Block block = STRIPPED_BLOCKS.get(state.getBlock());
+        if (MaterialisationUtils.getToolDurability(stack) > 0 && block != null) {
+            PlayerEntity player = context.getPlayer();
+            world.playSound(player, pos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
             if (!world.isClient) {
-                world.setBlockState(blockPos, block.getDefaultState().with(PillarBlock.AXIS, blockState.get(PillarBlock.AXIS)), 11);
-                if (playerEntity_1 != null) {
-                    if (!playerEntity_1.world.isClient && (!(playerEntity_1 instanceof PlayerEntity) || !(playerEntity_1.abilities.creativeMode)))
-                        if (MaterialisationUtils.applyDamage(itemStack, 1, playerEntity_1.getRand())) {
-                            playerEntity_1.sendToolBreakStatus(context.getHand());
-                            Item item_1 = itemStack.getItem();
-                            itemStack.decrement(1);
-                            playerEntity_1.incrementStat(Stats.BROKEN.getOrCreateStat(item_1));
-                            MaterialisationUtils.setToolDurability(itemStack, 0);
+                world.setBlockState(pos, block.getDefaultState().with(PillarBlock.AXIS, state.get(PillarBlock.AXIS)), 11);
+                if (player != null) {
+                    if (!player.world.isClient && !(player.abilities.creativeMode))
+                        if (MaterialisationUtils.applyDamage(stack, 1, player.getRand())) {
+                            player.sendToolBreakStatus(context.getHand());
+                            stack.decrement(1);
+                            player.incrementStat(Stats.BROKEN.getOrCreateStat(stack.getItem()));
+                            MaterialisationUtils.setToolDurability(stack, 0);
                         }
                 }
             }
@@ -134,58 +100,28 @@ public class MaterialisedAxeItem extends AxeItem implements MaterialisedMiningTo
     }
 
     @Override
-    public boolean canRepair(ItemStack itemStack_1, ItemStack itemStack_2) {
+    public boolean canRepair(ItemStack stack, ItemStack ingredient) {
         return false;
     }
 
     @Override
-    public boolean postHit(ItemStack stack, LivingEntity livingEntity_1, LivingEntity livingEntity_2) {
-        if (!livingEntity_1.world.isClient && (!(livingEntity_1 instanceof PlayerEntity) || !((PlayerEntity) livingEntity_1).abilities.creativeMode))
-            if (MaterialisationUtils.getToolDurability(stack) > 0)
-                if (MaterialisationUtils.applyDamage(stack, 2, livingEntity_1.getRand())) {
-                    livingEntity_1.sendEquipmentBreakStatus(EquipmentSlot.MAINHAND);
-                    Item item_1 = stack.getItem();
-                    stack.decrement(1);
-                    if (livingEntity_1 instanceof PlayerEntity) {
-                        ((PlayerEntity) livingEntity_1).incrementStat(Stats.BROKEN.getOrCreateStat(item_1));
-                    }
-                    MaterialisationUtils.setToolDurability(stack, 0);
-                }
-        return true;
+    public boolean postHit(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+        return MaterialisedMiningTool.super.postHit(stack, target, attacker);
     }
 
     @Override
-    public boolean postMine(ItemStack stack, World world_1, BlockState blockState_1, BlockPos blockPos_1, LivingEntity livingEntity_1) {
-        if (!world_1.isClient && blockState_1.getHardness(world_1, blockPos_1) != 0.0F)
-            if (!livingEntity_1.world.isClient && (!(livingEntity_1 instanceof PlayerEntity) || !((PlayerEntity) livingEntity_1).abilities.creativeMode))
-                if (MaterialisationUtils.getToolDurability(stack) > 0)
-                    if (MaterialisationUtils.applyDamage(stack, 1, livingEntity_1.getRand())) {
-                        livingEntity_1.sendEquipmentBreakStatus(EquipmentSlot.MAINHAND);
-                        Item item_1 = stack.getItem();
-                        stack.decrement(1);
-                        if (livingEntity_1 instanceof PlayerEntity) {
-                            ((PlayerEntity) livingEntity_1).incrementStat(Stats.BROKEN.getOrCreateStat(item_1));
-                        }
-                        MaterialisationUtils.setToolDurability(stack, 0);
-                    }
-        return true;
+    public boolean postMine(ItemStack stack, World world, BlockState state, BlockPos pos, LivingEntity miner) {
+        return MaterialisedMiningTool.super.postMine(stack, world, state, pos, miner);
     }
 
+    @Override
+    public int getEnchantability(ItemStack stack) {
+        return MaterialisedMiningTool.super.getEnchantability(stack);
+    }
+
+    @Override
     @Environment(EnvType.CLIENT)
-    @Override
     public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
-        int toolDurability = MaterialisationUtils.getToolDurability(stack);
-        int maxDurability = MaterialisationUtils.getToolMaxDurability(stack);
-        tooltip.add(new TranslatableText("text.materialisation.max_durability", maxDurability));
-        if (toolDurability > 0) {
-            float percentage = toolDurability / (float) maxDurability * 100;
-            Formatting coloringPercentage = MaterialisationUtils.getColoringPercentage(percentage);
-            tooltip.add(new TranslatableText("text.materialisation.durability", coloringPercentage.toString() + toolDurability, coloringPercentage.toString() + MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(percentage) + Formatting.WHITE.toString()));
-        } else
-            tooltip.add(new TranslatableText("text.materialisation.broken"));
-        tooltip.add(new TranslatableText("text.materialisation.breaking_speed", MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(MaterialisationUtils.getToolBreakingSpeed(stack))));
-        tooltip.add(new TranslatableText("text.materialisation.mining_level", MaterialisationUtils.getToolMiningLevel(stack)));
-        tooltip.add(new TranslatableText("text.materialisation.modifier_slots_count", MaterialisationUtils.getModifierSlotsCount(stack)));
+        MaterialisedMiningTool.super.appendTooltip(stack, world, tooltip, context);
     }
-
 }

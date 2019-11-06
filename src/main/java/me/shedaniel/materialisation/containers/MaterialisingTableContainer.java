@@ -481,27 +481,27 @@ public class MaterialisingTableContainer extends Container {
     }
 
     private void applyModifiers(ItemStack stack, Modifier modifier) {
-        if (MaterialisationUtils.getModifierSlotsCount(stack) == 0) {
-            this.result.setInvStack(0, ItemStack.EMPTY);
-            this.sendContentUpdates();
-            return;
-        }
-
-        MaterialisationUtils.setModifierSlotsCount(stack,
-                MaterialisationUtils.getModifierSlotsCount(stack) + modifier.getExtraModifierSlots() - 1);
-        MaterialisationUtils.setToolMaxDurability(stack,
-                (int) (MaterialisationUtils.getToolMaxDurability(stack) * modifier.getDurabilityMultiplier())
-                        + modifier.getExtraDurability());
-        MaterialisationUtils.setToolMiningSpeed(stack,
-                (int) (MaterialisationUtils.getToolBreakingSpeed(stack) * modifier.getMiningSpeedMultiplier())
-                        + modifier.getExtraMiningSpeed());
-        MaterialisationUtils.setToolAttackDamage(stack,
-                (int) (MaterialisationUtils.getToolAttackDamage(stack) * modifier.getAttackDamageMultiplier())
-                        + modifier.getExtraDurability());
-        MaterialisationUtils.setToolMiningLevel(stack,
-                MaterialisationUtils.getToolMiningLevel(stack) + modifier.getExtraMiningLevel());
-
-        this.result.setInvStack(0, stack);
+//        if (MaterialisationUtils.getModifierSlotsCount(stack) == 0) {
+//            this.result.setInvStack(0, ItemStack.EMPTY);
+//            this.sendContentUpdates();
+//            return;
+//        }
+//
+//        MaterialisationUtils.setModifierSlotsCount(stack,
+//                MaterialisationUtils.getModifierSlotsCount(stack) + modifier.getExtraModifierSlots() - 1);
+//        MaterialisationUtils.setToolMaxDurability(stack,
+//                (int) (MaterialisationUtils.getToolMaxDurability(stack) * modifier.getDurabilityMultiplier())
+//                        + modifier.getExtraDurability());
+//        MaterialisationUtils.setToolMiningSpeed(stack,
+//                (int) (MaterialisationUtils.getToolBreakingSpeed(stack) * modifier.getMiningSpeedMultiplier())
+//                        + modifier.getExtraMiningSpeed());
+//        MaterialisationUtils.setToolAttackDamage(stack,
+//                (int) (MaterialisationUtils.getToolAttackDamage(stack) * modifier.getAttackDamageMultiplier())
+//                        + modifier.getExtraDurability());
+//        MaterialisationUtils.setToolMiningLevel(stack,
+//                MaterialisationUtils.getToolMiningLevel(stack) + modifier.getExtraMiningLevel());
+//
+//        this.result.setInvStack(0, stack);
     }
 
     @Override

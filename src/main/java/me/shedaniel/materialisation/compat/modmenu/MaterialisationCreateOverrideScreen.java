@@ -63,7 +63,7 @@ public class MaterialisationCreateOverrideScreen extends Screen {
             entries.add(new IntEditEntry("miningLevel", partMaterial.getMiningLevel()));
             entries.add(new IntEditEntry("enchantability", partMaterial.getEnchantability()));
             entries.add(new DoubleEditEntry("durabilityMultiplier", partMaterial.getDurabilityMultiplier()));
-            entries.add(new DoubleEditEntry("breakingSpeedMultiplier", partMaterial.getBreakingSpeedMultiplier()));
+            entries.add(new DoubleEditEntry("breakingSpeedMultiplier", partMaterial.getMiningSpeedMultiplier()));
             entries.add(new DoubleEditEntry("toolSpeed", partMaterial.getToolSpeed()));
             entries.add(new DoubleEditEntry("attackDamage", partMaterial.getAttackDamage()));
             entries.add(new StringEditEntry("materialTranslationKey", partMaterial.getMaterialTranslateKey()));
