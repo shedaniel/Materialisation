@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.ModReference;
 import me.shedaniel.materialisation.api.PartMaterial;
+import me.shedaniel.materialisation.api.ToolType;
 import me.shedaniel.materialisation.mixin.MiningToolItemAccessor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -21,9 +22,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -32,6 +31,7 @@ import java.util.List;
 import java.util.Set;
 
 import static me.shedaniel.materialisation.MaterialisationUtils.isHandleBright;
+import static me.shedaniel.materialisation.MaterialisationUtils.isHeadBright;
 
 public class MaterialisedAxeItem extends AxeItem implements MaterialisedMiningTool {
 
@@ -45,15 +45,6 @@ public class MaterialisedAxeItem extends AxeItem implements MaterialisedMiningTo
         addPropertyGetter(new Identifier(ModReference.MOD_ID, "axe_head_isbright"), (itemStack, world, livingEntity) -> {
             return isHeadBright(itemStack) ? 1f : 0f;
         });
-    }
-
-    public boolean isHeadBright(ItemStack itemStack) {
-        CompoundTag tag = itemStack.getOrCreateTag();
-        if (tag.containsKey("mt_axe_head_bright"))
-            return true;
-        if (tag.containsKey("mt_1_material"))
-            return MaterialisationUtils.getMatFromString(tag.getString("mt_1_material")).map(PartMaterial::isBright).orElse(false);
-        return MaterialisationUtils.getMatFromString(tag.getString("mt_axe_head_material")).map(PartMaterial::isBright).orElse(false);
     }
 
     @Override
@@ -80,6 +71,11 @@ public class MaterialisedAxeItem extends AxeItem implements MaterialisedMiningTo
     @Override
     public double getAttackSpeed() {
         return attackSpeed;
+    }
+
+    @Override
+    public ToolType getToolType() {
+        return ToolType.AXE;
     }
 
     @Override
@@ -156,17 +152,7 @@ public class MaterialisedAxeItem extends AxeItem implements MaterialisedMiningTo
     @Environment(EnvType.CLIENT)
     @Override
     public void appendTooltip(ItemStack stack, World world_1, List<Text> list_1, TooltipContext tooltipContext_1) {
-        int toolDurability = MaterialisationUtils.getToolDurability(stack);
-        int maxDurability = MaterialisationUtils.getToolMaxDurability(stack);
-        list_1.add(new TranslatableText("text.materialisation.max_durability", maxDurability));
-        if (toolDurability > 0) {
-            float percentage = toolDurability / (float) maxDurability * 100;
-            Formatting coloringPercentage = MaterialisationUtils.getColoringPercentage(percentage);
-            list_1.add(new TranslatableText("text.materialisation.durability", coloringPercentage.toString() + toolDurability, coloringPercentage.toString() + MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(percentage) + Formatting.WHITE.toString()));
-        } else
-            list_1.add(new TranslatableText("text.materialisation.broken"));
-        list_1.add(new TranslatableText("text.materialisation.breaking_speed", MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(MaterialisationUtils.getToolBreakingSpeed(stack))));
-        list_1.add(new TranslatableText("text.materialisation.mining_level", MaterialisationUtils.getToolMiningLevel(stack)));
+        MaterialisationUtils.appendToolTooltip(stack, this, world_1, list_1, tooltipContext_1);
     }
 
 }

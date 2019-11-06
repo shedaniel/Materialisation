@@ -5,6 +5,7 @@ import com.google.common.collect.Sets;
 import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.ModReference;
 import me.shedaniel.materialisation.api.PartMaterial;
+import me.shedaniel.materialisation.api.ToolType;
 import me.shedaniel.materialisation.mixin.MiningToolItemAccessor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -23,9 +24,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -35,7 +34,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static me.shedaniel.materialisation.MaterialisationUtils.isNewHandleBright;
+import static me.shedaniel.materialisation.MaterialisationUtils.isHandleBright;
+import static me.shedaniel.materialisation.MaterialisationUtils.isHeadBright;
 
 public class MaterialisedMegaAxeItem extends AxeItem implements MaterialisedMiningTool {
 
@@ -44,15 +44,11 @@ public class MaterialisedMegaAxeItem extends AxeItem implements MaterialisedMini
     public MaterialisedMegaAxeItem(Settings settings) {
         super(MaterialisationUtils.DUMMY_MATERIAL, 0, -3.65F, settings.maxDamage(0));
         addPropertyGetter(new Identifier(ModReference.MOD_ID, "handle_isbright"), (itemStack, world, livingEntity) -> {
-            return isNewHandleBright(itemStack) ? 1f : 0f;
+            return isHandleBright(itemStack) ? 1f : 0f;
         });
         addPropertyGetter(new Identifier(ModReference.MOD_ID, "megaaxe_head_isbright"), (itemStack, world, livingEntity) -> {
             return isHeadBright(itemStack) ? 1f : 0f;
         });
-    }
-
-    public boolean isHeadBright(ItemStack itemStack) {
-        return MaterialisationUtils.getMatFromString(itemStack.getOrCreateTag().getString("mt_1_material")).map(PartMaterial::isBright).orElse(false);
     }
 
     @Override
@@ -146,6 +142,11 @@ public class MaterialisedMegaAxeItem extends AxeItem implements MaterialisedMini
     }
 
     @Override
+    public ToolType getToolType() {
+        return ToolType.MEGA_AXE;
+    }
+
+    @Override
     public boolean canEffectivelyBreak(ItemStack itemStack, BlockState state) {
         return EFFECTIVE_BLOCKS.contains(state.getBlock());
     }
@@ -219,17 +220,7 @@ public class MaterialisedMegaAxeItem extends AxeItem implements MaterialisedMini
     @Environment(EnvType.CLIENT)
     @Override
     public void appendTooltip(ItemStack stack, World world_1, List<Text> list_1, TooltipContext tooltipContext_1) {
-        int toolDurability = MaterialisationUtils.getToolDurability(stack);
-        int maxDurability = MaterialisationUtils.getToolMaxDurability(stack);
-        list_1.add(new TranslatableText("text.materialisation.max_durability", maxDurability));
-        if (toolDurability > 0) {
-            float percentage = toolDurability / (float) maxDurability * 100;
-            Formatting coloringPercentage = MaterialisationUtils.getColoringPercentage(percentage);
-            list_1.add(new TranslatableText("text.materialisation.durability", coloringPercentage.toString() + toolDurability, coloringPercentage.toString() + MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(percentage) + Formatting.WHITE.toString()));
-        } else
-            list_1.add(new TranslatableText("text.materialisation.broken"));
-        list_1.add(new TranslatableText("text.materialisation.breaking_speed", MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(MaterialisationUtils.getToolBreakingSpeed(stack))));
-        list_1.add(new TranslatableText("text.materialisation.mining_level", MaterialisationUtils.getToolMiningLevel(stack)));
+        MaterialisationUtils.appendToolTooltip(stack, this, world_1, list_1, tooltipContext_1);
     }
 
 }

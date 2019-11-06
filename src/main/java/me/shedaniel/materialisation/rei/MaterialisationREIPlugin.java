@@ -5,6 +5,7 @@ import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.ModReference;
 import me.shedaniel.materialisation.api.PartMaterials;
 import me.shedaniel.materialisation.items.ColoredItem;
+import me.shedaniel.materialisation.items.MaterialisedMiningTool;
 import me.shedaniel.rei.api.Entry;
 import me.shedaniel.rei.api.EntryRegistry;
 import me.shedaniel.rei.api.RecipeHelper;
@@ -94,13 +95,8 @@ public class MaterialisationREIPlugin implements REIPluginV0 {
         PartMaterials.getKnownMaterials().forEach(material -> entryRegistry.registerItemStack(Materialisation.MATERIALISED_SWORD, MaterialisationUtils.createSword(material, material)));
         PartMaterials.getKnownMaterials().forEach(material -> entryRegistry.registerItemStack(Materialisation.MATERIALISED_HAMMER, MaterialisationUtils.createHammer(material, material)));
         PartMaterials.getKnownMaterials().forEach(material -> entryRegistry.registerItemStack(Materialisation.MATERIALISED_MEGAAXE, MaterialisationUtils.createMegaAxe(material, material)));
-        entryRegistry.getModifiableEntryList().removeIf(entry -> entry.getEntryType() == Entry.Type.ITEM && entry.getItemStack().getItem() == Materialisation.MATERIALISED_PICKAXE && !entry.getItemStack().getOrCreateTag().containsKey("mt_done_tool") && !entry.getItemStack().getOrCreateTag().getBoolean("mt_done_tool"));
-        entryRegistry.getModifiableEntryList().removeIf(entry -> entry.getEntryType() == Entry.Type.ITEM && entry.getItemStack().getItem() == Materialisation.MATERIALISED_AXE && !entry.getItemStack().getOrCreateTag().containsKey("mt_done_tool") && !entry.getItemStack().getOrCreateTag().getBoolean("mt_done_tool"));
-        entryRegistry.getModifiableEntryList().removeIf(entry -> entry.getEntryType() == Entry.Type.ITEM && entry.getItemStack().getItem() == Materialisation.MATERIALISED_SHOVEL && !entry.getItemStack().getOrCreateTag().containsKey("mt_done_tool") && !entry.getItemStack().getOrCreateTag().getBoolean("mt_done_tool"));
-        entryRegistry.getModifiableEntryList().removeIf(entry -> entry.getEntryType() == Entry.Type.ITEM && entry.getItemStack().getItem() == Materialisation.MATERIALISED_SWORD && !entry.getItemStack().getOrCreateTag().containsKey("mt_done_tool") && !entry.getItemStack().getOrCreateTag().getBoolean("mt_done_tool"));
-        entryRegistry.getModifiableEntryList().removeIf(entry -> entry.getEntryType() == Entry.Type.ITEM && entry.getItemStack().getItem() == Materialisation.MATERIALISED_HAMMER && !entry.getItemStack().getOrCreateTag().containsKey("mt_done_tool") && !entry.getItemStack().getOrCreateTag().getBoolean("mt_done_tool"));
-        entryRegistry.getModifiableEntryList().removeIf(entry -> entry.getEntryType() == Entry.Type.ITEM && entry.getItemStack().getItem() == Materialisation.MATERIALISED_MEGAAXE && !entry.getItemStack().getOrCreateTag().containsKey("mt_done_tool") && !entry.getItemStack().getOrCreateTag().getBoolean("mt_done_tool"));
-        entryRegistry.getModifiableEntryList().removeIf(entry -> entry.getEntryType() == Entry.Type.ITEM && entry.getItemStack().getItem() instanceof ColoredItem && !entry.getItemStack().getOrCreateTag().containsKey("mt_name_key") && !entry.getItemStack().getOrCreateTag().containsKey("mt_0_material") && !entry.getItemStack().getOrCreateTag().containsKey("mt_material"));
+        entryRegistry.getModifiableEntryList().removeIf(entry -> entry.getEntryType() == Entry.Type.ITEM && entry.getItemStack().getItem() instanceof MaterialisedMiningTool && !entry.getItemStack().getOrCreateTag().containsKey("mt_done_tool") && !entry.getItemStack().getOrCreateTag().getBoolean("mt_done_tool"));
+        entryRegistry.getModifiableEntryList().removeIf(entry -> entry.getEntryType() == Entry.Type.ITEM && entry.getItemStack().getItem() instanceof ColoredItem && !entry.getItemStack().getOrCreateTag().containsKey("mt_0_material"));
     }
 
 }

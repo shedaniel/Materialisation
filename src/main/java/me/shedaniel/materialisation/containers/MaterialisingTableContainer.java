@@ -3,8 +3,10 @@ package me.shedaniel.materialisation.containers;
 import io.netty.buffer.Unpooled;
 import me.shedaniel.materialisation.Materialisation;
 import me.shedaniel.materialisation.MaterialisationUtils;
+import me.shedaniel.materialisation.api.Modifier;
 import me.shedaniel.materialisation.api.PartMaterial;
 import me.shedaniel.materialisation.items.*;
+import me.shedaniel.materialisation.modifiers.Modifiers;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.minecraft.container.BlockContext;
 import net.minecraft.container.Container;
@@ -18,6 +20,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.PacketByteBuf;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.Optional;
 
 public class MaterialisingTableContainer extends Container {
 
@@ -107,6 +111,28 @@ public class MaterialisingTableContainer extends Container {
         if (first.isEmpty()) {
             this.result.setInvStack(0, ItemStack.EMPTY);
         } else if (first.getItem() instanceof MaterialisedMiningTool && first.getOrCreateTag().containsKey("mt_0_material") && first.getOrCreateTag().containsKey("mt_1_material")) {
+            // Modifiers
+            if (!second.isEmpty() && Modifiers.isIngredient(second)) {
+                ItemStack copy = first.copy();
+                MaterialisedMiningTool tool = (MaterialisedMiningTool) copy.getItem();
+                Optional<Modifier> modifierOptional = Modifiers.getModifierByIngredient(second);
+                if (modifierOptional.isPresent()) {
+                    Modifier modifier = modifierOptional.get();
+                    int maximumLevel = modifier.getMaximumLevel(first);
+                    int level = tool.getModifierLevel(first, modifier);
+                    if (level + 1 <= maximumLevel) {
+                        tool.setModifierLevel(copy, modifier, level + 1);
+                        this.result.setInvStack(0, copy);
+                        this.sendContentUpdates();
+                        return;
+                    } else {
+                        this.result.setInvStack(0, ItemStack.EMPTY);
+                        this.sendContentUpdates();
+                        return;
+                    }
+                }
+            }
+
             // Fixing Special
             ItemStack copy = first.copy();
             int toolDurability = MaterialisationUtils.getToolDurability(first);

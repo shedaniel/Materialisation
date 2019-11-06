@@ -26,7 +26,7 @@ import java.util.UUID;
 public class ColoredItem extends Item {
 
     private static final ItemPropertyGetter COLORED_ITEM_BRIGHT_ITEM = (itemStack, world, livingEntity) -> {
-        return !itemStack.hasTag() ? 0f : itemStack.getTag().containsKey("mt_bright") ? 1f : 0f;
+        return MaterialisationUtils.isHandleBright(itemStack) ? 1 : 0;
     };
 
     public ColoredItem(Settings item$Settings_1) {
@@ -47,7 +47,7 @@ public class ColoredItem extends Item {
     public void appendTooltip(ItemStack stack, World world_1, List<Text> list, TooltipContext tooltipContext_1) {
         super.appendTooltip(stack, world_1, list, tooltipContext_1);
         CompoundTag tag = stack.getOrCreateTag();
-        if (tag.containsKey("mt_0_material") || tag.containsKey("mt_material")) {
+        if (tag.containsKey("mt_0_material")) {
             PartMaterial material = MaterialisationUtils.getMaterialFromPart(stack);
             if (material != null)
                 if (stack.getItem() == Materialisation.HANDLE) {
@@ -72,7 +72,7 @@ public class ColoredItem extends Item {
         }
     }
 
-    public float getExtraDamage(Item item) {
+    public static float getExtraDamage(Item item) {
         if (item == Materialisation.SWORD_BLADE)
             return 4f;
         if (item == Materialisation.PICKAXE_HEAD)

@@ -10,6 +10,7 @@ import me.shedaniel.materialisation.Materialisation;
 import me.shedaniel.materialisation.api.*;
 import me.shedaniel.materialisation.config.MaterialisationConfig.ConfigIngredients;
 import me.shedaniel.materialisation.config.MaterialisationConfig.ConfigMaterial;
+import me.shedaniel.materialisation.modifiers.Modifiers;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
@@ -30,9 +31,9 @@ public class ConfigHelper {
     public static final File CONFIG_DIRECTORY = new File(FabricLoader.getInstance().getConfigDirectory(), "materialisation");
     public static final File MATERIALS_DIRECTORY = new File(CONFIG_DIRECTORY, "material");
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    public static final Map<String, PartMaterial> MATERIAL_CACHE = new HashMap<>();
     private static final File OLD_MATERIALS_DIRECTORY = new File(CONFIG_DIRECTORY, "materials");
     public static boolean loading = false;
-    public static final Map<String, PartMaterial> MATERIAL_CACHE = new HashMap<>();
 
     public static void loadDefault() throws IOException {
         if (OLD_MATERIALS_DIRECTORY.exists())
@@ -49,7 +50,9 @@ public class ConfigHelper {
             List<MaterialsPack> loadedPacks = Lists.newArrayList();
             List<Pair<ConfigPack, ConfigMaterial>> knownMaterials = Lists.newArrayList();
             List<JsonObject> overrides = Lists.newArrayList();
+            List<JsonObject> modifiers = Lists.newArrayList();
             MATERIAL_CACHE.clear();
+            Modifiers.resetMap();
             PartMaterials.clearMaterials();
             try {
                 FabricLoader.getInstance().getEntrypoints("materialisation_default", DefaultMaterialSupplier.class).stream().forEach(supplier -> {
@@ -90,6 +93,9 @@ public class ConfigHelper {
                                 if (type.equalsIgnoreCase("override")) {
                                     Materialisation.LOGGER.info("[Materialisation] Loading override file: " + file.getName());
                                     overrides.add(object);
+                                } else if (type.equalsIgnoreCase("modifier")) {
+                                    Materialisation.LOGGER.info("[Materialisation] Loading modifier file: " + file.getName());
+                                    modifiers.add(object);
                                 } else {
                                     Materialisation.LOGGER.warn("[Materialisation] Cancelled loading unknown file: " + file.getName());
                                 }
@@ -120,6 +126,10 @@ public class ConfigHelper {
                                                         Materialisation.LOGGER.info("[Materialisation] Loading override file: " + listFile.getName());
                                                         overrides.add(object);
                                                         configPack.getOverrides().incrementAndGet();
+                                                    } else if (type.equalsIgnoreCase("modifier")) {
+                                                        Materialisation.LOGGER.info("[Materialisation] Loading modifier file: " + file.getName());
+                                                        modifiers.add(object);
+                                                        configPack.getModifiers().incrementAndGet();
                                                     } else {
                                                         Materialisation.LOGGER.warn("[Materialisation] Cancelled loading unknown file: " + listFile.getName());
                                                     }
@@ -156,6 +166,10 @@ public class ConfigHelper {
                                                         Materialisation.LOGGER.info("[Materialisation] Loading override file: " + zipEntry.getName());
                                                         overrides.add(object);
                                                         configPack.getOverrides().incrementAndGet();
+                                                    } else if (type.equalsIgnoreCase("modifier")) {
+                                                        Materialisation.LOGGER.info("[Materialisation] Loading modifier file: " + file.getName());
+                                                        modifiers.add(object);
+                                                        configPack.getModifiers().incrementAndGet();
                                                     } else {
                                                         Materialisation.LOGGER.warn("[Materialisation] Cancelled loading unknown file: " + zipEntry.getName());
                                                     }
@@ -202,6 +216,20 @@ public class ConfigHelper {
                     } catch (Exception e) {
                         Materialisation.LOGGER.error("[Materialisation] Failed to load override.", e);
                     }
+                Comparator<JsonObject> comparingDouble = Comparator.comparingDouble(value -> value.has("priority") ? value.get("priority").getAsDouble() : 0d);
+                modifiers.sort(comparingDouble.reversed());
+                for (JsonObject modifier : modifiers) {
+                    Identifier identifier = new Identifier(modifier.get("modifier").getAsString());
+                    if (Modifiers.containsIngredientForModifier(identifier))
+                        continue;
+                    List<BetterIngredient> ingredients = new ArrayList<>();
+                    for (JsonElement ingredient : modifier.get("ingredients").getAsJsonArray()) {
+                        MaterialisationConfig.ConfigIngredient configIngredient = GSON.fromJson(ingredient, MaterialisationConfig.ConfigIngredient.class);
+                        ingredients.add(configIngredient.toBetterIngredient());
+                    }
+                    Modifiers.registerIngredients(identifier, ingredients);
+                    Materialisation.LOGGER.info("[Materialisation] Loaded modifier ingredient for " + identifier.toString() + ".");
+                }
             } catch (Exception e) {
                 Materialisation.LOGGER.error("[Materialisation] Failed to load config.", e);
             }
@@ -262,6 +290,7 @@ public class ConfigHelper {
             throwable.printStackTrace();
         }
         MATERIAL_CACHE.clear();
+        Modifiers.fillEmpty();
         loading = false;
     }
 

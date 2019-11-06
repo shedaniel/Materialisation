@@ -25,9 +25,7 @@ import java.util.Optional;
 public class MaterialisationClient implements ClientModInitializer {
     public static Optional<String> getItemTranslationKey(ItemStack stack) {
         CompoundTag tag = stack.getOrCreateTag();
-        if (tag.containsKey("mt_name_key")) {
-            return Optional.ofNullable(tag.getString("mt_name_key"));
-        } else if (tag.containsKey("mt_0_material") || tag.containsKey("mt_material")) {
+        if (tag.containsKey("mt_0_material")) {
             PartMaterial material = MaterialisationUtils.getMaterialFromPart(stack);
             if (material != null)
                 if (stack.getItem() == Materialisation.HANDLE)

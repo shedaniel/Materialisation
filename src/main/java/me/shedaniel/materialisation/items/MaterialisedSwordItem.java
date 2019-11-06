@@ -3,6 +3,7 @@ package me.shedaniel.materialisation.items;
 import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.ModReference;
 import me.shedaniel.materialisation.api.PartMaterial;
+import me.shedaniel.materialisation.api.ToolType;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
@@ -19,8 +20,6 @@ import net.minecraft.item.SwordItem;
 import net.minecraft.stat.Stats;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -28,6 +27,7 @@ import net.minecraft.world.World;
 import java.util.List;
 
 import static me.shedaniel.materialisation.MaterialisationUtils.isHandleBright;
+import static me.shedaniel.materialisation.MaterialisationUtils.isHeadBright;
 
 public class MaterialisedSwordItem extends SwordItem implements MaterialisedMiningTool {
 
@@ -39,14 +39,6 @@ public class MaterialisedSwordItem extends SwordItem implements MaterialisedMini
         addPropertyGetter(new Identifier(ModReference.MOD_ID, "sword_head_isbright"), (itemStack, world, livingEntity) -> {
             return isHeadBright(itemStack) ? 1f : 0f;
         });
-    }
-
-    public boolean isHeadBright(ItemStack itemStack) {
-        if (itemStack.getOrCreateTag().containsKey("mt_sword_blade_bright"))
-            return true;
-        if (itemStack.getOrCreateTag().containsKey("mt_1_material"))
-            return MaterialisationUtils.getMatFromString(itemStack.getOrCreateTag().getString("mt_1_material")).map(PartMaterial::isBright).orElse(false);
-        return MaterialisationUtils.getMatFromString(itemStack.getOrCreateTag().getString("mt_sword_blade_material")).map(PartMaterial::isBright).orElse(false);
     }
 
     @Override
@@ -77,6 +69,11 @@ public class MaterialisedSwordItem extends SwordItem implements MaterialisedMini
     @Override
     public double getAttackSpeed() {
         return -2.4f;
+    }
+
+    @Override
+    public ToolType getToolType() {
+        return ToolType.SWORD;
     }
 
     @Override
@@ -125,15 +122,7 @@ public class MaterialisedSwordItem extends SwordItem implements MaterialisedMini
     @Environment(EnvType.CLIENT)
     @Override
     public void appendTooltip(ItemStack stack, World world_1, List<Text> list_1, TooltipContext tooltipContext_1) {
-        int toolDurability = MaterialisationUtils.getToolDurability(stack);
-        int maxDurability = MaterialisationUtils.getToolMaxDurability(stack);
-        list_1.add(new TranslatableText("text.materialisation.max_durability", maxDurability));
-        if (toolDurability > 0) {
-            float percentage = toolDurability / (float) maxDurability * 100;
-            Formatting coloringPercentage = MaterialisationUtils.getColoringPercentage(percentage);
-            list_1.add(new TranslatableText("text.materialisation.durability", coloringPercentage.toString() + toolDurability, coloringPercentage.toString() + MaterialisationUtils.TWO_DECIMAL_FORMATTER.format(percentage) + Formatting.WHITE.toString()));
-        } else
-            list_1.add(new TranslatableText("text.materialisation.broken"));
+        MaterialisationUtils.appendToolTooltip(stack, this, world_1, list_1, tooltipContext_1);
     }
 
 }

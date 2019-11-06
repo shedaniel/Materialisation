@@ -1,5 +1,6 @@
 package me.shedaniel.materialisation;
 
+import me.shedaniel.materialisation.api.Modifier;
 import me.shedaniel.materialisation.blocks.MaterialPreparerBlock;
 import me.shedaniel.materialisation.blocks.MaterialisingTableBlock;
 import me.shedaniel.materialisation.config.ConfigHelper;
@@ -7,6 +8,7 @@ import me.shedaniel.materialisation.config.MaterialisationConfig;
 import me.shedaniel.materialisation.containers.MaterialPreparerContainer;
 import me.shedaniel.materialisation.containers.MaterialisingTableContainer;
 import me.shedaniel.materialisation.items.*;
+import me.shedaniel.materialisation.modifiers.Modifiers;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
@@ -18,6 +20,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.SimpleRegistry;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -57,6 +60,7 @@ public class Materialisation implements ModInitializer {
     public static final Item SWORD_BLADE_PATTERN = new PatternItem(new Item.Settings().group(ItemGroup.MATERIALS));
     public static final Item HAMMER_HEAD_PATTERN = new PatternItem(new Item.Settings().group(ItemGroup.MATERIALS));
     public static final Item MEGAAXE_HEAD_PATTERN = new PatternItem(new Item.Settings().group(ItemGroup.MATERIALS));
+    public static final Registry<Modifier> MODIFIERS = new SimpleRegistry();
     public static MaterialisationConfig config;
 
     public static <T> Optional<T> getReflectionField(Object parent, Class<T> clazz, int index) {
@@ -73,6 +77,7 @@ public class Materialisation implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        Modifiers.registerModifiers();
         registerBlock("materialising_table", MATERIALISING_TABLE, ItemGroup.DECORATIONS);
         registerBlock("material_preparer", MATERIAL_PREPARER, ItemGroup.DECORATIONS);
         ContainerProviderRegistry.INSTANCE.registerFactory(MATERIALISING_TABLE_CONTAINER, (syncId, identifier, playerEntity, packetByteBuf) -> {

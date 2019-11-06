@@ -35,8 +35,12 @@
   "container.materialisation.material_preparer": "Material Preparer",
   "text.materialisation.broken": "Current Durability: §cBroken",
   "text.materialisation.max_durability": "Max Durability: %d",
+  "text.materialisation.max_durability_less": "Max Durability: %d §c(-%s)",
+  "text.materialisation.max_durability_more": "Max Durability: %d §e(+%s)",
   "text.materialisation.durability": "Current Durability: %s§f (%s§f%%)",
-  "text.materialisation.breaking_speed": "Breaking Speed: %.2f",
+  "text.materialisation.breaking_speed": "Breaking Speed: %s",
+  "text.materialisation.breaking_speed_less": "Breaking Speed: %s §c(-%s)",
+  "text.materialisation.breaking_speed_extra": "Breaking Speed: %s §e(+%s)",
   "text.materialisation.mining_level": "Mining Level: %d",
   "text.materialisation.tool_handle_durability_multiplier": "Durability Multiplier: %s",
   "text.materialisation.tool_handle_speed_multiplier": "Mining Speed Multiplier: %s",
@@ -116,5 +120,6 @@
   "config.materialisation.value.attackDamage": "Attack Damage: ",
   "config.materialisation.value.materialTranslationKey": "Material Name Key: ",
   "config.materialisation.value.bright": "Bright: ",
-  "config.materialisation.value.fullAmount": "Full Amount: "
+  "config.materialisation.value.fullAmount": "Full Amount: ",
+  "modifier.materialisation.haste": "Haste"
 }

@@ -92,7 +92,8 @@ public abstract class MixinItemStack {
             HashMultimap<String, EntityAttributeModifier> multimap = HashMultimap.create();
             if (slot == EquipmentSlot.MAINHAND) {
                 multimap.put(EntityAttributes.ATTACK_SPEED.getId(), new EntityAttributeModifier(MaterialisationUtils.getItemModifierSwingSpeed(), "Tool modifier", ((MaterialisedMiningTool) getItem()).getAttackSpeed(), EntityAttributeModifier.Operation.ADDITION));
-                multimap.put(EntityAttributes.ATTACK_DAMAGE.getId(), new EntityAttributeModifier(MaterialisationUtils.getItemModifierDamage(), "Tool modifier", MaterialisationUtils.getToolAttackDamage((ItemStack) (Object) this), EntityAttributeModifier.Operation.ADDITION));
+                if (MaterialisationUtils.getToolDurability((ItemStack) (Object) this) > 0)
+                    multimap.put(EntityAttributes.ATTACK_DAMAGE.getId(), new EntityAttributeModifier(MaterialisationUtils.getItemModifierDamage(), "Tool modifier", MaterialisationUtils.getToolAttackDamage((ItemStack) (Object) this), EntityAttributeModifier.Operation.ADDITION));
             }
             callbackInfo.setReturnValue(multimap);
         }
@@ -110,12 +111,6 @@ public abstract class MixinItemStack {
             CompoundTag compoundTag_1 = getTag();
             returnable.setReturnValue(compoundTag_1 == null || !compoundTag_1.getBoolean("Unbreakable"));
         }
-    }
-
-    @Inject(method = "isDamaged", at = @At("HEAD"), cancellable = true)
-    public void isDamaged(CallbackInfoReturnable<Boolean> returnable) {
-//        if (getItem() instanceof MaterialisedMiningTool)
-//            returnable.setReturnValue(true);
     }
 
     @Inject(method = "getDamage", at = @At("HEAD"), cancellable = true)
@@ -137,7 +132,6 @@ public abstract class MixinItemStack {
         if (getItem() instanceof MaterialisedMiningTool) {
             int maxDurability = MaterialisationUtils.getToolMaxDurability((ItemStack) (Object) this);
             MaterialisationUtils.setToolDurability((ItemStack) (Object) this, maxDurability - MathHelper.clamp(damage, 0, maxDurability));
-            //            MaterialisationUtils.setToolDurability((ItemStack) (Object) this, MathHelper.clamp(damage + 1, 1, maxDurability + 1));
             info.cancel();
         }
     }
