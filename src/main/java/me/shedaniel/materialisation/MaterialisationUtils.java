@@ -4,8 +4,8 @@ import me.shedaniel.materialisation.api.MaterialsPack;
 import me.shedaniel.materialisation.api.PartMaterial;
 import me.shedaniel.materialisation.api.PartMaterials;
 import me.shedaniel.materialisation.config.ConfigHelper;
-import me.shedaniel.materialisation.items.ColoredItem;
-import me.shedaniel.materialisation.items.MaterialisedMiningTool;
+import me.shedaniel.materialisation.items.PartItem;
+import me.shedaniel.materialisation.api.MaterialisedMiningTool;
 import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.tools.ToolManager;
 import net.minecraft.block.BlockState;
@@ -480,11 +480,11 @@ public class MaterialisationUtils {
     }
 
     public static UUID getItemModifierDamage() {
-        return ColoredItem.getItemModifierDamage();
+        return PartItem.getItemModifierDamage();
     }
 
     public static UUID getItemModifierSwingSpeed() {
-        return ColoredItem.getItemModifierSwingSpeed();
+        return PartItem.getItemModifierSwingSpeed();
     }
 
 }

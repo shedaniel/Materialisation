@@ -3,7 +3,7 @@ package me.shedaniel.materialisation.mixin;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import me.shedaniel.materialisation.MaterialisationUtils;
-import me.shedaniel.materialisation.items.MaterialisedMiningTool;
+import me.shedaniel.materialisation.api.MaterialisedMiningTool;
 import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EquipmentSlot;

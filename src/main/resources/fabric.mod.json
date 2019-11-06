@@ -20,10 +20,10 @@
       "me.shedaniel.materialisation.MaterialisationClient"
     ],
     "rei_plugins_v0": [
-      "me.shedaniel.materialisation.rei.MaterialisationREIPlugin"
+      "me.shedaniel.materialisation.compat.rei.MaterialisationREIPlugin"
     ],
     "modmenu": [
-      "me.shedaniel.materialisation.modmenu.MaterialisationModMenu"
+      "me.shedaniel.materialisation.compat.modmenu.MaterialisationModMenu"
     ],
     "materialisation_default": [
       "me.shedaniel.materialisation.materials.DefaultMaterials",

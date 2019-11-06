@@ -2,8 +2,9 @@ package me.shedaniel.materialisation.items;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import me.shedaniel.materialisation.Materialisation;
 import me.shedaniel.materialisation.MaterialisationUtils;
-import me.shedaniel.materialisation.ModReference;
+import me.shedaniel.materialisation.api.MaterialisedMiningTool;
 import me.shedaniel.materialisation.api.PartMaterial;
 import me.shedaniel.materialisation.mixin.MiningToolItemAccessor;
 import net.fabricmc.api.EnvType;
@@ -35,20 +36,31 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static me.shedaniel.materialisation.MaterialisationUtils.isNewHandleBright;
+import static me.shedaniel.materialisation.MaterialisationUtils.isHandleBright;
 
 public class MaterialisedMegaAxeItem extends AxeItem implements MaterialisedMiningTool {
 
-    private static final Set<Block> EFFECTIVE_BLOCKS = Sets.newHashSet(new Block[]{Blocks.OAK_PLANKS, Blocks.SPRUCE_PLANKS, Blocks.BIRCH_PLANKS, Blocks.JUNGLE_PLANKS, Blocks.ACACIA_PLANKS, Blocks.DARK_OAK_PLANKS, Blocks.BOOKSHELF, Blocks.OAK_WOOD, Blocks.SPRUCE_WOOD, Blocks.BIRCH_WOOD, Blocks.JUNGLE_WOOD, Blocks.ACACIA_WOOD, Blocks.DARK_OAK_WOOD, Blocks.OAK_LOG, Blocks.SPRUCE_LOG, Blocks.BIRCH_LOG, Blocks.JUNGLE_LOG, Blocks.ACACIA_LOG, Blocks.DARK_OAK_LOG, Blocks.CHEST, Blocks.PUMPKIN, Blocks.CARVED_PUMPKIN, Blocks.JACK_O_LANTERN, Blocks.MELON, Blocks.LADDER, Blocks.SCAFFOLDING, Blocks.OAK_BUTTON, Blocks.SPRUCE_BUTTON, Blocks.BIRCH_BUTTON, Blocks.JUNGLE_BUTTON, Blocks.DARK_OAK_BUTTON, Blocks.ACACIA_BUTTON, Blocks.OAK_PRESSURE_PLATE, Blocks.SPRUCE_PRESSURE_PLATE, Blocks.BIRCH_PRESSURE_PLATE, Blocks.JUNGLE_PRESSURE_PLATE, Blocks.DARK_OAK_PRESSURE_PLATE, Blocks.ACACIA_PRESSURE_PLATE});
+    private static final Set<Block> EFFECTIVE_BLOCKS = Sets.newHashSet(
+            Blocks.OAK_PLANKS, Blocks.SPRUCE_PLANKS, Blocks.BIRCH_PLANKS,
+            Blocks.JUNGLE_PLANKS, Blocks.ACACIA_PLANKS, Blocks.DARK_OAK_PLANKS,
+            Blocks.BOOKSHELF, Blocks.OAK_WOOD, Blocks.SPRUCE_WOOD,
+            Blocks.BIRCH_WOOD, Blocks.JUNGLE_WOOD, Blocks.ACACIA_WOOD,
+            Blocks.DARK_OAK_WOOD, Blocks.OAK_LOG, Blocks.SPRUCE_LOG,
+            Blocks.BIRCH_LOG, Blocks.JUNGLE_LOG, Blocks.ACACIA_LOG,
+            Blocks.DARK_OAK_LOG, Blocks.CHEST, Blocks.PUMPKIN,
+            Blocks.CARVED_PUMPKIN, Blocks.JACK_O_LANTERN, Blocks.MELON,
+            Blocks.LADDER, Blocks.SCAFFOLDING, Blocks.OAK_BUTTON,
+            Blocks.SPRUCE_BUTTON, Blocks.BIRCH_BUTTON, Blocks.JUNGLE_BUTTON,
+            Blocks.DARK_OAK_BUTTON, Blocks.ACACIA_BUTTON, Blocks.OAK_PRESSURE_PLATE,
+            Blocks.SPRUCE_PRESSURE_PLATE, Blocks.BIRCH_PRESSURE_PLATE, Blocks.JUNGLE_PRESSURE_PLATE,
+            Blocks.DARK_OAK_PRESSURE_PLATE, Blocks.ACACIA_PRESSURE_PLATE);
 
     public MaterialisedMegaAxeItem(Settings settings) {
         super(MaterialisationUtils.DUMMY_MATERIAL, 0, -3.65F, settings.maxDamage(0));
-        addPropertyGetter(new Identifier(ModReference.MOD_ID, "handle_isbright"), (itemStack, world, livingEntity) -> {
-            return isNewHandleBright(itemStack) ? 1f : 0f;
-        });
-        addPropertyGetter(new Identifier(ModReference.MOD_ID, "megaaxe_head_isbright"), (itemStack, world, livingEntity) -> {
-            return isHeadBright(itemStack) ? 1f : 0f;
-        });
+        addPropertyGetter(new Identifier(Materialisation.MOD_ID, "handle_isbright"),
+                (itemStack, world, livingEntity) -> isHandleBright(itemStack) ? 1f : 0f);
+        addPropertyGetter(new Identifier(Materialisation.MOD_ID, "megaaxe_head_isbright"),
+                (itemStack, world, livingEntity) -> isHeadBright(itemStack) ? 1f : 0f);
     }
 
     public boolean isHeadBright(ItemStack itemStack) {
@@ -161,12 +173,12 @@ public class MaterialisedMegaAxeItem extends AxeItem implements MaterialisedMini
         BlockPos blockPos = context.getBlockPos();
         ItemStack itemStack = context.getStack();
         BlockState blockState = world.getBlockState(blockPos);
-        Block block = (Block) STRIPPED_BLOCKS.get(blockState.getBlock());
+        Block block = STRIPPED_BLOCKS.get(blockState.getBlock());
         if (MaterialisationUtils.getToolDurability(itemStack) > 0 && block != null) {
             PlayerEntity playerEntity_1 = context.getPlayer();
             world.playSound(playerEntity_1, blockPos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
             if (!world.isClient) {
-                world.setBlockState(blockPos, (BlockState) block.getDefaultState().with(PillarBlock.AXIS, blockState.get(PillarBlock.AXIS)), 11);
+                world.setBlockState(blockPos, block.getDefaultState().with(PillarBlock.AXIS, blockState.get(PillarBlock.AXIS)), 11);
                 if (playerEntity_1 != null) {
                     if (!playerEntity_1.world.isClient && (!(playerEntity_1 instanceof PlayerEntity) || !(playerEntity_1.abilities.creativeMode)))
                         if (MaterialisationUtils.applyDamage(itemStack, 1, playerEntity_1.getRand())) {

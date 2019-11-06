@@ -3,7 +3,6 @@ package me.shedaniel.materialisation.containers;
 import com.mojang.blaze3d.platform.GlStateManager;
 import io.netty.buffer.Unpooled;
 import me.shedaniel.materialisation.Materialisation;
-import me.shedaniel.materialisation.ModReference;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
@@ -24,7 +23,7 @@ import net.minecraft.util.PacketByteBuf;
 @Environment(EnvType.CLIENT)
 public class MaterialisingTableScreen extends AbstractContainerScreen<MaterialisingTableContainer> implements ContainerListener {
 
-    private static final Identifier BG_TEX = new Identifier(ModReference.MOD_ID, "textures/gui/container/materialising_table.png");
+    private static final Identifier BG_TEX = new Identifier(Materialisation.MOD_ID, "textures/gui/container/materialising_table.png");
     private TextFieldWidget nameField;
 
     public MaterialisingTableScreen(MaterialisingTableContainer container, PlayerInventory inventory, Text title) {

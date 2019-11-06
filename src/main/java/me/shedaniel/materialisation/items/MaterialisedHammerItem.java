@@ -1,7 +1,8 @@
 package me.shedaniel.materialisation.items;
 
+import me.shedaniel.materialisation.Materialisation;
 import me.shedaniel.materialisation.MaterialisationUtils;
-import me.shedaniel.materialisation.ModReference;
+import me.shedaniel.materialisation.api.MaterialisedMiningTool;
 import me.shedaniel.materialisation.api.PartMaterial;
 import me.shedaniel.materialisation.mixin.MiningToolItemAccessor;
 import net.fabricmc.api.EnvType;
@@ -42,12 +43,10 @@ public class MaterialisedHammerItem extends PickaxeItem implements MaterialisedM
 
     public MaterialisedHammerItem(Settings settings) {
         super(MaterialisationUtils.DUMMY_MATERIAL, 0, -3.6F, settings.maxDamage(0));
-        addPropertyGetter(new Identifier(ModReference.MOD_ID, "handle_isbright"), (itemStack, world, livingEntity) -> {
-            return isHandleBright(itemStack) ? 1f : 0f;
-        });
-        addPropertyGetter(new Identifier(ModReference.MOD_ID, "hammer_head_isbright"), (itemStack, world, livingEntity) -> {
-            return isHeadBright(itemStack) ? 1f : 0f;
-        });
+        addPropertyGetter(new Identifier(Materialisation.MOD_ID, "handle_isbright"),
+                (itemStack, world, livingEntity) -> isHandleBright(itemStack) ? 1f : 0f);
+        addPropertyGetter(new Identifier(Materialisation.MOD_ID, "hammer_head_isbright"),
+                (itemStack, world, livingEntity) -> isHeadBright(itemStack) ? 1f : 0f);
     }
 
     public boolean isHeadBright(ItemStack itemStack) {

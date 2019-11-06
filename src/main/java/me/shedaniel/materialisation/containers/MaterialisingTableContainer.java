@@ -3,6 +3,7 @@ package me.shedaniel.materialisation.containers;
 import io.netty.buffer.Unpooled;
 import me.shedaniel.materialisation.Materialisation;
 import me.shedaniel.materialisation.MaterialisationUtils;
+import me.shedaniel.materialisation.api.MaterialisedMiningTool;
 import me.shedaniel.materialisation.api.modifier.Modifier;
 import me.shedaniel.materialisation.api.modifier.Modifiers;
 import me.shedaniel.materialisation.api.PartMaterial;
@@ -498,7 +499,7 @@ public class MaterialisingTableContainer extends Container {
                 (int) (MaterialisationUtils.getToolAttackDamage(stack) * modifier.getAttackDamageMultiplier())
                         + modifier.getExtraDurability());
         MaterialisationUtils.setToolMiningLevel(stack,
-                MaterialisationUtils.getToolMiningLevel(stack) + modifier.getExtraDurability());
+                MaterialisationUtils.getToolMiningLevel(stack) + modifier.getExtraMiningLevel());
 
         this.result.setInvStack(0, stack);
     }

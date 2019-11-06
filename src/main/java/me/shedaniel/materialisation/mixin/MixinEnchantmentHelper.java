@@ -1,7 +1,7 @@
 package me.shedaniel.materialisation.mixin;
 
 import com.google.common.collect.Lists;
-import me.shedaniel.materialisation.items.MaterialisedMiningTool;
+import me.shedaniel.materialisation.api.MaterialisedMiningTool;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.InfoEnchantment;
 import net.minecraft.item.ItemStack;

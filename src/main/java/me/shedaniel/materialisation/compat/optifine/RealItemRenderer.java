@@ -1,38 +1,16 @@
-package me.shedaniel.materialisation.mixin;
+package me.shedaniel.materialisation.compat.optifine;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.api.MaterialisedMiningTool;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.client.render.VertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Environment(EnvType.CLIENT)
-@Mixin(ItemRenderer.class)
-public abstract class MixinItemRenderer {
-
-    @Shadow
-    protected abstract void renderGuiQuad(BufferBuilder bufferBuilder_1, int int_1, int int_2, int int_3, int int_4, int int_5, int int_6, int int_7, int int_8);
-
-    /**
-     * This is used to render the custom damage bar
-     *
-     * @author shedaniel
-     */
-    @Inject(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;isDamaged()Z", ordinal = 0,
-                    shift = At.Shift.BEFORE))
-    public void renderGuiItemOverlay(TextRenderer font, ItemStack stack, int x, int y, String overlayText, CallbackInfo callbackInfo) {
+public class RealItemRenderer {
+    public static void renderGuiItemOverlay(ItemStack stack, int x, int y) {
         if (stack.getItem() instanceof MaterialisedMiningTool) {
             float float_1 = MaterialisationUtils.getToolDurability(stack);
             float float_2 = MaterialisationUtils.getToolMaxDurability(stack);
@@ -47,8 +25,8 @@ public abstract class MixinItemRenderer {
                 float float_3 = Math.max(0.0F, float_1 / float_2);
                 int int_3 = Math.round(13.0F - (float_2 - float_1) * 13.0F / float_2);
                 int int_4 = MathHelper.hsvToRgb(float_3 / 3.0F, 1.0F, 1.0F);
-                this.renderGuiQuad(bufferBuilder_1, x + 2, y + 13, 13, 2, 0, 0, 0, 255);
-                this.renderGuiQuad(bufferBuilder_1, x + 2, y + 13, int_3, 1, int_4 >> 16 & 255, int_4 >> 8 & 255, int_4 & 255, 255);
+                renderGuiQuad(bufferBuilder_1, x + 2, y + 13, 13, 2, 0, 0, 0, 255);
+                renderGuiQuad(bufferBuilder_1, x + 2, y + 13, int_3, 1, int_4 >> 16 & 255, int_4 >> 8 & 255, int_4 & 255, 255);
                 GlStateManager.enableBlend();
                 GlStateManager.enableAlphaTest();
                 GlStateManager.enableTexture();
@@ -58,4 +36,12 @@ public abstract class MixinItemRenderer {
         }
     }
 
+    private static void renderGuiQuad(BufferBuilder bufferBuilder_1, int int_1, int int_2, int int_3, int int_4, int int_5, int int_6, int int_7, int int_8) {
+        bufferBuilder_1.begin(7, VertexFormats.POSITION_COLOR);
+        bufferBuilder_1.vertex((double) (int_1 + 0), (double) (int_2 + 0), 0.0D).color(int_5, int_6, int_7, int_8).next();
+        bufferBuilder_1.vertex((double) (int_1 + 0), (double) (int_2 + int_4), 0.0D).color(int_5, int_6, int_7, int_8).next();
+        bufferBuilder_1.vertex((double) (int_1 + int_3), (double) (int_2 + int_4), 0.0D).color(int_5, int_6, int_7, int_8).next();
+        bufferBuilder_1.vertex((double) (int_1 + int_3), (double) (int_2 + 0), 0.0D).color(int_5, int_6, int_7, int_8).next();
+        Tessellator.getInstance().draw();
+    }
 }

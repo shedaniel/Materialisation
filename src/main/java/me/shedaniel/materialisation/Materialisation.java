@@ -28,27 +28,27 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class Materialisation implements ModInitializer {
-
+    public static final String MOD_ID = "materialisation";
     public static final Logger LOGGER = LogManager.getLogger();
     public static final Block MATERIALISING_TABLE = new MaterialisingTableBlock();
     public static final Block MATERIAL_PREPARER = new MaterialPreparerBlock();
-    public static final Identifier MATERIAL_PREPARER_CONTAINER = new Identifier(ModReference.MOD_ID, "material_preparer");
-    public static final Identifier MATERIALISING_TABLE_CONTAINER = new Identifier(ModReference.MOD_ID, "materialising_table");
-    public static final Identifier MATERIALISING_TABLE_RENAME = new Identifier(ModReference.MOD_ID, "materialising_table_rename");
-    public static final Identifier MATERIALISING_TABLE_PLAY_SOUND = new Identifier(ModReference.MOD_ID, "materialising_table_play_sound");
+    public static final Identifier MATERIAL_PREPARER_CONTAINER = new Identifier(MOD_ID, "material_preparer");
+    public static final Identifier MATERIALISING_TABLE_CONTAINER = new Identifier(MOD_ID, "materialising_table");
+    public static final Identifier MATERIALISING_TABLE_RENAME = new Identifier(MOD_ID, "materialising_table_rename");
+    public static final Identifier MATERIALISING_TABLE_PLAY_SOUND = new Identifier(MOD_ID, "materialising_table_play_sound");
     public static final Item MATERIALISED_PICKAXE = new MaterialisedPickaxeItem(new Item.Settings());
     public static final Item MATERIALISED_AXE = new MaterialisedAxeItem(new Item.Settings());
     public static final Item MATERIALISED_SHOVEL = new MaterialisedShovelItem(new Item.Settings());
     public static final Item MATERIALISED_SWORD = new MaterialisedSwordItem(new Item.Settings());
     public static final Item MATERIALISED_HAMMER = new MaterialisedHammerItem(new Item.Settings());
     public static final Item MATERIALISED_MEGAAXE = new MaterialisedMegaAxeItem(new Item.Settings());
-    public static final Item HANDLE = new ColoredItem(new Item.Settings());
-    public static final Item AXE_HEAD = new ColoredItem(new Item.Settings());
-    public static final Item PICKAXE_HEAD = new ColoredItem(new Item.Settings());
-    public static final Item SHOVEL_HEAD = new ColoredItem(new Item.Settings());
-    public static final Item SWORD_BLADE = new ColoredItem(new Item.Settings());
-    public static final Item HAMMER_HEAD = new ColoredItem(new Item.Settings());
-    public static final Item MEGAAXE_HEAD = new ColoredItem(new Item.Settings());
+    public static final Item HANDLE = new PartItem(new Item.Settings());
+    public static final Item AXE_HEAD = new PartItem(new Item.Settings());
+    public static final Item PICKAXE_HEAD = new PartItem(new Item.Settings());
+    public static final Item SHOVEL_HEAD = new PartItem(new Item.Settings());
+    public static final Item SWORD_BLADE = new PartItem(new Item.Settings());
+    public static final Item HAMMER_HEAD = new PartItem(new Item.Settings());
+    public static final Item MEGAAXE_HEAD = new PartItem(new Item.Settings());
     public static final Item BLANK_PATTERN = new PatternItem(new Item.Settings().group(ItemGroup.MATERIALS));
     public static final Item TOOL_HANDLE_PATTERN = new PatternItem(new Item.Settings().group(ItemGroup.MATERIALS));
     public static final Item PICKAXE_HEAD_PATTERN = new PatternItem(new Item.Settings().group(ItemGroup.MATERIALS));
@@ -75,12 +75,14 @@ public class Materialisation implements ModInitializer {
     public void onInitialize() {
         registerBlock("materialising_table", MATERIALISING_TABLE, ItemGroup.DECORATIONS);
         registerBlock("material_preparer", MATERIAL_PREPARER, ItemGroup.DECORATIONS);
-        ContainerProviderRegistry.INSTANCE.registerFactory(MATERIALISING_TABLE_CONTAINER, (syncId, identifier, playerEntity, packetByteBuf) -> {
-            return new MaterialisingTableContainer(syncId, playerEntity.inventory, BlockContext.create(playerEntity.world, packetByteBuf.readBlockPos()));
-        });
-        ContainerProviderRegistry.INSTANCE.registerFactory(MATERIAL_PREPARER_CONTAINER, (syncId, identifier, playerEntity, packetByteBuf) -> {
-            return new MaterialPreparerContainer(syncId, playerEntity.inventory, BlockContext.create(playerEntity.world, packetByteBuf.readBlockPos()));
-        });
+
+        ContainerProviderRegistry.INSTANCE.registerFactory(MATERIALISING_TABLE_CONTAINER,
+                (syncId, identifier, playerEntity, packetByteBuf) -> new MaterialisingTableContainer(
+                        syncId, playerEntity.inventory, BlockContext.create(playerEntity.world, packetByteBuf.readBlockPos())));
+        ContainerProviderRegistry.INSTANCE.registerFactory(MATERIAL_PREPARER_CONTAINER,
+                (syncId, identifier, playerEntity, packetByteBuf) -> new MaterialPreparerContainer(
+                        syncId, playerEntity.inventory, BlockContext.create(playerEntity.world, packetByteBuf.readBlockPos())));
+
         ServerSidePacketRegistry.INSTANCE.register(MATERIALISING_TABLE_RENAME, (packetContext, packetByteBuf) -> {
             if (packetContext.getPlayer().container instanceof MaterialisingTableContainer) {
                 MaterialisingTableContainer container = (MaterialisingTableContainer) packetContext.getPlayer().container;
@@ -89,6 +91,7 @@ public class Materialisation implements ModInitializer {
                     container.setNewItemName(string_1);
             }
         });
+
         registerItem("materialised_pickaxe", MATERIALISED_PICKAXE);
         registerItem("materialised_axe", MATERIALISED_AXE);
         registerItem("materialised_shovel", MATERIALISED_SHOVEL);
@@ -127,12 +130,12 @@ public class Materialisation implements ModInitializer {
     }
 
     private void registerBlock(String name, Block block, Item.Settings settings) {
-        Registry.register(Registry.BLOCK, new Identifier(ModReference.MOD_ID, name), block);
+        Registry.register(Registry.BLOCK, new Identifier(MOD_ID, name), block);
         registerItem(name, new BlockItem(block, settings));
     }
 
     private void registerItem(String name, Item item) {
-        Registry.register(Registry.ITEM, new Identifier(ModReference.MOD_ID, name), item);
+        Registry.register(Registry.ITEM, new Identifier(MOD_ID, name), item);
     }
 
 }

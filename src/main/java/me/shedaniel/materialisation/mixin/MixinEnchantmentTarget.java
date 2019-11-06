@@ -1,6 +1,6 @@
 package me.shedaniel.materialisation.mixin;
 
-import me.shedaniel.materialisation.items.MaterialisedMiningTool;
+import me.shedaniel.materialisation.api.MaterialisedMiningTool;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.item.Item;
 import org.spongepowered.asm.mixin.Mixin;
