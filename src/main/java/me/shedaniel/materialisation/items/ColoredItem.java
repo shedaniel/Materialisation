@@ -17,17 +17,25 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Lazy;
 import net.minecraft.world.World;
 
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public class ColoredItem extends Item {
 
-    private static final ItemPropertyGetter COLORED_ITEM_BRIGHT_ITEM = (itemStack, world, livingEntity) -> {
-        return MaterialisationUtils.isHandleBright(itemStack) ? 1 : 0;
-    };
+    private static final ItemPropertyGetter COLORED_ITEM_BRIGHT_ITEM = (itemStack, world, livingEntity) -> MaterialisationUtils.isHandleBright(itemStack) ? 1 : 0;
+    private static Lazy<Method> getItemTranslationKey = new Lazy(() -> {
+        try {
+            return Class.forName("me.shedaniel.materialisation.MaterialisationClient").getDeclaredMethod("getItemTranslationKey", ItemStack.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    });
 
     public ColoredItem(Settings item$Settings_1) {
         super(item$Settings_1);
@@ -40,6 +48,22 @@ public class ColoredItem extends Item {
 
     public static UUID getItemModifierSwingSpeed() {
         return ATTACK_SPEED_MODIFIER_UUID;
+    }
+
+    public static float getExtraDamage(Item item) {
+        if (item == Materialisation.SWORD_BLADE)
+            return 4f;
+        if (item == Materialisation.PICKAXE_HEAD)
+            return 2f;
+        if (item == Materialisation.AXE_HEAD)
+            return 7f;
+        if (item == Materialisation.MEGAAXE_HEAD)
+            return 10f;
+        if (item == Materialisation.HAMMER_HEAD)
+            return 9f;
+        if (item == Materialisation.SHOVEL_HEAD)
+            return 2.5f;
+        return 0f;
     }
 
     @Environment(EnvType.CLIENT)
@@ -72,34 +96,20 @@ public class ColoredItem extends Item {
         }
     }
 
-    public static float getExtraDamage(Item item) {
-        if (item == Materialisation.SWORD_BLADE)
-            return 4f;
-        if (item == Materialisation.PICKAXE_HEAD)
-            return 2f;
-        if (item == Materialisation.AXE_HEAD)
-            return 7f;
-        if (item == Materialisation.MEGAAXE_HEAD)
-            return 10f;
-        if (item == Materialisation.HAMMER_HEAD)
-            return 9f;
-        if (item == Materialisation.SHOVEL_HEAD)
-            return 2.5f;
-        return 0f;
-    }
-
     @Override
     public Text getName(ItemStack itemStack_1) {
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT)
             try {
-                Optional<String> s = (Optional<String>) Class.forName("me.shedaniel.materialisation.MaterialisationClient").getDeclaredMethod("getItemTranslationKey", ItemStack.class).invoke(null, itemStack_1);
-                if (s.isPresent())
-                    return new LiteralText(s.get());
+                Method method = getItemTranslationKey.get();
+                if (method != null) {
+                    Optional<String> s = (Optional<String>) method.invoke(null, itemStack_1);
+                    if (s.isPresent())
+                        return new LiteralText(s.get());
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         return new TranslatableText(this.getTranslationKey(itemStack_1));
-//        return getItemTranslationKey(itemStack_1).map(s -> (Text) new TranslatableText(s)).orElse(super.getName(itemStack_1));
     }
 
 }

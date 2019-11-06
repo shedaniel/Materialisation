@@ -15,20 +15,27 @@ public class HasteModifier extends Modifier {
             case PICKAXE:
             case SHOVEL:
                 return 4;
-            default:
-                return 0;
         }
+        return 0;
     }
 
     @Override
-    public int getMaximumDurability(ItemStack stack, MaterialisedMiningTool tool, int currentMax) {
-        int modifierLevel = tool.getModifierLevel(stack, this);
-        if (modifierLevel <= 0)
+    public int getMaximumDurability(ItemStack stack, MaterialisedMiningTool tool, int level, int currentMax) {
+        if (level <= 0)
             return currentMax;
-        if (modifierLevel == 1) return MathHelper.ceil(((double) currentMax) * .93);
-        if (modifierLevel == 2) return MathHelper.ceil(((double) currentMax) * .93 * .91);
-        if (modifierLevel == 3) return MathHelper.ceil(((double) currentMax) * .93 * .91 * .89);
-        if (modifierLevel == 4) return MathHelper.ceil(((double) currentMax) * .93 * .91 * .89 * .83);
-        return MathHelper.ceil(((double) currentMax) * .93 * .91 * .89 * .87 * Math.pow(.91, modifierLevel - 4));
+        double c = currentMax;
+        if (level >= 1) c *= .93;
+        if (level >= 2) c *= .87;
+        if (level >= 3) c *= .84;
+        if (level >= 4) c *= .79;
+        if (level >= 5) c *= Math.pow(.7, level - 4);
+        return MathHelper.ceil(c);
+    }
+
+    @Override
+    public float getExtraMiningSpeed(ItemStack stack, MaterialisedMiningTool tool, int level, float base, float currentSpeed) {
+        if (level <= 0)
+            return 0f;
+        return level * .5f * base;
     }
 }

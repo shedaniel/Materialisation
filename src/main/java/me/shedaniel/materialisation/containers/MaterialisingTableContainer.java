@@ -3,6 +3,7 @@ package me.shedaniel.materialisation.containers;
 import io.netty.buffer.Unpooled;
 import me.shedaniel.materialisation.Materialisation;
 import me.shedaniel.materialisation.MaterialisationUtils;
+import me.shedaniel.materialisation.api.BetterIngredient;
 import me.shedaniel.materialisation.api.Modifier;
 import me.shedaniel.materialisation.api.PartMaterial;
 import me.shedaniel.materialisation.items.*;
@@ -19,6 +20,7 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.PacketByteBuf;
+import net.minecraft.util.Pair;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Optional;
@@ -29,6 +31,7 @@ public class MaterialisingTableContainer extends Container {
     private final PlayerEntity player;
     private BlockContext context;
     private String itemName;
+    private int nextDecrease;
 
     public MaterialisingTableContainer(int syncId, PlayerInventory main) {
         this(syncId, main, BlockContext.EMPTY);
@@ -61,7 +64,7 @@ public class MaterialisingTableContainer extends Container {
                 stack.decrement(1);
                 main.setInvStack(0, stack);
                 stack = main.getInvStack(1).copy();
-                stack.decrement(1);
+                stack.decrement(nextDecrease);
                 main.setInvStack(1, stack);
                 context.run((world, blockPos) -> {
                     ServerSidePacketRegistry.INSTANCE.sendToPlayer(playerEntity_1, Materialisation.MATERIALISING_TABLE_PLAY_SOUND, new PacketByteBuf(Unpooled.buffer()));
@@ -115,12 +118,13 @@ public class MaterialisingTableContainer extends Container {
             if (!second.isEmpty() && Modifiers.isIngredient(second)) {
                 ItemStack copy = first.copy();
                 MaterialisedMiningTool tool = (MaterialisedMiningTool) copy.getItem();
-                Optional<Modifier> modifierOptional = Modifiers.getModifierByIngredient(second);
+                Optional<Pair<Modifier, BetterIngredient>> modifierOptional = Modifiers.getModifierByIngredient(second);
                 if (modifierOptional.isPresent()) {
-                    Modifier modifier = modifierOptional.get();
+                    Modifier modifier = modifierOptional.get().getLeft();
                     int maximumLevel = modifier.getMaximumLevel(first);
                     int level = tool.getModifierLevel(first, modifier);
                     if (level + 1 <= maximumLevel) {
+                        nextDecrease = modifierOptional.get().getRight().count;
                         tool.setModifierLevel(copy, modifier, level + 1);
                         this.result.setInvStack(0, copy);
                         this.sendContentUpdates();
@@ -167,186 +171,7 @@ public class MaterialisingTableContainer extends Container {
                     copy.removeCustomName();
                 else
                     copy.setCustomName(new LiteralText(this.itemName));
-            this.result.setInvStack(0, copy);
-        } else if (first.getItem() instanceof MaterialisedPickaxeItem) {
-            // Fixing pickaxe
-            ItemStack copy = first.copy();
-            int toolDurability = MaterialisationUtils.getToolDurability(first);
-            int maxDurability = MaterialisationUtils.getToolMaxDurability(first);
-            if (!second.isEmpty()) {
-                if (toolDurability >= maxDurability) {
-                    this.result.setInvStack(0, ItemStack.EMPTY);
-                    this.sendContentUpdates();
-                    return;
-                }
-                PartMaterial material = null;
-                if (copy.getOrCreateTag().containsKey("mt_pickaxe_head_material"))
-                    material = MaterialisationUtils.getMaterialFromString(copy.getOrCreateTag().getString("mt_pickaxe_head_material"));
-                if (material == null) {
-                    this.result.setInvStack(0, ItemStack.EMPTY);
-                    this.sendContentUpdates();
-                    return;
-                }
-                int repairAmount = material.getRepairAmount(second);
-                if (repairAmount <= 0) {
-                    this.result.setInvStack(0, ItemStack.EMPTY);
-                    this.sendContentUpdates();
-                    return;
-                }
-                MaterialisationUtils.setToolDurability(copy, Math.min(maxDurability, toolDurability + repairAmount));
-            }
-            if (StringUtils.isBlank(this.itemName)) {
-                if (copy.hasCustomName())
-                    copy.removeCustomName();
-            } else if (!this.itemName.equals(copy.getName().getString()))
-                if (itemName.equals(copy.getItem().getName(copy)))
-                    copy.removeCustomName();
-                else
-                    copy.setCustomName(new LiteralText(this.itemName));
-            this.result.setInvStack(0, copy);
-        } else if (first.getItem() instanceof MaterialisedAxeItem) {
-            // Fixing axe
-            ItemStack copy = first.copy();
-            int toolDurability = MaterialisationUtils.getToolDurability(first);
-            int maxDurability = MaterialisationUtils.getToolMaxDurability(first);
-            if (!second.isEmpty()) {
-                if (toolDurability >= maxDurability) {
-                    this.result.setInvStack(0, ItemStack.EMPTY);
-                    this.sendContentUpdates();
-                    return;
-                }
-                PartMaterial material = null;
-                if (copy.getOrCreateTag().containsKey("mt_axe_head_material"))
-                    material = MaterialisationUtils.getMaterialFromString(copy.getOrCreateTag().getString("mt_axe_head_material"));
-                if (material == null) {
-                    this.result.setInvStack(0, ItemStack.EMPTY);
-                    this.sendContentUpdates();
-                    return;
-                }
-                int repairAmount = material.getRepairAmount(second);
-                if (repairAmount <= 0) {
-                    this.result.setInvStack(0, ItemStack.EMPTY);
-                    this.sendContentUpdates();
-                    return;
-                }
-                MaterialisationUtils.setToolDurability(copy, Math.min(maxDurability, toolDurability + repairAmount));
-            }
-            if (StringUtils.isBlank(this.itemName)) {
-                if (copy.hasCustomName())
-                    copy.removeCustomName();
-            } else if (!this.itemName.equals(copy.getName().getString()))
-                if (itemName.equals(copy.getItem().getName(copy)))
-                    copy.removeCustomName();
-                else
-                    copy.setCustomName(new LiteralText(this.itemName));
-            this.result.setInvStack(0, copy);
-        } else if (first.getItem() instanceof MaterialisedShovelItem) {
-            // Fixing shovel
-            ItemStack copy = first.copy();
-            int toolDurability = MaterialisationUtils.getToolDurability(first);
-            int maxDurability = MaterialisationUtils.getToolMaxDurability(first);
-            if (!second.isEmpty()) {
-                if (toolDurability >= maxDurability) {
-                    this.result.setInvStack(0, ItemStack.EMPTY);
-                    this.sendContentUpdates();
-                    return;
-                }
-                PartMaterial material = null;
-                if (copy.getOrCreateTag().containsKey("mt_shovel_head_material"))
-                    material = MaterialisationUtils.getMaterialFromString(copy.getOrCreateTag().getString("mt_shovel_head_material"));
-                if (material == null) {
-                    this.result.setInvStack(0, ItemStack.EMPTY);
-                    this.sendContentUpdates();
-                    return;
-                }
-                int repairAmount = material.getRepairAmount(second);
-                if (repairAmount <= 0) {
-                    this.result.setInvStack(0, ItemStack.EMPTY);
-                    this.sendContentUpdates();
-                    return;
-                }
-                MaterialisationUtils.setToolDurability(copy, Math.min(maxDurability, toolDurability + repairAmount));
-            }
-            if (StringUtils.isBlank(this.itemName)) {
-                if (copy.hasCustomName())
-                    copy.removeCustomName();
-            } else if (!this.itemName.equals(copy.getName().getString()))
-                if (itemName.equals(copy.getItem().getName(copy)))
-                    copy.removeCustomName();
-                else
-                    copy.setCustomName(new LiteralText(this.itemName));
-            this.result.setInvStack(0, copy);
-        } else if (first.getItem() instanceof MaterialisedSwordItem) {
-            // Fixing sword
-            ItemStack copy = first.copy();
-            int toolDurability = MaterialisationUtils.getToolDurability(first);
-            int maxDurability = MaterialisationUtils.getToolMaxDurability(first);
-            if (!second.isEmpty()) {
-                if (toolDurability >= maxDurability) {
-                    this.result.setInvStack(0, ItemStack.EMPTY);
-                    this.sendContentUpdates();
-                    return;
-                }
-                PartMaterial material = null;
-                if (copy.getOrCreateTag().containsKey("mt_sword_blade_material"))
-                    material = MaterialisationUtils.getMaterialFromString(copy.getOrCreateTag().getString("mt_sword_blade_material"));
-                if (material == null) {
-                    this.result.setInvStack(0, ItemStack.EMPTY);
-                    this.sendContentUpdates();
-                    return;
-                }
-                int repairAmount = material.getRepairAmount(second);
-                if (repairAmount <= 0) {
-                    this.result.setInvStack(0, ItemStack.EMPTY);
-                    this.sendContentUpdates();
-                    return;
-                }
-                MaterialisationUtils.setToolDurability(copy, Math.min(maxDurability, toolDurability + repairAmount));
-            }
-            if (StringUtils.isBlank(this.itemName)) {
-                if (copy.hasCustomName())
-                    copy.removeCustomName();
-            } else if (!this.itemName.equals(copy.getName().getString()))
-                if (itemName.equals(copy.getItem().getName(copy)))
-                    copy.removeCustomName();
-                else
-                    copy.setCustomName(new LiteralText(this.itemName));
-            this.result.setInvStack(0, copy);
-        } else if (first.getItem() instanceof MaterialisedHammerItem) {
-            // Fixing hammer
-            ItemStack copy = first.copy();
-            int toolDurability = MaterialisationUtils.getToolDurability(first);
-            int maxDurability = MaterialisationUtils.getToolMaxDurability(first);
-            if (!second.isEmpty()) {
-                if (toolDurability >= maxDurability) {
-                    this.result.setInvStack(0, ItemStack.EMPTY);
-                    this.sendContentUpdates();
-                    return;
-                }
-                PartMaterial material = null;
-                if (copy.getOrCreateTag().containsKey("mt_hammer_head_material"))
-                    material = MaterialisationUtils.getMaterialFromString(copy.getOrCreateTag().getString("mt_hammer_head_material"));
-                if (material == null) {
-                    this.result.setInvStack(0, ItemStack.EMPTY);
-                    this.sendContentUpdates();
-                    return;
-                }
-                int repairAmount = material.getRepairAmount(second);
-                if (repairAmount <= 0) {
-                    this.result.setInvStack(0, ItemStack.EMPTY);
-                    this.sendContentUpdates();
-                    return;
-                }
-                MaterialisationUtils.setToolDurability(copy, Math.min(maxDurability, toolDurability + repairAmount));
-            }
-            if (StringUtils.isBlank(this.itemName)) {
-                if (copy.hasCustomName())
-                    copy.removeCustomName();
-            } else if (!this.itemName.equals(copy.getName().getString()))
-                if (itemName.equals(copy.getItem().getName(copy)))
-                    copy.removeCustomName();
-                else
-                    copy.setCustomName(new LiteralText(this.itemName));
+            nextDecrease = 1;
             this.result.setInvStack(0, copy);
         } else if ((first.getItem() == Materialisation.PICKAXE_HEAD && second.getItem() == Materialisation.HANDLE) || (first.getItem() == Materialisation.HANDLE && second.getItem() == Materialisation.PICKAXE_HEAD)) {
             // Crafting a pickaxe
@@ -369,6 +194,7 @@ public class MaterialisingTableContainer extends Container {
                         copy.removeCustomName();
                     else
                         copy.setCustomName(new LiteralText(this.itemName));
+                nextDecrease = 1;
                 this.result.setInvStack(0, copy);
             }
         } else if ((first.getItem() == Materialisation.AXE_HEAD && second.getItem() == Materialisation.HANDLE) || (first.getItem() == Materialisation.HANDLE && second.getItem() == Materialisation.AXE_HEAD)) {
@@ -392,6 +218,7 @@ public class MaterialisingTableContainer extends Container {
                         copy.removeCustomName();
                     else
                         copy.setCustomName(new LiteralText(this.itemName));
+                nextDecrease = 1;
                 this.result.setInvStack(0, copy);
             }
         } else if ((first.getItem() == Materialisation.SHOVEL_HEAD && second.getItem() == Materialisation.HANDLE) || (first.getItem() == Materialisation.HANDLE && second.getItem() == Materialisation.SHOVEL_HEAD)) {
@@ -415,6 +242,7 @@ public class MaterialisingTableContainer extends Container {
                         copy.removeCustomName();
                     else
                         copy.setCustomName(new LiteralText(this.itemName));
+                nextDecrease = 1;
                 this.result.setInvStack(0, copy);
             }
         } else if ((first.getItem() == Materialisation.SWORD_BLADE && second.getItem() == Materialisation.HANDLE) || (first.getItem() == Materialisation.HANDLE && second.getItem() == Materialisation.SWORD_BLADE)) {
@@ -438,6 +266,7 @@ public class MaterialisingTableContainer extends Container {
                         copy.removeCustomName();
                     else
                         copy.setCustomName(new LiteralText(this.itemName));
+                nextDecrease = 1;
                 this.result.setInvStack(0, copy);
             }
         } else if ((first.getItem() == Materialisation.MEGAAXE_HEAD && second.getItem() == Materialisation.HANDLE) || (first.getItem() == Materialisation.HANDLE && second.getItem() == Materialisation.MEGAAXE_HEAD)) {
@@ -461,6 +290,7 @@ public class MaterialisingTableContainer extends Container {
                         copy.removeCustomName();
                     else
                         copy.setCustomName(new LiteralText(this.itemName));
+                nextDecrease = 1;
                 this.result.setInvStack(0, copy);
             }
         } else if ((first.getItem() == Materialisation.HAMMER_HEAD && second.getItem() == Materialisation.HANDLE) || (first.getItem() == Materialisation.HANDLE && second.getItem() == Materialisation.HAMMER_HEAD)) {
@@ -484,6 +314,7 @@ public class MaterialisingTableContainer extends Container {
                         copy.removeCustomName();
                     else
                         copy.setCustomName(new LiteralText(this.itemName));
+                nextDecrease = 1;
                 this.result.setInvStack(0, copy);
             }
         } else {

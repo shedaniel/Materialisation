@@ -2,7 +2,6 @@ package me.shedaniel.materialisation.items;
 
 import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.ModReference;
-import me.shedaniel.materialisation.api.PartMaterial;
 import me.shedaniel.materialisation.api.ToolType;
 import me.shedaniel.materialisation.mixin.MiningToolItemAccessor;
 import net.fabricmc.api.EnvType;
@@ -33,26 +32,10 @@ public class MaterialisedPickaxeItem extends PickaxeItem implements Materialised
 
     public MaterialisedPickaxeItem(Settings settings) {
         super(MaterialisationUtils.DUMMY_MATERIAL, 0, -2.8F, settings.maxDamage(0));
-        addPropertyGetter(new Identifier(ModReference.MOD_ID, "handle_isbright"), (itemStack, world, livingEntity) -> {
-            return isHandleBright(itemStack) ? 1f : 0f;
-        });
-        addPropertyGetter(new Identifier(ModReference.MOD_ID, "pickaxe_head_isbright"), (itemStack, world, livingEntity) -> {
-            return isHeadBright(itemStack) ? 1f : 0f;
-        });
-    }
-
-    @Override
-    public int getEnchantability(ItemStack stack) {
-        if (!stack.getOrCreateTag().containsKey("mt_pickaxe_head_material") || !stack.getOrCreateTag().containsKey("mt_handle_material")) {
-            if (!stack.getOrCreateTag().containsKey("mt_0_material") || !stack.getOrCreateTag().containsKey("mt_1_material"))
-                return 0;
-            PartMaterial handle = MaterialisationUtils.getMaterialFromString(stack.getOrCreateTag().getString("mt_0_material"));
-            PartMaterial head = MaterialisationUtils.getMaterialFromString(stack.getOrCreateTag().getString("mt_1_material"));
-            return (handle.getEnchantability() + head.getEnchantability()) / 2;
-        }
-        PartMaterial handle = MaterialisationUtils.getMaterialFromString(stack.getOrCreateTag().getString("mt_handle_material"));
-        PartMaterial head = MaterialisationUtils.getMaterialFromString(stack.getOrCreateTag().getString("mt_pickaxe_head_material"));
-        return (handle.getEnchantability() + head.getEnchantability()) / 2;
+        addPropertyGetter(new Identifier(ModReference.MOD_ID, "handle_isbright"),
+                (itemStack, world, livingEntity) -> isHandleBright(itemStack) ? 1f : 0f);
+        addPropertyGetter(new Identifier(ModReference.MOD_ID, "pickaxe_head_isbright"),
+                (itemStack, world, livingEntity) -> isHeadBright(itemStack) ? 1f : 0f);
     }
 
     @Override

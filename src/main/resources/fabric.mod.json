@@ -28,7 +28,8 @@
     "materialisation_default": [
       "me.shedaniel.materialisation.materials.DefaultMaterials",
       "me.shedaniel.materialisation.materials.CottonResourcesMaterials",
-      "me.shedaniel.materialisation.materials.NetherThingsMaterials"
+      "me.shedaniel.materialisation.materials.NetherThingsMaterials",
+      "me.shedaniel.materialisation.materials.DefaultModifiers"
     ]
   },
   "depends": {

@@ -7,7 +7,6 @@ import me.shedaniel.materialisation.api.PartMaterials;
 import me.shedaniel.materialisation.config.ConfigHelper;
 import me.shedaniel.materialisation.items.ColoredItem;
 import me.shedaniel.materialisation.items.MaterialisedMiningTool;
-import me.shedaniel.materialisation.modifiers.Modifiers;
 import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.tools.ToolManager;
 import net.minecraft.block.BlockState;
@@ -84,6 +83,35 @@ public class MaterialisationUtils {
         return Formatting.RED;
     }
 
+    public static int getToolEnchantability(ItemStack stack) {
+        return getToolEnchantability(stack, true);
+    }
+
+    public static int getToolEnchantability(ItemStack stack, boolean modifiers) {
+        int enchantability = 0;
+        CompoundTag tag = stack.getOrCreateTag();
+        if (tag.containsKey("mt_0_material") && tag.containsKey("mt_1_material")) {
+            PartMaterial handle = MaterialisationUtils.getMaterialFromString(tag.getString("mt_0_material"));
+            PartMaterial head = MaterialisationUtils.getMaterialFromString(tag.getString("mt_1_material"));
+            enchantability = (handle.getEnchantability() + head.getEnchantability()) / 2;
+        }
+        if (!modifiers) return enchantability;
+        return enchantability + getToolExtraEnchantability(stack, enchantability);
+    }
+
+    @Deprecated
+    private static int getToolExtraEnchantability(ItemStack stack, int base) {
+        int extraEnchantability = 0;
+
+        for (Map.Entry<Modifier, Integer> entry : getToolModifiers(stack).entrySet()) {
+            if (entry.getValue() != 0)
+                extraEnchantability += entry.getKey().getExtraEnchantability(stack, entry.getValue(), base, extraEnchantability);
+        }
+
+        // We are not going to allow enchantability higher than 100
+        return Math.min(extraEnchantability, 100 - base);
+    }
+
     public static float getToolBreakingSpeed(ItemStack stack) {
         return getToolBreakingSpeed(stack, true);
     }
@@ -95,12 +123,17 @@ public class MaterialisationUtils {
         return speed + getToolExtraBreakingSpeed(stack, speed);
     }
 
-    public static float getToolExtraBreakingSpeed(ItemStack stack, float base) {
-        float extraSpeedMultiplier = 0;
+    @Deprecated
+    private static float getToolExtraBreakingSpeed(ItemStack stack, float base) {
+        float extraSpeed = 0;
 
-        extraSpeedMultiplier += ((MaterialisedMiningTool) stack.getItem()).getModifierLevel(stack, Modifiers.HASTE) * .5;
+        for (Map.Entry<Modifier, Integer> entry : getToolModifiers(stack).entrySet()) {
+            if (entry.getValue() != 0)
+                extraSpeed += entry.getKey().getExtraMiningSpeed(stack, entry.getValue(), base, extraSpeed);
+        }
 
-        return Math.min(base * extraSpeedMultiplier, 50 - base);
+        // We are not going to allow speed higher than 50
+        return Math.min(extraSpeed, 50 - base);
     }
 
     private static float getBaseToolBreakingSpeed(ItemStack stack) {
@@ -117,12 +150,32 @@ public class MaterialisationUtils {
     }
 
     public static int getToolMiningLevel(ItemStack stack) {
-        if (!stack.hasTag())
-            return 0;
-        CompoundTag tag = stack.getTag();
-        if (tag.containsKey("mt_1_material"))
-            return getMatFromString(tag.getString("mt_1_material")).map(PartMaterial::getMiningLevel).orElse(0);
-        return 0;
+        return getToolMiningLevel(stack, true);
+    }
+
+    public static int getToolMiningLevel(ItemStack stack, boolean modifiers) {
+        int miningLevel = 0;
+        if (stack.hasTag()) {
+            CompoundTag tag = stack.getTag();
+            if (tag.containsKey("mt_1_material"))
+                miningLevel = getMatFromString(tag.getString("mt_1_material")).map(PartMaterial::getMiningLevel).orElse(0);
+        }
+        if (miningLevel <= 0) miningLevel = 0;
+        if (!modifiers) return miningLevel;
+        return miningLevel + getToolExtraMiningLevel(stack, miningLevel);
+    }
+
+    @Deprecated
+    private static int getToolExtraMiningLevel(ItemStack stack, int base) {
+        int extraMiningLevel = 0;
+
+        for (Map.Entry<Modifier, Integer> entry : getToolModifiers(stack).entrySet()) {
+            if (entry.getValue() != 0)
+                extraMiningLevel += entry.getKey().getExtraMiningLevel(stack, entry.getValue(), base, extraMiningLevel);
+        }
+
+        // We are not going to allow level higher than 10
+        return Math.min(extraMiningLevel, 10 - base);
     }
 
     public static int getToolDurability(ItemStack stack) {
@@ -148,7 +201,7 @@ public class MaterialisationUtils {
                         MathHelper.floor(getMatFromString(tag.getString("mt_0_material")).map(PartMaterial::getDurabilityMultiplier).orElse(0d) * getMatFromString(tag.getString("mt_1_material")).map(PartMaterial::getToolDurability).orElse(0));
                 if (modifiers)
                     for (Map.Entry<Modifier, Integer> entry : getToolModifiers(stack).entrySet()) {
-                        max = entry.getKey().getMaximumDurability(stack, (MaterialisedMiningTool) stack.getItem(), max);
+                        max = entry.getKey().getMaximumDurability(stack, (MaterialisedMiningTool) stack.getItem(), entry.getValue(), max);
                     }
                 return max;
             }
@@ -165,7 +218,7 @@ public class MaterialisationUtils {
             if (!modifiersTag.isEmpty()) {
                 for (String key : modifiersTag.getKeys()) {
                     Identifier identifier = new Identifier(key);
-                    Optional<Modifier> modifiersOrEmpty = Materialisation.MODIFIERS.getOrEmpty(identifier);
+                    Optional<Modifier> modifiersOrEmpty = Materialisation.modifiers.getOrEmpty(identifier);
                     if (modifiersOrEmpty.isPresent()) {
                         int level = modifiersTag.getInt(key);
                         if (level > 0)
@@ -409,9 +462,9 @@ public class MaterialisationUtils {
         int baseMaxDurability = getToolMaxDurability(stack, false);
         int maxDurability = getToolMaxDurability(stack);
         if (baseMaxDurability > maxDurability)
-            list_1.add(new TranslatableText("text.materialisation.max_durability_less", maxDurability, TWO_DECIMAL_FORMATTER.format(baseMaxDurability - maxDurability)));
+            list_1.add(new TranslatableText("text.materialisation.max_durability_less", maxDurability, baseMaxDurability - maxDurability));
         else if (baseMaxDurability < maxDurability)
-            list_1.add(new TranslatableText("text.materialisation.max_durability_more", maxDurability, TWO_DECIMAL_FORMATTER.format(maxDurability - baseMaxDurability)));
+            list_1.add(new TranslatableText("text.materialisation.max_durability_more", maxDurability, maxDurability - baseMaxDurability));
         else list_1.add(new TranslatableText("text.materialisation.max_durability", maxDurability));
         if (toolDurability > 0) {
             float percentage = toolDurability / (float) maxDurability * 100;
@@ -425,28 +478,49 @@ public class MaterialisationUtils {
             case MEGA_AXE:
             case PICKAXE:
             case SHOVEL: {
-                float breakingSpeed = getToolBreakingSpeed(stack, false);
-                float extra = getToolExtraBreakingSpeed(stack, breakingSpeed);
-                if (extra > 0)
-                    list_1.add(new TranslatableText("text.materialisation.breaking_speed_extra", TWO_DECIMAL_FORMATTER.format(breakingSpeed + extra), TWO_DECIMAL_FORMATTER.format(extra)));
-                else if (extra < 0)
-                    list_1.add(new TranslatableText("text.materialisation.breaking_speed_less", TWO_DECIMAL_FORMATTER.format(breakingSpeed + extra), TWO_DECIMAL_FORMATTER.format(-extra)));
-                else
-                    list_1.add(new TranslatableText("text.materialisation.breaking_speed", TWO_DECIMAL_FORMATTER.format(breakingSpeed)));
-                list_1.add(new TranslatableText("text.materialisation.mining_level", getToolMiningLevel(stack)));
+                {
+                    float breakingSpeed = getToolBreakingSpeed(stack, false);
+                    float extra = getToolBreakingSpeed(stack) - breakingSpeed;
+                    if (extra > 0)
+                        list_1.add(new TranslatableText("text.materialisation.breaking_speed_extra", TWO_DECIMAL_FORMATTER.format(breakingSpeed + extra), TWO_DECIMAL_FORMATTER.format(extra)));
+                    else if (extra < 0)
+                        list_1.add(new TranslatableText("text.materialisation.breaking_speed_less", TWO_DECIMAL_FORMATTER.format(breakingSpeed + extra), TWO_DECIMAL_FORMATTER.format(-extra)));
+                    else
+                        list_1.add(new TranslatableText("text.materialisation.breaking_speed", TWO_DECIMAL_FORMATTER.format(breakingSpeed)));
+                }
+                {
+                    int miningLevel = getToolMiningLevel(stack, false);
+                    int extra = getToolMiningLevel(stack) - miningLevel;
+                    if (extra > 0)
+                        list_1.add(new TranslatableText("text.materialisation.mining_level_extra", miningLevel + extra, extra));
+                    else if (extra < 0)
+                        list_1.add(new TranslatableText("text.materialisation.mining_level_less", miningLevel + extra, -extra));
+                    else
+                        list_1.add(new TranslatableText("text.materialisation.mining_level", miningLevel));
+                }
                 break;
             }
+        }
+        {
+            int enchantability = getToolEnchantability(stack, false);
+            int extra = getToolEnchantability(stack) - enchantability;
+            if (extra > 0)
+                list_1.add(new TranslatableText("text.materialisation.enchantability_extra", enchantability + extra, extra));
+            else if (extra < 0)
+                list_1.add(new TranslatableText("text.materialisation.enchantability_less", enchantability + extra, -extra));
+            else
+                list_1.add(new TranslatableText("text.materialisation.enchantability", enchantability));
         }
         Map<Modifier, Integer> modifiers = getToolModifiers(stack);
         if (!modifiers.isEmpty()) {
             list_1.add(new LiteralText(" "));
-            modifiers.forEach((modifier, level) -> {
-                Identifier id = Materialisation.MODIFIERS.getId(modifier);
-                if (level != 1)
-                    list_1.add(new TranslatableText("modifier." + id.getNamespace() + "." + id.getPath()).append(" " + level).formatted(Formatting.YELLOW));
+            for (Map.Entry<Modifier, Integer> entry : modifiers.entrySet()) {
+                Identifier id = Materialisation.modifiers.getId(entry.getKey());
+                if (entry.getValue() != 1)
+                    list_1.add(new TranslatableText("modifier." + id.getNamespace() + "." + id.getPath()).append(" " + entry.getValue()));
                 else
-                    list_1.add(new TranslatableText("modifier." + id.getNamespace() + "." + id.getPath()).formatted(Formatting.YELLOW));
-            });
+                    list_1.add(new TranslatableText("modifier." + id.getNamespace() + "." + id.getPath()));
+            }
         }
     }
 

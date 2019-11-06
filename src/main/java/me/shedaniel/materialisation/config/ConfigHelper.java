@@ -2,10 +2,7 @@ package me.shedaniel.materialisation.config;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import me.shedaniel.materialisation.Materialisation;
 import me.shedaniel.materialisation.api.*;
 import me.shedaniel.materialisation.config.MaterialisationConfig.ConfigIngredients;
@@ -14,10 +11,10 @@ import me.shedaniel.materialisation.modifiers.Modifiers;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
+import net.minecraft.util.registry.SimpleRegistry;
 
 import java.io.*;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -25,7 +22,7 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-public class ConfigHelper {
+public class ConfigHelper implements ModifierIngredientsHandler {
 
     public static final ExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "Materialisation"));
     public static final File CONFIG_DIRECTORY = new File(FabricLoader.getInstance().getConfigDirectory(), "materialisation");
@@ -33,6 +30,8 @@ public class ConfigHelper {
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     public static final Map<String, PartMaterial> MATERIAL_CACHE = new HashMap<>();
     private static final File OLD_MATERIALS_DIRECTORY = new File(CONFIG_DIRECTORY, "materials");
+    private static final List<JsonObject> MODIFIERS = Lists.newArrayList();
+    private static final Map<Modifier, List<BetterIngredient>> MODIFIER_LIST_MAP = Maps.newHashMap();
     public static boolean loading = false;
 
     public static void loadDefault() throws IOException {
@@ -45,28 +44,46 @@ public class ConfigHelper {
     public static void loadConfig() {
         loading = true;
         try {
+            Materialisation.modifiers = new SimpleRegistry<>();
+            MODIFIERS.clear();
+            MODIFIER_LIST_MAP.clear();
+            Modifiers.registerModifiers(new ConfigHelper());
+            for (Map.Entry<Modifier, List<BetterIngredient>> entry : MODIFIER_LIST_MAP.entrySet()) {
+                Identifier id = Materialisation.modifiers.getId(entry.getKey());
+                JsonObject object = new JsonObject();
+                object.addProperty("priority", 0d);
+                object.addProperty("modifier", id.toString());
+                JsonArray jsonArray = new JsonArray();
+                for (BetterIngredient ingredient : entry.getValue()) {
+                    jsonArray.add(GSON.toJsonTree(ingredient));
+                }
+                object.add("ingredients", jsonArray);
+                MODIFIERS.add(object);
+            }
             List<PartMaterial> defaultMaterials = Lists.newArrayList();
             List<MaterialsPack> defaultPacks = Lists.newArrayList();
             List<MaterialsPack> loadedPacks = Lists.newArrayList();
             List<Pair<ConfigPack, ConfigMaterial>> knownMaterials = Lists.newArrayList();
             List<JsonObject> overrides = Lists.newArrayList();
-            List<JsonObject> modifiers = Lists.newArrayList();
             MATERIAL_CACHE.clear();
             Modifiers.resetMap();
             PartMaterials.clearMaterials();
             try {
-                FabricLoader.getInstance().getEntrypoints("materialisation_default", DefaultMaterialSupplier.class).stream().forEach(supplier -> {
-                    try {
-                        defaultMaterials.addAll(supplier.getMaterials());
-                    } catch (Throwable throwable) {
-                        throwable.printStackTrace();
+                for (Object o : FabricLoader.getInstance().getEntrypoints("materialisation_default", Object.class)) {
+                    if (o instanceof DefaultMaterialSupplier) {
+                        DefaultMaterialSupplier supplier = (DefaultMaterialSupplier) o;
+                        try {
+                            defaultMaterials.addAll(supplier.getMaterials());
+                        } catch (Throwable throwable) {
+                            throwable.printStackTrace();
+                        }
+                        try {
+                            defaultPacks.addAll(supplier.getMaterialPacks());
+                        } catch (Throwable throwable) {
+                            throwable.printStackTrace();
+                        }
                     }
-                    try {
-                        defaultPacks.addAll(supplier.getMaterialPacks());
-                    } catch (Throwable throwable) {
-                        throwable.printStackTrace();
-                    }
-                });
+                }
                 for (MaterialsPack defaultPack : defaultPacks) {
                     ConfigPack pack = new ConfigPack(defaultPack.getConfigPackInfo(), Maps.newLinkedHashMap());
                     loadedPacks.add(pack);
@@ -95,7 +112,7 @@ public class ConfigHelper {
                                     overrides.add(object);
                                 } else if (type.equalsIgnoreCase("modifier")) {
                                     Materialisation.LOGGER.info("[Materialisation] Loading modifier file: " + file.getName());
-                                    modifiers.add(object);
+                                    MODIFIERS.add(object);
                                 } else {
                                     Materialisation.LOGGER.warn("[Materialisation] Cancelled loading unknown file: " + file.getName());
                                 }
@@ -128,7 +145,7 @@ public class ConfigHelper {
                                                         configPack.getOverrides().incrementAndGet();
                                                     } else if (type.equalsIgnoreCase("modifier")) {
                                                         Materialisation.LOGGER.info("[Materialisation] Loading modifier file: " + file.getName());
-                                                        modifiers.add(object);
+                                                        MODIFIERS.add(object);
                                                         configPack.getModifiers().incrementAndGet();
                                                     } else {
                                                         Materialisation.LOGGER.warn("[Materialisation] Cancelled loading unknown file: " + listFile.getName());
@@ -168,7 +185,7 @@ public class ConfigHelper {
                                                         configPack.getOverrides().incrementAndGet();
                                                     } else if (type.equalsIgnoreCase("modifier")) {
                                                         Materialisation.LOGGER.info("[Materialisation] Loading modifier file: " + file.getName());
-                                                        modifiers.add(object);
+                                                        MODIFIERS.add(object);
                                                         configPack.getModifiers().incrementAndGet();
                                                     } else {
                                                         Materialisation.LOGGER.warn("[Materialisation] Cancelled loading unknown file: " + zipEntry.getName());
@@ -203,7 +220,7 @@ public class ConfigHelper {
                                 String key = entry.getKey();
                                 boolean replaced = false;
                                 for (Field declaredField : ConfigMaterial.class.getDeclaredFields())
-                                    if (Modifier.isPublic(declaredField.getModifiers()) && !Modifier.isTransient(declaredField.getModifiers()))
+                                    if (java.lang.reflect.Modifier.isPublic(declaredField.getModifiers()) && !java.lang.reflect.Modifier.isTransient(declaredField.getModifiers()))
                                         if (declaredField.getName().equalsIgnoreCase(key)) {
                                             declaredField.setAccessible(true);
                                             declaredField.set(material, GSON.fromJson(entry.getValue(), Object.class));
@@ -217,8 +234,8 @@ public class ConfigHelper {
                         Materialisation.LOGGER.error("[Materialisation] Failed to load override.", e);
                     }
                 Comparator<JsonObject> comparingDouble = Comparator.comparingDouble(value -> value.has("priority") ? value.get("priority").getAsDouble() : 0d);
-                modifiers.sort(comparingDouble.reversed());
-                for (JsonObject modifier : modifiers) {
+                MODIFIERS.sort(comparingDouble.reversed());
+                for (JsonObject modifier : MODIFIERS) {
                     Identifier identifier = new Identifier(modifier.get("modifier").getAsString());
                     if (Modifiers.containsIngredientForModifier(identifier))
                         continue;
@@ -306,6 +323,13 @@ public class ConfigHelper {
         LinkedHashMap<BetterIngredient, Float> map = Maps.newLinkedHashMap();
         jsonObjects.forEach(configIngredients -> map.put(configIngredients.ingredient.toBetterIngredient(), configIngredients.multiplier));
         return map;
+    }
+
+    @Override
+    public void registerDefaultIngredient(Modifier modifier, BetterIngredient ingredient) {
+        if (!MODIFIER_LIST_MAP.containsKey(modifier))
+            MODIFIER_LIST_MAP.put(modifier, new ArrayList<>());
+        MODIFIER_LIST_MAP.get(modifier).add(ingredient);
     }
 
 }
