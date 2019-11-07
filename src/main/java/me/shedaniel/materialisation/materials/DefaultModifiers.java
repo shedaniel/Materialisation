@@ -1,10 +1,7 @@
 package me.shedaniel.materialisation.materials;
 
 import me.shedaniel.materialisation.Materialisation;
-import me.shedaniel.materialisation.api.BetterIngredient;
-import me.shedaniel.materialisation.api.DefaultModifiersSupplier;
-import me.shedaniel.materialisation.api.Modifier;
-import me.shedaniel.materialisation.api.ModifierIngredientsHandler;
+import me.shedaniel.materialisation.api.*;
 import me.shedaniel.materialisation.modifiers.DiamondModifier;
 import me.shedaniel.materialisation.modifiers.HasteModifier;
 import net.minecraft.item.Items;
@@ -29,7 +26,14 @@ public class DefaultModifiers implements DefaultModifiersSupplier {
 
     @Override
     public void registerIngredients(ModifierIngredientsHandler handler) {
-        handler.registerDefaultIngredient(HASTE, BetterIngredient.fromItem(Items.QUARTZ_BLOCK, 16));
-        handler.registerDefaultIngredient(DIAMOND, BetterIngredient.fromItem(Items.DIAMOND));
+        handler.registerDefaultIngredient(HASTE, ModifierIngredient.builder()
+                .registerIngredient(1, BetterIngredient.fromItem(Items.QUARTZ_BLOCK, 12))
+                .registerIngredient(2, BetterIngredient.fromItem(Items.QUARTZ_BLOCK, 16))
+                .registerIngredient(3, BetterIngredient.fromItem(Items.QUARTZ_BLOCK, 16))
+                .registerIngredient(4, BetterIngredient.fromItem(Items.QUARTZ_BLOCK, 32))
+                .build());
+        handler.registerDefaultIngredient(DIAMOND, ModifierIngredient.builder()
+                .registerBase(BetterIngredient.fromItem(Items.DIAMOND))
+                .build());
     }
 }

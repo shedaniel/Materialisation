@@ -32,10 +32,7 @@ public class MaterialisedPickaxeItem extends PickaxeItem implements Materialised
 
     public MaterialisedPickaxeItem(Settings settings) {
         super(MaterialisationUtils.DUMMY_MATERIAL, 0, -2.8F, settings.maxDamage(0));
-        addPropertyGetter(new Identifier(ModReference.MOD_ID, "handle_isbright"),
-                (itemStack, world, livingEntity) -> isHandleBright(itemStack) ? 1f : 0f);
-        addPropertyGetter(new Identifier(ModReference.MOD_ID, "pickaxe_head_isbright"),
-                (itemStack, world, livingEntity) -> isHeadBright(itemStack) ? 1f : 0f);
+        initProperty();
     }
 
     @Override

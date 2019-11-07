@@ -41,10 +41,7 @@ public class MaterialisedHammerItem extends PickaxeItem implements MaterialisedM
 
     public MaterialisedHammerItem(Settings settings) {
         super(MaterialisationUtils.DUMMY_MATERIAL, 0, -3.6F, settings.maxDamage(0));
-        addPropertyGetter(new Identifier(ModReference.MOD_ID, "handle_isbright"),
-                (itemStack, world, livingEntity) -> isHandleBright(itemStack) ? 1f : 0f);
-        addPropertyGetter(new Identifier(ModReference.MOD_ID, "hammer_head_isbright"),
-                (itemStack, world, livingEntity) -> isHeadBright(itemStack) ? 1f : 0f);
+        initProperty();
     }
 
     @Override

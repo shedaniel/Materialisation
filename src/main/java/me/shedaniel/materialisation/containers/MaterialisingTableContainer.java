@@ -5,9 +5,11 @@ import me.shedaniel.materialisation.Materialisation;
 import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.api.BetterIngredient;
 import me.shedaniel.materialisation.api.Modifier;
+import me.shedaniel.materialisation.api.ModifierIngredient;
 import me.shedaniel.materialisation.api.PartMaterial;
-import me.shedaniel.materialisation.items.*;
+import me.shedaniel.materialisation.items.MaterialisedMiningTool;
 import me.shedaniel.materialisation.modifiers.Modifiers;
+import me.shedaniel.rei.RoughlyEnoughItemsCore;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.minecraft.container.BlockContext;
 import net.minecraft.container.Container;
@@ -23,6 +25,7 @@ import net.minecraft.util.PacketByteBuf;
 import net.minecraft.util.Pair;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Map;
 import java.util.Optional;
 
 public class MaterialisingTableContainer extends Container {
@@ -115,24 +118,30 @@ public class MaterialisingTableContainer extends Container {
             this.result.setInvStack(0, ItemStack.EMPTY);
         } else if (first.getItem() instanceof MaterialisedMiningTool && first.getOrCreateTag().containsKey("mt_0_material") && first.getOrCreateTag().containsKey("mt_1_material")) {
             // Modifiers
-            if (!second.isEmpty() && Modifiers.isIngredient(second)) {
+            if (!second.isEmpty()) {
                 ItemStack copy = first.copy();
-                MaterialisedMiningTool tool = (MaterialisedMiningTool) copy.getItem();
-                Optional<Pair<Modifier, BetterIngredient>> modifierOptional = Modifiers.getModifierByIngredient(second);
-                if (modifierOptional.isPresent()) {
-                    Modifier modifier = modifierOptional.get().getLeft();
-                    int maximumLevel = modifier.getMaximumLevel(first);
-                    int level = tool.getModifierLevel(first, modifier);
-                    if (level + 1 <= maximumLevel) {
-                        nextDecrease = modifierOptional.get().getRight().count;
-                        tool.setModifierLevel(copy, modifier, level + 1);
-                        this.result.setInvStack(0, copy);
-                        this.sendContentUpdates();
-                        return;
-                    } else {
-                        this.result.setInvStack(0, ItemStack.EMPTY);
-                        this.sendContentUpdates();
-                        return;
+                Map<Modifier, Integer> modifierIntegerMap = MaterialisationUtils.getToolModifiers(copy);
+                for (Modifier modifier : Materialisation.modifiers) {
+                    Integer currentLevel = modifierIntegerMap.getOrDefault(modifier, 0);
+                    if (modifier.applies(copy) && modifier.getMaximumLevel(copy) > currentLevel) {
+                        int nextLevel = currentLevel + 1;
+                        Optional<Pair<Modifier, Pair<ModifierIngredient, BetterIngredient>>> modifierOptional = Modifiers.getModifierByIngredient(second, modifier, nextLevel);
+                        if (modifierOptional.isPresent()) {
+                            MaterialisedMiningTool tool = (MaterialisedMiningTool) copy.getItem();
+                            int maximumLevel = modifier.getMaximumLevel(first);
+                            int level = tool.getModifierLevel(first, modifier);
+                            if (level + 1 <= maximumLevel) {
+                                nextDecrease = modifierOptional.get().getRight().getRight().count;
+                                tool.setModifierLevel(copy, modifier, level + 1);
+                                this.result.setInvStack(0, copy);
+                                this.sendContentUpdates();
+                                return;
+                            } else {
+                                this.result.setInvStack(0, ItemStack.EMPTY);
+                                this.sendContentUpdates();
+                                return;
+                            }
+                        }
                     }
                 }
             }

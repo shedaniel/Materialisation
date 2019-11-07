@@ -1,10 +1,7 @@
 package me.shedaniel.materialisation.modifiers;
 
 import me.shedaniel.materialisation.Materialisation;
-import me.shedaniel.materialisation.api.BetterIngredient;
-import me.shedaniel.materialisation.api.DefaultModifiersSupplier;
-import me.shedaniel.materialisation.api.Modifier;
-import me.shedaniel.materialisation.api.ModifierIngredientsHandler;
+import me.shedaniel.materialisation.api.*;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
@@ -13,7 +10,7 @@ import net.minecraft.util.Pair;
 import java.util.*;
 
 public class Modifiers {
-    private static final Map<Modifier, List<BetterIngredient>> MODIFIER_MAP = new HashMap<>();
+    private static final Map<Modifier, List<ModifierIngredient>> MODIFIER_MAP = new HashMap<>();
 
     public static void registerModifiers(ModifierIngredientsHandler handler) {
         for (Object o : FabricLoader.getInstance().getEntrypoints("materialisation_default", Object.class)) {
@@ -40,17 +37,17 @@ public class Modifiers {
         return MODIFIER_MAP.containsKey(modifier.get());
     }
 
-    public static void registerIngredient(Identifier identifier, BetterIngredient betterIngredient) {
+    public static void registerIngredient(Identifier identifier, ModifierIngredient betterIngredient) {
         Optional<Modifier> modifier = Materialisation.modifiers.getOrEmpty(identifier);
         if (!modifier.isPresent())
             throw new NullPointerException("Invalid identifier for modifier: " + identifier);
-        List<BetterIngredient> list = MODIFIER_MAP.getOrDefault(modifier.get(), new ArrayList<>());
+        List<ModifierIngredient> list = MODIFIER_MAP.getOrDefault(modifier.get(), new ArrayList<>());
         list.add(betterIngredient);
         MODIFIER_MAP.put(modifier.get(), list);
     }
 
-    public static void registerIngredients(Identifier identifier, List<BetterIngredient> betterIngredients) {
-        for (BetterIngredient ingredient : betterIngredients) registerIngredient(identifier, ingredient);
+    public static void registerIngredients(Identifier identifier, List<ModifierIngredient> betterIngredients) {
+        for (ModifierIngredient ingredient : betterIngredients) registerIngredient(identifier, ingredient);
     }
 
     public static void fillEmpty() {
@@ -59,16 +56,16 @@ public class Modifiers {
         }
     }
 
-    public static boolean isIngredient(ItemStack itemStack) {
-        return getModifierByIngredient(itemStack).isPresent();
+    public static boolean isIngredient(ItemStack itemStack, Modifier modifier, int level) {
+        return getModifierByIngredient(itemStack, modifier, level).isPresent();
     }
 
-    public static Optional<Pair<Modifier, BetterIngredient>> getModifierByIngredient(ItemStack itemStack) {
-        for (Map.Entry<Modifier, List<BetterIngredient>> entry : MODIFIER_MAP.entrySet()) {
-            List<BetterIngredient> ingredientList = entry.getValue();
-            for (BetterIngredient ingredient : ingredientList) {
-                if (ingredient.isIncluded(itemStack)) {
-                    return Optional.of(new Pair<>(entry.getKey(), ingredient));
+    public static Optional<Pair<Modifier, Pair<ModifierIngredient, BetterIngredient>>> getModifierByIngredient(ItemStack itemStack, Modifier modifier, int level) {
+        List<ModifierIngredient> ingredientList = MODIFIER_MAP.get(modifier);
+        for (ModifierIngredient ingredient : ingredientList) {
+            for (BetterIngredient betterIngredient : ingredient.getIngredient(level)) {
+                if (betterIngredient.isIncluded(itemStack)) {
+                    return Optional.of(new Pair<>(modifier, new Pair<>(ingredient, betterIngredient)));
                 }
             }
         }

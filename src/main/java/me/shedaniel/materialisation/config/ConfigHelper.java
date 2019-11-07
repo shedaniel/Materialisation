@@ -31,7 +31,7 @@ public class ConfigHelper implements ModifierIngredientsHandler {
     public static final Map<String, PartMaterial> MATERIAL_CACHE = new HashMap<>();
     private static final File OLD_MATERIALS_DIRECTORY = new File(CONFIG_DIRECTORY, "materials");
     private static final List<JsonObject> MODIFIERS = Lists.newArrayList();
-    private static final Map<Modifier, List<BetterIngredient>> MODIFIER_LIST_MAP = Maps.newHashMap();
+    private static final Map<Modifier, List<ModifierIngredient>> MODIFIER_LIST_MAP = Maps.newHashMap();
     public static boolean loading = false;
 
     public static void loadDefault() throws IOException {
@@ -48,16 +48,22 @@ public class ConfigHelper implements ModifierIngredientsHandler {
             MODIFIERS.clear();
             MODIFIER_LIST_MAP.clear();
             Modifiers.registerModifiers(new ConfigHelper());
-            for (Map.Entry<Modifier, List<BetterIngredient>> entry : MODIFIER_LIST_MAP.entrySet()) {
+            for (Map.Entry<Modifier, List<ModifierIngredient>> entry : MODIFIER_LIST_MAP.entrySet()) {
                 Identifier id = Materialisation.modifiers.getId(entry.getKey());
                 JsonObject object = new JsonObject();
                 object.addProperty("priority", 0d);
                 object.addProperty("modifier", id.toString());
-                JsonArray jsonArray = new JsonArray();
-                for (BetterIngredient ingredient : entry.getValue()) {
-                    jsonArray.add(GSON.toJsonTree(ingredient));
+                JsonObject ingredients = new JsonObject();
+                for (ModifierIngredient ingredient : entry.getValue()) {
+                    for (Map.Entry<Integer, List<BetterIngredient>> ingredientEntry : ingredient.getIngredients().entrySet()) {
+                        JsonArray jsonArray = new JsonArray();
+                        for (BetterIngredient betterIngredient : ingredientEntry.getValue()) {
+                            jsonArray.add(GSON.toJsonTree(betterIngredient.toConfigIngredient()));
+                        }
+                        ingredients.add(ingredientEntry.getKey().toString(), jsonArray);
+                    }
                 }
-                object.add("ingredients", jsonArray);
+                object.add("ingredients", ingredients);
                 MODIFIERS.add(object);
             }
             List<PartMaterial> defaultMaterials = Lists.newArrayList();
@@ -239,10 +245,17 @@ public class ConfigHelper implements ModifierIngredientsHandler {
                     Identifier identifier = new Identifier(modifier.get("modifier").getAsString());
                     if (Modifiers.containsIngredientForModifier(identifier))
                         continue;
-                    List<BetterIngredient> ingredients = new ArrayList<>();
-                    for (JsonElement ingredient : modifier.get("ingredients").getAsJsonArray()) {
-                        MaterialisationConfig.ConfigIngredient configIngredient = GSON.fromJson(ingredient, MaterialisationConfig.ConfigIngredient.class);
-                        ingredients.add(configIngredient.toBetterIngredient());
+                    List<ModifierIngredient> ingredients = new ArrayList<>();
+                    for (Map.Entry<String, JsonElement> entry : modifier.get("ingredients").getAsJsonObject().entrySet()) {
+                        ModifierIngredient.Builder builder = ModifierIngredient.builder();
+                        int i = Integer.parseInt(entry.getKey());
+                        if (i <= 0) i = -1;
+                        List<BetterIngredient> list = new ArrayList<>();
+                        for (JsonElement element : entry.getValue().getAsJsonArray()) {
+                            list.add(GSON.fromJson(element, MaterialisationConfig.ConfigIngredient.class).toBetterIngredient());
+                        }
+                        builder.registerIngredient(i, list.toArray(new BetterIngredient[0]));
+                        ingredients.add(builder.build());
                     }
                     Modifiers.registerIngredients(identifier, ingredients);
                     Materialisation.LOGGER.info("[Materialisation] Loaded modifier ingredient for " + identifier.toString() + ".");
@@ -326,7 +339,7 @@ public class ConfigHelper implements ModifierIngredientsHandler {
     }
 
     @Override
-    public void registerDefaultIngredient(Modifier modifier, BetterIngredient ingredient) {
+    public void registerDefaultIngredient(Modifier modifier, ModifierIngredient ingredient) {
         if (!MODIFIER_LIST_MAP.containsKey(modifier))
             MODIFIER_LIST_MAP.put(modifier, new ArrayList<>());
         MODIFIER_LIST_MAP.get(modifier).add(ingredient);

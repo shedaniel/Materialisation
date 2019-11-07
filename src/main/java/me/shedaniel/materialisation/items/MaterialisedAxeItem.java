@@ -37,10 +37,7 @@ public class MaterialisedAxeItem extends AxeItem implements MaterialisedMiningTo
 
     public MaterialisedAxeItem(Settings settings) {
         super(MaterialisationUtils.DUMMY_MATERIAL, 0, -3.1F, settings.maxDamage(0));
-        addPropertyGetter(new Identifier(ModReference.MOD_ID, "handle_isbright"),
-                (itemStack, world, livingEntity) -> isHandleBright(itemStack) ? 1f : 0f);
-        addPropertyGetter(new Identifier(ModReference.MOD_ID, "axe_head_isbright"),
-                (itemStack, world, livingEntity) -> isHeadBright(itemStack) ? 1f : 0f);
+        initProperty();
     }
 
     @Override
