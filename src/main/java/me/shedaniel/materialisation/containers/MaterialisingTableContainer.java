@@ -3,10 +3,7 @@ package me.shedaniel.materialisation.containers;
 import io.netty.buffer.Unpooled;
 import me.shedaniel.materialisation.Materialisation;
 import me.shedaniel.materialisation.MaterialisationUtils;
-import me.shedaniel.materialisation.api.BetterIngredient;
-import me.shedaniel.materialisation.api.OldModifier;
-import me.shedaniel.materialisation.api.ModifierIngredient;
-import me.shedaniel.materialisation.api.PartMaterial;
+import me.shedaniel.materialisation.api.*;
 import me.shedaniel.materialisation.items.MaterialisedMiningTool;
 import me.shedaniel.materialisation.modifiers.Modifiers;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
@@ -119,15 +116,16 @@ public class MaterialisingTableContainer extends Container {
             // Modifiers
             if (!second.isEmpty()) {
                 ItemStack copy = first.copy();
-                Map<OldModifier, Integer> modifierIntegerMap = MaterialisationUtils.getToolModifiers(copy);
-                for (OldModifier modifier : Materialisation.MODIFIERS) {
+                Map<Modifier, Integer> modifierIntegerMap = MaterialisationUtils.getToolModifiers(copy);
+                for (Modifier modifier : Materialisation.MODIFIERS) {
                     Integer currentLevel = modifierIntegerMap.getOrDefault(modifier, 0);
-                    if (modifier.applies(copy) && modifier.getMaximumLevel(copy) > currentLevel) {
+                    if (modifier.isApplicableTo(copy) && modifier.getMaximalLevel(copy) > currentLevel) {
                         int nextLevel = currentLevel + 1;
-                        Optional<Pair<OldModifier, Pair<ModifierIngredient, BetterIngredient>>> modifierOptional = Modifiers.getModifierByIngredient(second, modifier, nextLevel);
+                        Optional<Pair<Modifier, Pair<ModifierIngredient, BetterIngredient>>> modifierOptional 
+                                = Modifiers.getModifierByIngredient(second, modifier, nextLevel);
                         if (modifierOptional.isPresent()) {
                             MaterialisedMiningTool tool = (MaterialisedMiningTool) copy.getItem();
-                            int maximumLevel = modifier.getMaximumLevel(first);
+                            int maximumLevel = modifier.getMaximalLevel(first);
                             int level = tool.getModifierLevel(first, modifier);
                             if (level + 1 <= maximumLevel) {
                                 nextDecrease = modifierOptional.get().getRight().getRight().count;

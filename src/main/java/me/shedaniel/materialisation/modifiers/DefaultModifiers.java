@@ -1,21 +1,42 @@
 package me.shedaniel.materialisation.modifiers;
 
+import com.google.common.collect.ImmutableList;
 import me.shedaniel.materialisation.Materialisation;
 import me.shedaniel.materialisation.api.*;
-import me.shedaniel.materialisation.modifiers.DiamondModifier;
-import me.shedaniel.materialisation.modifiers.HasteModifier;
 import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
 
-public class DefaultModifiers implements DefaultModifiersSupplier {
+import static me.shedaniel.materialisation.MaterialisationUtils.getBaseToolBreakingSpeed;
 
-    public static final OldModifier HASTE;
-    public static final OldModifier DIAMOND;
+public class DefaultModifiers implements DefaultModifiersSupplier {
+    public static final Modifier HASTE;
+    public static final Modifier DIAMOND;
 
     static {
-        HASTE = new HasteModifier();
-        DIAMOND = new DiamondModifier();
+        HASTE = new Modifier.Builder()
+                .applicableToolTypes(ImmutableList.copyOf(ToolType.MINING_TOOLS))
+                .durabilityMultiplier((tool, level) -> {
+                    double multiplier = 1;
+                    if (level >= 1) multiplier = .93;
+                    if (level >= 2) multiplier *= .87;
+                    if (level >= 3) multiplier *= .84;
+                    if (level >= 4) multiplier *= .79;
+                    if (level >= 5) multiplier *= Math.pow(.7, level - 4);
+                    return (float) MathHelper.ceil(multiplier);
+                })
+                .extraMiningSpeed((tool, level) -> {
+                    if (level <= 0)
+                        return 0;
+                    return (int) (level * 0.5 * getBaseToolBreakingSpeed(tool));
+                })
+                .build();
+        DIAMOND = new Modifier.Builder()
+                .applicableToolTypes(ImmutableList.copyOf(ToolType.MINING_TOOLS))
+                .durabilityMultiplier((tool, level) -> (float) Math.pow(0.9, level))
+                .extraMiningLevel(1)
+                .build();
     }
 
     @Override
