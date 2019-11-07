@@ -1,26 +1,26 @@
 package me.shedaniel.materialisation.api.modifier;
 
+import me.shedaniel.materialisation.Materialisation;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.SimpleRegistry;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class Modifiers {
     private static final Map<Item, Modifier> ITEM_TO_MODIFIER = new HashMap<>();
+    public static Registry<Modifier> modifiers = new SimpleRegistry();
     public static final Modifier DIAMOND;
 //    public static final Modifier EMERALD;
 //    public static final Modifier OBSIDIAN;
 
     static {
-        DIAMOND = register(Items.DIAMOND, new Modifier.Builder()
+        DIAMOND = Registry.register(Modifiers.modifiers, new Identifier(Materialisation.MOD_ID, "diamiond"), new Modifier.Builder()
                 .extraDurability(300)
                 .extraMiningLevel(1).build());
-    }
-
-    public static Modifier register(Item item, Modifier modifier) {
-        ITEM_TO_MODIFIER.putIfAbsent(item, modifier);
-        return modifier;
     }
 
     public static boolean isModifier(Item item) {

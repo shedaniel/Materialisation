@@ -13,6 +13,7 @@ public class ConfigPack implements MaterialsPack {
     private ConfigPackInfo configPackInfo;
     private Map<String, PartMaterial> materialMap;
     private AtomicInteger overrides = new AtomicInteger(0);
+    private AtomicInteger modifiers = new AtomicInteger(0);
 
     public ConfigPack(ConfigPackInfo configPackInfo, Map<String, PartMaterial> materialMap) {
         this.configPackInfo = configPackInfo;
@@ -26,6 +27,10 @@ public class ConfigPack implements MaterialsPack {
 
     public AtomicInteger getOverrides() {
         return overrides;
+    }
+
+    public AtomicInteger getModifiers() {
+        return modifiers;
     }
 
     @Override

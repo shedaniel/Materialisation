@@ -1,5 +1,6 @@
 package me.shedaniel.materialisation.api;
 
+import com.sun.istack.internal.NotNull;
 import me.shedaniel.materialisation.Materialisation;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -24,11 +25,32 @@ import java.util.List;
 import static me.shedaniel.materialisation.MaterialisationUtils.*;
 
 public interface MaterialisedMiningTool {
+    static float getExtraDamage(ToolType toolType) {
+        if (toolType == ToolType.SWORD)
+            return 4f;
+        if (toolType == ToolType.PICKAXE)
+            return 2f;
+        if (toolType == ToolType.AXE)
+            return 7f;
+        if (toolType == ToolType.MEGA_AXE)
+            return 10f;
+        if (toolType == ToolType.HAMMER)
+            return 9f;
+        if (toolType == ToolType.SHOVEL)
+            return 2.5f;
+        return 0f;
+    }
+
     default void init() {
         ((Item) this).addPropertyGetter(new Identifier(Materialisation.MOD_ID, "handle_isbright"),
                 (itemStack, world, livingEntity) -> isHandleBright(itemStack) ? 1f : 0f);
-        ((Item) this).addPropertyGetter(new Identifier(Materialisation.MOD_ID, "hammer_head_isbright"),
+        ((Item) this).addPropertyGetter(new Identifier(Materialisation.MOD_ID, "tool_head_isbright"),
                 (itemStack, world, livingEntity) -> isHeadBright(itemStack) ? 1f : 0f);
+    }
+
+    @NotNull
+    default ToolType getToolType() {
+        return ToolType.UNKNOWN;
     }
 
     float getToolBlockBreakingSpeed(ItemStack itemStack, BlockState state);
@@ -85,13 +107,13 @@ public interface MaterialisedMiningTool {
 
         if (toolDurability == 0) {
             tooltip.add(new TranslatableText("text.materialisation.broken"));
+        } else {
+            float percentage = toolDurability / (float) maxDurability * 100;
+            Formatting coloring = getDurabilityColoring(percentage);
+            tooltip.add(new TranslatableText("text.materialisation.durability",
+                    coloring.toString() + toolDurability,
+                    coloring.toString() + TWO_DECIMAL_FORMATTER.format(percentage) + Formatting.WHITE.toString()));
         }
-
-        float percentage = toolDurability / (float) maxDurability * 100;
-        Formatting coloring = getDurabilityColoring(percentage);
-        tooltip.add(new TranslatableText("text.materialisation.durability",
-                coloring.toString() + toolDurability,
-                coloring.toString() + TWO_DECIMAL_FORMATTER.format(percentage) + Formatting.WHITE.toString()));
 
         tooltip.add(new TranslatableText("text.materialisation.breaking_speed",
                 TWO_DECIMAL_FORMATTER.format(getToolBreakingSpeed(stack))));

@@ -16,14 +16,20 @@ public class MaterialisationConfig {
     public static class ConfigIngredient {
         public BetterIngredient.Type type;
         public String content;
+        public int count = 1;
 
         public ConfigIngredient(BetterIngredient.Type type, String content) {
+            this(type, content, 1)
+        }
+
+        public ConfigIngredient(BetterIngredient.Type type, String content, int count) {
             this.type = type;
             this.content = content;
+            this.count = count;
         }
 
         public BetterIngredient toBetterIngredient() {
-            return new BetterIngredient(type, content);
+            return new BetterIngredient(type, content, count);
         }
     }
 
