@@ -1,10 +1,10 @@
-package me.shedaniel.materialisation.materials.modifiers;
+package me.shedaniel.materialisation.modifiers;
 
-import me.shedaniel.materialisation.api.Modifier;
+import me.shedaniel.materialisation.api.OldModifier;
 import me.shedaniel.materialisation.items.MaterialisedMiningTool;
 import net.minecraft.item.ItemStack;
 
-public class DiamondModifier extends Modifier {
+public class DiamondModifier extends OldModifier {
     @Override
     public int getMaximumLevel(ItemStack stack, MaterialisedMiningTool tool) {
         switch (tool.getToolType()) {

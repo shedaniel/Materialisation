@@ -1,6 +1,6 @@
 package me.shedaniel.materialisation;
 
-import me.shedaniel.materialisation.api.Modifier;
+import me.shedaniel.materialisation.api.OldModifier;
 import me.shedaniel.materialisation.blocks.MaterialPreparerBlock;
 import me.shedaniel.materialisation.blocks.MaterialisingTableBlock;
 import me.shedaniel.materialisation.config.ConfigHelper;
@@ -59,7 +59,7 @@ public class Materialisation implements ModInitializer {
     public static final Item SWORD_BLADE_PATTERN = new PatternItem(new Item.Settings().group(ItemGroup.MATERIALS));
     public static final Item HAMMER_HEAD_PATTERN = new PatternItem(new Item.Settings().group(ItemGroup.MATERIALS));
     public static final Item MEGAAXE_HEAD_PATTERN = new PatternItem(new Item.Settings().group(ItemGroup.MATERIALS));
-    public static Registry<Modifier> modifiers = new SimpleRegistry();
+    public static final Registry<OldModifier> MODIFIERS = new SimpleRegistry();
     public static MaterialisationConfig config;
 
     public static <T> Optional<T> getReflectionField(Object parent, Class<T> clazz, int index) {

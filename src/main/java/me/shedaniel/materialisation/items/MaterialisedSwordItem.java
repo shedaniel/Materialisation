@@ -23,6 +23,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 import static me.shedaniel.materialisation.MaterialisationUtils.isHandleBright;
@@ -51,6 +52,7 @@ public class MaterialisedSwordItem extends SwordItem implements MaterialisedMini
         return -2.4f;
     }
 
+    @Nonnull
     @Override
     public ToolType getToolType() {
         return ToolType.SWORD;

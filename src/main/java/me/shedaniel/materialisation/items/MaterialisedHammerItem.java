@@ -31,6 +31,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RayTraceContext;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 import static me.shedaniel.materialisation.MaterialisationUtils.isHandleBright;
@@ -72,6 +73,7 @@ public class MaterialisedHammerItem extends PickaxeItem implements MaterialisedM
         return attackSpeed;
     }
 
+    @Nonnull
     @Override
     public ToolType getToolType() {
         return ToolType.HAMMER;
