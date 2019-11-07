@@ -1,4 +1,4 @@
-package me.shedaniel.materialisation.modifiers;
+package me.shedaniel.materialisation.materials.modifiers;
 
 import me.shedaniel.materialisation.api.Modifier;
 import me.shedaniel.materialisation.items.MaterialisedMiningTool;

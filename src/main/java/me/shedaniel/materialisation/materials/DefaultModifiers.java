@@ -2,8 +2,8 @@ package me.shedaniel.materialisation.materials;
 
 import me.shedaniel.materialisation.Materialisation;
 import me.shedaniel.materialisation.api.*;
-import me.shedaniel.materialisation.modifiers.DiamondModifier;
-import me.shedaniel.materialisation.modifiers.HasteModifier;
+import me.shedaniel.materialisation.materials.modifiers.DiamondModifier;
+import me.shedaniel.materialisation.materials.modifiers.HasteModifier;
 import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
