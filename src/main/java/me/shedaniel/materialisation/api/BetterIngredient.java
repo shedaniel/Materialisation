@@ -75,7 +75,7 @@ public class BetterIngredient {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || !(obj instanceof BetterIngredient))
+        if (!(obj instanceof BetterIngredient))
             return false;
         if (obj == this)
             return true;

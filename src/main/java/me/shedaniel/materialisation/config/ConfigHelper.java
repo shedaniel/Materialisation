@@ -31,7 +31,7 @@ public class ConfigHelper implements ModifierIngredientsHandler {
     public static final Map<String, PartMaterial> MATERIAL_CACHE = new HashMap<>();
     private static final File OLD_MATERIALS_DIRECTORY = new File(CONFIG_DIRECTORY, "materials");
     private static final List<JsonObject> MODIFIERS = Lists.newArrayList();
-    private static final Map<OldModifier, List<ModifierIngredient>> MODIFIER_LIST_MAP = Maps.newHashMap();
+    private static final Map<Modifier, List<ModifierIngredient>> MODIFIER_LIST_MAP = Maps.newHashMap();
     public static boolean loading = false;
 
     public static void loadDefault() throws IOException {
@@ -48,7 +48,7 @@ public class ConfigHelper implements ModifierIngredientsHandler {
             MODIFIERS.clear();
             MODIFIER_LIST_MAP.clear();
             Modifiers.registerModifiers(new ConfigHelper());
-            for (Map.Entry<OldModifier, List<ModifierIngredient>> entry : MODIFIER_LIST_MAP.entrySet()) {
+            for (Map.Entry<Modifier, List<ModifierIngredient>> entry : MODIFIER_LIST_MAP.entrySet()) {
                 Identifier id = Materialisation.MODIFIERS.getId(entry.getKey());
                 JsonObject object = new JsonObject();
                 object.addProperty("priority", 0d);
@@ -339,7 +339,7 @@ public class ConfigHelper implements ModifierIngredientsHandler {
     }
 
     @Override
-    public void registerDefaultIngredient(OldModifier modifier, ModifierIngredient ingredient) {
+    public void registerDefaultIngredient(Modifier modifier, ModifierIngredient ingredient) {
         if (!MODIFIER_LIST_MAP.containsKey(modifier))
             MODIFIER_LIST_MAP.put(modifier, new ArrayList<>());
         MODIFIER_LIST_MAP.get(modifier).add(ingredient);

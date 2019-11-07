@@ -3,7 +3,7 @@ package me.shedaniel.materialisation.items;
 import me.shedaniel.materialisation.Materialisation;
 import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.ModReference;
-import me.shedaniel.materialisation.api.OldModifier;
+import me.shedaniel.materialisation.api.Modifier;
 import me.shedaniel.materialisation.api.ToolType;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.Item;
@@ -61,14 +61,14 @@ public interface MaterialisedMiningTool {
         return ToolType.UNKNOWN;
     }
 
-    default void setModifierLevel(ItemStack stack, OldModifier modifier, int level) {
+    default void setModifierLevel(ItemStack stack, Modifier modifier, int level) {
         Identifier id = Materialisation.MODIFIERS.getId(modifier);
         if (id == null)
             return;
         setModifierLevel(stack, id, level);
     }
 
-    default int getModifierLevel(ItemStack stack, OldModifier modifier) {
+    default int getModifierLevel(ItemStack stack, Modifier modifier) {
         Identifier id = Materialisation.MODIFIERS.getId(modifier);
         if (id == null)
             return 0;
