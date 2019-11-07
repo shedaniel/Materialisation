@@ -25,6 +25,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Set;
 
@@ -51,6 +52,7 @@ public class MaterialisedAxeItem extends AxeItem implements MaterialisedMiningTo
         return attackSpeed;
     }
 
+    @Nonnull
     @Override
     public ToolType getToolType() {
         return ToolType.AXE;

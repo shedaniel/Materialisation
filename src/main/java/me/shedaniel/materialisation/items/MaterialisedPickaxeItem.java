@@ -23,6 +23,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 import static me.shedaniel.materialisation.MaterialisationUtils.isHandleBright;
@@ -63,6 +64,7 @@ public class MaterialisedPickaxeItem extends PickaxeItem implements Materialised
         return attackSpeed;
     }
 
+    @Nonnull
     @Override
     public ToolType getToolType() {
         return ToolType.PICKAXE;

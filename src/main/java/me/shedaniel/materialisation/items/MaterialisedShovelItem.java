@@ -23,6 +23,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class MaterialisedShovelItem extends ShovelItem implements MaterialisedMiningTool {
@@ -66,6 +67,7 @@ public class MaterialisedShovelItem extends ShovelItem implements MaterialisedMi
         return attackSpeed;
     }
 
+    @Nonnull
     @Override
     public ToolType getToolType() {
         return ToolType.SHOVEL;

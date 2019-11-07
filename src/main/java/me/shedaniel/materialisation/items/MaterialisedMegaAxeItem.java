@@ -28,6 +28,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -126,6 +127,7 @@ public class MaterialisedMegaAxeItem extends AxeItem implements MaterialisedMini
         return attackSpeed;
     }
 
+    @Nonnull
     @Override
     public ToolType getToolType() {
         return ToolType.MEGA_AXE;

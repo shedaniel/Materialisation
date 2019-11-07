@@ -4,12 +4,11 @@ import io.netty.buffer.Unpooled;
 import me.shedaniel.materialisation.Materialisation;
 import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.api.BetterIngredient;
-import me.shedaniel.materialisation.api.Modifier;
+import me.shedaniel.materialisation.api.OldModifier;
 import me.shedaniel.materialisation.api.ModifierIngredient;
 import me.shedaniel.materialisation.api.PartMaterial;
 import me.shedaniel.materialisation.items.MaterialisedMiningTool;
 import me.shedaniel.materialisation.modifiers.Modifiers;
-import me.shedaniel.rei.RoughlyEnoughItemsCore;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.minecraft.container.BlockContext;
 import net.minecraft.container.Container;
@@ -120,12 +119,12 @@ public class MaterialisingTableContainer extends Container {
             // Modifiers
             if (!second.isEmpty()) {
                 ItemStack copy = first.copy();
-                Map<Modifier, Integer> modifierIntegerMap = MaterialisationUtils.getToolModifiers(copy);
-                for (Modifier modifier : Materialisation.modifiers) {
+                Map<OldModifier, Integer> modifierIntegerMap = MaterialisationUtils.getToolModifiers(copy);
+                for (OldModifier modifier : Materialisation.MODIFIERS) {
                     Integer currentLevel = modifierIntegerMap.getOrDefault(modifier, 0);
                     if (modifier.applies(copy) && modifier.getMaximumLevel(copy) > currentLevel) {
                         int nextLevel = currentLevel + 1;
-                        Optional<Pair<Modifier, Pair<ModifierIngredient, BetterIngredient>>> modifierOptional = Modifiers.getModifierByIngredient(second, modifier, nextLevel);
+                        Optional<Pair<OldModifier, Pair<ModifierIngredient, BetterIngredient>>> modifierOptional = Modifiers.getModifierByIngredient(second, modifier, nextLevel);
                         if (modifierOptional.isPresent()) {
                             MaterialisedMiningTool tool = (MaterialisedMiningTool) copy.getItem();
                             int maximumLevel = modifier.getMaximumLevel(first);

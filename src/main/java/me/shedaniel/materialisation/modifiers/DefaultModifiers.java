@@ -1,17 +1,17 @@
-package me.shedaniel.materialisation.materials;
+package me.shedaniel.materialisation.modifiers;
 
 import me.shedaniel.materialisation.Materialisation;
 import me.shedaniel.materialisation.api.*;
-import me.shedaniel.materialisation.materials.modifiers.DiamondModifier;
-import me.shedaniel.materialisation.materials.modifiers.HasteModifier;
+import me.shedaniel.materialisation.modifiers.DiamondModifier;
+import me.shedaniel.materialisation.modifiers.HasteModifier;
 import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 public class DefaultModifiers implements DefaultModifiersSupplier {
 
-    public static final Modifier HASTE;
-    public static final Modifier DIAMOND;
+    public static final OldModifier HASTE;
+    public static final OldModifier DIAMOND;
 
     static {
         HASTE = new HasteModifier();
@@ -20,8 +20,8 @@ public class DefaultModifiers implements DefaultModifiersSupplier {
 
     @Override
     public void registerModifiers() {
-        Registry.register(Materialisation.modifiers, new Identifier("materialisation", "haste"), HASTE);
-        Registry.register(Materialisation.modifiers, new Identifier("materialisation", "diamond"), DIAMOND);
+        Registry.register(Materialisation.MODIFIERS, new Identifier("materialisation", "haste"), HASTE);
+        Registry.register(Materialisation.MODIFIERS, new Identifier("materialisation", "diamond"), DIAMOND);
     }
 
     @Override
