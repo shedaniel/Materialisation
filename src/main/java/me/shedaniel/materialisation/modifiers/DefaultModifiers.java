@@ -18,23 +18,18 @@ public class DefaultModifiers implements DefaultModifiersSupplier {
         HASTE = new Modifier.Builder()
                 .applicableToolTypes(ImmutableList.copyOf(ToolType.MINING_TOOLS))
                 .durabilityMultiplier((tool, level) -> {
-                    double multiplier = 1;
-                    if (level >= 1) multiplier = .93;
-                    if (level >= 2) multiplier *= .87;
-                    if (level >= 3) multiplier *= .84;
-                    if (level >= 4) multiplier *= .79;
-                    if (level >= 5) multiplier *= Math.pow(.7, level - 4);
-                    return (float) MathHelper.ceil(multiplier);
+                    float multiplier = 1;
+                    if (level >= 1) multiplier *= 0.93;
+                    if (level >= 2) multiplier *= 0.87;
+                    if (level >= 3) multiplier *= 0.84;
+                    return multiplier;
                 })
-                .extraMiningSpeed((tool, level) -> {
-                    if (level <= 0)
-                        return 0;
-                    return (int) (level * 0.5 * getBaseToolBreakingSpeed(tool));
-                })
+                .extraMiningSpeed((tool, level) -> (level <= 0) ? 0 : (int) (level * 0.5 * getBaseToolBreakingSpeed(tool)))
                 .build();
         DIAMOND = new Modifier.Builder()
                 .applicableToolTypes(ImmutableList.copyOf(ToolType.MINING_TOOLS))
-                .durabilityMultiplier((tool, level) -> (float) Math.pow(0.9, level))
+                .maximalLevel(1)
+                .durabilityMultiplier(0.9f)
                 .extraMiningLevel(1)
                 .build();
     }

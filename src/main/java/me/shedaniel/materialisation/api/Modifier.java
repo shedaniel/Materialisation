@@ -134,7 +134,7 @@ public class Modifier {
     }
 
     public static class Builder {
-        private BiFunction<ItemStack, Integer, Integer> durabilityCost = (tool, level) -> 50;
+        private BiFunction<ItemStack, Integer, Integer> durabilityCost = (tool, level) -> 0;
         private BiFunction<ItemStack, Integer, ImmutableList<ToolType>> applicableToolTypes = (tool, level) -> ImmutableList.copyOf(ToolType.values());
         private BiFunction<ItemStack, Integer, Integer> maximalLevel = (tool, level) -> 3;
         private BiFunction<ItemStack, Integer, Integer> extraMiningSpeed = (tool, level) -> 0;

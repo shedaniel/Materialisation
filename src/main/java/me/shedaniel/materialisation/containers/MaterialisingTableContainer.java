@@ -3,7 +3,10 @@ package me.shedaniel.materialisation.containers;
 import io.netty.buffer.Unpooled;
 import me.shedaniel.materialisation.Materialisation;
 import me.shedaniel.materialisation.MaterialisationUtils;
-import me.shedaniel.materialisation.api.*;
+import me.shedaniel.materialisation.api.BetterIngredient;
+import me.shedaniel.materialisation.api.Modifier;
+import me.shedaniel.materialisation.api.ModifierIngredient;
+import me.shedaniel.materialisation.api.PartMaterial;
 import me.shedaniel.materialisation.items.MaterialisedMiningTool;
 import me.shedaniel.materialisation.modifiers.Modifiers;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
@@ -82,7 +85,7 @@ public class MaterialisingTableContainer extends Container {
     @Override
     public boolean canUse(PlayerEntity playerEntity) {
         return this.context.run((world, blockPos) -> {
-            return world.getBlockState(blockPos).getBlock() != Materialisation.MATERIALISING_TABLE ? false : playerEntity.squaredDistanceTo(blockPos.getX() + .5D, blockPos.getY() + .5D, blockPos.getZ() + .5D) < 64D;
+            return world.getBlockState(blockPos).getBlock() == Materialisation.MATERIALISING_TABLE && playerEntity.squaredDistanceTo(blockPos.getX() + .5D, blockPos.getY() + .5D, blockPos.getZ() + .5D) < 64D;
         }, true);
     }
 
@@ -112,7 +115,10 @@ public class MaterialisingTableContainer extends Container {
         ItemStack second = this.main.getInvStack(1);
         if (first.isEmpty()) {
             this.result.setInvStack(0, ItemStack.EMPTY);
-        } else if (first.getItem() instanceof MaterialisedMiningTool && first.getOrCreateTag().containsKey("mt_0_material") && first.getOrCreateTag().containsKey("mt_1_material")) {
+        } else if (first.getItem() instanceof MaterialisedMiningTool
+                && first.getOrCreateTag().containsKey("mt_0_material")
+                && first.getOrCreateTag().containsKey("mt_1_material")
+        ) {
             // Modifiers
             if (!second.isEmpty()) {
                 ItemStack copy = first.copy();
@@ -121,7 +127,7 @@ public class MaterialisingTableContainer extends Container {
                     Integer currentLevel = modifierIntegerMap.getOrDefault(modifier, 0);
                     if (modifier.isApplicableTo(copy) && modifier.getMaximalLevel(copy) > currentLevel) {
                         int nextLevel = currentLevel + 1;
-                        Optional<Pair<Modifier, Pair<ModifierIngredient, BetterIngredient>>> modifierOptional 
+                        Optional<Pair<Modifier, Pair<ModifierIngredient, BetterIngredient>>> modifierOptional
                                 = Modifiers.getModifierByIngredient(second, modifier, nextLevel);
                         if (modifierOptional.isPresent()) {
                             MaterialisedMiningTool tool = (MaterialisedMiningTool) copy.getItem();
@@ -142,6 +148,8 @@ public class MaterialisingTableContainer extends Container {
                     }
                 }
             }
+
+
 
             // Fixing Special
             ItemStack copy = first.copy();
@@ -340,7 +348,7 @@ public class MaterialisingTableContainer extends Container {
     @Override
     public ItemStack transferSlot(PlayerEntity playerEntity_1, int int_1) {
         ItemStack itemStack_1 = ItemStack.EMPTY;
-        Slot slot_1 = (Slot) this.slotList.get(int_1);
+        Slot slot_1 = this.slotList.get(int_1);
         if (slot_1 != null && slot_1.hasStack()) {
             ItemStack itemStack_2 = slot_1.getStack();
             itemStack_1 = itemStack_2.copy();
