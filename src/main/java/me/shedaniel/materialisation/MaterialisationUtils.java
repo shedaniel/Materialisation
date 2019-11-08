@@ -182,7 +182,7 @@ public class MaterialisationUtils {
             return 1;
         CompoundTag tag = stack.getTag();
         if (tag.containsKey("mt_durability"))
-            return Math.min(stack.getTag().getInt("mt_durability"), getToolMaxDurability(stack));
+            return Math.min(tag.getInt("mt_durability"), getToolMaxDurability(stack));
         return getToolMaxDurability(stack);
     }
 
@@ -196,14 +196,22 @@ public class MaterialisationUtils {
         CompoundTag tag = stack.getTag();
         if (tag.containsKey("mt_0_material") && tag.containsKey("mt_1_material"))
             if (tag.containsKey("mt_0_material") && tag.containsKey("mt_1_material")) {
-                int max = MathHelper.floor(getMatFromString(tag.getString("mt_0_material")).map(PartMaterial::getDurabilityMultiplier).orElse(0d) * getMatFromString(tag.getString("mt_1_material")).map(PartMaterial::getToolDurability).orElse(0));
+                double multiplier = getMatFromString(tag.getString("mt_0_material"))
+                        .map(PartMaterial::getDurabilityMultiplier).orElse(0d);
+                int durability = getMatFromString(tag.getString("mt_1_material"))
+                        .map(PartMaterial::getToolDurability).orElse(0);
+                durability = MathHelper.floor(multiplier * durability);
+
                 if (modifiers) {
                     for (Map.Entry<Modifier, Integer> entry : getToolModifiers(stack).entrySet()) {
-                        max -= entry.getKey().getDurabilityCost(stack, entry.getValue());
-                        max *= entry.getKey().getDurabilityMultiplier(stack, entry.getValue());
+                        durability *= entry.getKey().getDurabilityMultiplier(stack, entry.getValue());
+//                        System.out.println("LVL " + entry.getValue() + " MULTIPL " + entry.getKey().getDurabilityMultiplier(stack, entry.getValue()));
+                        durability -= entry.getKey().getDurabilityCost(stack, entry.getValue()) * entry.getValue();
+
                     }
                 }
-                return max;
+
+                return durability;
             }
         return 1;
     }
