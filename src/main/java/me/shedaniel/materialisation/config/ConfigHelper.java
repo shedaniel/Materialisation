@@ -8,10 +8,10 @@ import me.shedaniel.materialisation.api.*;
 import me.shedaniel.materialisation.config.MaterialisationConfig.ConfigIngredients;
 import me.shedaniel.materialisation.config.MaterialisationConfig.ConfigMaterial;
 import me.shedaniel.materialisation.modifiers.Modifiers;
+import me.shedaniel.materialisation.utils.ResettableSimpleRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
-import net.minecraft.util.registry.SimpleRegistry;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -44,10 +44,12 @@ public class ConfigHelper implements ModifierIngredientsHandler {
     public static void loadConfig() {
         loading = true;
         try {
-            Materialisation.MODIFIERS = new SimpleRegistry<>();
+            ((ResettableSimpleRegistry) Materialisation.MODIFIERS).reset();
             MODIFIERS.clear();
             MODIFIER_LIST_MAP.clear();
             Modifiers.registerModifiers(new ConfigHelper());
+            Materialisation.LOGGER.info("[Materialisation] Loaded " + Materialisation.MODIFIERS.getIds().size() + " modifiers: " +
+                    Materialisation.MODIFIERS.getIds().stream().map(Identifier::toString).collect(Collectors.joining(", ")));
             for (Map.Entry<Modifier, List<ModifierIngredient>> entry : MODIFIER_LIST_MAP.entrySet()) {
                 Identifier id = Materialisation.MODIFIERS.getId(entry.getKey());
                 JsonObject object = new JsonObject();

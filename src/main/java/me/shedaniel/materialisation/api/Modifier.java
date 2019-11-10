@@ -1,142 +1,181 @@
 package me.shedaniel.materialisation.api;
 
 import com.google.common.collect.ImmutableList;
-import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.items.MaterialisedMiningTool;
 import net.minecraft.item.ItemStack;
 
 import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
-public class Modifier {
-    private final BiFunction<ItemStack, Integer, Integer> durabilityCost;
-    private final BiFunction<ItemStack, Integer, ImmutableList<ToolType>> applicableToolTypes;
-    private final BiFunction<ItemStack, Integer, Integer> maximalLevel;
-    private final BiFunction<ItemStack, Integer, Integer> extraMiningSpeed;
-    private final BiFunction<ItemStack, Integer, Integer> extraAttackDamage;
-    private final BiFunction<ItemStack, Integer, Integer> extraMiningLevel;
-    private final BiFunction<ItemStack, Integer, Integer> extraEnchantability;
-    private final BiFunction<ItemStack, Integer, Float> durabilityMultiplier;
-    private final BiFunction<ItemStack, Integer, Float> miningSpeedMultiplier;
-    private final BiFunction<ItemStack, Integer, Float> attackDamageMultiplier;
+public interface Modifier {
 
-    public Modifier(
-            BiFunction<ItemStack, Integer, Integer> durabilityCost,
-            BiFunction<ItemStack, Integer, ImmutableList<ToolType>> applicableToolTypes,
-            BiFunction<ItemStack, Integer, Integer> maximalLevel,
-            BiFunction<ItemStack, Integer, Integer> extraMiningSpeed,
-            BiFunction<ItemStack, Integer, Integer> extraAttackDamage,
-            BiFunction<ItemStack, Integer, Integer> extraMiningLevel,
-            BiFunction<ItemStack, Integer, Integer> extraEnchantability,
-            BiFunction<ItemStack, Integer, Float> durabilityMultiplier,
-            BiFunction<ItemStack, Integer, Float> miningSpeedMultiplier,
-            BiFunction<ItemStack, Integer, Float> attackDamageMultiplier
-    ) {
-        this.durabilityCost = durabilityCost;
-        this.applicableToolTypes = applicableToolTypes;
-        this.maximalLevel = maximalLevel;
-        this.extraMiningSpeed = extraMiningSpeed;
-        this.extraAttackDamage = extraAttackDamage;
-        this.extraMiningLevel = extraMiningLevel;
-        this.extraEnchantability = extraEnchantability;
-        this.durabilityMultiplier = durabilityMultiplier;
-        this.miningSpeedMultiplier = miningSpeedMultiplier;
-        this.attackDamageMultiplier = attackDamageMultiplier;
+    static Builder builder() {
+        return new Builder();
     }
 
-    public boolean isApplicableTo(ItemStack tool, int level) {
-        return getApplicableToolTypes(tool, level).contains(((MaterialisedMiningTool) tool.getItem()).getToolType())
-                && MaterialisationUtils.getToolMaxDurability(tool) > getDurabilityCost(tool, level);
+    default boolean isApplicableTo(ItemStack tool) {
+        return tool.getItem() instanceof MaterialisedMiningTool && getMaximumLevel(tool) > 0;
     }
 
-    public int getDurabilityCost(ItemStack tool, int level) {
-        return durabilityCost.apply(tool, level);
+    default int getDurabilityCost(ItemStack tool, int level) {
+        return 0;
     }
 
-    public ImmutableList<ToolType> getApplicableToolTypes(ItemStack tool, int level) {
-        return applicableToolTypes.apply(tool, level);
+    default int getMaximumLevel(ItemStack tool) {
+        return 0;
     }
 
-    public int getMaximalLevel(ItemStack tool, int level) {
-        return maximalLevel.apply(tool, level);
+    default int getExtraMiningSpeed(ItemStack tool, int level) {
+        return 0;
     }
 
-    public int getExtraMiningSpeed(ItemStack tool, int level) {
-        return extraMiningSpeed.apply(tool, level);
+    default int getExtraAttackDamage(ItemStack tool, int level) {
+        return 0;
     }
 
-    public int getExtraAttackDamage(ItemStack tool, int level) {
-        return extraAttackDamage.apply(tool, level);
+    default int getExtraMiningLevel(ItemStack tool, int level) {
+        return 0;
     }
 
-    public int getExtraMiningLevel(ItemStack tool, int level) {
-        return extraMiningLevel.apply(tool, level);
+    default int getExtraEnchantability(ItemStack tool, int level) {
+        return 0;
     }
 
-    public int getExtraEnchantability(ItemStack tool, int level) {
-        return extraEnchantability.apply(tool, level);
+    default float getDurabilityMultiplier(ItemStack tool, int level) {
+        return 1f;
     }
 
-    public float getDurabilityMultiplier(ItemStack tool, int level) {
-        return durabilityMultiplier.apply(tool, level);
+    default float getMiningSpeedMultiplier(ItemStack tool, int level) {
+        return 1f;
     }
 
-    public float getMiningSpeedMultiplier(ItemStack tool, int level) {
-        return miningSpeedMultiplier.apply(tool, level);
+    default float getAttackDamageMultiplier(ItemStack tool, int level) {
+        return 1f;
     }
 
-    public float getAttackDamageMultiplier(ItemStack tool, int level) {
-        return attackDamageMultiplier.apply(tool, level);
+    default ImmutableList<ToolType> getApplicableToolTypes() {
+        return ImmutableList.of();
     }
 
-    public boolean isApplicableTo(ItemStack tool) {
-        return getApplicableToolTypes(tool, 0).contains(((MaterialisedMiningTool) tool.getItem()).getToolType())
-                && MaterialisationUtils.getToolMaxDurability(tool) > getDurabilityCost(tool, 0);
-    }
+    public static class ModifierImpl implements Modifier {
+        private final BiFunction<ItemStack, Integer, Integer> durabilityCost;
+        private final Supplier<ImmutableList<ToolType>> applicableToolTypes;
+        private final Function<ToolType, Integer> maximumLevel;
+        private final BiFunction<ItemStack, Integer, Integer> extraMiningSpeed;
+        private final BiFunction<ItemStack, Integer, Integer> extraAttackDamage;
+        private final BiFunction<ItemStack, Integer, Integer> extraMiningLevel;
+        private final BiFunction<ItemStack, Integer, Integer> extraEnchantability;
+        private final BiFunction<ItemStack, Integer, Float> durabilityMultiplier;
+        private final BiFunction<ItemStack, Integer, Float> miningSpeedMultiplier;
+        private final BiFunction<ItemStack, Integer, Float> attackDamageMultiplier;
 
-    public int getDurabilityCost(ItemStack tool) {
-        return durabilityCost.apply(tool, 0);
-    }
+        private ModifierImpl(
+                BiFunction<ItemStack, Integer, Integer> durabilityCost,
+                Supplier<ImmutableList<ToolType>> applicableToolTypes,
+                Function<ToolType, Integer> maximumLevel,
+                BiFunction<ItemStack, Integer, Integer> extraMiningSpeed,
+                BiFunction<ItemStack, Integer, Integer> extraAttackDamage,
+                BiFunction<ItemStack, Integer, Integer> extraMiningLevel,
+                BiFunction<ItemStack, Integer, Integer> extraEnchantability,
+                BiFunction<ItemStack, Integer, Float> durabilityMultiplier,
+                BiFunction<ItemStack, Integer, Float> miningSpeedMultiplier,
+                BiFunction<ItemStack, Integer, Float> attackDamageMultiplier
+        ) {
+            this.durabilityCost = durabilityCost;
+            this.applicableToolTypes = applicableToolTypes;
+            this.maximumLevel = maximumLevel;
+            this.extraMiningSpeed = extraMiningSpeed;
+            this.extraAttackDamage = extraAttackDamage;
+            this.extraMiningLevel = extraMiningLevel;
+            this.extraEnchantability = extraEnchantability;
+            this.durabilityMultiplier = durabilityMultiplier;
+            this.miningSpeedMultiplier = miningSpeedMultiplier;
+            this.attackDamageMultiplier = attackDamageMultiplier;
+        }
 
-    public ImmutableList<ToolType> getApplicableToolTypes(ItemStack tool) {
-        return applicableToolTypes.apply(tool, 0);
-    }
+        private static Modifier create(
+                BiFunction<ItemStack, Integer, Integer> durabilityCost,
+                Supplier<ImmutableList<ToolType>> applicableToolTypes,
+                Function<ToolType, Integer> maximumLevel,
+                BiFunction<ItemStack, Integer, Integer> extraMiningSpeed,
+                BiFunction<ItemStack, Integer, Integer> extraAttackDamage,
+                BiFunction<ItemStack, Integer, Integer> extraMiningLevel,
+                BiFunction<ItemStack, Integer, Integer> extraEnchantability,
+                BiFunction<ItemStack, Integer, Float> durabilityMultiplier,
+                BiFunction<ItemStack, Integer, Float> miningSpeedMultiplier,
+                BiFunction<ItemStack, Integer, Float> attackDamageMultiplier
+        ) {
+            return new ModifierImpl(
+                    durabilityCost,
+                    applicableToolTypes,
+                    maximumLevel,
+                    extraMiningSpeed,
+                    extraAttackDamage,
+                    extraMiningLevel,
+                    extraEnchantability,
+                    durabilityMultiplier,
+                    miningSpeedMultiplier,
+                    attackDamageMultiplier
+            );
+        }
 
-    public int getMaximalLevel(ItemStack tool) {
-        return maximalLevel.apply(tool, 0);
-    }
+        @Override
+        public int getDurabilityCost(ItemStack tool, int level) {
+            return durabilityCost.apply(tool, level);
+        }
 
-    public int getExtraMiningSpeed(ItemStack tool) {
-        return extraMiningSpeed.apply(tool, 0);
-    }
+        @Override
+        public int getMaximumLevel(ItemStack tool) {
+            return tool.getItem() instanceof MaterialisedMiningTool && getApplicableToolTypes().contains(((MaterialisedMiningTool) tool.getItem()).getToolType()) ?
+                    maximumLevel.apply(((MaterialisedMiningTool) tool.getItem()).getToolType()) : 0;
+        }
 
-    public int getExtraAttackDamage(ItemStack tool) {
-        return extraAttackDamage.apply(tool, 0);
-    }
+        @Override
+        public int getExtraMiningSpeed(ItemStack tool, int level) {
+            return extraMiningSpeed.apply(tool, level);
+        }
 
-    public int getExtraMiningLevel(ItemStack tool) {
-        return extraMiningLevel.apply(tool, 0);
-    }
+        @Override
+        public int getExtraAttackDamage(ItemStack tool, int level) {
+            return extraAttackDamage.apply(tool, level);
+        }
 
-    public int getExtraEnchantability(ItemStack tool) {
-        return extraEnchantability.apply(tool, 0);
-    }
+        @Override
+        public int getExtraMiningLevel(ItemStack tool, int level) {
+            return extraMiningLevel.apply(tool, level);
+        }
 
-    public float getDurabilityMultiplier(ItemStack tool) {
-        return durabilityMultiplier.apply(tool, 0);
-    }
+        @Override
+        public int getExtraEnchantability(ItemStack tool, int level) {
+            return extraEnchantability.apply(tool, level);
+        }
 
-    public float getMiningSpeedMultiplier(ItemStack tool) {
-        return miningSpeedMultiplier.apply(tool, 0);
-    }
+        @Override
+        public float getDurabilityMultiplier(ItemStack tool, int level) {
+            return durabilityMultiplier.apply(tool, level);
+        }
 
-    public float getAttackDamageMultiplier(ItemStack tool) {
-        return attackDamageMultiplier.apply(tool, 0);
+        @Override
+        public float getMiningSpeedMultiplier(ItemStack tool, int level) {
+            return miningSpeedMultiplier.apply(tool, level);
+        }
+
+        @Override
+        public float getAttackDamageMultiplier(ItemStack tool, int level) {
+            return attackDamageMultiplier.apply(tool, level);
+        }
+
+        @Override
+        public ImmutableList<ToolType> getApplicableToolTypes() {
+            return applicableToolTypes.get();
+        }
     }
 
     public static class Builder {
         private BiFunction<ItemStack, Integer, Integer> durabilityCost = (tool, level) -> 0;
-        private BiFunction<ItemStack, Integer, ImmutableList<ToolType>> applicableToolTypes = (tool, level) -> ImmutableList.copyOf(ToolType.values());
-        private BiFunction<ItemStack, Integer, Integer> maximalLevel = (tool, level) -> 3;
+        private Supplier<ImmutableList<ToolType>> applicableToolTypes = () -> ImmutableList.of();
+        private Function<ToolType, Integer> maximumLevel = (type) -> 0;
         private BiFunction<ItemStack, Integer, Integer> extraMiningSpeed = (tool, level) -> 0;
         private BiFunction<ItemStack, Integer, Integer> extraAttackDamage = (tool, level) -> 0;
         private BiFunction<ItemStack, Integer, Integer> extraMiningLevel = (tool, level) -> 0;
@@ -145,11 +184,14 @@ public class Modifier {
         private BiFunction<ItemStack, Integer, Float> miningSpeedMultiplier = (tool, level) -> 1f;
         private BiFunction<ItemStack, Integer, Float> attackDamageMultiplier = (tool, level) -> 1f;
 
+        private Builder() {
+        }
+
         public Modifier build() {
-            return new Modifier(
+            return ModifierImpl.create(
                     durabilityCost,
                     applicableToolTypes,
-                    maximalLevel,
+                    maximumLevel,
                     extraMiningSpeed,
                     extraAttackDamage,
                     extraMiningLevel,
@@ -165,13 +207,13 @@ public class Modifier {
             return this;
         }
 
-        public Builder applicableToolTypes(BiFunction<ItemStack, Integer, ImmutableList<ToolType>> applicableToolTypes) {
+        public Builder applicableToolTypes(Supplier<ImmutableList<ToolType>> applicableToolTypes) {
             this.applicableToolTypes = applicableToolTypes;
             return this;
         }
 
-        public Builder maximalLevel(BiFunction<ItemStack, Integer, Integer> maximalLevel) {
-            this.maximalLevel = maximalLevel;
+        public Builder maximumLevel(Function<ToolType, Integer> maximumLevel) {
+            this.maximumLevel = maximumLevel;
             return this;
         }
 
@@ -216,12 +258,12 @@ public class Modifier {
         }
 
         public Builder applicableToolTypes(ImmutableList<ToolType> applicableToolTypes) {
-            this.applicableToolTypes = (tool, level) -> applicableToolTypes;
+            this.applicableToolTypes = () -> applicableToolTypes;
             return this;
         }
 
-        public Builder maximalLevel(int maximalLevel) {
-            this.maximalLevel = (tool, level) -> maximalLevel;
+        public Builder maximumLevel(int maximumLevel) {
+            this.maximumLevel = type -> maximumLevel;
             return this;
         }
 

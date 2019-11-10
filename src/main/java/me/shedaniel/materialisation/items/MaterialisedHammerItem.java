@@ -106,15 +106,7 @@ public class MaterialisedHammerItem extends PickaxeItem implements MaterialisedM
         if (!world_1.isClient && blockState_1.getHardness(world_1, blockPos_1) != 0.0F)
             if (!livingEntity_1.world.isClient && (!(livingEntity_1 instanceof PlayerEntity) || !((PlayerEntity) livingEntity_1).abilities.creativeMode))
                 if (MaterialisationUtils.getToolDurability(stack) > 0)
-                    if (MaterialisationUtils.applyDamage(stack, 1, livingEntity_1.getRand())) {
-                        livingEntity_1.sendEquipmentBreakStatus(EquipmentSlot.MAINHAND);
-                        Item item_1 = stack.getItem();
-                        stack.decrement(1);
-                        if (livingEntity_1 instanceof PlayerEntity) {
-                            ((PlayerEntity) livingEntity_1).incrementStat(Stats.BROKEN.getOrCreateStat(item_1));
-                        }
-                        MaterialisationUtils.setToolDurability(stack, 0);
-                    }
+                    MaterialisationUtils.applyDamage(stack, 1, livingEntity_1.getRand());
         return true;
     }
 

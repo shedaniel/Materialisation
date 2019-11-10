@@ -76,11 +76,15 @@ public interface MaterialisedMiningTool {
     }
 
     default int getModifierLevel(ItemStack stack, Identifier modifier) {
+        return getModifierLevel(stack, modifier.toString());
+    }
+
+    default int getModifierLevel(ItemStack stack, String modifier) {
         CompoundTag tag = stack.getTag();
         if (tag != null && tag.containsKey("modifiers")) {
             CompoundTag modifiers = tag.getCompound("modifiers");
-            if (modifiers.containsKey(modifier.toString()))
-                return modifiers.getInt(modifier.toString());
+            if (modifiers.containsKey(modifier))
+                return modifiers.getInt(modifier);
         }
         return 0;
     }

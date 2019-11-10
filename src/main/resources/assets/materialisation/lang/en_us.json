@@ -47,6 +47,9 @@
   "text.materialisation.mining_level": "Mining Level: %d",
   "text.materialisation.mining_level_less": "Mining Level: %d §c(-%d)",
   "text.materialisation.mining_level_extra": "Mining Level: %d §e(+%d)",
+  "text.materialisation.attack_damage": "Attack Damage: %s",
+  "text.materialisation.attack_damage_less": "Attack Damage: %s §c(-%s)",
+  "text.materialisation.attack_damage_extra": "Attack Damage: %s §e(+%s)",
   "text.materialisation.tool_handle_durability_multiplier": "Durability Multiplier: %s",
   "text.materialisation.tool_handle_speed_multiplier": "Mining Speed Multiplier: %s",
   "text.materialisation.head_part_speed": "Mining Speed: %s",
@@ -127,5 +130,7 @@
   "config.materialisation.value.bright": "Bright: ",
   "config.materialisation.value.fullAmount": "Full Amount: ",
   "modifier.materialisation.haste": "§eHaste",
-  "modifier.materialisation.diamond": "§bDiamond"
+  "modifier.materialisation.diamond": "§bDiamond",
+  "modifier.materialisation.sharp": "§cSharp",
+  "modifier.materialisation.fire": "§6Fire"
 }

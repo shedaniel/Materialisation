@@ -8,6 +8,7 @@ import me.shedaniel.materialisation.config.MaterialisationConfig;
 import me.shedaniel.materialisation.containers.MaterialPreparerContainer;
 import me.shedaniel.materialisation.containers.MaterialisingTableContainer;
 import me.shedaniel.materialisation.items.*;
+import me.shedaniel.materialisation.utils.ResettableSimpleRegistry;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
@@ -59,7 +60,7 @@ public class Materialisation implements ModInitializer {
     public static final Item SWORD_BLADE_PATTERN = new PatternItem(new Item.Settings().group(ItemGroup.MATERIALS));
     public static final Item HAMMER_HEAD_PATTERN = new PatternItem(new Item.Settings().group(ItemGroup.MATERIALS));
     public static final Item MEGAAXE_HEAD_PATTERN = new PatternItem(new Item.Settings().group(ItemGroup.MATERIALS));
-    public static Registry<Modifier> MODIFIERS = new SimpleRegistry();
+    public static final Registry<Modifier> MODIFIERS = new ResettableSimpleRegistry<>();
     public static MaterialisationConfig config;
 
     public static <T> Optional<T> getReflectionField(Object parent, Class<T> clazz, int index) {

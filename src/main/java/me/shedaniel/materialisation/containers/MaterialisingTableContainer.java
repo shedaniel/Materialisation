@@ -125,17 +125,17 @@ public class MaterialisingTableContainer extends Container {
                 Map<Modifier, Integer> modifierIntegerMap = MaterialisationUtils.getToolModifiers(copy);
                 for (Modifier modifier : Materialisation.MODIFIERS) {
                     Integer currentLevel = modifierIntegerMap.getOrDefault(modifier, 0);
-                    if (modifier.isApplicableTo(copy) && modifier.getMaximalLevel(copy) > currentLevel) {
+                    if (modifier.isApplicableTo(copy) && modifier.getMaximumLevel(copy) > currentLevel) {
                         int nextLevel = currentLevel + 1;
                         Optional<Pair<Modifier, Pair<ModifierIngredient, BetterIngredient>>> modifierOptional
                                 = Modifiers.getModifierByIngredient(second, modifier, nextLevel);
                         if (modifierOptional.isPresent()) {
                             MaterialisedMiningTool tool = (MaterialisedMiningTool) copy.getItem();
-                            int maximumLevel = modifier.getMaximalLevel(first);
+                            int maximumLevel = modifier.getMaximumLevel(first);
                             int level = tool.getModifierLevel(first, modifier);
-                            if (level + 1 <= maximumLevel) {
+                            tool.setModifierLevel(copy, modifier, level + 1);
+                            if (level + 1 <= maximumLevel || MaterialisationUtils.getToolMaxDurability(copy) >= 1) {
                                 nextDecrease = modifierOptional.get().getRight().getRight().count;
-                                tool.setModifierLevel(copy, modifier, level + 1);
                                 this.result.setInvStack(0, copy);
                                 this.sendContentUpdates();
                                 return;

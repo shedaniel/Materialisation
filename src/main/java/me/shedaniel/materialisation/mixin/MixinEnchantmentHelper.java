@@ -4,6 +4,8 @@ import com.google.common.collect.Lists;
 import me.shedaniel.materialisation.items.MaterialisedMiningTool;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.InfoEnchantment;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.WeightedPicker;
 import net.minecraft.util.math.MathHelper;
@@ -19,8 +21,18 @@ import java.util.Random;
 @Mixin(EnchantmentHelper.class)
 public class MixinEnchantmentHelper {
 
+    @Inject(method = "getFireAspect", at = @At("RETURN"), cancellable = true)
+    private static void getFireAspect(LivingEntity entity, CallbackInfoReturnable<Integer> callbackInfo) {
+        ItemStack stack = entity.getEquippedStack(EquipmentSlot.MAINHAND);
+        if (stack.getItem() instanceof MaterialisedMiningTool) {
+            int fireLevel = ((MaterialisedMiningTool) stack.getItem()).getModifierLevel(stack, "materialisation:fire");
+            if (fireLevel != 0)
+                callbackInfo.setReturnValue(callbackInfo.getReturnValue() + fireLevel * 2);
+        }
+    }
+
     @Inject(method = "calculateEnchantmentPower", at = @At("HEAD"), cancellable = true)
-    private static void calc(Random random_1, int int_1, int int_2, ItemStack itemStack_1, CallbackInfoReturnable<Integer> callbackInfo) {
+    private static void calculateEnchantmentPower(Random random_1, int int_1, int int_2, ItemStack itemStack_1, CallbackInfoReturnable<Integer> callbackInfo) {
         if (itemStack_1.getItem() instanceof MaterialisedMiningTool) {
             MaterialisedMiningTool item_1 = (MaterialisedMiningTool) itemStack_1.getItem();
             int int_3 = item_1.getEnchantability(itemStack_1);

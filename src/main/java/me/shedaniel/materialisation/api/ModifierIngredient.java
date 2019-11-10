@@ -22,6 +22,7 @@ public interface ModifierIngredient {
     }
 
     public static interface Builder {
+        @Deprecated
         default Builder registerBase(BetterIngredient... ingredients) {
             return registerIngredient(-1, ingredients);
         }

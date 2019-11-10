@@ -6,9 +6,11 @@ import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.items.MaterialisedMiningTool;
 import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -17,8 +19,13 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 @Mixin(ItemStack.class)
 public abstract class MixinItemStack {
@@ -134,6 +141,12 @@ public abstract class MixinItemStack {
             MaterialisationUtils.setToolDurability((ItemStack) (Object) this, maxDurability - MathHelper.clamp(damage, 0, maxDurability));
             info.cancel();
         }
+    }
+
+    @Inject(method = "getTooltip", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/Multimap;isEmpty()Z"), locals = LocalCapture.CAPTURE_FAILHARD)
+    public void getTooltip(PlayerEntity playerEntity_1, TooltipContext tooltipContext_1, CallbackInfoReturnable<List> cir, List list_1, int int_1, EquipmentSlot var6[], int var7, int var8, EquipmentSlot equipmentSlot_1, Multimap multimap_1) {
+        if (getItem() instanceof MaterialisedMiningTool)
+            multimap_1.clear();
     }
 
 }
