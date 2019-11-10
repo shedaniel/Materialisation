@@ -19,12 +19,10 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 @Mixin(ItemStack.class)
@@ -101,6 +99,8 @@ public abstract class MixinItemStack {
                 multimap.put(EntityAttributes.ATTACK_SPEED.getId(), new EntityAttributeModifier(MaterialisationUtils.getItemModifierSwingSpeed(), "Tool modifier", ((MaterialisedMiningTool) getItem()).getAttackSpeed(), EntityAttributeModifier.Operation.ADDITION));
                 if (MaterialisationUtils.getToolDurability((ItemStack) (Object) this) > 0)
                     multimap.put(EntityAttributes.ATTACK_DAMAGE.getId(), new EntityAttributeModifier(MaterialisationUtils.getItemModifierDamage(), "Tool modifier", MaterialisationUtils.getToolAttackDamage((ItemStack) (Object) this), EntityAttributeModifier.Operation.ADDITION));
+                else
+                    multimap.put(EntityAttributes.ATTACK_DAMAGE.getId(), new EntityAttributeModifier(MaterialisationUtils.getItemModifierDamage(), "Tool modifier", -10000, EntityAttributeModifier.Operation.ADDITION));
             }
             callbackInfo.setReturnValue(multimap);
         }
@@ -143,10 +143,17 @@ public abstract class MixinItemStack {
         }
     }
 
-    @Inject(method = "getTooltip", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/Multimap;isEmpty()Z"), locals = LocalCapture.CAPTURE_FAILHARD)
-    public void getTooltip(PlayerEntity playerEntity_1, TooltipContext tooltipContext_1, CallbackInfoReturnable<List> cir, List list_1, int int_1, EquipmentSlot var6[], int var7, int var8, EquipmentSlot equipmentSlot_1, Multimap multimap_1) {
+    @Inject(method = "getTooltip", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/Multimap;isEmpty()Z", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD)
+    public void getTooltipMultimap(PlayerEntity playerEntity_1, TooltipContext tooltipContext_1, CallbackInfoReturnable<List> cir, List list_1, int int_1, EquipmentSlot var6[], int var7, int var8, EquipmentSlot equipmentSlot_1, Multimap multimap_1) {
         if (getItem() instanceof MaterialisedMiningTool)
             multimap_1.clear();
+    }
+
+    @Inject(method = "getTooltip", at = @At(value = "INVOKE", target = "Ljava/util/List;add(Ljava/lang/Object;)Z", ordinal = 15, shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD)
+    public void getTooltipAddDamage(PlayerEntity playerEntity_1, TooltipContext tooltipContext_1, CallbackInfoReturnable<List> cir, List list_1) {
+        if (getItem() instanceof MaterialisedMiningTool && !list_1.isEmpty()) {
+            list_1.remove(list_1.size() - 1);
+        }
     }
 
 }
