@@ -1,8 +1,8 @@
 package me.shedaniel.materialisation.rei;
 
 import com.google.common.collect.ImmutableList;
+import me.shedaniel.rei.api.EntryStack;
 import me.shedaniel.rei.api.RecipeDisplay;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
 import java.util.Collections;
@@ -10,34 +10,34 @@ import java.util.List;
 
 public class MaterialPreparerDisplay implements RecipeDisplay {
 
-    private ItemStack first, result;
-    private List<ItemStack> second;
+    private EntryStack first, result;
+    private List<EntryStack> second;
 
-    public MaterialPreparerDisplay(ItemStack first, List<ItemStack> second, ItemStack result) {
+    public MaterialPreparerDisplay(EntryStack first, List<EntryStack> second, EntryStack result) {
         this.first = first;
         this.second = second;
         this.result = result;
     }
 
-    public ItemStack getFirst() {
+    public EntryStack getFirst() {
         return first;
     }
 
-    public List<ItemStack> getSecond() {
+    public List<EntryStack> getSecond() {
         return second;
     }
 
-    public ItemStack getResult() {
+    public EntryStack getResult() {
         return result;
     }
 
     @Override
-    public List<List<ItemStack>> getInput() {
+    public List<List<EntryStack>> getInputEntries() {
         return ImmutableList.of(Collections.singletonList(getFirst()), getSecond());
     }
 
     @Override
-    public List<ItemStack> getOutput() {
+    public List<EntryStack> getOutputEntries() {
         return Collections.singletonList(getResult());
     }
 

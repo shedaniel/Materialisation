@@ -5,17 +5,15 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import me.shedaniel.materialisation.Materialisation;
 import me.shedaniel.math.api.Point;
 import me.shedaniel.math.api.Rectangle;
+import me.shedaniel.rei.api.EntryStack;
 import me.shedaniel.rei.api.RecipeCategory;
-import me.shedaniel.rei.api.Renderer;
-import me.shedaniel.rei.gui.renderers.ItemStackRenderer;
 import me.shedaniel.rei.gui.widget.CategoryBaseWidget;
-import me.shedaniel.rei.gui.widget.SlotWidget;
+import me.shedaniel.rei.gui.widget.EntryWidget;
 import me.shedaniel.rei.gui.widget.Widget;
 import me.shedaniel.rei.plugin.DefaultPlugin;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.GuiLighting;
 import net.minecraft.client.resource.language.I18n;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
 import java.util.List;
@@ -23,7 +21,7 @@ import java.util.function.Supplier;
 
 public class MaterialPreparerCategory implements RecipeCategory<MaterialPreparerDisplay> {
 
-    public static final ItemStackRenderer ICON = Renderer.fromItemStack(new ItemStack(Materialisation.MATERIAL_PREPARER));
+    public static final EntryStack LOGO = EntryStack.create(Materialisation.MATERIAL_PREPARER);
 
     @Override
     public Identifier getIdentifier() {
@@ -36,13 +34,8 @@ public class MaterialPreparerCategory implements RecipeCategory<MaterialPreparer
     }
 
     @Override
-    public Renderer getIcon() {
-        return ICON;
-    }
-
-    @Override
-    public boolean checkTags() {
-        return true;
+    public EntryStack getLogo() {
+        return LOGO;
     }
 
     @Override
@@ -59,9 +52,9 @@ public class MaterialPreparerCategory implements RecipeCategory<MaterialPreparer
             }
         });
         MaterialPreparerDisplay display = recipeDisplaySupplier.get();
-        widgets.add(new SlotWidget(startPoint.x + 4 - 22, startPoint.y + 5, Renderer.fromItemStack(display.getFirst()), true, true, true));
-        widgets.add(new SlotWidget(startPoint.x + 4, startPoint.y + 5, Renderer.fromItemStacks(display.getSecond()), true, true, true));
-        widgets.add(new SlotWidget(startPoint.x + 61, startPoint.y + 5, Renderer.fromItemStack(display.getResult()), false, true, true));
+        widgets.add(EntryWidget.create(startPoint.x - 18, startPoint.y + 5).entry(display.getFirst()));
+        widgets.add(EntryWidget.create(startPoint.x + 4, startPoint.y + 5).entries(display.getSecond()));
+        widgets.add(EntryWidget.create(startPoint.x + 61, startPoint.y + 5).entry(display.getResult()).noBackground());
         return widgets;
     }
 
