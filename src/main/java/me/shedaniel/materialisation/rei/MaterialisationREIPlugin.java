@@ -106,8 +106,8 @@ public class MaterialisationREIPlugin implements REIPluginV0 {
         PartMaterials.getKnownMaterials().forEach(material -> entryRegistry.registerEntriesAfter(sword, EntryStack.create(MaterialisationUtils.createSword(material, material))));
         PartMaterials.getKnownMaterials().forEach(material -> entryRegistry.registerEntriesAfter(hammer, EntryStack.create(MaterialisationUtils.createHammer(material, material))));
         PartMaterials.getKnownMaterials().forEach(material -> entryRegistry.registerEntriesAfter(megaaxe, EntryStack.create(MaterialisationUtils.createMegaAxe(material, material))));
-        entryRegistry.getStacksList().removeIf(entry -> entry.getType() == EntryStack.Type.ITEM && entry.getItemStack().getItem() instanceof MaterialisedMiningTool && !entry.getItemStack().getOrCreateTag().containsKey("mt_done_tool") && !entry.getItemStack().getOrCreateTag().getBoolean("mt_done_tool"));
-        entryRegistry.getStacksList().removeIf(entry -> entry.getType() == EntryStack.Type.ITEM && entry.getItemStack().getItem() instanceof ColoredItem && !entry.getItemStack().getOrCreateTag().containsKey("mt_0_material"));
+        entryRegistry.getStacksList().removeIf(entry -> entry.getType() == EntryStack.Type.ITEM && entry.getItemStack().getItem() instanceof MaterialisedMiningTool && !entry.getItemStack().getOrCreateTag().contains("mt_done_tool") && !entry.getItemStack().getOrCreateTag().getBoolean("mt_done_tool"));
+        entryRegistry.getStacksList().removeIf(entry -> entry.getType() == EntryStack.Type.ITEM && entry.getItemStack().getItem() instanceof ColoredItem && !entry.getItemStack().getOrCreateTag().contains("mt_0_material"));
     }
 
 }

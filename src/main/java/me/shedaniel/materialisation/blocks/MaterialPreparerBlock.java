@@ -8,7 +8,8 @@ import net.minecraft.block.*;
 import net.minecraft.entity.EntityContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.state.StateFactory;
+import net.minecraft.state.StateManager;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
@@ -30,7 +31,7 @@ public class MaterialPreparerBlock extends HorizontalFacingBlock {
 
     public MaterialPreparerBlock() {
         super(FabricBlockSettings.copy(Blocks.CRAFTING_TABLE).drops(new Identifier(ModReference.MOD_ID, "blocks/material_preparer")).build());
-        this.setDefaultState(this.stateFactory.getDefaultState().with(FACING, Direction.NORTH));
+        this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH));
     }
 
     @Override
@@ -39,16 +40,16 @@ public class MaterialPreparerBlock extends HorizontalFacingBlock {
     }
 
     @Override
-    protected void appendProperties(StateFactory.Builder<Block, BlockState> builder) {
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         builder.add(FACING);
     }
 
     @SuppressWarnings("deprecation")
     @Override
-    public boolean activate(BlockState blockState, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hitResult) {
+    public ActionResult onUse(BlockState blockState, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hitResult) {
         if (!world.isClient)
             ContainerProviderRegistry.INSTANCE.openContainer(Materialisation.MATERIAL_PREPARER_CONTAINER, player, buf -> buf.writeBlockPos(pos));
-        return true;
+        return ActionResult.SUCCESS;
     }
 
     @SuppressWarnings("deprecation")
@@ -61,11 +62,6 @@ public class MaterialPreparerBlock extends HorizontalFacingBlock {
     @Override
     public boolean hasSidedTransparency(BlockState blockState_1) {
         return true;
-    }
-
-    @Override
-    public BlockRenderLayer getRenderLayer() {
-        return BlockRenderLayer.CUTOUT;
     }
 
     @SuppressWarnings("deprecation")

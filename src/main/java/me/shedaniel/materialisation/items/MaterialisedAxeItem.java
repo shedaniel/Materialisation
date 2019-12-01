@@ -77,7 +77,7 @@ public class MaterialisedAxeItem extends AxeItem implements MaterialisedMiningTo
                 world.setBlockState(blockPos, (BlockState) block.getDefaultState().with(PillarBlock.AXIS, blockState.get(PillarBlock.AXIS)), 11);
                 if (playerEntity_1 != null) {
                     if (!playerEntity_1.world.isClient && (!(playerEntity_1 instanceof PlayerEntity) || !(playerEntity_1.abilities.creativeMode)))
-                        if (MaterialisationUtils.applyDamage(itemStack, 1, playerEntity_1.getRand())) {
+                        if (MaterialisationUtils.applyDamage(itemStack, 1, playerEntity_1.getRandom())) {
                             playerEntity_1.sendToolBreakStatus(context.getHand());
                             Item item_1 = itemStack.getItem();
                             itemStack.decrement(1);
@@ -100,7 +100,7 @@ public class MaterialisedAxeItem extends AxeItem implements MaterialisedMiningTo
     public boolean postHit(ItemStack stack, LivingEntity livingEntity_1, LivingEntity livingEntity_2) {
         if (!livingEntity_1.world.isClient && (!(livingEntity_1 instanceof PlayerEntity) || !((PlayerEntity) livingEntity_1).abilities.creativeMode))
             if (MaterialisationUtils.getToolDurability(stack) > 0)
-                if (MaterialisationUtils.applyDamage(stack, 2, livingEntity_1.getRand())) {
+                if (MaterialisationUtils.applyDamage(stack, 2, livingEntity_1.getRandom())) {
                     livingEntity_1.sendEquipmentBreakStatus(EquipmentSlot.MAINHAND);
                     Item item_1 = stack.getItem();
                     stack.decrement(1);
@@ -117,7 +117,7 @@ public class MaterialisedAxeItem extends AxeItem implements MaterialisedMiningTo
         if (!world_1.isClient && blockState_1.getHardness(world_1, blockPos_1) != 0.0F)
             if (!livingEntity_1.world.isClient && (!(livingEntity_1 instanceof PlayerEntity) || !((PlayerEntity) livingEntity_1).abilities.creativeMode))
                 if (MaterialisationUtils.getToolDurability(stack) > 0)
-                    if (MaterialisationUtils.applyDamage(stack, 1, livingEntity_1.getRand())) {
+                    if (MaterialisationUtils.applyDamage(stack, 1, livingEntity_1.getRandom())) {
                         livingEntity_1.sendEquipmentBreakStatus(EquipmentSlot.MAINHAND);
                         Item item_1 = stack.getItem();
                         stack.decrement(1);

@@ -1,6 +1,7 @@
 package me.shedaniel.materialisation.modmenu;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import me.shedaniel.materialisation.api.PartMaterial;
 import me.shedaniel.materialisation.api.PartMaterials;
 import me.shedaniel.materialisation.config.ConfigHelper;
@@ -20,8 +21,8 @@ import java.util.concurrent.CompletableFuture;
 
 public class MaterialisationMaterialsScreen extends Screen {
 
-    private Object lastDescription;
     Screen parent;
+    private Object lastDescription;
     private MaterialisationMaterialListWidget materialList;
     private MaterialisationDescriptionListWidget descriptionList;
 
@@ -32,14 +33,14 @@ public class MaterialisationMaterialsScreen extends Screen {
 
     public static void overlayBackground(int x1, int y1, int x2, int y2, int red, int green, int blue, int startAlpha, int endAlpha) {
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBufferBuilder();
+        BufferBuilder buffer = tessellator.getBuffer();
         Objects.requireNonNull(MinecraftClient.getInstance()).getTextureManager().bindTexture(DrawableHelper.BACKGROUND_LOCATION);
-        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        buffer.begin(7, VertexFormats.POSITION_UV_COLOR);
-        buffer.vertex(x1, y2, 0.0D).texture(x1 / 32.0D, y2 / 32.0D).color(red, green, blue, endAlpha).next();
-        buffer.vertex(x2, y2, 0.0D).texture(x2 / 32.0D, y2 / 32.0D).color(red, green, blue, endAlpha).next();
-        buffer.vertex(x2, y1, 0.0D).texture(x2 / 32.0D, y1 / 32.0D).color(red, green, blue, startAlpha).next();
-        buffer.vertex(x1, y1, 0.0D).texture(x1 / 32.0D, y1 / 32.0D).color(red, green, blue, startAlpha).next();
+        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        buffer.begin(7, VertexFormats.POSITION_TEXTURE_COLOR);
+        buffer.vertex(x1, y2, 0.0D).texture(x1 / 32.0F, y2 / 32.0F).color(red, green, blue, endAlpha).next();
+        buffer.vertex(x2, y2, 0.0D).texture(x2 / 32.0F, y2 / 32.0F).color(red, green, blue, endAlpha).next();
+        buffer.vertex(x2, y1, 0.0D).texture(x2 / 32.0F, y1 / 32.0F).color(red, green, blue, startAlpha).next();
+        buffer.vertex(x1, y1, 0.0D).texture(x1 / 32.0F, y1 / 32.0F).color(red, green, blue, startAlpha).next();
         tessellator.draw();
     }
 
@@ -133,23 +134,23 @@ public class MaterialisationMaterialsScreen extends Screen {
         descriptionList.render(mouseX, mouseY, delta);
         overlayBackground(0, 0, width, 28, 64, 64, 64, 255, 255);
         overlayBackground(0, height - 5, width, height, 64, 64, 64, 255, 255);
-        GlStateManager.enableBlend();
-        GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ZERO, GlStateManager.DestFactor.ONE);
-        GlStateManager.disableAlphaTest();
-        GlStateManager.shadeModel(7425);
-        GlStateManager.disableTexture();
+        RenderSystem.enableBlend();
+        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ZERO, GlStateManager.DestFactor.ONE);
+        RenderSystem.disableAlphaTest();
+        RenderSystem.shadeModel(7425);
+        RenderSystem.disableTexture();
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBufferBuilder();
-        buffer.begin(7, VertexFormats.POSITION_UV_COLOR);
-        buffer.vertex(0, 28 + 4, 0.0D).texture(0.0D, 1.0D).color(0, 0, 0, 0).next();
-        buffer.vertex(this.width, 28 + 4, 0.0D).texture(1.0D, 1.0D).color(0, 0, 0, 0).next();
-        buffer.vertex(this.width, 28, 0.0D).texture(1.0D, 0.0D).color(0, 0, 0, 255).next();
-        buffer.vertex(0, 28, 0.0D).texture(0.0D, 0.0D).color(0, 0, 0, 255).next();
+        BufferBuilder buffer = tessellator.getBuffer();
+        buffer.begin(7, VertexFormats.POSITION_TEXTURE_COLOR);
+        buffer.vertex(0, 28 + 4, 0.0D).texture(0.0F, 1.0F).color(0, 0, 0, 0).next();
+        buffer.vertex(this.width, 28 + 4, 0.0D).texture(1.0F, 1.0F).color(0, 0, 0, 0).next();
+        buffer.vertex(this.width, 28, 0.0D).texture(1.0F, 0.0F).color(0, 0, 0, 255).next();
+        buffer.vertex(0, 28, 0.0D).texture(0.0F, 0.0F).color(0, 0, 0, 255).next();
         tessellator.draw();
-        GlStateManager.enableTexture();
-        GlStateManager.shadeModel(7424);
-        GlStateManager.enableAlphaTest();
-        GlStateManager.disableBlend();
+        RenderSystem.enableTexture();
+        RenderSystem.shadeModel(7424);
+        RenderSystem.enableAlphaTest();
+        RenderSystem.disableBlend();
         drawCenteredString(font, title.asFormattedString(), width / 2, 10, 16777215);
         super.render(mouseX, mouseY, delta);
     }

@@ -6,7 +6,7 @@ import me.shedaniel.materialisation.config.ConfigHelper;
 import me.shedaniel.materialisation.items.ColoredItem;
 import me.shedaniel.materialisation.items.MaterialisedMiningTool;
 import net.fabricmc.fabric.api.util.TriState;
-import net.fabricmc.fabric.impl.tools.ToolManager;
+import net.fabricmc.fabric.impl.mining.level.ToolManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -88,7 +88,7 @@ public class MaterialisationUtils {
     public static int getToolEnchantability(ItemStack stack, boolean modifiers) {
         int enchantability = 0;
         CompoundTag tag = stack.getOrCreateTag();
-        if (tag.containsKey("mt_0_material") && tag.containsKey("mt_1_material")) {
+        if (tag.contains("mt_0_material") && tag.contains("mt_1_material")) {
             PartMaterial handle = MaterialisationUtils.getMaterialFromString(tag.getString("mt_0_material"));
             PartMaterial head = MaterialisationUtils.getMaterialFromString(tag.getString("mt_1_material"));
             enchantability = ((handle == null ? 0 : handle.getEnchantability()) + (head == null ? 0 : head.getEnchantability())) / 2;
@@ -142,7 +142,7 @@ public class MaterialisationUtils {
         float speed = 0;
         if (stack.hasTag()) {
             CompoundTag tag = stack.getTag();
-            if (tag.containsKey("mt_0_material") && tag.containsKey("mt_1_material"))
+            if (tag.contains("mt_0_material") && tag.contains("mt_1_material"))
                 speed = getMatFromString(tag.getString("mt_0_material")).map(PartMaterial::getBreakingSpeedMultiplier).orElse(0d).floatValue() * getMatFromString(tag.getString("mt_1_material")).map(PartMaterial::getToolSpeed).orElse(0d).floatValue();
         }
         if (stack.getItem() == Materialisation.MATERIALISED_HAMMER) speed /= 6f;
@@ -158,7 +158,7 @@ public class MaterialisationUtils {
         int miningLevel = 0;
         if (stack.hasTag()) {
             CompoundTag tag = stack.getTag();
-            if (tag.containsKey("mt_1_material"))
+            if (tag.contains("mt_1_material"))
                 miningLevel = getMatFromString(tag.getString("mt_1_material")).map(PartMaterial::getMiningLevel).orElse(0);
         }
         if (miningLevel <= 0) miningLevel = 0;
@@ -183,7 +183,7 @@ public class MaterialisationUtils {
         if (!stack.hasTag())
             return 1;
         CompoundTag tag = stack.getTag();
-        if (tag.containsKey("mt_durability"))
+        if (tag.contains("mt_durability"))
             return Math.min(tag.getInt("mt_durability"), getToolMaxDurability(stack));
         return getToolMaxDurability(stack);
     }
@@ -196,8 +196,8 @@ public class MaterialisationUtils {
         if (!stack.hasTag())
             return 1;
         CompoundTag tag = stack.getTag();
-        if (tag.containsKey("mt_0_material") && tag.containsKey("mt_1_material"))
-            if (tag.containsKey("mt_0_material") && tag.containsKey("mt_1_material")) {
+        if (tag.contains("mt_0_material") && tag.contains("mt_1_material"))
+            if (tag.contains("mt_0_material") && tag.contains("mt_1_material")) {
                 double multiplier = getMatFromString(tag.getString("mt_0_material"))
                         .map(PartMaterial::getDurabilityMultiplier).orElse(0d);
                 int durability = getMatFromString(tag.getString("mt_1_material"))
@@ -223,7 +223,7 @@ public class MaterialisationUtils {
             return Collections.emptyMap();
         Map<Modifier, Integer> map = new HashMap<>();
         CompoundTag tag = stack.getTag();
-        if (tag.containsKey("modifiers")) {
+        if (tag.contains("modifiers")) {
             CompoundTag modifiersTag = tag.getCompound("modifiers");
             if (!modifiersTag.isEmpty()) {
                 for (String key : modifiersTag.getKeys()) {
@@ -248,7 +248,7 @@ public class MaterialisationUtils {
         if (!stack.hasTag())
             return 0;
         CompoundTag tag = stack.getTag();
-        PartMaterial material = tag.containsKey("mt_1_material") ? getMatFromString(tag.getString("mt_1_material")).get() : null;
+        PartMaterial material = tag.contains("mt_1_material") ? getMatFromString(tag.getString("mt_1_material")).get() : null;
         float attackDamage = material == null ? 0 : (float) material.getAttackDamage() + MaterialisedMiningTool.getExtraDamageFromItem(stack.getItem());
         if (!modifiers) return attackDamage;
         return getToolAfterExtraAttackDamage(stack, attackDamage);
@@ -276,10 +276,10 @@ public class MaterialisationUtils {
             return -1;
         CompoundTag tag = stack.getTag();
         if (layer == 0)
-            if (tag.containsKey("mt_0_material"))
+            if (tag.contains("mt_0_material"))
                 return getMatFromString(tag.getString("mt_0_material")).map(PartMaterial::getToolColor).orElse(-1);
         if (layer == 1)
-            if (tag.containsKey("mt_1_material"))
+            if (tag.contains("mt_1_material"))
                 return getMatFromString(tag.getString("mt_1_material")).map(PartMaterial::getToolColor).orElse(-1);
         return -1;
     }
@@ -352,7 +352,7 @@ public class MaterialisationUtils {
     }
 
     public static PartMaterial getMaterialFromPart(ItemStack stack) {
-        if (stack.getOrCreateTag().containsKey("mt_0_material"))
+        if (stack.getOrCreateTag().contains("mt_0_material"))
             return getMaterialFromString(stack.getOrCreateTag().getString("mt_0_material"));
         else
             return null;

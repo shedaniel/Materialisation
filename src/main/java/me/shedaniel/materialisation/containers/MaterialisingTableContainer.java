@@ -116,8 +116,8 @@ public class MaterialisingTableContainer extends Container {
         if (first.isEmpty()) {
             this.result.setInvStack(0, ItemStack.EMPTY);
         } else if (first.getItem() instanceof MaterialisedMiningTool
-                && first.getOrCreateTag().containsKey("mt_0_material")
-                && first.getOrCreateTag().containsKey("mt_1_material")
+                && first.getOrCreateTag().contains("mt_0_material")
+                && first.getOrCreateTag().contains("mt_1_material")
         ) {
             // Modifiers
             if (!second.isEmpty()) {
@@ -162,7 +162,7 @@ public class MaterialisingTableContainer extends Container {
                     return;
                 }
                 PartMaterial material = null;
-                if (copy.getOrCreateTag().containsKey("mt_1_material"))
+                if (copy.getOrCreateTag().contains("mt_1_material"))
                     material = MaterialisationUtils.getMaterialFromString(copy.getOrCreateTag().getString("mt_1_material"));
                 if (material == null) {
                     this.result.setInvStack(0, ItemStack.EMPTY);

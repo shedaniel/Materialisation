@@ -1,6 +1,6 @@
 package me.shedaniel.materialisation.modmenu;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import me.shedaniel.clothconfig2.gui.widget.DynamicElementListWidget;
 import me.shedaniel.materialisation.api.PartMaterial;
 import me.shedaniel.materialisation.config.ConfigPackInfo;
@@ -71,7 +71,7 @@ public class MaterialisationMaterialListWidget extends DynamicElementListWidget<
 
             @Override
             public void render(int mouseX, int mouseY, float delta) {
-                GlStateManager.disableAlphaTest();
+                RenderSystem.disableAlphaTest();
                 fill(bounds.getX(), bounds.getY(), bounds.getX() + bounds.getWidth(), bounds.getY() + bounds.getHeight(), 0x15FFFFFF);
                 boolean isHovered = focused || bounds.contains(mouseX, mouseY);
                 drawString(MinecraftClient.getInstance().textRenderer, (isHovered ? Formatting.UNDERLINE.toString() : "") + packInfo.getDisplayName(), bounds.getX() + 5, bounds.getY() + 6, 16777215);

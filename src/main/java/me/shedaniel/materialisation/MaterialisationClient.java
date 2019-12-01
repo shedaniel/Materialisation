@@ -7,10 +7,12 @@ import me.shedaniel.materialisation.containers.MaterialisingTableScreen;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.render.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.screen.ScreenProviderRegistry;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
-import net.fabricmc.fabric.impl.client.render.ColorProviderRegistryImpl;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.TranslatableText;
@@ -19,6 +21,7 @@ import net.minecraft.text.TranslatableText;
 public class MaterialisationClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
+        BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), Materialisation.MATERIALISING_TABLE, Materialisation.MATERIAL_PREPARER);
         ScreenProviderRegistry.INSTANCE.registerFactory(Materialisation.MATERIALISING_TABLE_CONTAINER, (syncId, identifier, playerEntity, packetByteBuf) ->
                 new MaterialisingTableScreen(new MaterialisingTableContainer(syncId, playerEntity.inventory), playerEntity.inventory, new TranslatableText("container.materialisation.materialising_table"))
         );
@@ -28,7 +31,7 @@ public class MaterialisationClient implements ClientModInitializer {
         ClientSidePacketRegistry.INSTANCE.register(Materialisation.MATERIALISING_TABLE_PLAY_SOUND, (packetContext, packetByteBuf) ->
                 MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(SoundEvents.BLOCK_ANVIL_USE, 1, 1))
         );
-        ColorProviderRegistryImpl.ITEM.register(MaterialisationUtils::getItemLayerColor,
+        ColorProviderRegistry.ITEM.register(MaterialisationUtils::getItemLayerColor,
                 Materialisation.MATERIALISED_MEGAAXE,
                 Materialisation.MEGAAXE_HEAD,
                 Materialisation.MATERIALISED_PICKAXE,

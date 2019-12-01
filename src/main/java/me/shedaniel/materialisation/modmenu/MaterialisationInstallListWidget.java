@@ -1,6 +1,6 @@
 package me.shedaniel.materialisation.modmenu;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import me.shedaniel.clothconfig2.gui.widget.DynamicElementListWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -16,7 +16,7 @@ import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.Rect2i;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.SystemUtil;
+import net.minecraft.util.Util;
 
 import java.util.Collections;
 import java.util.List;
@@ -60,7 +60,7 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
                 Screen screen = MinecraftClient.getInstance().currentScreen;
                 MinecraftClient.getInstance().openScreen(new ConfirmChatLinkScreen(t -> {
                     if (t)
-                        SystemUtil.getOperatingSystem().open(onlinePack.download);
+                        Util.getOperatingSystem().open(onlinePack.download);
                     MinecraftClient.getInstance().openScreen(screen);
                 }, onlinePack.download, true));
             });
@@ -73,25 +73,25 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
                 int itemMinX = listWidget.left + listWidget.width / 2 - listWidget.getItemWidth() / 2;
                 int itemMaxX = itemMinX + listWidget.getItemWidth();
                 int itemY = y;
-                GlStateManager.disableTexture();
+                RenderSystem.disableTexture();
                 Tessellator tessellator = Tessellator.getInstance();
-                BufferBuilder buffer = tessellator.getBufferBuilder();
+                BufferBuilder buffer = tessellator.getBuffer();
                 float float_2 = listWidget.isFocused() ? 1.0F : 0.5F;
-                GlStateManager.color4f(float_2, float_2, float_2, 1.0F);
+                RenderSystem.color4f(float_2, float_2, float_2, 1.0F);
                 buffer.begin(7, VertexFormats.POSITION);
                 buffer.vertex((double) itemMinX, (double) (itemY + getItemHeight() + 2), 0.0D).next();
                 buffer.vertex((double) itemMaxX, (double) (itemY + getItemHeight() + 2), 0.0D).next();
                 buffer.vertex((double) itemMaxX, (double) (itemY - 2), 0.0D).next();
                 buffer.vertex((double) itemMinX, (double) (itemY - 2), 0.0D).next();
                 tessellator.draw();
-                GlStateManager.color4f(0.0F, 0.0F, 0.0F, 1.0F);
+                RenderSystem.color4f(0.0F, 0.0F, 0.0F, 1.0F);
                 buffer.begin(7, VertexFormats.POSITION);
                 buffer.vertex((double) (itemMinX + 1), (double) (itemY + getItemHeight() + 1), 0.0D).next();
                 buffer.vertex((double) (itemMaxX - 1), (double) (itemY + getItemHeight() + 1), 0.0D).next();
                 buffer.vertex((double) (itemMaxX - 1), (double) (itemY - 1), 0.0D).next();
                 buffer.vertex((double) (itemMinX + 1), (double) (itemY - 1), 0.0D).next();
                 tessellator.draw();
-                GlStateManager.enableTexture();
+                RenderSystem.enableTexture();
             }
             TextRenderer font = MinecraftClient.getInstance().textRenderer;
             drawString(font, "§l§n" + onlinePack.displayName, x + 5, y + 5, 16777215);
@@ -134,7 +134,7 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
         @Override
         public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
             String string_3;
-            switch ((int) (SystemUtil.getMeasuringTimeMs() / 300L % 4L)) {
+            switch ((int) (Util.getMeasuringTimeMs() / 300L % 4L)) {
                 case 0:
                 default:
                     string_3 = "O o o";

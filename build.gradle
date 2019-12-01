@@ -1,12 +1,12 @@
 plugins {
-    id 'fabric-loom' version '0.2.5-SNAPSHOT'
+    id 'fabric-loom' version '0.2.6-SNAPSHOT'
 }
 
 archivesBaseName = "Materialisation"
-version = "2.0.0-alpha.1"
+version = "2.0.0-alpha.2"
 
-def minecraftVersion = "1.14.4"
-def yarnBuild = "14"
+def minecraftVersion = "1.15-pre3"
+def yarnBuild = "2"
 def cr_version = "1.4.1+1.14.4"
 def netherthings_version = "1.2.0"
 
@@ -44,31 +44,29 @@ dependencies {
     minecraft "com.mojang:minecraft:${minecraftVersion}"
     mappings "net.fabricmc:yarn:${minecraftVersion}+build.${yarnBuild}"
     implementation "net.fabricmc:yarn:${minecraftVersion}+build.${yarnBuild}"
-    modImplementation("net.fabricmc.fabric-api:fabric-api:0.4.1+build.245-1.14") {
+    modImplementation("net.fabricmc.fabric-api:fabric-api:0.4.18+build.271-1.15") {
         force = true
     }
-    modImplementation "net.fabricmc:fabric-loader:0.7.0+build.171"
+    modImplementation "net.fabricmc:fabric-loader:0.7.2+build.174"
 //    modImplementation("net.fabricmc:fabric-language-kotlin:1.3.50+build.2")
 
 //    include("net.fabricmc:fabric-language-kotlin:1.3.50+build.2")
-    include "me.shedaniel.cloth:config-2:1.8"
+    include "me.shedaniel.cloth:config-2:2.4-unstable.201911031154"
 
     compileOnly "com.google.code.findbugs:jsr305:3.0.2" // javax.annotations.*
 
     // Mod Compat
-    modImplementation("me.shedaniel:RoughlyEnoughItems:3.2.2+build.45") {
-        exclude module: "ModMenu"
-    }
-    modRuntime ("io.github.cottonmc:cotton-resources:${cr_version}") {
-        exclude group: "net.fabricmc.fabric-api"
-        exclude module: "modmenu"
-        exclude module: "RoughlyEnoughItems"
-    }
-    modRuntime "nether-things:netherthings:${netherthings_version}"
-    modRuntime "fabric-more-enchantments:MoEnchantments:1.5.9"
-    modRuntime("me.sargunvohra.mcmods:auto-config:1.1.2+mc1.14.1") {
-        transitive = false
-    }
+    modImplementation("me.shedaniel:RoughlyEnoughItems:3.2.12-unstable.201911261311")
+//    modRuntime ("io.github.cottonmc:cotton-resources:${cr_version}") {
+//        exclude group: "net.fabricmc.fabric-api"
+//        exclude module: "modmenu"
+//        exclude module: "RoughlyEnoughItems"
+//    }
+//    modRuntime "nether-things:netherthings:${netherthings_version}"
+//    modRuntime "fabric-more-enchantments:MoEnchantments:1.5.9"
+//    modRuntime("me.sargunvohra.mcmods:auto-config:1.1.2+mc1.14.1") {
+//        transitive = false
+//    }
 
     // OptiFabric
 //    modRuntime "optifabric:optifabric:0.4.0"

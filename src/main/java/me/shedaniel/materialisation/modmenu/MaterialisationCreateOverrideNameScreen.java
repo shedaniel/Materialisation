@@ -1,6 +1,7 @@
 package me.shedaniel.materialisation.modmenu;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import me.shedaniel.materialisation.api.PartMaterial;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -91,23 +92,23 @@ public class MaterialisationCreateOverrideNameScreen extends Screen {
         }
         overlayBackground(0, 0, width, 28, 64, 64, 64, 255, 255);
         overlayBackground(0, 28, width, height, 32, 32, 32, 255, 255);
-        GlStateManager.enableBlend();
-        GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ZERO, GlStateManager.DestFactor.ONE);
-        GlStateManager.disableAlphaTest();
-        GlStateManager.shadeModel(7425);
-        GlStateManager.disableTexture();
+        RenderSystem.enableBlend();
+        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ZERO, GlStateManager.DestFactor.ONE);
+        RenderSystem.disableAlphaTest();
+        RenderSystem.shadeModel(7425);
+        RenderSystem.disableTexture();
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBufferBuilder();
-        buffer.begin(7, VertexFormats.POSITION_UV_COLOR);
-        buffer.vertex(0, 28 + 4, 0.0D).texture(0.0D, 1.0D).color(0, 0, 0, 0).next();
-        buffer.vertex(this.width, 28 + 4, 0.0D).texture(1.0D, 1.0D).color(0, 0, 0, 0).next();
-        buffer.vertex(this.width, 28, 0.0D).texture(1.0D, 0.0D).color(0, 0, 0, 255).next();
-        buffer.vertex(0, 28, 0.0D).texture(0.0D, 0.0D).color(0, 0, 0, 255).next();
+        BufferBuilder buffer = tessellator.getBuffer();
+        buffer.begin(7, VertexFormats.POSITION_COLOR_TEXTURE);
+        buffer.vertex(0, 28 + 4, 0.0D).texture(0.0F, 1.0F).color(0, 0, 0, 0).next();
+        buffer.vertex(this.width, 28 + 4, 0.0D).texture(1.0F, 1.0F).color(0, 0, 0, 0).next();
+        buffer.vertex(this.width, 28, 0.0D).texture(1.0F, 0.0F).color(0, 0, 0, 255).next();
+        buffer.vertex(0, 28, 0.0D).texture(0.0F, 0.0F).color(0, 0, 0, 255).next();
         tessellator.draw();
-        GlStateManager.enableTexture();
-        GlStateManager.shadeModel(7424);
-        GlStateManager.enableAlphaTest();
-        GlStateManager.disableBlend();
+        RenderSystem.enableTexture();
+        RenderSystem.shadeModel(7424);
+        RenderSystem.enableAlphaTest();
+        RenderSystem.disableBlend();
         drawCenteredString(font, title.asFormattedString(), width / 2, 10, 16777215);
         drawString(font, I18n.translate("config.text.materialisation.override_json_file_name"), width / 4, 36, -6250336);
         drawString(font, I18n.translate("config.text.materialisation.override_json_file_saved"), width / 4, 74, -6250336);

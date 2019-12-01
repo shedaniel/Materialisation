@@ -1,6 +1,6 @@
 package me.shedaniel.materialisation.mixin;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.items.MaterialisedMiningTool;
 import net.fabricmc.api.EnvType;
@@ -37,23 +37,21 @@ public abstract class MixinItemRenderer {
             float float_1 = MaterialisationUtils.getToolDurability(stack);
             float float_2 = MaterialisationUtils.getToolMaxDurability(stack);
             if (float_1 < float_2) {
-                GlStateManager.disableLighting();
-                GlStateManager.disableDepthTest();
-                GlStateManager.disableTexture();
-                GlStateManager.disableAlphaTest();
-                GlStateManager.disableBlend();
+                RenderSystem.disableDepthTest();
+                RenderSystem.disableTexture();
+                RenderSystem.disableAlphaTest();
+                RenderSystem.disableBlend();
                 Tessellator tessellator_1 = Tessellator.getInstance();
-                BufferBuilder bufferBuilder_1 = tessellator_1.getBufferBuilder();
+                BufferBuilder bufferBuilder_1 = tessellator_1.getBuffer();
                 float float_3 = Math.max(0.0F, float_1 / float_2);
                 int int_3 = Math.round(13.0F - (float_2 - float_1) * 13.0F / float_2);
                 int int_4 = MathHelper.hsvToRgb(float_3 / 3.0F, 1.0F, 1.0F);
                 this.renderGuiQuad(bufferBuilder_1, x + 2, y + 13, 13, 2, 0, 0, 0, 255);
                 this.renderGuiQuad(bufferBuilder_1, x + 2, y + 13, int_3, 1, int_4 >> 16 & 255, int_4 >> 8 & 255, int_4 & 255, 255);
-                GlStateManager.enableBlend();
-                GlStateManager.enableAlphaTest();
-                GlStateManager.enableTexture();
-                GlStateManager.enableLighting();
-                GlStateManager.enableDepthTest();
+                RenderSystem.enableBlend();
+                RenderSystem.enableAlphaTest();
+                RenderSystem.enableTexture();
+                RenderSystem.enableDepthTest();
             }
         }
     }

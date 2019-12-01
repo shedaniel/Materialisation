@@ -66,7 +66,7 @@ public class ColoredItem extends Item {
     public void appendTooltip(ItemStack stack, World world_1, List<Text> list, TooltipContext tooltipContext_1) {
         super.appendTooltip(stack, world_1, list, tooltipContext_1);
         CompoundTag tag = stack.getOrCreateTag();
-        if (tag.containsKey("mt_0_material")) {
+        if (tag.contains("mt_0_material")) {
             PartMaterial material = MaterialisationUtils.getMaterialFromPart(stack);
             if (material != null) {
                 if (this == Materialisation.HANDLE) {

@@ -1,6 +1,6 @@
 package me.shedaniel.materialisation.containers;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import io.netty.buffer.Unpooled;
 import me.shedaniel.materialisation.Materialisation;
 import me.shedaniel.materialisation.ModReference;
@@ -38,7 +38,7 @@ public class MaterialisingTableScreen extends AbstractContainerScreen<Materialis
         int x = (this.width - this.containerWidth) / 2;
         int y = (this.height - this.containerHeight) / 2;
         this.nameField = new TextFieldWidget(this.font, x + 38, y + 24, 103, 12, I18n.translate("container.repair", new Object[0]));
-        this.nameField.method_1856(false);
+        this.nameField.setFocusUnlocked(false);
         this.nameField.changeFocus(true);
         this.nameField.setEditableColor(-1);
         this.nameField.setUneditableColor(-1);
@@ -69,15 +69,13 @@ public class MaterialisingTableScreen extends AbstractContainerScreen<Materialis
         if (int_1 == 256) {
             this.minecraft.player.closeContainer();
         }
-        return !this.nameField.keyPressed(int_1, int_2, int_3) && !this.nameField.method_20315() ? super.keyPressed(int_1, int_2, int_3) : true;
+        return !this.nameField.keyPressed(int_1, int_2, int_3) && !this.nameField.isActive() ? super.keyPressed(int_1, int_2, int_3) : true;
     }
 
     @Override
     protected void drawForeground(int int_1, int int_2) {
-        GlStateManager.disableLighting();
-        GlStateManager.disableBlend();
+        RenderSystem.disableBlend();
         this.font.draw(this.title.asFormattedString(), 6f, 6f, 4210752);
-        GlStateManager.enableLighting();
     }
 
     private void onChangeName(String string_1) {
@@ -97,7 +95,6 @@ public class MaterialisingTableScreen extends AbstractContainerScreen<Materialis
 
     @Override
     protected void drawBackground(float v, int i, int i1) {
-        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.minecraft.getTextureManager().bindTexture(BG_TEX);
         int int_3 = this.left;
         int int_4 = (this.height - this.containerHeight) / 2;
@@ -112,10 +109,9 @@ public class MaterialisingTableScreen extends AbstractContainerScreen<Materialis
     public void render(int int_1, int int_2, float float_1) {
         renderBackground();
         super.render(int_1, int_2, float_1);
-        this.drawMouseoverTooltip(int_1, int_2);
-        GlStateManager.disableLighting();
-        GlStateManager.disableBlend();
+        RenderSystem.disableBlend();
         this.nameField.render(int_1, int_2, float_1);
+        this.drawMouseoverTooltip(int_1, int_2);
     }
 
     @Override
@@ -128,7 +124,7 @@ public class MaterialisingTableScreen extends AbstractContainerScreen<Materialis
         if (i == 2) {
             this.nameField.setChangedListener(null);
             this.nameField.setText(!container.getSlot(i).hasStack() ? "" : itemStack.getName().getString());
-            this.nameField.setIsEditable(!itemStack.isEmpty());
+            this.nameField.setEditable(!itemStack.isEmpty());
             this.nameField.setChangedListener(this::onChangeName);
         }
     }

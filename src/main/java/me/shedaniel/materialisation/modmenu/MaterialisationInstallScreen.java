@@ -11,7 +11,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.SystemUtil;
+import net.minecraft.util.Util;
 
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -71,7 +71,7 @@ public class MaterialisationInstallScreen extends Screen {
             minecraft.openScreen(parent);
         }));
         addButton(new ButtonWidget(width - 104, 4, 100, 20, I18n.translate("config.button.materialisation.open_folder"), var1 -> {
-            SystemUtil.getOperatingSystem().open(ConfigHelper.MATERIALS_DIRECTORY);
+            Util.getOperatingSystem().open(ConfigHelper.MATERIALS_DIRECTORY);
         }));
     }
 
