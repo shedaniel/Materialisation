@@ -9,6 +9,9 @@
     "MixinEnchantmentHelper",
     "MixinEnchantmentTarget"
   ],
+  "client": [
+    "client.MixinItemStack"
+  ],
   "injectors": {
     "defaultRequire": 1
   }
