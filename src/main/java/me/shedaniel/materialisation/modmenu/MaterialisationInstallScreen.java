@@ -34,6 +34,10 @@ public class MaterialisationInstallScreen extends Screen {
         this.parent = parent;
     }
 
+    public Screen getParent() {
+        return parent;
+    }
+
     @Override
     public boolean keyPressed(int int_1, int int_2, int int_3) {
         if (int_1 == 256 && this.shouldCloseOnEsc()) {
@@ -46,7 +50,7 @@ public class MaterialisationInstallScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-        children.add(listWidget = new MaterialisationInstallListWidget(minecraft, width, height - 28 * 2, 28, height - 28, DrawableHelper.BACKGROUND_LOCATION));
+        children.add(listWidget = new MaterialisationInstallListWidget(minecraft, width, height, 28, height - 28, DrawableHelper.BACKGROUND_LOCATION));
         if (!loaded) {
             loaded = true;
             refresh();

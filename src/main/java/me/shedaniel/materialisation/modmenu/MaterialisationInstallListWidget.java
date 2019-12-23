@@ -2,10 +2,11 @@ package me.shedaniel.materialisation.modmenu;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.shedaniel.clothconfig2.gui.widget.DynamicElementListWidget;
+import me.shedaniel.materialisation.config.ConfigHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.screen.ConfirmChatLinkScreen;
+import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.render.BufferBuilder;
@@ -15,9 +16,17 @@ import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.Rect2i;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 
+import java.io.File;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.file.FileAlreadyExistsException;
+import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.List;
 
@@ -57,12 +66,45 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
             this.listWidget = listWidget;
             this.onlinePack = onlinePack;
             this.clickWidget = new ButtonWidget(0, 0, 100, 20, I18n.translate("config.button.materialisation.download"), var1 -> {
-                Screen screen = MinecraftClient.getInstance().currentScreen;
-                MinecraftClient.getInstance().openScreen(new ConfirmChatLinkScreen(t -> {
-                    if (t)
-                        Util.getOperatingSystem().open(onlinePack.download);
-                    MinecraftClient.getInstance().openScreen(screen);
-                }, onlinePack.download, true));
+                MaterialisationInstallScreen screen = (MaterialisationInstallScreen)MinecraftClient.getInstance().currentScreen;
+                MinecraftClient.getInstance().openScreen(new MaterialisationDownloadingScreen(new TranslatableText("message.materialisation.fetching_file_data"),downloadingScreen -> {
+                    long size = -1;
+                    String textSize;
+                    String name;
+                    URL url;
+                    File file;
+                    try {
+                        url = new URL(onlinePack.download);
+                        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                        ((HttpURLConnection) connection).setRequestMethod("HEAD");
+                        size = connection.getContentLengthLong();
+                        name = FilenameUtils.getName(url.getPath());
+                        if (size <= 0) textSize = "0B";
+                        final String[] units = new String[]{"B", "kB", "MB", "GB", "TB"};
+                        int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
+                        textSize = new DecimalFormat("#,##0.#").format(size / Math.pow(1024, digitGroups)) + units[digitGroups];
+                        file = new File(ConfigHelper.MATERIALS_DIRECTORY, name);
+                        if (file.exists()) throw new FileAlreadyExistsException("File already exists!");
+                    } catch (Throwable e) {
+                        downloadingScreen.queueNewScreen(new MaterialisationErrorInstallScreen(screen.getParent(), e));
+                        return;
+                    }
+                    downloadingScreen.queueNewScreen(new ConfirmScreen(t -> {
+                        if (t) {
+                            MinecraftClient.getInstance().openScreen(new MaterialisationDownloadingScreen(new TranslatableText("message.materialisation.file_is_downloading"),screen1 -> {
+                                try {
+                                    FileUtils.copyURLToFile(url, file);
+                                    screen1.queueNewScreen(new MaterialisationSimpleMessageScreen(screen.getParent(), new TranslatableText("message.materialisation.file_downloaded"), I18n.translate("message.materialisation.file_is_downloaded")));
+                                } catch (Exception e) {
+                                    screen1.queueNewScreen(new MaterialisationErrorInstallScreen(screen.getParent(), e));
+                                    return;
+                                }
+                            }));
+                            return;
+                        }
+                        MinecraftClient.getInstance().openScreen(screen);
+                    }, new TranslatableText("message.materialisation.do_you_want_to_download"), new TranslatableText("message.materialisation.download_file_details", name, textSize)));
+                }));
             });
         }
 

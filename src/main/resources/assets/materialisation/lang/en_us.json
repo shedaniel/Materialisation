@@ -1,4 +1,11 @@
 {
+  "message.materialisation.do_you_want_to_download": "Do you want to download the file?",
+  "message.materialisation.download_file_details": "File Name: %s\nFile Size: %s",
+  "message.materialisation.installation_errored": "Installation Error!",
+  "message.materialisation.fetching_file_data": "Fetching File Data",
+  "message.materialisation.file_is_downloading": "Downloading File",
+  "message.materialisation.file_is_downloaded": "The file has been downloaded, please go back and click the Reload Config button to refresh changes!",
+  "message.materialisation.file_downloaded": "File Downloaded",
   "category.materialisation.material_preparer": "Material Preparer",
   "category.materialisation.materialising_table": "Materialising Table",
   "category.materialisation.modifiers": "Materialisation Modifiers",

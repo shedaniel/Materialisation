@@ -70,7 +70,7 @@ public class MaterialisationCreateOverrideScreen extends Screen {
             entries.add(new BooleanEditEntry("bright", partMaterial.isBright()));
             entries.add(new IntEditEntry("fullAmount", partMaterial.getFullAmount()));
         }
-        children.add(listWidget = new MaterialisationCreateOverrideListWidget(minecraft, width, height - 28, 28, height, DrawableHelper.BACKGROUND_LOCATION));
+        children.add(listWidget = new MaterialisationCreateOverrideListWidget(minecraft, width, height, 28, height, DrawableHelper.BACKGROUND_LOCATION));
         for (MaterialisationCreateOverrideListWidget.EditEntry entry : entries) {
             listWidget.addItem(entry);
         }

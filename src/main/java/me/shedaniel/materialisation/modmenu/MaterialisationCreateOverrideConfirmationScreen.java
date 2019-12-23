@@ -100,7 +100,7 @@ public class MaterialisationCreateOverrideConfirmationScreen extends Screen {
             }
             entries.add(new MaterialisationOverridesListWidget.TextEntry(new LiteralText(" ")));
         }
-        children.add(listWidget = new MaterialisationOverridesListWidget(minecraft, width, height - 28, 28, height, DrawableHelper.BACKGROUND_LOCATION));
+        children.add(listWidget = new MaterialisationOverridesListWidget(minecraft, width, height, 28, height, DrawableHelper.BACKGROUND_LOCATION));
         for (MaterialisationOverridesListWidget.Entry entry : entries) {
             listWidget.addItem(entry);
         }

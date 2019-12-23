@@ -16,7 +16,6 @@ import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.TranslatableText;
 
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 public class MaterialisationMaterialsScreen extends Screen {
@@ -32,16 +31,17 @@ public class MaterialisationMaterialsScreen extends Screen {
     }
 
     public static void overlayBackground(int x1, int y1, int x2, int y2, int red, int green, int blue, int startAlpha, int endAlpha) {
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
-        Objects.requireNonNull(MinecraftClient.getInstance()).getTextureManager().bindTexture(DrawableHelper.BACKGROUND_LOCATION);
+        Tessellator tessellator_1 = Tessellator.getInstance();
+        BufferBuilder bufferBuilder_1 = tessellator_1.getBuffer();
+        MinecraftClient.getInstance().getTextureManager().bindTexture(DrawableHelper.BACKGROUND_LOCATION);
+        int width = MinecraftClient.getInstance().getWindow().getScaledWidth();
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        buffer.begin(7, VertexFormats.POSITION_TEXTURE_COLOR);
-        buffer.vertex(x1, y2, 0.0D).texture(x1 / 32.0F, y2 / 32.0F).color(red, green, blue, endAlpha).next();
-        buffer.vertex(x2, y2, 0.0D).texture(x2 / 32.0F, y2 / 32.0F).color(red, green, blue, endAlpha).next();
-        buffer.vertex(x2, y1, 0.0D).texture(x2 / 32.0F, y1 / 32.0F).color(red, green, blue, startAlpha).next();
-        buffer.vertex(x1, y1, 0.0D).texture(x1 / 32.0F, y1 / 32.0F).color(red, green, blue, startAlpha).next();
-        tessellator.draw();
+        bufferBuilder_1.begin(7, VertexFormats.POSITION_TEXTURE_COLOR);
+        bufferBuilder_1.vertex(x1, y2, 0.0D).texture(0, y2 / 32.0F).color(red, green, blue, endAlpha).next();
+        bufferBuilder_1.vertex(x2, y2, 0.0D).texture(width / 32.0F, y2 / 32.0F).color(red, green, blue, endAlpha).next();
+        bufferBuilder_1.vertex(x2, y1, 0.0D).texture(width / 32.0F, y1 / 32.0F).color(red, green, blue, startAlpha).next();
+        bufferBuilder_1.vertex(x1, y1, 0.0D).texture(0, y1 / 32.0F).color(red, green, blue, startAlpha).next();
+        tessellator_1.draw();
     }
 
     @Override
@@ -76,8 +76,8 @@ public class MaterialisationMaterialsScreen extends Screen {
         addButton(new ButtonWidget(4, 4, 50, 20, I18n.translate("gui.back"), var1 -> {
             minecraft.openScreen(parent);
         }));
-        children.add(materialList = new MaterialisationMaterialListWidget(minecraft, width / 2 - 10, height - 38, 28 + 5, height - 5, DrawableHelper.BACKGROUND_LOCATION));
-        children.add(descriptionList = new MaterialisationDescriptionListWidget(minecraft, width / 2 - 10, height - 38, 28 + 5, height - 5, DrawableHelper.BACKGROUND_LOCATION));
+        children.add(materialList = new MaterialisationMaterialListWidget(minecraft, width / 2 - 10, height, 28 + 5, height - 5, DrawableHelper.BACKGROUND_LOCATION));
+        children.add(descriptionList = new MaterialisationDescriptionListWidget(minecraft, width / 2 - 10, height, 28 + 5, height - 5, DrawableHelper.BACKGROUND_LOCATION));
         materialList.setLeftPos(5);
         descriptionList.setLeftPos(width / 2 + 5);
         if (lastDescription != null) {
