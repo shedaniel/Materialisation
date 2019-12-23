@@ -3,6 +3,7 @@ package me.shedaniel.materialisation.rei;
 import me.shedaniel.materialisation.Materialisation;
 import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.ModReference;
+import me.shedaniel.materialisation.api.Modifier;
 import me.shedaniel.materialisation.api.PartMaterials;
 import me.shedaniel.materialisation.items.ColoredItem;
 import me.shedaniel.materialisation.items.MaterialisedMiningTool;
@@ -16,6 +17,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.SemanticVersion;
 import net.fabricmc.loader.util.version.VersionParsingException;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Pair;
 import net.minecraft.util.math.MathHelper;
 
 import java.util.List;
@@ -26,6 +28,7 @@ public class MaterialisationREIPlugin implements REIPluginV0 {
     public static final Identifier PLUGIN = new Identifier(ModReference.MOD_ID, "rei_plugin");
     public static final Identifier MATERIAL_PREPARER = new Identifier(ModReference.MOD_ID, "material_preparer");
     public static final Identifier MATERIALISING_TABLE = new Identifier(ModReference.MOD_ID, "materialising_table");
+    public static final Identifier MODIFIERS = new Identifier(ModReference.MOD_ID, "modifiers");
 
     @Override
     public Identifier getPluginIdentifier() {
@@ -34,13 +37,15 @@ public class MaterialisationREIPlugin implements REIPluginV0 {
 
     @Override
     public SemanticVersion getMinimumVersion() throws VersionParsingException {
-        return SemanticVersion.parse("3.0-pre");
+        return SemanticVersion.parse("3.2.28");
     }
 
     @Override
     public void registerPluginCategories(RecipeHelper recipeHelper) {
         recipeHelper.registerCategory(new MaterialPreparerCategory());
         recipeHelper.registerCategory(new MaterialisingTableCategory());
+        recipeHelper.registerCategory(new MaterialisationModifiersCategory());
+        recipeHelper.removeAutoCraftButton(MODIFIERS);
     }
 
     @Override
@@ -76,6 +81,14 @@ public class MaterialisationREIPlugin implements REIPluginV0 {
             recipeHelper.registerDisplay(MATERIALISING_TABLE, new MaterialisingTableDisplay(MaterialisationUtils.createToolHandle(handle), MaterialisationUtils.createHammerHead(head), MaterialisationUtils.createHammer(handle, head)));
             recipeHelper.registerDisplay(MATERIALISING_TABLE, new MaterialisingTableDisplay(MaterialisationUtils.createToolHandle(handle), MaterialisationUtils.createMegaAxeHead(head), MaterialisationUtils.createMegaAxe(handle, head)));
         }));
+        for (Modifier modifier : Materialisation.MODIFIERS) {
+            Pair<Integer, Integer> range = modifier.getGraphicalDescriptionRange();
+            if (range != null && range.getLeft() <= range.getRight()) {
+                for (int level = range.getLeft(); level <= range.getRight(); level++) {
+                    recipeHelper.registerDisplay(MODIFIERS, new MaterialisationModifiersDisplay(Materialisation.MODIFIERS.getId(modifier), level));
+                }
+            }
+        }
     }
 
     @Override

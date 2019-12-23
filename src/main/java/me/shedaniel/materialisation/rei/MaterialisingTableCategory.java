@@ -1,7 +1,6 @@
 package me.shedaniel.materialisation.rei;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.platform.GlStateManager;
 import me.shedaniel.materialisation.Materialisation;
 import me.shedaniel.math.api.Point;
 import me.shedaniel.math.api.Rectangle;
@@ -12,7 +11,6 @@ import me.shedaniel.rei.gui.widget.EntryWidget;
 import me.shedaniel.rei.gui.widget.Widget;
 import me.shedaniel.rei.plugin.DefaultPlugin;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.GuiLighting;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.Identifier;
 
@@ -45,8 +43,6 @@ public class MaterialisingTableCategory implements RecipeCategory<MaterialisingT
             @Override
             public void render(int mouseX, int mouseY, float delta) {
                 super.render(mouseX, mouseY, delta);
-                GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-                GuiLighting.disable();
                 MinecraftClient.getInstance().getTextureManager().bindTexture(DefaultPlugin.getDisplayTexture());
                 this.blit(startPoint.x, startPoint.y, 0, 221, 82, 26);
             }

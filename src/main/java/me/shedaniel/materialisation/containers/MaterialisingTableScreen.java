@@ -96,8 +96,8 @@ public class MaterialisingTableScreen extends AbstractContainerScreen<Materialis
     @Override
     protected void drawBackground(float v, int i, int i1) {
         this.minecraft.getTextureManager().bindTexture(BG_TEX);
-        int int_3 = this.left;
-        int int_4 = (this.height - this.containerHeight) / 2;
+        int int_3 = x;
+        int int_4 = y;
         this.blit(int_3, int_4, 0, 0, this.containerWidth, this.containerHeight);
         this.blit(int_3 + 34, int_4 + 20, 0, this.containerHeight + (this.container.getSlot(0).hasStack() ? 0 : 16), 110, 16);
         if ((this.container.getSlot(0).hasStack() || this.container.getSlot(1).hasStack()) && !this.container.getSlot(2).hasStack()) {

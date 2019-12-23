@@ -3,7 +3,13 @@ package me.shedaniel.materialisation.api;
 import com.google.common.collect.ImmutableList;
 import me.shedaniel.materialisation.items.MaterialisedMiningTool;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
+import net.minecraft.util.Pair;
 
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -58,6 +64,21 @@ public interface Modifier {
         return ImmutableList.of();
     }
 
+    default List<String> getModifierDescription(int level) {
+        return Collections.emptyList();
+    }
+
+    default boolean hasGraphicalDescription(int level) {
+        Pair<Integer, Integer> range = getGraphicalDescriptionRange();
+        if (range == null) return false;
+        return level >= range.getLeft() && level <= range.getRight();
+    }
+
+    @Nullable
+    default Pair<Integer, Integer> getGraphicalDescriptionRange() {
+        return null;
+    }
+
     public static class ModifierImpl implements Modifier {
         private final BiFunction<ItemStack, Integer, Integer> durabilityCost;
         private final Supplier<ImmutableList<ToolType>> applicableToolTypes;
@@ -69,6 +90,10 @@ public interface Modifier {
         private final BiFunction<ItemStack, Integer, Float> durabilityMultiplier;
         private final BiFunction<ItemStack, Integer, Float> miningSpeedMultiplier;
         private final BiFunction<ItemStack, Integer, Float> attackDamageMultiplier;
+        @Nullable
+        private final Function<Integer, List<Text>> description;
+        @Nullable
+        private final Pair<Integer, Integer> graphicalDescriptionRange;
 
         private ModifierImpl(
                 BiFunction<ItemStack, Integer, Integer> durabilityCost,
@@ -80,7 +105,9 @@ public interface Modifier {
                 BiFunction<ItemStack, Integer, Integer> extraEnchantability,
                 BiFunction<ItemStack, Integer, Float> durabilityMultiplier,
                 BiFunction<ItemStack, Integer, Float> miningSpeedMultiplier,
-                BiFunction<ItemStack, Integer, Float> attackDamageMultiplier
+                BiFunction<ItemStack, Integer, Float> attackDamageMultiplier,
+                @Nullable Function<Integer, List<Text>> description,
+                @Nullable Pair<Integer, Integer> graphicalDescriptionRange
         ) {
             this.durabilityCost = durabilityCost;
             this.applicableToolTypes = applicableToolTypes;
@@ -92,6 +119,8 @@ public interface Modifier {
             this.durabilityMultiplier = durabilityMultiplier;
             this.miningSpeedMultiplier = miningSpeedMultiplier;
             this.attackDamageMultiplier = attackDamageMultiplier;
+            this.description = description;
+            this.graphicalDescriptionRange = graphicalDescriptionRange;
         }
 
         private static Modifier create(
@@ -104,7 +133,9 @@ public interface Modifier {
                 BiFunction<ItemStack, Integer, Integer> extraEnchantability,
                 BiFunction<ItemStack, Integer, Float> durabilityMultiplier,
                 BiFunction<ItemStack, Integer, Float> miningSpeedMultiplier,
-                BiFunction<ItemStack, Integer, Float> attackDamageMultiplier
+                BiFunction<ItemStack, Integer, Float> attackDamageMultiplier,
+                @Nullable Function<Integer, List<Text>> description,
+                @Nullable Pair<Integer, Integer> graphicalDescriptionRange
         ) {
             return new ModifierImpl(
                     durabilityCost,
@@ -116,8 +147,29 @@ public interface Modifier {
                     extraEnchantability,
                     durabilityMultiplier,
                     miningSpeedMultiplier,
-                    attackDamageMultiplier
+                    attackDamageMultiplier,
+                    description,
+                    graphicalDescriptionRange
             );
+        }
+
+        @Override
+        public List<String> getModifierDescription(int level) {
+            if (description != null) {
+                List<Text> apply = description.apply(level);
+                if (apply != null) {
+                    List<String> desc = new ArrayList<>();
+                    for (Text s : apply) desc.add(s.asFormattedString());
+                    return desc;
+                }
+            }
+            return Collections.emptyList();
+        }
+
+        @Nullable
+        @Override
+        public Pair<Integer, Integer> getGraphicalDescriptionRange() {
+            return graphicalDescriptionRange;
         }
 
         @Override
@@ -183,6 +235,10 @@ public interface Modifier {
         private BiFunction<ItemStack, Integer, Float> durabilityMultiplier = (tool, level) -> 1f;
         private BiFunction<ItemStack, Integer, Float> miningSpeedMultiplier = (tool, level) -> 1f;
         private BiFunction<ItemStack, Integer, Float> attackDamageMultiplier = (tool, level) -> 1f;
+        @Nullable
+        private Function<Integer, List<Text>> description;
+        @Nullable
+        private Pair<Integer, Integer> graphicalDescriptionRange;
 
         private Builder() {
         }
@@ -198,8 +254,25 @@ public interface Modifier {
                     extraEnchantability,
                     durabilityMultiplier,
                     miningSpeedMultiplier,
-                    attackDamageMultiplier
+                    attackDamageMultiplier,
+                    description,
+                    graphicalDescriptionRange
             );
+        }
+
+        public Builder description(@Nullable Function<Integer, List<Text>> description) {
+            this.description = description;
+            return this;
+        }
+
+        public Builder graphicalDescriptionLevelRange(@Nullable Pair<Integer, Integer> range) {
+            this.graphicalDescriptionRange = range;
+            return this;
+        }
+
+        public Builder graphicalDescriptionLevelRange(int min, int max) {
+            this.graphicalDescriptionRange = new Pair<>(min, max);
+            return this;
         }
 
         public Builder durabilityCost(BiFunction<ItemStack, Integer, Integer> durabilityCost) {

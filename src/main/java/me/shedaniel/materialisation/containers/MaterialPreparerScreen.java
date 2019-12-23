@@ -42,9 +42,9 @@ public class MaterialPreparerScreen extends AbstractContainerScreen<MaterialPrep
     @Override
     protected void drawBackground(float v, int i, int i1) {
         this.minecraft.getTextureManager().bindTexture(BG_TEX);
-        this.blit(left, top, 0, 0, this.containerWidth, this.containerHeight);
+        this.blit(x, y, 0, 0, this.containerWidth, this.containerHeight);
         if ((this.container.getSlot(0).hasStack() || this.container.getSlot(1).hasStack()) && !this.container.getSlot(2).hasStack()) {
-            this.blit(left + 99, top + 45 - 26, this.containerWidth, 0, 28, 21);
+            this.blit(x + 99, y + 45 - 26, this.containerWidth, 0, 28, 21);
         }
     }
 

@@ -26,6 +26,20 @@ public class Modifiers {
         }
     }
 
+    public static LevelMap<BetterIngredient> getIngredient(Modifier modifier) {
+        LevelMap<BetterIngredient> map = new LevelMap<>();
+        List<ModifierIngredient> list = MODIFIER_MAP.get(modifier);
+        for (ModifierIngredient ingredient : list) {
+            map.getBase().addAll(ingredient.getBaseIngredient());
+            for (Map.Entry<Integer, List<BetterIngredient>> entry : ingredient.getIngredients().entrySet()) {
+                List<BetterIngredient> ingredients = map.getOrDefault(entry.getKey(), new ArrayList<>());
+                ingredients.addAll(entry.getValue());
+                map.put(entry.getKey(), ingredients);
+            }
+        }
+        return map;
+    }
+
     public static void resetMap() {
         MODIFIER_MAP.clear();
     }
