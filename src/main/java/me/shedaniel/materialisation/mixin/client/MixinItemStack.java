@@ -28,7 +28,7 @@ public abstract class MixinItemStack {
         }
     }
 
-    @Inject(method = "getTooltip", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/Multimap;isEmpty()Z", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD)
+    @Inject(method = "getTooltip", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/Multimap;isEmpty()Z", ordinal = 0, remap = false), locals = LocalCapture.CAPTURE_FAILHARD)
     public void getTooltipMultimap(PlayerEntity playerEntity_1, TooltipContext tooltipContext_1, CallbackInfoReturnable<List> cir, List list_1, int int_1, EquipmentSlot var6[], int var7, int var8, EquipmentSlot equipmentSlot_1, Multimap multimap_1) {
         if (getItem() instanceof MaterialisedMiningTool)
             multimap_1.clear();
