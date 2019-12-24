@@ -20,7 +20,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.SimpleRegistry;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,7 +27,6 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 public class Materialisation implements ModInitializer {
 
@@ -119,7 +117,7 @@ public class Materialisation implements ModInitializer {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        CompletableFuture.runAsync(ConfigHelper::loadConfig, ConfigHelper.EXECUTOR_SERVICE);
+        ConfigHelper.loadConfig();
     }
 
     private void registerBlock(String name, Block block) {

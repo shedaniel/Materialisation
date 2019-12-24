@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.fabricmc.fabric.api.tools.FabricToolTags;
 import net.minecraft.block.*;
+import net.minecraft.entity.EntityContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
@@ -15,10 +16,19 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 public class MaterialisingTableBlock extends HorizontalFacingBlock {
+
+    private static final VoxelShape SHAPE;
+
+    static {
+        VoxelShape base = Block.createCuboidShape(0, 0, 0, 16, 7, 16);
+        SHAPE = VoxelShapes.union(base, Block.createCuboidShape(1, 7, 1, 15, 9, 15), Block.createCuboidShape(5, 9, 5, 11, 16, 11));
+    }
 
     @SuppressWarnings("deprecation")
     public MaterialisingTableBlock() {
@@ -62,4 +72,8 @@ public class MaterialisingTableBlock extends HorizontalFacingBlock {
         return false;
     }
 
+    @Override
+    public VoxelShape getOutlineShape(BlockState blockState, BlockView blockView, BlockPos blockPos, EntityContext entityContext) {
+        return SHAPE;
+    }
 }

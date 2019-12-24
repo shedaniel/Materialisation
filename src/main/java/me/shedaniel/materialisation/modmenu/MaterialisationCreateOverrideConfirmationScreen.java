@@ -17,7 +17,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 public class MaterialisationCreateOverrideConfirmationScreen extends Screen {
@@ -73,7 +72,7 @@ public class MaterialisationCreateOverrideConfirmationScreen extends Screen {
                     fileWriter.write(ConfigHelper.GSON.toJson(object));
                     fileWriter.close();
                     MinecraftClient.getInstance().openScreen(new MaterialisationLoadingConfigScreen(og, og.parent));
-                    CompletableFuture.runAsync(ConfigHelper::loadConfig, ConfigHelper.EXECUTOR_SERVICE);
+                    ConfigHelper.loadConfigAsync();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

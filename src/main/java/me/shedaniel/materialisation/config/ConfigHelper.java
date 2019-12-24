@@ -11,20 +11,22 @@ import me.shedaniel.materialisation.modifiers.Modifiers;
 import me.shedaniel.materialisation.utils.ResettableSimpleRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Lazy;
 import net.minecraft.util.Pair;
 
 import java.io.*;
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public class ConfigHelper implements ModifierIngredientsHandler {
 
-    public static final ExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "Materialisation"));
     public static final File CONFIG_DIRECTORY = new File(FabricLoader.getInstance().getConfigDirectory(), "materialisation");
     public static final File MATERIALS_DIRECTORY = new File(CONFIG_DIRECTORY, "material");
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
@@ -33,12 +35,29 @@ public class ConfigHelper implements ModifierIngredientsHandler {
     private static final List<JsonObject> MODIFIERS = Lists.newArrayList();
     private static final Map<Modifier, List<ModifierIngredient>> MODIFIER_LIST_MAP = Maps.newHashMap();
     public static boolean loading = false;
+    private static Lazy<ExecutorService> executorService = new Lazy<>(() -> Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "Materialisation")));
 
     public static void loadDefault() throws IOException {
         if (OLD_MATERIALS_DIRECTORY.exists())
             OLD_MATERIALS_DIRECTORY.renameTo(new File(CONFIG_DIRECTORY, "materials_old"));
         if (!CONFIG_DIRECTORY.exists() || !MATERIALS_DIRECTORY.exists())
             fillDefaultConfigs();
+    }
+
+    public static void loadConfigAsync() {
+        try {
+            executorService.get().shutdownNow();
+            executorService = new Lazy<>(() -> Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "Materialisation")));
+            executorService.get().invokeAll(Collections.singletonList(new Callable<Object>() {
+                @Override
+                public Object call() throws Exception {
+                    loadConfig();
+                    return null;
+                }
+            }), 10, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void loadConfig() {

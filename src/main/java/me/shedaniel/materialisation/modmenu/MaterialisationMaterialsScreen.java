@@ -16,8 +16,6 @@ import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.TranslatableText;
 
-import java.util.concurrent.CompletableFuture;
-
 public class MaterialisationMaterialsScreen extends Screen {
 
     Screen parent;
@@ -70,7 +68,7 @@ public class MaterialisationMaterialsScreen extends Screen {
         addButton(new ButtonWidget(59, 4, 85, 20, I18n.translate("config.button.materialisation.reload"), var1 -> {
             if (!ConfigHelper.loading) {
                 MinecraftClient.getInstance().openScreen(new MaterialisationLoadingConfigScreen(this, parent));
-                CompletableFuture.runAsync(ConfigHelper::loadConfig, ConfigHelper.EXECUTOR_SERVICE);
+                ConfigHelper.loadConfigAsync();
             }
         }));
         addButton(new ButtonWidget(4, 4, 50, 20, I18n.translate("gui.back"), var1 -> {
