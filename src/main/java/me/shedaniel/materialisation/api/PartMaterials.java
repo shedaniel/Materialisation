@@ -40,9 +40,14 @@ public class PartMaterials {
     }
 
     public static Stream<PartMaterial> getKnownMaterials() {
+        return getKnownMaterialList().stream();
+    }
+
+    @Deprecated
+    public static List<PartMaterial> getKnownMaterialList() {
         List<PartMaterial> list = Lists.newArrayList();
         MATERIALS.entrySet().stream().map(Map.Entry::getValue).map(MaterialsPack::getKnownMaterials).map(stream -> stream.collect(Collectors.toList())).forEach(list::addAll);
-        return list.stream();
+        return list;
     }
 
     @Deprecated

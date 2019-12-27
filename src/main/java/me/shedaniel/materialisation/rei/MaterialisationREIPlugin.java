@@ -1,9 +1,11 @@
 package me.shedaniel.materialisation.rei;
 
+import com.google.common.collect.Lists;
 import me.shedaniel.materialisation.Materialisation;
 import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.ModReference;
 import me.shedaniel.materialisation.api.Modifier;
+import me.shedaniel.materialisation.api.PartMaterial;
 import me.shedaniel.materialisation.api.PartMaterials;
 import me.shedaniel.materialisation.items.ColoredItem;
 import me.shedaniel.materialisation.items.MaterialisedMiningTool;
@@ -93,32 +95,50 @@ public class MaterialisationREIPlugin implements REIPluginV0 {
 
     @Override
     public void registerEntries(EntryRegistry entryRegistry) {
-        EntryStack handle = EntryStack.create(Materialisation.HANDLE);
-        EntryStack pickaxe_head = EntryStack.create(Materialisation.PICKAXE_HEAD);
-        EntryStack axe_head = EntryStack.create(Materialisation.AXE_HEAD);
-        EntryStack shovel_head = EntryStack.create(Materialisation.SHOVEL_HEAD);
-        EntryStack sword_head = EntryStack.create(Materialisation.SWORD_BLADE);
-        EntryStack hammer_head = EntryStack.create(Materialisation.HAMMER_HEAD);
-        EntryStack megaaxe_head = EntryStack.create(Materialisation.MEGAAXE_HEAD);
-        EntryStack pickaxe = EntryStack.create(Materialisation.MATERIALISED_PICKAXE);
-        EntryStack axe = EntryStack.create(Materialisation.MATERIALISED_AXE);
-        EntryStack shovel = EntryStack.create(Materialisation.MATERIALISED_SHOVEL);
-        EntryStack sword = EntryStack.create(Materialisation.MATERIALISED_SWORD);
-        EntryStack hammer = EntryStack.create(Materialisation.MATERIALISED_HAMMER);
-        EntryStack megaaxe = EntryStack.create(Materialisation.MATERIALISED_MEGAAXE);
-        PartMaterials.getKnownMaterials().map(MaterialisationUtils::createToolHandle).forEach(stack -> entryRegistry.registerEntriesAfter(handle, EntryStack.create(stack)));
-        PartMaterials.getKnownMaterials().map(MaterialisationUtils::createPickaxeHead).forEach(stack -> entryRegistry.registerEntriesAfter(pickaxe_head, EntryStack.create(stack)));
-        PartMaterials.getKnownMaterials().map(MaterialisationUtils::createAxeHead).forEach(stack -> entryRegistry.registerEntriesAfter(axe_head, EntryStack.create(stack)));
-        PartMaterials.getKnownMaterials().map(MaterialisationUtils::createShovelHead).forEach(stack -> entryRegistry.registerEntriesAfter(shovel_head, EntryStack.create(stack)));
-        PartMaterials.getKnownMaterials().map(MaterialisationUtils::createSwordBlade).forEach(stack -> entryRegistry.registerEntriesAfter(sword_head, EntryStack.create(stack)));
-        PartMaterials.getKnownMaterials().map(MaterialisationUtils::createHammerHead).forEach(stack -> entryRegistry.registerEntriesAfter(hammer_head, EntryStack.create(stack)));
-        PartMaterials.getKnownMaterials().map(MaterialisationUtils::createMegaAxeHead).forEach(stack -> entryRegistry.registerEntriesAfter(megaaxe_head, EntryStack.create(stack)));
-        PartMaterials.getKnownMaterials().forEach(material -> entryRegistry.registerEntriesAfter(pickaxe, EntryStack.create(MaterialisationUtils.createPickaxe(material, material))));
-        PartMaterials.getKnownMaterials().forEach(material -> entryRegistry.registerEntriesAfter(axe, EntryStack.create(MaterialisationUtils.createAxe(material, material))));
-        PartMaterials.getKnownMaterials().forEach(material -> entryRegistry.registerEntriesAfter(shovel, EntryStack.create(MaterialisationUtils.createShovel(material, material))));
-        PartMaterials.getKnownMaterials().forEach(material -> entryRegistry.registerEntriesAfter(sword, EntryStack.create(MaterialisationUtils.createSword(material, material))));
-        PartMaterials.getKnownMaterials().forEach(material -> entryRegistry.registerEntriesAfter(hammer, EntryStack.create(MaterialisationUtils.createHammer(material, material))));
-        PartMaterials.getKnownMaterials().forEach(material -> entryRegistry.registerEntriesAfter(megaaxe, EntryStack.create(MaterialisationUtils.createMegaAxe(material, material))));
+        List<EntryStack> handle = Lists.newArrayList();
+        List<EntryStack> pickaxe_head = Lists.newArrayList();
+        List<EntryStack> axe_head = Lists.newArrayList();
+        List<EntryStack> shovel_head = Lists.newArrayList();
+        List<EntryStack> sword_head = Lists.newArrayList();
+        List<EntryStack> hammer_head = Lists.newArrayList();
+        List<EntryStack> megaaxe_head = Lists.newArrayList();
+        List<EntryStack> pickaxe = Lists.newArrayList();
+        List<EntryStack> axe = Lists.newArrayList();
+        List<EntryStack> shovel = Lists.newArrayList();
+        List<EntryStack> sword = Lists.newArrayList();
+        List<EntryStack> hammer = Lists.newArrayList();
+        List<EntryStack> megaaxe = Lists.newArrayList();
+        for (PartMaterial material : PartMaterials.getKnownMaterialList()) {
+            handle.add(EntryStack.create(MaterialisationUtils.createToolHandle(material)));
+            pickaxe_head.add(EntryStack.create(MaterialisationUtils.createPickaxeHead(material)));
+            axe_head.add(EntryStack.create(MaterialisationUtils.createAxeHead(material)));
+            shovel_head.add(EntryStack.create(MaterialisationUtils.createShovelHead(material)));
+            sword_head.add(EntryStack.create(MaterialisationUtils.createSwordBlade(material)));
+            hammer_head.add(EntryStack.create(MaterialisationUtils.createHammerHead(material)));
+            megaaxe_head.add(EntryStack.create(MaterialisationUtils.createMegaAxeHead(material)));
+
+            pickaxe.add(EntryStack.create(MaterialisationUtils.createPickaxe(material, material)));
+            axe.add(EntryStack.create(MaterialisationUtils.createAxe(material, material)));
+            shovel.add(EntryStack.create(MaterialisationUtils.createShovel(material, material)));
+            sword.add(EntryStack.create(MaterialisationUtils.createSwordBlade(material)));
+            hammer.add(EntryStack.create(MaterialisationUtils.createHammer(material, material)));
+            megaaxe.add(EntryStack.create(MaterialisationUtils.createMegaAxe(material, material)));
+        }
+        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.HANDLE), handle);
+        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.PICKAXE_HEAD), pickaxe_head);
+        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.AXE_HEAD), axe_head);
+        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.SHOVEL_HEAD), shovel_head);
+        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.SWORD_BLADE), sword_head);
+        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.HAMMER_HEAD), hammer_head);
+        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.MEGAAXE_HEAD), megaaxe_head);
+
+        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.MATERIALISED_PICKAXE), pickaxe);
+        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.MATERIALISED_AXE), axe);
+        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.MATERIALISED_SHOVEL), shovel);
+        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.MATERIALISED_SWORD), sword);
+        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.MATERIALISED_HAMMER), hammer);
+        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.MATERIALISED_MEGAAXE), megaaxe);
+
         entryRegistry.getStacksList().removeIf(entry -> entry.getType() == EntryStack.Type.ITEM && entry.getItemStack().getItem() instanceof MaterialisedMiningTool && !entry.getItemStack().getOrCreateTag().contains("mt_done_tool") && !entry.getItemStack().getOrCreateTag().getBoolean("mt_done_tool"));
         entryRegistry.getStacksList().removeIf(entry -> entry.getType() == EntryStack.Type.ITEM && entry.getItemStack().getItem() instanceof ColoredItem && !entry.getItemStack().getOrCreateTag().contains("mt_0_material"));
     }
