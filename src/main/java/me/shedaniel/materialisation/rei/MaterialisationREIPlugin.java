@@ -39,7 +39,7 @@ public class MaterialisationREIPlugin implements REIPluginV0 {
 
     @Override
     public SemanticVersion getMinimumVersion() throws VersionParsingException {
-        return SemanticVersion.parse("3.2.28");
+        return SemanticVersion.parse("3.2.33");
     }
 
     @Override
@@ -124,20 +124,20 @@ public class MaterialisationREIPlugin implements REIPluginV0 {
             hammer.add(EntryStack.create(MaterialisationUtils.createHammer(material, material)));
             megaaxe.add(EntryStack.create(MaterialisationUtils.createMegaAxe(material, material)));
         }
-        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.HANDLE), handle);
-        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.PICKAXE_HEAD), pickaxe_head);
-        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.AXE_HEAD), axe_head);
-        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.SHOVEL_HEAD), shovel_head);
-        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.SWORD_BLADE), sword_head);
-        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.HAMMER_HEAD), hammer_head);
-        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.MEGAAXE_HEAD), megaaxe_head);
+        entryRegistry.queueRegisterEntryAfter(EntryStack.create(Materialisation.HANDLE), handle);
+        entryRegistry.queueRegisterEntryAfter(EntryStack.create(Materialisation.PICKAXE_HEAD), pickaxe_head);
+        entryRegistry.queueRegisterEntryAfter(EntryStack.create(Materialisation.AXE_HEAD), axe_head);
+        entryRegistry.queueRegisterEntryAfter(EntryStack.create(Materialisation.SHOVEL_HEAD), shovel_head);
+        entryRegistry.queueRegisterEntryAfter(EntryStack.create(Materialisation.SWORD_BLADE), sword_head);
+        entryRegistry.queueRegisterEntryAfter(EntryStack.create(Materialisation.HAMMER_HEAD), hammer_head);
+        entryRegistry.queueRegisterEntryAfter(EntryStack.create(Materialisation.MEGAAXE_HEAD), megaaxe_head);
 
-        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.MATERIALISED_PICKAXE), pickaxe);
-        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.MATERIALISED_AXE), axe);
-        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.MATERIALISED_SHOVEL), shovel);
-        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.MATERIALISED_SWORD), sword);
-        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.MATERIALISED_HAMMER), hammer);
-        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.MATERIALISED_MEGAAXE), megaaxe);
+        entryRegistry.queueRegisterEntryAfter(EntryStack.create(Materialisation.MATERIALISED_PICKAXE), pickaxe);
+        entryRegistry.queueRegisterEntryAfter(EntryStack.create(Materialisation.MATERIALISED_AXE), axe);
+        entryRegistry.queueRegisterEntryAfter(EntryStack.create(Materialisation.MATERIALISED_SHOVEL), shovel);
+        entryRegistry.queueRegisterEntryAfter(EntryStack.create(Materialisation.MATERIALISED_SWORD), sword);
+        entryRegistry.queueRegisterEntryAfter(EntryStack.create(Materialisation.MATERIALISED_HAMMER), hammer);
+        entryRegistry.queueRegisterEntryAfter(EntryStack.create(Materialisation.MATERIALISED_MEGAAXE), megaaxe);
 
         entryRegistry.getStacksList().removeIf(entry -> entry.getType() == EntryStack.Type.ITEM && entry.getItemStack().getItem() instanceof MaterialisedMiningTool && !entry.getItemStack().getOrCreateTag().contains("mt_done_tool") && !entry.getItemStack().getOrCreateTag().getBoolean("mt_done_tool"));
         entryRegistry.getStacksList().removeIf(entry -> entry.getType() == EntryStack.Type.ITEM && entry.getItemStack().getItem() instanceof ColoredItem && !entry.getItemStack().getOrCreateTag().contains("mt_0_material"));
