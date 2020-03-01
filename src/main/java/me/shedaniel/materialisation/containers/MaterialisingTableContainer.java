@@ -28,17 +28,17 @@ import java.util.Map;
 import java.util.Optional;
 
 public class MaterialisingTableContainer extends Container {
-
+    
     private final Inventory main, result;
     private final PlayerEntity player;
     private BlockContext context;
     private String itemName;
     private int nextDecrease;
-
+    
     public MaterialisingTableContainer(int syncId, PlayerInventory main) {
         this(syncId, main, BlockContext.EMPTY);
     }
-
+    
     public MaterialisingTableContainer(int syncId, PlayerInventory playerInventory, final BlockContext context) {
         super(null, syncId);
         this.context = context;
@@ -56,11 +56,11 @@ public class MaterialisingTableContainer extends Container {
             public boolean canInsert(ItemStack itemStack_1) {
                 return false;
             }
-
+            
             public boolean canTakeItems(PlayerEntity playerEntity_1) {
                 return hasStack();
             }
-
+            
             public ItemStack onTakeItem(PlayerEntity playerEntity_1, ItemStack itemStack_1) {
                 ItemStack stack = main.getInvStack(0).copy();
                 stack.decrement(1);
@@ -81,14 +81,14 @@ public class MaterialisingTableContainer extends Container {
         for (int_4 = 0; int_4 < 9; ++int_4)
             this.addSlot(new Slot(playerInventory, int_4, 8 + int_4 * 18, 142));
     }
-
+    
     @Override
     public boolean canUse(PlayerEntity playerEntity) {
         return this.context.run((world, blockPos) -> {
             return world.getBlockState(blockPos).getBlock() == Materialisation.MATERIALISING_TABLE && playerEntity.squaredDistanceTo(blockPos.getX() + .5D, blockPos.getY() + .5D, blockPos.getZ() + .5D) < 64D;
         }, true);
     }
-
+    
     public void setNewItemName(String string_1) {
         this.itemName = string_1;
         if (this.getSlot(2).hasStack()) {
@@ -101,7 +101,7 @@ public class MaterialisingTableContainer extends Container {
         }
         this.updateResult();
     }
-
+    
     @Override
     public void onContentChanged(Inventory inventory_1) {
         super.onContentChanged(inventory_1);
@@ -109,15 +109,15 @@ public class MaterialisingTableContainer extends Container {
             this.updateResult();
         }
     }
-
+    
     private void updateResult() {
         ItemStack first = this.main.getInvStack(0);
         ItemStack second = this.main.getInvStack(1);
         if (first.isEmpty()) {
             this.result.setInvStack(0, ItemStack.EMPTY);
         } else if (first.getItem() instanceof MaterialisedMiningTool
-                && first.getOrCreateTag().contains("mt_0_material")
-                && first.getOrCreateTag().contains("mt_1_material")
+                   && first.getOrCreateTag().contains("mt_0_material")
+                   && first.getOrCreateTag().contains("mt_1_material")
         ) {
             // Modifiers
             if (!second.isEmpty()) {
@@ -137,20 +137,17 @@ public class MaterialisingTableContainer extends Container {
                             if (level + 1 <= maximumLevel || MaterialisationUtils.getToolMaxDurability(copy) >= 1) {
                                 nextDecrease = modifierOptional.get().getRight().getRight().count;
                                 this.result.setInvStack(0, copy);
-                                this.sendContentUpdates();
-                                return;
                             } else {
                                 this.result.setInvStack(0, ItemStack.EMPTY);
-                                this.sendContentUpdates();
-                                return;
                             }
+                            this.sendContentUpdates();
+                            return;
                         }
                     }
                 }
             }
-
-
-
+            
+            
             // Fixing Special
             ItemStack copy = first.copy();
             int toolDurability = MaterialisationUtils.getToolDurability(first);
@@ -181,7 +178,7 @@ public class MaterialisingTableContainer extends Container {
                 if (copy.hasCustomName())
                     copy.removeCustomName();
             } else if (!this.itemName.equals(copy.getName().getString()))
-                if (itemName.equals(copy.getItem().getName(copy)))
+                if (itemName.equals(copy.getItem().getName(copy).getString()))
                     copy.removeCustomName();
                 else
                     copy.setCustomName(new LiteralText(this.itemName));
@@ -204,7 +201,7 @@ public class MaterialisingTableContainer extends Container {
                     if (copy.hasCustomName())
                         copy.removeCustomName();
                 } else if (!this.itemName.equals(copy.getName().getString()))
-                    if (itemName.equals(copy.getItem().getName(copy)))
+                    if (itemName.equals(copy.getItem().getName(copy).getString()))
                         copy.removeCustomName();
                     else
                         copy.setCustomName(new LiteralText(this.itemName));
@@ -228,7 +225,7 @@ public class MaterialisingTableContainer extends Container {
                     if (copy.hasCustomName())
                         copy.removeCustomName();
                 } else if (!this.itemName.equals(copy.getName().getString()))
-                    if (itemName.equals(copy.getItem().getName(copy)))
+                    if (itemName.equals(copy.getItem().getName(copy).getString()))
                         copy.removeCustomName();
                     else
                         copy.setCustomName(new LiteralText(this.itemName));
@@ -252,7 +249,7 @@ public class MaterialisingTableContainer extends Container {
                     if (copy.hasCustomName())
                         copy.removeCustomName();
                 } else if (!this.itemName.equals(copy.getName().getString()))
-                    if (itemName.equals(copy.getItem().getName(copy)))
+                    if (itemName.equals(copy.getItem().getName(copy).getString()))
                         copy.removeCustomName();
                     else
                         copy.setCustomName(new LiteralText(this.itemName));
@@ -276,7 +273,7 @@ public class MaterialisingTableContainer extends Container {
                     if (copy.hasCustomName())
                         copy.removeCustomName();
                 } else if (!this.itemName.equals(copy.getName().getString()))
-                    if (itemName.equals(copy.getItem().getName(copy)))
+                    if (itemName.equals(copy.getItem().getName(copy).getString()))
                         copy.removeCustomName();
                     else
                         copy.setCustomName(new LiteralText(this.itemName));
@@ -300,7 +297,7 @@ public class MaterialisingTableContainer extends Container {
                     if (copy.hasCustomName())
                         copy.removeCustomName();
                 } else if (!this.itemName.equals(copy.getName().getString()))
-                    if (itemName.equals(copy.getItem().getName(copy)))
+                    if (itemName.equals(copy.getItem().getName(copy).getString()))
                         copy.removeCustomName();
                     else
                         copy.setCustomName(new LiteralText(this.itemName));
@@ -324,7 +321,7 @@ public class MaterialisingTableContainer extends Container {
                     if (copy.hasCustomName())
                         copy.removeCustomName();
                 } else if (!this.itemName.equals(copy.getName().getString()))
-                    if (itemName.equals(copy.getItem().getName(copy)))
+                    if (itemName.equals(copy.getItem().getName(copy).getString()))
                         copy.removeCustomName();
                     else
                         copy.setCustomName(new LiteralText(this.itemName));
@@ -336,7 +333,7 @@ public class MaterialisingTableContainer extends Container {
         }
         this.sendContentUpdates();
     }
-
+    
     @Override
     public void close(PlayerEntity playerEntity_1) {
         super.close(playerEntity_1);
@@ -344,7 +341,7 @@ public class MaterialisingTableContainer extends Container {
             this.dropInventory(playerEntity_1, world_1, this.main);
         });
     }
-
+    
     @Override
     public ItemStack transferSlot(PlayerEntity playerEntity_1, int int_1) {
         ItemStack itemStack_1 = ItemStack.EMPTY;
@@ -356,7 +353,7 @@ public class MaterialisingTableContainer extends Container {
                 if (!this.insertItem(itemStack_2, 3, 39, true)) {
                     return ItemStack.EMPTY;
                 }
-
+                
                 slot_1.onStackChanged(itemStack_2, itemStack_1);
             } else if (int_1 != 0 && int_1 != 1) {
                 if (int_1 >= 3 && int_1 < 39 && !this.insertItem(itemStack_2, 0, 2, false)) {
@@ -365,21 +362,21 @@ public class MaterialisingTableContainer extends Container {
             } else if (!this.insertItem(itemStack_2, 3, 39, false)) {
                 return ItemStack.EMPTY;
             }
-
+            
             if (itemStack_2.isEmpty()) {
                 slot_1.setStack(ItemStack.EMPTY);
             } else {
                 slot_1.markDirty();
             }
-
+            
             if (itemStack_2.getCount() == itemStack_1.getCount()) {
                 return ItemStack.EMPTY;
             }
-
+            
             slot_1.onTakeItem(playerEntity_1, itemStack_2);
         }
-
+        
         return itemStack_1;
     }
-
+    
 }

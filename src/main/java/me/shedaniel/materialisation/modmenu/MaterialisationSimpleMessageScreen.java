@@ -15,13 +15,13 @@ import static me.shedaniel.materialisation.modmenu.MaterialisationMaterialsScree
 public class MaterialisationSimpleMessageScreen extends Screen {
     private Screen parent;
     private String text;
-
+    
     public MaterialisationSimpleMessageScreen(Screen parent, Text title, String text) {
         super(title);
         this.parent = parent;
         this.text = text;
     }
-
+    
     @Override
     public boolean keyPressed(int int_1, int int_2, int int_3) {
         if (int_1 == 256 && this.shouldCloseOnEsc()) {
@@ -30,7 +30,7 @@ public class MaterialisationSimpleMessageScreen extends Screen {
         }
         return super.keyPressed(int_1, int_2, int_3);
     }
-
+    
     @Override
     protected void init() {
         super.init();
@@ -38,7 +38,7 @@ public class MaterialisationSimpleMessageScreen extends Screen {
             minecraft.openScreen(parent);
         }));
     }
-
+    
     @Override
     public void render(int mouseX, int mouseY, float delta) {
         overlayBackground(0, 0, width, height, 32, 32, 32, 255, 255);

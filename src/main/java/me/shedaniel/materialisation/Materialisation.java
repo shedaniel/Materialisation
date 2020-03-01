@@ -29,7 +29,7 @@ import java.lang.reflect.Field;
 import java.util.Optional;
 
 public class Materialisation implements ModInitializer {
-
+    
     public static final Logger LOGGER = LogManager.getLogger();
     public static final Block MATERIALISING_TABLE = new MaterialisingTableBlock();
     public static final Block MATERIAL_PREPARER = new MaterialPreparerBlock();
@@ -60,7 +60,7 @@ public class Materialisation implements ModInitializer {
     public static final Item MEGAAXE_HEAD_PATTERN = new PatternItem(new Item.Settings().group(ItemGroup.MATERIALS));
     public static final Registry<Modifier> MODIFIERS = new ResettableSimpleRegistry<>();
     public static MaterialisationConfig config;
-
+    
     public static <T> Optional<T> getReflectionField(Object parent, Class<T> clazz, int index) {
         try {
             Field field = parent.getClass().getDeclaredFields()[index];
@@ -72,7 +72,7 @@ public class Materialisation implements ModInitializer {
             return Optional.empty();
         }
     }
-
+    
     @Override
     public void onInitialize() {
         registerBlock("materialising_table", MATERIALISING_TABLE, ItemGroup.DECORATIONS);
@@ -114,27 +114,27 @@ public class Materialisation implements ModInitializer {
         registerItem("megaaxe_head_pattern", MEGAAXE_HEAD_PATTERN);
         try {
             ConfigHelper.loadDefault();
-        } catch (IOException e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
         ConfigHelper.loadConfig();
     }
-
+    
     private void registerBlock(String name, Block block) {
         registerBlock(name, block, new Item.Settings());
     }
-
+    
     private void registerBlock(String name, Block block, ItemGroup group) {
         registerBlock(name, block, new Item.Settings().group(group));
     }
-
+    
     private void registerBlock(String name, Block block, Item.Settings settings) {
         Registry.register(Registry.BLOCK, new Identifier(ModReference.MOD_ID, name), block);
         registerItem(name, new BlockItem(block, settings));
     }
-
+    
     private void registerItem(String name, Item item) {
         Registry.register(Registry.ITEM, new Identifier(ModReference.MOD_ID, name), item);
     }
-
+    
 }

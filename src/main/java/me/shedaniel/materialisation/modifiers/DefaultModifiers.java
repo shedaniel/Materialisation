@@ -19,7 +19,7 @@ public class DefaultModifiers implements DefaultModifiersSupplier {
     public static final Modifier SHARP;
     public static final Modifier FIRE;
     private static final NumberFormat TWO_DECIMAL_FORMATTER = new DecimalFormat("#.##");
-
+    
     static {
         HASTE = Modifier.builder()
                 .applicableToolTypes(ImmutableList.copyOf(ToolType.MINING_TOOLS))
@@ -118,7 +118,7 @@ public class DefaultModifiers implements DefaultModifiersSupplier {
                 })
                 .build();
     }
-
+    
     @Override
     public void registerModifiers() {
         Registry.register(Materialisation.MODIFIERS, "materialisation:haste", HASTE);
@@ -126,7 +126,7 @@ public class DefaultModifiers implements DefaultModifiersSupplier {
         Registry.register(Materialisation.MODIFIERS, "materialisation:sharp", SHARP);
         Registry.register(Materialisation.MODIFIERS, "materialisation:fire", FIRE);
     }
-
+    
     @Override
     public void registerIngredients(ModifierIngredientsHandler handler) {
         handler.registerDefaultIngredient(HASTE, ModifierIngredient.builder()

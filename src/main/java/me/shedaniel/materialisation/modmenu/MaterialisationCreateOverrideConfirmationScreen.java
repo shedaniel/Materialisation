@@ -27,7 +27,7 @@ public class MaterialisationCreateOverrideConfirmationScreen extends Screen {
     private double priority;
     private MaterialisationOverridesListWidget listWidget;
     private List<MaterialisationCreateOverrideListWidget.EditEntry> editedEntries;
-
+    
     public MaterialisationCreateOverrideConfirmationScreen(MaterialisationMaterialsScreen og, Screen parent, PartMaterial partMaterial, String fileName, double priority, List<MaterialisationCreateOverrideListWidget.EditEntry> entries) {
         super(new TranslatableText("config.title.materialisation.override"));
         this.og = og;
@@ -37,7 +37,7 @@ public class MaterialisationCreateOverrideConfirmationScreen extends Screen {
         this.priority = priority;
         this.editedEntries = entries.stream().filter(MaterialisationCreateOverrideListWidget.EditEntry::isEdited).collect(Collectors.toList());
     }
-
+    
     @Override
     public boolean keyPressed(int int_1, int int_2, int int_3) {
         if (int_1 == 256 && this.shouldCloseOnEsc()) {
@@ -46,7 +46,7 @@ public class MaterialisationCreateOverrideConfirmationScreen extends Screen {
         }
         return super.keyPressed(int_1, int_2, int_3);
     }
-
+    
     @Override
     protected void init() {
         super.init();
@@ -71,7 +71,7 @@ public class MaterialisationCreateOverrideConfirmationScreen extends Screen {
                     }
                     fileWriter.write(ConfigHelper.GSON.toJson(object));
                     fileWriter.close();
-                    MinecraftClient.getInstance().openScreen(new MaterialisationLoadingConfigScreen(og, og.parent));
+                    MinecraftClient.getInstance().openScreen(new MaterialisationLoadingConfigScreen(og));
                     ConfigHelper.loadConfigAsync();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -104,7 +104,7 @@ public class MaterialisationCreateOverrideConfirmationScreen extends Screen {
             listWidget.addItem(entry);
         }
     }
-
+    
     @Override
     public void render(int int_1, int int_2, float float_1) {
         listWidget.render(int_1, int_2, float_1);

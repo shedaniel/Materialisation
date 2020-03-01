@@ -16,7 +16,7 @@ import static me.shedaniel.materialisation.api.PartMaterials.getNewMaterial;
 import static net.minecraft.util.Identifier.tryParse;
 
 public class NetherThingsMaterialsGetter {
-
+    
     public static List<MaterialsPack> get() {
         Map<String, PartMaterial> materials = Maps.newLinkedHashMap();
         put(materials, newMat("nether").wEnch(77).aIngr(fromItem(tryParse("minecraft:nether_brick")), 1).aIngr(fromItem(tryParse("minecraft:nether_bricks")), 4).wAtta(.5f).wFull(100).wSpeed(5f).wDuraMulti(.8f).wSpeedMulti(.7f).setBright(false).wColor(0xff824741).setToolDurability(280).setMiningLevel(1));
@@ -25,13 +25,13 @@ public class NetherThingsMaterialsGetter {
         ConfigPackInfo packInfo = new ConfigPackInfo("Nether Things Materials", "netherthings:material", Collections.singletonList("netherthings"), Collections.singletonList("Danielshe"), "0.1.0");
         return Collections.singletonList(new ConfigPack(packInfo.withDescription("Adds the materials from Nether Things."), materials));
     }
-
+    
     public static void put(Map<String, PartMaterial> map, PartMaterial material) {
         map.put(material.getIdentifier().toString(), material);
     }
-
+    
     private static GeneratedMaterial newMat(String s) {
         return getNewMaterial("netherthings:" + s);
     }
-
+    
 }

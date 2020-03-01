@@ -18,24 +18,24 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class MaterialPreparerCategory implements RecipeCategory<MaterialPreparerDisplay> {
-
+    
     public static final EntryStack LOGO = EntryStack.create(Materialisation.MATERIAL_PREPARER);
-
+    
     @Override
     public Identifier getIdentifier() {
         return MaterialisationREIPlugin.MATERIAL_PREPARER;
     }
-
+    
     @Override
     public String getCategoryName() {
         return I18n.translate("category.materialisation.material_preparer");
     }
-
+    
     @Override
     public EntryStack getLogo() {
         return LOGO;
     }
-
+    
     @Override
     public List<Widget> setupDisplay(Supplier<MaterialPreparerDisplay> recipeDisplaySupplier, Rectangle bounds) {
         final Point startPoint = new Point(bounds.getCenterX() - 41, bounds.getCenterY() - 13);
@@ -48,15 +48,15 @@ public class MaterialPreparerCategory implements RecipeCategory<MaterialPreparer
             }
         });
         MaterialPreparerDisplay display = recipeDisplaySupplier.get();
-        widgets.add(EntryWidget.create(startPoint.x - 18, startPoint.y + 5).entry(display.getFirst()));
-        widgets.add(EntryWidget.create(startPoint.x + 4, startPoint.y + 5).entries(display.getSecond()));
-        widgets.add(EntryWidget.create(startPoint.x + 61, startPoint.y + 5).entry(display.getResult()).noBackground());
+        widgets.add(EntryWidget.create(startPoint.x - 18, startPoint.y + 5).entry(display.getFirst()).markIsInput());
+        widgets.add(EntryWidget.create(startPoint.x + 4, startPoint.y + 5).entries(display.getSecond()).markIsInput());
+        widgets.add(EntryWidget.create(startPoint.x + 61, startPoint.y + 5).entry(display.getResult()).noBackground().markIsOutput());
         return widgets;
     }
-
+    
     @Override
     public int getDisplayHeight() {
         return 36;
     }
-
+    
 }

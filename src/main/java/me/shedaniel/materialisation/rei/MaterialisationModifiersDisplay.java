@@ -17,24 +17,24 @@ import java.util.List;
 public class MaterialisationModifiersDisplay implements RecipeDisplay {
     private final Identifier modifierId;
     private int level;
-
+    
     public MaterialisationModifiersDisplay(Identifier modifierId, int level) {
         this.modifierId = modifierId;
         this.level = level;
     }
-
+    
     public final Modifier getModifier() {
         return Materialisation.MODIFIERS.get(getModifierId());
     }
-
+    
     public final Identifier getModifierId() {
         return modifierId;
     }
-
+    
     public final int getLevel() {
         return level;
     }
-
+    
     @Override
     public List<List<EntryStack>> getInputEntries() {
         LevelMap<BetterIngredient> ingredient = Modifiers.getIngredient(getModifier());
@@ -55,12 +55,12 @@ public class MaterialisationModifiersDisplay implements RecipeDisplay {
         }
         return stacks.isEmpty() ? Collections.emptyList() : Collections.singletonList(stacks);
     }
-
+    
     @Override
     public List<EntryStack> getOutputEntries() {
         return Collections.emptyList();
     }
-
+    
     @Override
     public Identifier getRecipeCategory() {
         return MaterialisationREIPlugin.MODIFIERS;

@@ -22,22 +22,22 @@ import java.util.List;
 import java.util.UUID;
 
 public class ColoredItem extends Item {
-
+    
     private static final ItemPropertyGetter COLORED_ITEM_BRIGHT_ITEM = (itemStack, world, livingEntity) -> MaterialisationUtils.isHandleBright(itemStack) ? 1 : 0;
-
+    
     public ColoredItem(Settings item$Settings_1) {
         super(item$Settings_1);
         addPropertyGetter(new Identifier(ModReference.MOD_ID, "bright"), COLORED_ITEM_BRIGHT_ITEM);
     }
-
+    
     public static UUID getItemModifierDamage() {
         return ATTACK_DAMAGE_MODIFIER_UUID;
     }
-
+    
     public static UUID getItemModifierSwingSpeed() {
         return ATTACK_SPEED_MODIFIER_UUID;
     }
-
+    
     public static float getExtraDamage(Item item) {
         if (item == Materialisation.SWORD_BLADE)
             return 4f;
@@ -53,14 +53,14 @@ public class ColoredItem extends Item {
             return 2.5f;
         return 0f;
     }
-
+    
     private static double getBaseToolBreakingSpeed(ColoredItem item, PartMaterial material) {
         double speed = material.getToolSpeed();
         if (item == Materialisation.HAMMER_HEAD) speed /= 6f;
         if (item == Materialisation.MEGAAXE_HEAD) speed /= 6.5f;
         return speed;
     }
-
+    
     @Environment(EnvType.CLIENT)
     @Override
     public void appendTooltip(ItemStack stack, World world_1, List<Text> list, TooltipContext tooltipContext_1) {
@@ -82,7 +82,7 @@ public class ColoredItem extends Item {
             }
         }
     }
-
+    
     @Override
     public Text getName(ItemStack itemStack_1) {
         PartMaterial part = MaterialisationUtils.getMaterialFromPart(itemStack_1);
@@ -90,5 +90,5 @@ public class ColoredItem extends Item {
             return new TranslatableText("item.materialisation.materialised_" + Registry.ITEM.getId(this).getPath(), new TranslatableText(part.getMaterialTranslateKey()));
         return new TranslatableText(this.getTranslationKey(itemStack_1));
     }
-
+    
 }

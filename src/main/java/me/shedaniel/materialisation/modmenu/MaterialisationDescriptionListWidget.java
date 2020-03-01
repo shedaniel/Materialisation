@@ -23,26 +23,26 @@ public class MaterialisationDescriptionListWidget extends DynamicElementListWidg
     public MaterialisationDescriptionListWidget(MinecraftClient client, int width, int height, int top, int bottom, Identifier backgroundLocation) {
         super(client, width, height, top, bottom, backgroundLocation);
     }
-
+    
     @Override
     public int getItemWidth() {
         return width - 11;
     }
-
+    
     @Override
     protected int getScrollbarPosition() {
         return left + width - 6;
     }
-
+    
     @Override
     public int addItem(Entry item) {
         return super.addItem(item);
     }
-
+    
     public void clearItemsPublic() {
         clearItems();
     }
-
+    
     public void addPack(ConfigPackInfo packInfo, MaterialsPack materialsPack) {
         clearItems();
         addItem(new TextEntry(new LiteralText(packInfo.getDisplayName()).formatted(Formatting.UNDERLINE, Formatting.BOLD)));
@@ -63,7 +63,7 @@ public class MaterialisationDescriptionListWidget extends DynamicElementListWidg
             addItem(new TextEntry(new LiteralText(string).formatted(Formatting.GRAY)));
         }
     }
-
+    
     public void addMaterial(MaterialisationMaterialsScreen og, PartMaterial partMaterial) {
         clearItems();
         addItem(new TitleMaterialOverrideEntry(og, partMaterial, new TranslatableText(partMaterial.getMaterialTranslateKey()).formatted(Formatting.UNDERLINE, Formatting.BOLD)));
@@ -78,53 +78,53 @@ public class MaterialisationDescriptionListWidget extends DynamicElementListWidg
         addItem(new TextEntry(I18n.translate("config.text.materialisation.tool_speed_multiplier", df.format(partMaterial.getBreakingSpeedMultiplier()))));
         addItem(new TextEntry(I18n.translate("config.text.materialisation.durability_multiplier", df.format(partMaterial.getDurabilityMultiplier()))));
     }
-
+    
     public int darkerColor(int color) {
         int r = (color >> 16) & 0xFF;
         int g = (color >> 8) & 0xFF;
-        int b = (color >> 0) & 0xFF;
+        int b = (color) & 0xFF;
         int a = (color >> 24) & 0xFF;
         return ((a & 0xFF) << 24) |
-                ((Math.max((int) (r * 0.7), 0) & 0xFF) << 16) |
-                ((Math.max((int) (g * 0.7), 0) & 0xFF) << 8) |
-                ((Math.max((int) (b * 0.7), 0) & 0xFF) << 0);
+               ((Math.max((int) (r * 0.7), 0) & 0xFF) << 16) |
+               ((Math.max((int) (g * 0.7), 0) & 0xFF) << 8) |
+               ((Math.max((int) (b * 0.7), 0) & 0xFF));
     }
-
+    
     public static class ColorEntry extends Entry {
         private String s;
         private int color;
-
+        
         public ColorEntry(String s, int color) {
             this.s = s;
             this.color = color;
         }
-
+        
         public ColorEntry(Text text, int color) {
             this.s = text.asFormattedString();
             this.color = color;
         }
-
+        
         @Override
         public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
             int i = MinecraftClient.getInstance().textRenderer.drawWithShadow(s, x, y, 16777215);
             fillGradient(i + 1, y + 1, i + 1 + entryHeight, y + 1 + entryHeight, color, color);
         }
-
+        
         @Override
         public int getItemHeight() {
             return 11;
         }
-
+        
         @Override
         public List<? extends Element> children() {
             return Collections.emptyList();
         }
     }
-
+    
     public static class TitleMaterialOverrideEntry extends Entry {
         protected String s;
         private ButtonWidget overrideButton;
-
+        
         public TitleMaterialOverrideEntry(MaterialisationMaterialsScreen og, PartMaterial partMaterial, Text text) {
             this.s = text.asFormattedString();
             String btnText = I18n.translate("config.button.materialisation.create_override");
@@ -132,7 +132,7 @@ public class MaterialisationDescriptionListWidget extends DynamicElementListWidg
                 MinecraftClient.getInstance().openScreen(new MaterialisationCreateOverrideNameScreen(og, MinecraftClient.getInstance().currentScreen, partMaterial));
             });
         }
-
+        
         @Override
         public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
             MinecraftClient.getInstance().textRenderer.drawWithShadow(s, x, y + 10, 16777215);
@@ -140,69 +140,69 @@ public class MaterialisationDescriptionListWidget extends DynamicElementListWidg
             overrideButton.y = y;
             overrideButton.render(mouseX, mouseY, delta);
         }
-
+        
         @Override
         public int getItemHeight() {
             return 21;
         }
-
+        
         @Override
         public List<? extends Element> children() {
             return Collections.singletonList(overrideButton);
         }
     }
-
+    
     public static class TextEntry extends Entry {
         protected String s;
-
+        
         public TextEntry(String s) {
             this.s = s;
         }
-
+        
         public TextEntry(Text text) {
             this.s = text.asFormattedString();
         }
-
+        
         @Override
         public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
             MinecraftClient.getInstance().textRenderer.drawWithShadow(s, x, y, 16777215);
         }
-
+        
         @Override
         public int getItemHeight() {
             return 11;
         }
-
+        
         @Override
         public List<? extends Element> children() {
             return Collections.emptyList();
         }
     }
-
+    
     public static class EmptyEntry extends Entry {
         private int height;
-
+        
         public EmptyEntry(int height) {
             this.height = height;
         }
-
+        
         @Override
         public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
-
+        
         }
-
+        
         @Override
         public int getItemHeight() {
             return height;
         }
-
+        
         @Override
         public List<? extends Element> children() {
             return Collections.emptyList();
         }
     }
-
+    
     public static abstract class Entry extends DynamicElementListWidget.ElementEntry<Entry> {
-
+    
     }
 }

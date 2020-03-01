@@ -15,25 +15,25 @@ import java.util.Set;
 
 public class MaterialisationMixinPlugin implements IMixinConfigPlugin {
     private static final String[] OPTIFINE_MODIDS = {"optifabric"};
-
+    
     @Override
     public void onLoad(String mixinPackage) {
     }
-
+    
     @Override
     public String getRefMapperConfig() {
         return null;
     }
-
+    
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         return true;
     }
-
+    
     @Override
     public void acceptTargets(Set<String> myTargets, Set<String> otherTargets) {
     }
-
+    
     private boolean isOptifineLoaded() {
         for (String modid : OPTIFINE_MODIDS) {
             if (FabricLoader.getInstance().isModLoaded("optifabric"))
@@ -41,7 +41,7 @@ public class MaterialisationMixinPlugin implements IMixinConfigPlugin {
         }
         return false;
     }
-
+    
     @Override
     public List<String> getMixins() {
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT)
@@ -53,7 +53,7 @@ public class MaterialisationMixinPlugin implements IMixinConfigPlugin {
             }
         return null;
     }
-
+    
     @Override
     public void preApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
         MappingResolver mappingResolver = FabricLoader.getInstance().getMappingResolver();
@@ -78,7 +78,7 @@ public class MaterialisationMixinPlugin implements IMixinConfigPlugin {
                 }
         }
     }
-
+    
     @Override
     public void postApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
     }

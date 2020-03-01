@@ -25,7 +25,7 @@ public class MaterialisationCreateOverrideScreen extends Screen {
     private double priority;
     private MaterialisationCreateOverrideListWidget listWidget;
     private ButtonWidget createButton;
-
+    
     public MaterialisationCreateOverrideScreen(MaterialisationMaterialsScreen og, Screen parent, PartMaterial partMaterial, String fileName, double priority) {
         super(new TranslatableText("config.title.materialisation.override"));
         this.og = og;
@@ -34,7 +34,7 @@ public class MaterialisationCreateOverrideScreen extends Screen {
         this.fileName = fileName;
         this.priority = priority;
     }
-
+    
     @Override
     public boolean keyPressed(int int_1, int int_2, int int_3) {
         if (int_1 == 256 && this.shouldCloseOnEsc()) {
@@ -43,7 +43,7 @@ public class MaterialisationCreateOverrideScreen extends Screen {
         }
         return super.keyPressed(int_1, int_2, int_3);
     }
-
+    
     @Override
     protected void init() {
         super.init();
@@ -75,11 +75,11 @@ public class MaterialisationCreateOverrideScreen extends Screen {
             listWidget.addItem(entry);
         }
     }
-
+    
     private String toStringColor(int toolColor) {
         String r = Integer.toHexString((toolColor >> 16) & 0xFF);
         String g = Integer.toHexString((toolColor >> 8) & 0xFF);
-        String b = Integer.toHexString((toolColor >> 0) & 0xFF);
+        String b = Integer.toHexString((toolColor) & 0xFF);
         String a = Integer.toHexString((toolColor >> 24) & 0xFF);
         if (r.length() == 1)
             r = "0" + r;
@@ -91,7 +91,7 @@ public class MaterialisationCreateOverrideScreen extends Screen {
             a = "0" + a;
         return (a + r + g + b).toUpperCase(Locale.ROOT);
     }
-
+    
     @Override
     public void render(int int_1, int int_2, float float_1) {
         createButton.active = !listWidget.children().isEmpty();

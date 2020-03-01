@@ -1,8 +1,6 @@
 package me.shedaniel.materialisation.modmenu;
 
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.client.util.NarratorManager;
 import net.minecraft.text.Text;
 import net.minecraft.util.Util;
 
@@ -11,26 +9,26 @@ import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
 public class MaterialisationDownloadingScreen extends Screen {
-
+    
     public static ExecutorService executorService = Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "Materialisation"));
     private Screen newScreen;
-
+    
     public MaterialisationDownloadingScreen(Text title, Consumer<MaterialisationDownloadingScreen> consumer) {
         super(title);
         executorService.shutdown();
         executorService = Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "Materialisation"));
         executorService.submit(() -> consumer.accept(this));
     }
-
+    
     public void queueNewScreen(Screen screen) {
         newScreen = screen;
     }
-
+    
     @Override
     public boolean shouldCloseOnEsc() {
         return false;
     }
-
+    
     @Override
     public void render(int int_1, int int_2, float float_1) {
         if (newScreen != null) {
@@ -56,7 +54,7 @@ public class MaterialisationDownloadingScreen extends Screen {
         this.drawCenteredString(this.font, string_3, this.width / 2, this.height / 2 - 41, 8421504);
         super.render(int_1, int_2, float_1);
     }
-
+    
     @Override
     public boolean isPauseScreen() {
         return false;

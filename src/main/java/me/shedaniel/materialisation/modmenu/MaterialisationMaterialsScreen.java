@@ -17,39 +17,39 @@ import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.TranslatableText;
 
 public class MaterialisationMaterialsScreen extends Screen {
-
+    
     Screen parent;
     private Object lastDescription;
     private MaterialisationMaterialListWidget materialList;
     private MaterialisationDescriptionListWidget descriptionList;
-
+    
     protected MaterialisationMaterialsScreen(Screen parent) {
         super(new TranslatableText("config.title.materialisation"));
         this.parent = parent;
     }
-
+    
     public static void overlayBackground(int x1, int y1, int x2, int y2, int red, int green, int blue, int startAlpha, int endAlpha) {
-        Tessellator tessellator_1 = Tessellator.getInstance();
-        BufferBuilder bufferBuilder_1 = tessellator_1.getBuffer();
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder buffer = tessellator.getBuffer();
         MinecraftClient.getInstance().getTextureManager().bindTexture(DrawableHelper.BACKGROUND_LOCATION);
         int width = MinecraftClient.getInstance().getWindow().getScaledWidth();
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        bufferBuilder_1.begin(7, VertexFormats.POSITION_TEXTURE_COLOR);
-        bufferBuilder_1.vertex(x1, y2, 0.0D).texture(0, y2 / 32.0F).color(red, green, blue, endAlpha).next();
-        bufferBuilder_1.vertex(x2, y2, 0.0D).texture(width / 32.0F, y2 / 32.0F).color(red, green, blue, endAlpha).next();
-        bufferBuilder_1.vertex(x2, y1, 0.0D).texture(width / 32.0F, y1 / 32.0F).color(red, green, blue, startAlpha).next();
-        bufferBuilder_1.vertex(x1, y1, 0.0D).texture(0, y1 / 32.0F).color(red, green, blue, startAlpha).next();
-        tessellator_1.draw();
+        buffer.begin(7, VertexFormats.POSITION_TEXTURE_COLOR);
+        buffer.vertex(x1, y2, 0.0D).texture(0, y2 / 32.0F).color(red, green, blue, endAlpha).next();
+        buffer.vertex(x2, y2, 0.0D).texture(width / 32.0F, y2 / 32.0F).color(red, green, blue, endAlpha).next();
+        buffer.vertex(x2, y1, 0.0D).texture(width / 32.0F, y1 / 32.0F).color(red, green, blue, startAlpha).next();
+        buffer.vertex(x1, y1, 0.0D).texture(0, y1 / 32.0F).color(red, green, blue, startAlpha).next();
+        tessellator.draw();
     }
-
+    
     @Override
     public void tick() {
         super.tick();
         if (ConfigHelper.loading) {
-            MinecraftClient.getInstance().openScreen(new MaterialisationLoadingConfigScreen(this, parent));
+            MinecraftClient.getInstance().openScreen(new MaterialisationLoadingConfigScreen(this));
         }
     }
-
+    
     @Override
     public boolean keyPressed(int int_1, int int_2, int int_3) {
         if (int_1 == 256 && this.shouldCloseOnEsc()) {
@@ -58,7 +58,7 @@ public class MaterialisationMaterialsScreen extends Screen {
         }
         return super.keyPressed(int_1, int_2, int_3);
     }
-
+    
     @Override
     protected void init() {
         super.init();
@@ -67,7 +67,7 @@ public class MaterialisationMaterialsScreen extends Screen {
         }));
         addButton(new ButtonWidget(59, 4, 85, 20, I18n.translate("config.button.materialisation.reload"), var1 -> {
             if (!ConfigHelper.loading) {
-                MinecraftClient.getInstance().openScreen(new MaterialisationLoadingConfigScreen(this, parent));
+                MinecraftClient.getInstance().openScreen(new MaterialisationLoadingConfigScreen(this));
                 ConfigHelper.loadConfigAsync();
             }
         }));
@@ -124,7 +124,7 @@ public class MaterialisationMaterialsScreen extends Screen {
             });
         }
     }
-
+    
     @Override
     public void render(int mouseX, int mouseY, float delta) {
         renderDirtBackground(0);
@@ -152,5 +152,5 @@ public class MaterialisationMaterialsScreen extends Screen {
         drawCenteredString(font, title.asFormattedString(), width / 2, 10, 16777215);
         super.render(mouseX, mouseY, delta);
     }
-
+    
 }

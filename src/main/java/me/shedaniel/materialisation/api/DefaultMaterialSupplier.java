@@ -8,7 +8,7 @@ public interface DefaultMaterialSupplier {
     default List<PartMaterial> getMaterials() {
         return Lists.newArrayList();
     }
-
+    
     default List<MaterialsPack> getMaterialPacks() {
         return Lists.newArrayList();
     }

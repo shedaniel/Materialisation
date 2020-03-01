@@ -32,53 +32,53 @@ public interface MaterialisedMiningTool {
             return 2.5f;
         return 0f;
     }
-
+    
     static float getExtraDamageFromItem(Item item) {
         if (item instanceof MaterialisedMiningTool)
             return getExtraDamage(((MaterialisedMiningTool) item).getToolType());
         return 0f;
     }
-
+    
     boolean canEffectivelyBreak(ItemStack itemStack, BlockState state);
-
+    
     default int getEnchantability(ItemStack stack) {
         return MaterialisationUtils.getToolEnchantability(stack);
     }
-
+    
     float getToolBlockBreakingSpeed(ItemStack itemStack, BlockState state);
-
+    
     double getAttackSpeed();
-
+    
     default void initProperty() {
         ((Item) this).addPropertyGetter(new Identifier(ModReference.MOD_ID, "handle_isbright"),
                 (itemStack, world, livingEntity) -> isHandleBright(itemStack) ? 1f : 0f);
         ((Item) this).addPropertyGetter(new Identifier(ModReference.MOD_ID, "tool_head_isbright"),
                 (itemStack, world, livingEntity) -> isHeadBright(itemStack) ? 1f : 0f);
     }
-
+    
     @Nonnull
     default ToolType getToolType() {
         return ToolType.UNKNOWN;
     }
-
+    
     default void setModifierLevel(ItemStack stack, Modifier modifier, int level) {
         Identifier id = Materialisation.MODIFIERS.getId(modifier);
         if (id == null)
             return;
         setModifierLevel(stack, id, level);
     }
-
+    
     default int getModifierLevel(ItemStack stack, Modifier modifier) {
         Identifier id = Materialisation.MODIFIERS.getId(modifier);
         if (id == null)
             return 0;
         return getModifierLevel(stack, id);
     }
-
+    
     default int getModifierLevel(ItemStack stack, Identifier modifier) {
         return getModifierLevel(stack, modifier.toString());
     }
-
+    
     default int getModifierLevel(ItemStack stack, String modifier) {
         CompoundTag tag = stack.getTag();
         if (tag != null && tag.contains("modifiers")) {
@@ -88,7 +88,7 @@ public interface MaterialisedMiningTool {
         }
         return 0;
     }
-
+    
     default void setModifierLevel(ItemStack stack, Identifier modifier, int level) {
         CompoundTag tag = stack.getOrCreateTag();
         if (!tag.contains("modifiers"))

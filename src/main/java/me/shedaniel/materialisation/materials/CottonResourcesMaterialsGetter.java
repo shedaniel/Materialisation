@@ -6,6 +6,7 @@ import me.shedaniel.materialisation.api.MaterialsPack;
 import me.shedaniel.materialisation.api.PartMaterial;
 import me.shedaniel.materialisation.config.ConfigPack;
 import me.shedaniel.materialisation.config.ConfigPackInfo;
+import net.fabricmc.loader.api.FabricLoader;
 
 import java.util.Collections;
 import java.util.List;
@@ -16,7 +17,7 @@ import static me.shedaniel.materialisation.api.PartMaterials.getNewMaterial;
 import static net.minecraft.util.Identifier.tryParse;
 
 public class CottonResourcesMaterialsGetter {
-
+    
     public static List<MaterialsPack> get() {
         Map<String, PartMaterial> materials = Maps.newLinkedHashMap();
         put(materials, newMat("copper").wEnch(12).aIngr(fromTag(tryParse("c:copper_ingot")), 2).aIngr(fromTag(tryParse("c:copper_block")), 18).wAtta(1).wFull(100).wSpeed(5.3f).wDuraMulti(1.05f).wSpeedMulti(1f).setBright(true).wColor(0xffffa21f).setToolDurability(275).setMiningLevel(1));
@@ -35,17 +36,26 @@ public class CottonResourcesMaterialsGetter {
         put(materials, newMat("steel").wEnch(16).aIngr(fromTag(tryParse("c:steel_ingot")), 2).aIngr(fromTag(tryParse("c:steel_block")), 18).wAtta(3).wFull(150).wSpeed(8).wDuraMulti(1.1f).wSpeedMulti(.8f).setBright(false).wColor(0xff777777).setToolDurability(600).setMiningLevel(2));
         put(materials, newMat("brass").wEnch(16).aIngr(fromTag(tryParse("c:brass_ingot")), 2).aIngr(fromTag(tryParse("c:brass_block")), 18).wAtta(2.5f).wFull(100).wSpeed(5.5f).wDuraMulti(.9f).wSpeedMulti(1.1f).setBright(true).wColor(0xffffd000).setToolDurability(400).setMiningLevel(2));
         put(materials, newMat("electrum").wEnch(16).aIngr(fromTag(tryParse("c:electrum_ingot")), 2).aIngr(fromTag(tryParse("c:electrum_block")), 18).wAtta(3).wFull(110).wSpeed(6).wDuraMulti(.9f).wSpeedMulti(1f).setBright(true).wColor(0xffead470).setToolDurability(440).setMiningLevel(2));
-//        put(materials, newMat("mercury").wEnch(16).aIngr(fromTag(tryParse("c:mercury")), 2).wAtta(0).wFull(13).wSpeed(2).wDuraMulti(.1f).wSpeedMulti(.13f).setBright(false).wColor(0xffff0000).setToolDurability(50).setMiningLevel(0));
-        ConfigPackInfo packInfo = new ConfigPackInfo("Cotton Resources Materials", "cotton-resources:material", Collections.singletonList("cotton-resources"), Collections.singletonList("Danielshe"), "0.2.0");
+        ConfigPackInfo packInfo = new ConfigPackInfo("Cotton Resources Materials", "cotton-resources:material", info -> {
+            String[] supportedMods = new String[]{
+                    "cotton-resources",
+                    "techreborn"
+            };
+            for (String supportedMod : supportedMods) {
+                if (FabricLoader.getInstance().isModLoaded(supportedMod))
+                    return;
+            }
+            throw new IllegalStateException("Config Pack " + info.getIdentifier().toString() + " is not loaded because no supported mods are present: " + String.join(", ", supportedMods));
+        }, Collections.singletonList("shedaniel"), "0.2.1");
         return Collections.singletonList(new ConfigPack(packInfo.withDescription("Adds the materials from Cotton Resources."), materials));
     }
-
+    
     public static void put(Map<String, PartMaterial> map, PartMaterial material) {
         map.put(material.getIdentifier().toString(), material);
     }
-
+    
     private static GeneratedMaterial newMat(String s) {
         return getNewMaterial("cotton-resources:" + s);
     }
-
+    
 }

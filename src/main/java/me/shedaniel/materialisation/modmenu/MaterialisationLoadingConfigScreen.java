@@ -8,22 +8,19 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
-import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
 import static me.shedaniel.materialisation.modmenu.MaterialisationMaterialsScreen.overlayBackground;
 
 public class MaterialisationLoadingConfigScreen extends Screen {
-
-    private Screen parent;
+    
     private MaterialisationMaterialsScreen previousScreen;
-
-    public MaterialisationLoadingConfigScreen(MaterialisationMaterialsScreen previousScreen, Screen parent) {
+    
+    public MaterialisationLoadingConfigScreen(MaterialisationMaterialsScreen previousScreen) {
         super(new TranslatableText("config.title.materialisation.loading"));
-        this.parent = parent;
         this.previousScreen = previousScreen;
     }
-
+    
     @Override
     public void tick() {
         super.tick();
@@ -31,12 +28,12 @@ public class MaterialisationLoadingConfigScreen extends Screen {
             MinecraftClient.getInstance().openScreen(new MaterialisationMaterialsScreen(previousScreen.parent));
         }
     }
-
+    
     @Override
     public boolean shouldCloseOnEsc() {
         return false;
     }
-
+    
     @Override
     public void render(int mouseX, int mouseY, float delta) {
         renderDirtBackground(0);

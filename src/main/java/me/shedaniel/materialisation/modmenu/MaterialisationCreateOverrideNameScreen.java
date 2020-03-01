@@ -24,16 +24,16 @@ public class MaterialisationCreateOverrideNameScreen extends Screen {
     private TextFieldWidget fileName, priority;
     private String randomFileName;
     private ButtonWidget continueButton;
-
+    
     public MaterialisationCreateOverrideNameScreen(MaterialisationMaterialsScreen og, Screen parent, PartMaterial partMaterial) {
         super(new TranslatableText("config.title.materialisation.new_override"));
         this.og = og;
         this.parent = parent;
         this.partMaterial = partMaterial;
         String s = UUID.randomUUID().toString();
-        this.randomFileName = partMaterial.getIdentifier().getPath() + "+" + s.substring(s.lastIndexOf('-') + 1, s.length()) + ".json";
+        this.randomFileName = partMaterial.getIdentifier().getPath() + "+" + s.substring(s.lastIndexOf('-') + 1) + ".json";
     }
-
+    
     @Override
     public boolean keyPressed(int int_1, int int_2, int int_3) {
         if (int_1 == 256 && this.shouldCloseOnEsc()) {
@@ -42,7 +42,7 @@ public class MaterialisationCreateOverrideNameScreen extends Screen {
         }
         return super.keyPressed(int_1, int_2, int_3);
     }
-
+    
     @Override
     protected void init() {
         super.init();
@@ -79,7 +79,7 @@ public class MaterialisationCreateOverrideNameScreen extends Screen {
             }
         });
     }
-
+    
     @Override
     public void render(int mouseX, int mouseY, float delta) {
         continueButton.active = fileName.getText().isEmpty() || fileName.getText().toLowerCase(Locale.ROOT).endsWith(".json");

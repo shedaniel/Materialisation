@@ -27,12 +27,12 @@ import javax.annotation.Nonnull;
 import java.util.List;
 
 public class MaterialisedShovelItem extends ShovelItem implements MaterialisedMiningTool {
-
+    
     public MaterialisedShovelItem(Settings settings) {
         super(MaterialisationUtils.DUMMY_MATERIAL, 0, -3.0F, settings.maxDamage(0));
         initProperty();
     }
-
+    
     @Override
     public ActionResult useOnBlock(ItemUsageContext context) {
         World world = context.getWorld();
@@ -40,7 +40,7 @@ public class MaterialisedShovelItem extends ShovelItem implements MaterialisedMi
         ItemStack itemStack = context.getStack();
         if (MaterialisationUtils.getToolDurability(itemStack) > 0)
             if (context.getSide() != Direction.DOWN && world.getBlockState(blockPos.up()).isAir()) {
-                BlockState blockState = (BlockState) PATH_BLOCKSTATES.get(world.getBlockState(blockPos).getBlock());
+                BlockState blockState = PATH_BLOCKSTATES.get(world.getBlockState(blockPos).getBlock());
                 if (blockState != null) {
                     PlayerEntity playerEntity_1 = context.getPlayer();
                     world.playSound(playerEntity_1, blockPos, SoundEvents.ITEM_SHOVEL_FLATTEN, SoundCategory.BLOCKS, 1.0F, 1.0F);
@@ -61,33 +61,33 @@ public class MaterialisedShovelItem extends ShovelItem implements MaterialisedMi
             }
         return ActionResult.PASS;
     }
-
+    
     @Override
     public double getAttackSpeed() {
         return attackSpeed;
     }
-
+    
     @Nonnull
     @Override
     public ToolType getToolType() {
         return ToolType.SHOVEL;
     }
-
+    
     @Override
     public boolean canEffectivelyBreak(ItemStack itemStack, BlockState state) {
         return ((MiningToolItemAccessor) itemStack.getItem()).getEffectiveBlocks().contains(state.getBlock()) || isEffectiveOn(state);
     }
-
+    
     @Override
     public float getToolBlockBreakingSpeed(ItemStack itemStack, BlockState state) {
         return ((MiningToolItemAccessor) itemStack.getItem()).getEffectiveBlocks().contains(state.getBlock()) ? MaterialisationUtils.getToolBreakingSpeed(itemStack) : 1f;
     }
-
+    
     @Override
     public boolean canRepair(ItemStack itemStack_1, ItemStack itemStack_2) {
         return false;
     }
-
+    
     @Override
     public boolean postHit(ItemStack stack, LivingEntity livingEntity_1, LivingEntity livingEntity_2) {
         if (!livingEntity_1.world.isClient && (!(livingEntity_1 instanceof PlayerEntity) || !((PlayerEntity) livingEntity_1).abilities.creativeMode))
@@ -103,7 +103,7 @@ public class MaterialisedShovelItem extends ShovelItem implements MaterialisedMi
                 }
         return true;
     }
-
+    
     @Override
     public boolean postMine(ItemStack stack, World world_1, BlockState blockState_1, BlockPos blockPos_1, LivingEntity livingEntity_1) {
         if (!world_1.isClient && blockState_1.getHardness(world_1, blockPos_1) != 0.0F)
@@ -120,11 +120,11 @@ public class MaterialisedShovelItem extends ShovelItem implements MaterialisedMi
                     }
         return true;
     }
-
+    
     @Environment(EnvType.CLIENT)
     @Override
     public void appendTooltip(ItemStack stack, World world_1, List<Text> list_1, TooltipContext tooltipContext_1) {
         MaterialisationUtils.appendToolTooltip(stack, this, world_1, list_1, tooltipContext_1);
     }
-
+    
 }

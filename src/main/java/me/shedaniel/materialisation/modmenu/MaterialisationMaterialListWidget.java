@@ -22,53 +22,53 @@ public class MaterialisationMaterialListWidget extends DynamicElementListWidget<
     public MaterialisationMaterialListWidget(MinecraftClient client, int width, int height, int top, int bottom, Identifier backgroundLocation) {
         super(client, width, height, top, bottom, backgroundLocation);
     }
-
+    
     @Override
     public int getItemWidth() {
         return width - 11;
     }
-
+    
     @Override
     protected int getScrollbarPosition() {
         return left + width - 6;
     }
-
+    
     @Override
     public int addItem(Entry item) {
         return super.addItem(item);
     }
-
+    
     public abstract static class PackEntry extends Entry {
         private PackWidget widget;
         private ConfigPackInfo packInfo;
-
+        
         public PackEntry(ConfigPackInfo packInfo) {
             this.widget = new PackWidget();
             this.packInfo = packInfo;
         }
-
+        
         @Override
         public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
             widget.bounds = new Rect2i(x, y, entryWidth, getItemHeight());
             widget.render(mouseX, mouseY, delta);
         }
-
+        
         @Override
         public int getItemHeight() {
             return 40;
         }
-
+        
         @Override
         public List<? extends Element> children() {
             return Collections.singletonList(widget);
         }
-
+        
         public abstract void onClick();
-
+        
         public class PackWidget implements Element, Drawable {
             private Rect2i bounds;
             private boolean focused;
-
+            
             @Override
             public void render(int mouseX, int mouseY, float delta) {
                 RenderSystem.disableAlphaTest();
@@ -78,7 +78,7 @@ public class MaterialisationMaterialListWidget extends DynamicElementListWidget<
                 Iterator<String> var7 = MinecraftClient.getInstance().textRenderer.wrapStringToWidthAsList(trimEndNewlines(packInfo.getDescription()), bounds.getWidth() - 10).stream().limit(2).iterator();
                 int int_2 = bounds.getY() + 6 + 11;
                 for (int lolWot = 0; var7.hasNext(); int_2 += 9) {
-                    String string_2 = (String) var7.next();
+                    String string_2 = var7.next();
                     float float_1 = (float) (bounds.getX() + 5);
                     if (MinecraftClient.getInstance().textRenderer.isRightToLeft()) {
                         int int_5 = MinecraftClient.getInstance().textRenderer.getStringWidth(MinecraftClient.getInstance().textRenderer.mirror(string_2));
@@ -87,7 +87,7 @@ public class MaterialisationMaterialListWidget extends DynamicElementListWidget<
                     MinecraftClient.getInstance().textRenderer.draw(string_2, float_1, (float) int_2, 0xEEFFFFFF);
                 }
             }
-
+            
             @Override
             public boolean mouseClicked(double double_1, double double_2, int int_1) {
                 if (int_1 == 0) {
@@ -100,7 +100,7 @@ public class MaterialisationMaterialListWidget extends DynamicElementListWidget<
                 }
                 return false;
             }
-
+            
             @Override
             public boolean keyPressed(int int_1, int int_2, int int_3) {
                 if (int_1 != 257 && int_1 != 32 && int_1 != 335) {
@@ -111,15 +111,15 @@ public class MaterialisationMaterialListWidget extends DynamicElementListWidget<
                     return true;
                 }
             }
-
+            
             private String trimEndNewlines(String string_1) {
                 while (string_1 != null && string_1.endsWith("\n")) {
                     string_1 = string_1.substring(0, string_1.length() - 1);
                 }
-
+                
                 return string_1;
             }
-
+            
             @Override
             public boolean changeFocus(boolean boolean_1) {
                 this.focused = !this.focused;
@@ -127,45 +127,45 @@ public class MaterialisationMaterialListWidget extends DynamicElementListWidget<
             }
         }
     }
-
+    
     public static abstract class MaterialEntry extends Entry {
-
+        
         private MaterialWidget widget;
         private PartMaterial partMaterial;
-
+        
         public MaterialEntry(PartMaterial partMaterial) {
             this.widget = new MaterialWidget();
             this.partMaterial = partMaterial;
         }
-
+        
         @Override
         public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
             widget.bounds = new Rect2i(x, y, entryWidth, getItemHeight());
             widget.render(mouseX, mouseY, delta);
         }
-
+        
         @Override
         public int getItemHeight() {
             return 17;
         }
-
+        
         @Override
         public List<? extends Element> children() {
             return Collections.singletonList(widget);
         }
-
+        
         public abstract void onClick();
-
+        
         public class MaterialWidget implements Element, Drawable {
             private Rect2i bounds;
             private boolean focused;
-
+            
             @Override
             public void render(int mouseX, int mouseY, float delta) {
                 boolean isHovered = focused || bounds.contains(mouseX, mouseY);
                 drawString(MinecraftClient.getInstance().textRenderer, (isHovered ? Formatting.UNDERLINE.toString() : "") + I18n.translate(partMaterial.getMaterialTranslateKey()), bounds.getX() + 5, bounds.getY() + 5, 16777215);
             }
-
+            
             @Override
             public boolean mouseClicked(double double_1, double double_2, int int_1) {
                 if (int_1 == 0) {
@@ -178,7 +178,7 @@ public class MaterialisationMaterialListWidget extends DynamicElementListWidget<
                 }
                 return false;
             }
-
+            
             @Override
             public boolean keyPressed(int int_1, int int_2, int int_3) {
                 if (int_1 != 257 && int_1 != 32 && int_1 != 335) {
@@ -189,7 +189,7 @@ public class MaterialisationMaterialListWidget extends DynamicElementListWidget<
                     return true;
                 }
             }
-
+            
             @Override
             public boolean changeFocus(boolean boolean_1) {
                 this.focused = !this.focused;
@@ -197,8 +197,8 @@ public class MaterialisationMaterialListWidget extends DynamicElementListWidget<
             }
         }
     }
-
+    
     public static abstract class Entry extends DynamicElementListWidget.ElementEntry<Entry> {
-
+    
     }
 }

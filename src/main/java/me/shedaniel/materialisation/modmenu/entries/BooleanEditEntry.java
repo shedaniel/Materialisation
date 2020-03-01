@@ -10,12 +10,12 @@ import net.minecraft.client.resource.language.I18n;
 import java.util.List;
 
 public class BooleanEditEntry extends MaterialisationCreateOverrideListWidget.EditEntry {
-
+    
     private boolean defaultValue;
     private boolean value;
     private ButtonWidget buttonWidget, resetButton;
     private List<Element> widgets;
-
+    
     public BooleanEditEntry(String s, boolean defaultValue) {
         super(s);
         this.defaultValue = defaultValue;
@@ -30,7 +30,7 @@ public class BooleanEditEntry extends MaterialisationCreateOverrideListWidget.Ed
         });
         this.widgets = Lists.newArrayList(buttonWidget, resetButton);
     }
-
+    
     @Override
     public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
         super.render(index, y, x, entryWidth, entryHeight, mouseX, mouseY, isSelected, delta);
@@ -43,27 +43,27 @@ public class BooleanEditEntry extends MaterialisationCreateOverrideListWidget.Ed
         resetButton.render(mouseX, mouseY, delta);
         buttonWidget.render(mouseX, mouseY, delta);
     }
-
+    
     @Override
     public String getDefaultValueString() {
         return defaultValue ? "§aYes" : "§cNo";
     }
-
+    
     @Override
     public String getValueString() {
         return value ? "§aYes" : "§cNo";
     }
-
+    
     @Override
     public Boolean getValue() {
-        return Boolean.valueOf(value);
+        return value;
     }
-
+    
     @Override
     public boolean isValid() {
         return true;
     }
-
+    
     @Override
     public List<? extends Element> children() {
         return widgets;

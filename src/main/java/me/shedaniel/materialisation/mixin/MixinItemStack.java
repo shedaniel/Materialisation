@@ -6,11 +6,9 @@ import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.items.MaterialisedMiningTool;
 import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -21,22 +19,19 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-
-import java.util.List;
 
 @Mixin(ItemStack.class)
 public abstract class MixinItemStack {
-
+    
     @Shadow
     public abstract Item getItem();
-
+    
     @Shadow
     public abstract boolean hasEnchantments();
-
+    
     @Shadow
     public abstract CompoundTag getTag();
-
+    
     @Inject(at = @At("HEAD"), method = "isEffectiveOn", cancellable = true)
     public void isEffectiveOn(BlockState state, CallbackInfoReturnable<Boolean> info) {
         if (getItem() instanceof MaterialisedMiningTool) {
@@ -56,7 +51,7 @@ public abstract class MixinItemStack {
             }
         }
     }
-
+    
     /**
      * Applies the block breaking speed of tools, using the fabric api, overrides the hook that fabric provides
      */
@@ -79,7 +74,7 @@ public abstract class MixinItemStack {
             }
         }
     }
-
+    
     /**
      * Disable italic on tools
      */
@@ -88,10 +83,10 @@ public abstract class MixinItemStack {
         if (getItem() instanceof MaterialisedMiningTool)
             callbackInfo.setReturnValue(false);
     }
-
+    
     @Inject(method = "getAttributeModifiers", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/item/Item;getModifiers(Lnet/minecraft/entity/EquipmentSlot;)Lcom/google/common/collect/Multimap;",
-            shift = At.Shift.BEFORE), cancellable = true)
+                                                       target = "Lnet/minecraft/item/Item;getModifiers(Lnet/minecraft/entity/EquipmentSlot;)Lcom/google/common/collect/Multimap;",
+                                                       shift = At.Shift.BEFORE), cancellable = true)
     public void getAttributeModifiers(EquipmentSlot slot, CallbackInfoReturnable<Multimap<String, EntityAttributeModifier>> callbackInfo) {
         if (getItem() instanceof MaterialisedMiningTool) {
             HashMultimap<String, EntityAttributeModifier> multimap = HashMultimap.create();
@@ -105,13 +100,13 @@ public abstract class MixinItemStack {
             callbackInfo.setReturnValue(multimap);
         }
     }
-
+    
     @Inject(method = "isEnchantable", at = @At("HEAD"), cancellable = true)
     public void isEnchantable(CallbackInfoReturnable<Boolean> returnable) {
         if (getItem() instanceof MaterialisedMiningTool)
             returnable.setReturnValue(!hasEnchantments());
     }
-
+    
     @Inject(method = "isDamageable", at = @At("HEAD"), cancellable = true)
     public void isDamageable(CallbackInfoReturnable<Boolean> returnable) {
         if (getItem() instanceof MaterialisedMiningTool) {
@@ -119,7 +114,7 @@ public abstract class MixinItemStack {
             returnable.setReturnValue(compoundTag_1 == null || !compoundTag_1.getBoolean("Unbreakable"));
         }
     }
-
+    
     @Inject(method = "getDamage", at = @At("HEAD"), cancellable = true)
     public void getDamage(CallbackInfoReturnable<Integer> returnable) {
         if (getItem() instanceof MaterialisedMiningTool) {
@@ -127,13 +122,13 @@ public abstract class MixinItemStack {
             returnable.setReturnValue(maxDurability - MaterialisationUtils.getToolDurability((ItemStack) (Object) this) - 1);
         }
     }
-
+    
     @Inject(method = "getMaxDamage", at = @At("HEAD"), cancellable = true)
     public void getMaxDamage(CallbackInfoReturnable<Integer> returnable) {
         if (getItem() instanceof MaterialisedMiningTool)
             returnable.setReturnValue(MaterialisationUtils.getToolMaxDurability((ItemStack) (Object) this));
     }
-
+    
     @Inject(method = "setDamage", at = @At("HEAD"), cancellable = true)
     public void setDamage(int damage, CallbackInfo info) {
         if (getItem() instanceof MaterialisedMiningTool) {
@@ -142,5 +137,5 @@ public abstract class MixinItemStack {
             info.cancel();
         }
     }
-
+    
 }

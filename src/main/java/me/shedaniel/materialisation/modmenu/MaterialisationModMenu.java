@@ -12,7 +12,7 @@ public class MaterialisationModMenu implements ModMenuApi {
     public String getModId() {
         return ModReference.MOD_ID;
     }
-
+    
     @Override
     public Function<Screen, ? extends Screen> getConfigScreenFactory() {
         if (!FabricLoader.getInstance().isModLoaded("cloth-config2"))

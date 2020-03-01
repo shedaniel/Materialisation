@@ -11,12 +11,12 @@ import net.minecraft.client.resource.language.I18n;
 import java.util.List;
 
 public class IntEditEntry extends MaterialisationCreateOverrideListWidget.EditEntry {
-
+    
     private int defaultValue;
     private TextFieldWidget buttonWidget;
     private ButtonWidget resetButton;
     private List<Element> widgets;
-
+    
     public IntEditEntry(String s, int defaultValue) {
         super(s);
         this.defaultValue = defaultValue;
@@ -24,7 +24,7 @@ public class IntEditEntry extends MaterialisationCreateOverrideListWidget.EditEn
             @Override
             public void render(int int_1, int int_2, float float_1) {
                 try {
-                    int i = Integer.valueOf(getText());
+                    int i = Integer.parseInt(getText());
                     setEditableColor(14737632);
                 } catch (NumberFormatException ex) {
                     setEditableColor(16733525);
@@ -43,7 +43,7 @@ public class IntEditEntry extends MaterialisationCreateOverrideListWidget.EditEn
         });
         this.widgets = Lists.newArrayList(buttonWidget, resetButton);
     }
-
+    
     @Override
     public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
         super.render(index, y, x, entryWidth, entryHeight, mouseX, mouseY, isSelected, delta);
@@ -55,37 +55,36 @@ public class IntEditEntry extends MaterialisationCreateOverrideListWidget.EditEn
         resetButton.render(mouseX, mouseY, delta);
         buttonWidget.render(mouseX, mouseY, delta);
     }
-
+    
     @Override
     public String getDefaultValueString() {
         return defaultValue + "";
     }
-
+    
     @Override
     public String getValueString() {
         return buttonWidget.getText();
     }
-
+    
     @Override
     public Double getValue() {
         try {
-            double i = Integer.valueOf(buttonWidget.getText());
-            return Double.valueOf(i);
+            return (double) Integer.parseInt(buttonWidget.getText());
         } catch (NumberFormatException ex) {
-            return Double.valueOf(defaultValue);
+            return (double) defaultValue;
         }
     }
-
+    
     @Override
     public boolean isValid() {
         try {
-            double i = Integer.valueOf(buttonWidget.getText());
+            double i = Integer.parseInt(buttonWidget.getText());
             return true;
         } catch (NumberFormatException ex) {
             return false;
         }
     }
-
+    
     @Override
     public List<? extends Element> children() {
         return widgets;

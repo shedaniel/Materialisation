@@ -3,7 +3,6 @@ package me.shedaniel.materialisation.items;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import me.shedaniel.materialisation.MaterialisationUtils;
-import me.shedaniel.materialisation.ModReference;
 import me.shedaniel.materialisation.api.ToolType;
 import me.shedaniel.materialisation.mixin.MiningToolItemAccessor;
 import net.fabricmc.api.EnvType;
@@ -24,7 +23,6 @@ import net.minecraft.stat.Stats;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -34,18 +32,15 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static me.shedaniel.materialisation.MaterialisationUtils.isHandleBright;
-import static me.shedaniel.materialisation.MaterialisationUtils.isHeadBright;
-
 public class MaterialisedMegaAxeItem extends AxeItem implements MaterialisedMiningTool {
-
-    private static final Set<Block> EFFECTIVE_BLOCKS = Sets.newHashSet(new Block[]{Blocks.OAK_PLANKS, Blocks.SPRUCE_PLANKS, Blocks.BIRCH_PLANKS, Blocks.JUNGLE_PLANKS, Blocks.ACACIA_PLANKS, Blocks.DARK_OAK_PLANKS, Blocks.BOOKSHELF, Blocks.OAK_WOOD, Blocks.SPRUCE_WOOD, Blocks.BIRCH_WOOD, Blocks.JUNGLE_WOOD, Blocks.ACACIA_WOOD, Blocks.DARK_OAK_WOOD, Blocks.OAK_LOG, Blocks.SPRUCE_LOG, Blocks.BIRCH_LOG, Blocks.JUNGLE_LOG, Blocks.ACACIA_LOG, Blocks.DARK_OAK_LOG, Blocks.CHEST, Blocks.PUMPKIN, Blocks.CARVED_PUMPKIN, Blocks.JACK_O_LANTERN, Blocks.MELON, Blocks.LADDER, Blocks.SCAFFOLDING, Blocks.OAK_BUTTON, Blocks.SPRUCE_BUTTON, Blocks.BIRCH_BUTTON, Blocks.JUNGLE_BUTTON, Blocks.DARK_OAK_BUTTON, Blocks.ACACIA_BUTTON, Blocks.OAK_PRESSURE_PLATE, Blocks.SPRUCE_PRESSURE_PLATE, Blocks.BIRCH_PRESSURE_PLATE, Blocks.JUNGLE_PRESSURE_PLATE, Blocks.DARK_OAK_PRESSURE_PLATE, Blocks.ACACIA_PRESSURE_PLATE});
-
+    
+    private static final Set<Block> EFFECTIVE_BLOCKS = Sets.newHashSet(Blocks.OAK_PLANKS, Blocks.SPRUCE_PLANKS, Blocks.BIRCH_PLANKS, Blocks.JUNGLE_PLANKS, Blocks.ACACIA_PLANKS, Blocks.DARK_OAK_PLANKS, Blocks.BOOKSHELF, Blocks.OAK_WOOD, Blocks.SPRUCE_WOOD, Blocks.BIRCH_WOOD, Blocks.JUNGLE_WOOD, Blocks.ACACIA_WOOD, Blocks.DARK_OAK_WOOD, Blocks.OAK_LOG, Blocks.SPRUCE_LOG, Blocks.BIRCH_LOG, Blocks.JUNGLE_LOG, Blocks.ACACIA_LOG, Blocks.DARK_OAK_LOG, Blocks.CHEST, Blocks.PUMPKIN, Blocks.CARVED_PUMPKIN, Blocks.JACK_O_LANTERN, Blocks.MELON, Blocks.LADDER, Blocks.SCAFFOLDING, Blocks.OAK_BUTTON, Blocks.SPRUCE_BUTTON, Blocks.BIRCH_BUTTON, Blocks.JUNGLE_BUTTON, Blocks.DARK_OAK_BUTTON, Blocks.ACACIA_BUTTON, Blocks.OAK_PRESSURE_PLATE, Blocks.SPRUCE_PRESSURE_PLATE, Blocks.BIRCH_PRESSURE_PLATE, Blocks.JUNGLE_PRESSURE_PLATE, Blocks.DARK_OAK_PRESSURE_PLATE, Blocks.ACACIA_PRESSURE_PLATE);
+    
     public MaterialisedMegaAxeItem(Settings settings) {
         super(MaterialisationUtils.DUMMY_MATERIAL, 0, -3.65F, settings.maxDamage(0));
         initProperty();
     }
-
+    
     @Override
     public boolean canMine(BlockState blockState, World world, BlockPos pos, PlayerEntity player) {
         if (world.isClient)
@@ -65,7 +60,7 @@ public class MaterialisedMegaAxeItem extends AxeItem implements MaterialisedMini
                 }
         return true;
     }
-
+    
     public void tryBreak(List<BlockPos> posList, World world, BlockPos blockPos, PlayerEntity player, ItemStack stack, BlockPos ogPos, Block log, AtomicReference<Block> leaves) {
         if (posList.contains(blockPos) || blockPos.getManhattanDistance(ogPos) > 14 || MaterialisationUtils.getToolDurability(stack) <= 0)
             return;
@@ -89,7 +84,7 @@ public class MaterialisedMegaAxeItem extends AxeItem implements MaterialisedMini
                         tryBreak(posList, world, add, player, stack, ogPos, log, leaves);
                 }
     }
-
+    
     private boolean canBreak(ItemStack stack, BlockState state) {
         TriState triState = MaterialisationUtils.mt_handleIsEffectiveOn(stack, state);
         if (triState != TriState.DEFAULT) {
@@ -100,56 +95,56 @@ public class MaterialisedMegaAxeItem extends AxeItem implements MaterialisedMini
             return ((MaterialisedMegaAxeItem) stack.getItem()).canEffectivelyBreak(stack, state);
         }
     }
-
+    
     private void takeDamage(World world, BlockState blockState, BlockPos blockPos, PlayerEntity playerEntity, ItemStack stack) {
         if (!world.isClient && blockState.getHardness(world, blockPos) != 0.0F)
             if (!playerEntity.world.isClient && (!(playerEntity instanceof PlayerEntity) || !playerEntity.abilities.creativeMode))
                 if (MaterialisationUtils.getToolDurability(stack) > 0)
                     MaterialisationUtils.applyDamage(stack, 1, playerEntity.getRandom());
     }
-
+    
     private boolean isLogs(BlockState state) {
         return BlockTags.LOGS.contains(state.getBlock());
     }
-
+    
     private boolean isLeaves(BlockState state) {
         return BlockTags.LEAVES.contains(state.getBlock());
     }
-
+    
     @Override
     public float getToolBlockBreakingSpeed(ItemStack stack, BlockState state) {
         Material material_1 = state.getMaterial();
         return material_1 != Material.WOOD && material_1 != Material.PLANT && material_1 != Material.REPLACEABLE_PLANT && material_1 != Material.BAMBOO ? (((MiningToolItemAccessor) stack.getItem()).getEffectiveBlocks().contains(state.getBlock()) ? MaterialisationUtils.getToolBreakingSpeed(stack) : 1.0F) : MaterialisationUtils.getToolBreakingSpeed(stack);
     }
-
+    
     @Override
     public double getAttackSpeed() {
         return attackSpeed;
     }
-
+    
     @Nonnull
     @Override
     public ToolType getToolType() {
         return ToolType.MEGA_AXE;
     }
-
+    
     @Override
     public boolean canEffectivelyBreak(ItemStack itemStack, BlockState state) {
         return EFFECTIVE_BLOCKS.contains(state.getBlock());
     }
-
+    
     @Override
     public ActionResult useOnBlock(ItemUsageContext context) {
         World world = context.getWorld();
         BlockPos blockPos = context.getBlockPos();
         ItemStack itemStack = context.getStack();
         BlockState blockState = world.getBlockState(blockPos);
-        Block block = (Block) STRIPPED_BLOCKS.get(blockState.getBlock());
+        Block block = STRIPPED_BLOCKS.get(blockState.getBlock());
         if (MaterialisationUtils.getToolDurability(itemStack) > 0 && block != null) {
             PlayerEntity playerEntity_1 = context.getPlayer();
             world.playSound(playerEntity_1, blockPos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
             if (!world.isClient) {
-                world.setBlockState(blockPos, (BlockState) block.getDefaultState().with(PillarBlock.AXIS, blockState.get(PillarBlock.AXIS)), 11);
+                world.setBlockState(blockPos, block.getDefaultState().with(PillarBlock.AXIS, blockState.get(PillarBlock.AXIS)), 11);
                 if (playerEntity_1 != null) {
                     if (!playerEntity_1.world.isClient && (!(playerEntity_1 instanceof PlayerEntity) || !(playerEntity_1.abilities.creativeMode)))
                         if (MaterialisationUtils.applyDamage(itemStack, 1, playerEntity_1.getRandom())) {
@@ -165,12 +160,12 @@ public class MaterialisedMegaAxeItem extends AxeItem implements MaterialisedMini
         }
         return ActionResult.PASS;
     }
-
+    
     @Override
     public boolean canRepair(ItemStack itemStack_1, ItemStack itemStack_2) {
         return false;
     }
-
+    
     @Override
     public boolean postHit(ItemStack stack, LivingEntity livingEntity_1, LivingEntity livingEntity_2) {
         if (!livingEntity_1.world.isClient && (!(livingEntity_1 instanceof PlayerEntity) || !((PlayerEntity) livingEntity_1).abilities.creativeMode))
@@ -186,7 +181,7 @@ public class MaterialisedMegaAxeItem extends AxeItem implements MaterialisedMini
                 }
         return true;
     }
-
+    
     @Override
     public boolean postMine(ItemStack stack, World world_1, BlockState blockState_1, BlockPos blockPos_1, LivingEntity livingEntity_1) {
         if (!world_1.isClient && blockState_1.getHardness(world_1, blockPos_1) != 0.0F)
@@ -203,11 +198,11 @@ public class MaterialisedMegaAxeItem extends AxeItem implements MaterialisedMini
                     }
         return true;
     }
-
+    
     @Environment(EnvType.CLIENT)
     @Override
     public void appendTooltip(ItemStack stack, World world_1, List<Text> list_1, TooltipContext tooltipContext_1) {
         MaterialisationUtils.appendToolTooltip(stack, this, world_1, list_1, tooltipContext_1);
     }
-
+    
 }

@@ -17,7 +17,6 @@ import net.minecraft.util.Pair;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.util.*;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -26,7 +25,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public class ConfigHelper implements ModifierIngredientsHandler {
-
+    
     public static final File CONFIG_DIRECTORY = new File(FabricLoader.getInstance().getConfigDirectory(), "materialisation");
     public static final File MATERIALS_DIRECTORY = new File(CONFIG_DIRECTORY, "material");
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
@@ -36,39 +35,38 @@ public class ConfigHelper implements ModifierIngredientsHandler {
     private static final Map<Modifier, List<ModifierIngredient>> MODIFIER_LIST_MAP = Maps.newHashMap();
     public static boolean loading = false;
     private static Lazy<ExecutorService> executorService = new Lazy<>(() -> Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "Materialisation")));
-
-    public static void loadDefault() throws IOException {
+    
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public static void loadDefault() {
         if (OLD_MATERIALS_DIRECTORY.exists())
             OLD_MATERIALS_DIRECTORY.renameTo(new File(CONFIG_DIRECTORY, "materials_old"));
         if (!CONFIG_DIRECTORY.exists() || !MATERIALS_DIRECTORY.exists())
             fillDefaultConfigs();
     }
-
+    
     public static void loadConfigAsync() {
         try {
             executorService.get().shutdownNow();
             executorService = new Lazy<>(() -> Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "Materialisation")));
-            executorService.get().invokeAll(Collections.singletonList(new Callable<Object>() {
-                @Override
-                public Object call() throws Exception {
-                    loadConfig();
-                    return null;
-                }
+            executorService.get().invokeAll(Collections.singletonList(() -> {
+                loadConfig();
+                return null;
             }), 10, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
-
+    
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void loadConfig() {
         loading = true;
         try {
-            ((ResettableSimpleRegistry) Materialisation.MODIFIERS).reset();
+            ((ResettableSimpleRegistry<Modifier>) Materialisation.MODIFIERS).reset();
             MODIFIERS.clear();
             MODIFIER_LIST_MAP.clear();
             Modifiers.registerModifiers(new ConfigHelper());
             Materialisation.LOGGER.info("[Materialisation] Loaded " + Materialisation.MODIFIERS.getIds().size() + " modifiers: " +
-                    Materialisation.MODIFIERS.getIds().stream().map(Identifier::toString).collect(Collectors.joining(", ")));
+                                        Materialisation.MODIFIERS.getIds().stream().map(Identifier::toString).collect(Collectors.joining(", ")));
             for (Map.Entry<Modifier, List<ModifierIngredient>> entry : MODIFIER_LIST_MAP.entrySet()) {
                 Identifier id = Materialisation.MODIFIERS.getId(entry.getKey());
                 JsonObject object = new JsonObject();
@@ -292,13 +290,14 @@ public class ConfigHelper implements ModifierIngredientsHandler {
             }
             List<MaterialsPack> packs = Lists.newArrayList();
             for (MaterialsPack loadedPack : loadedPacks) {
-                boolean a = true;
-                for (String requiredMod : loadedPack.getConfigPackInfo().getRequiredMods()) {
-                    if (!FabricLoader.getInstance().isModLoaded(requiredMod)) {
-                        a = false;
-                    }
+                boolean enabled = false;
+                try {
+                    loadedPack.getConfigPackInfo().getPredicate().accept(loadedPack.getConfigPackInfo());
+                    enabled = true;
+                } catch (Throwable throwable) {
+                    Materialisation.LOGGER.warn("[Materialisation] " + throwable.getMessage());
                 }
-                if (a) {
+                if (enabled) {
                     packs.add(loadedPack);
                     Materialisation.LOGGER.info(String.format("[Materialisation] Finished loading material pack: %s with %d material(s).", loadedPack.getIdentifier().toString(), loadedPack.getKnownMaterials().count()));
                 }
@@ -344,26 +343,27 @@ public class ConfigHelper implements ModifierIngredientsHandler {
         Modifiers.fillEmpty();
         loading = false;
     }
-
-    private static void fillDefaultConfigs() throws IOException {
+    
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    private static void fillDefaultConfigs() {
         MATERIALS_DIRECTORY.mkdirs();
     }
-
+    
     public static List<ConfigIngredients> fromMap(Map<BetterIngredient, Float> map) {
         return map.entrySet().stream().map(entry -> new ConfigIngredients(entry.getKey().toConfigIngredient(), entry.getValue())).collect(Collectors.toList());
     }
-
+    
     public static Map<BetterIngredient, Float> fromJson(List<ConfigIngredients> jsonObjects) {
         LinkedHashMap<BetterIngredient, Float> map = Maps.newLinkedHashMap();
         jsonObjects.forEach(configIngredients -> map.put(configIngredients.ingredient.toBetterIngredient(), configIngredients.multiplier));
         return map;
     }
-
+    
     @Override
     public void registerDefaultIngredient(Modifier modifier, ModifierIngredient ingredient) {
         if (!MODIFIER_LIST_MAP.containsKey(modifier))
             MODIFIER_LIST_MAP.put(modifier, new ArrayList<>());
         MODIFIER_LIST_MAP.get(modifier).add(ingredient);
     }
-
+    
 }

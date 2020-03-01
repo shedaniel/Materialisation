@@ -12,17 +12,17 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 public class StringEditEntry extends MaterialisationCreateOverrideListWidget.EditEntry {
-
+    
     private String defaultValue;
     private Pattern validation;
     private TextFieldWidget buttonWidget;
     private ButtonWidget resetButton;
     private List<Element> widgets;
-
+    
     public StringEditEntry(String s, String defaultValue) {
         this(s, defaultValue, null);
     }
-
+    
     public StringEditEntry(String s, String defaultValue, Pattern validation) {
         super(s);
         this.defaultValue = defaultValue;
@@ -45,7 +45,7 @@ public class StringEditEntry extends MaterialisationCreateOverrideListWidget.Edi
         });
         this.widgets = Lists.newArrayList(buttonWidget, resetButton);
     }
-
+    
     @Override
     public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
         super.render(index, y, x, entryWidth, entryHeight, mouseX, mouseY, isSelected, delta);
@@ -57,27 +57,27 @@ public class StringEditEntry extends MaterialisationCreateOverrideListWidget.Edi
         resetButton.render(mouseX, mouseY, delta);
         buttonWidget.render(mouseX, mouseY, delta);
     }
-
+    
     @Override
     public String getDefaultValueString() {
         return defaultValue;
     }
-
+    
     @Override
     public String getValueString() {
         return buttonWidget.getText();
     }
-
+    
     @Override
     public String getValue() {
         return buttonWidget.getText();
     }
-
+    
     @Override
     public boolean isValid() {
         return validation == null || validation.matcher(getValue()).matches();
     }
-
+    
     @Override
     public List<? extends Element> children() {
         return widgets;

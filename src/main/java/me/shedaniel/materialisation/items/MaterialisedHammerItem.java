@@ -1,7 +1,6 @@
 package me.shedaniel.materialisation.items;
 
 import me.shedaniel.materialisation.MaterialisationUtils;
-import me.shedaniel.materialisation.ModReference;
 import me.shedaniel.materialisation.api.ToolType;
 import me.shedaniel.materialisation.mixin.MiningToolItemAccessor;
 import net.fabricmc.api.EnvType;
@@ -23,7 +22,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.PickaxeItem;
 import net.minecraft.stat.Stats;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -34,17 +32,15 @@ import net.minecraft.world.World;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-import static me.shedaniel.materialisation.MaterialisationUtils.isHandleBright;
-import static me.shedaniel.materialisation.MaterialisationUtils.isHeadBright;
 import static net.minecraft.util.math.Direction.Axis.*;
 
 public class MaterialisedHammerItem extends PickaxeItem implements MaterialisedMiningTool {
-
+    
     public MaterialisedHammerItem(Settings settings) {
         super(MaterialisationUtils.DUMMY_MATERIAL, 0, -3.6F, settings.maxDamage(0));
         initProperty();
     }
-
+    
     @Override
     public boolean canEffectivelyBreak(ItemStack stack, BlockState state) {
         Block block_1 = state.getBlock();
@@ -61,29 +57,29 @@ public class MaterialisedHammerItem extends PickaxeItem implements MaterialisedM
             return int_1 >= 2;
         }
     }
-
+    
     @Override
     public float getToolBlockBreakingSpeed(ItemStack stack, BlockState state) {
         Material material = state.getMaterial();
         return material != Material.METAL && material != Material.ANVIL && material != Material.STONE ? (((MiningToolItemAccessor) stack.getItem()).getEffectiveBlocks().contains(state.getBlock()) ? MaterialisationUtils.getToolBreakingSpeed(stack) : 1.0F) : MaterialisationUtils.getToolBreakingSpeed(stack);
     }
-
+    
     @Override
     public double getAttackSpeed() {
         return attackSpeed;
     }
-
+    
     @Nonnull
     @Override
     public ToolType getToolType() {
         return ToolType.HAMMER;
     }
-
+    
     @Override
     public boolean canRepair(ItemStack itemStack_1, ItemStack itemStack_2) {
         return false;
     }
-
+    
     @Override
     public boolean postHit(ItemStack stack, LivingEntity livingEntity_1, LivingEntity livingEntity_2) {
         if (!livingEntity_1.world.isClient && (!(livingEntity_1 instanceof PlayerEntity) || !((PlayerEntity) livingEntity_1).abilities.creativeMode))
@@ -99,8 +95,8 @@ public class MaterialisedHammerItem extends PickaxeItem implements MaterialisedM
                 }
         return true;
     }
-
-
+    
+    
     @Override
     public boolean postMine(ItemStack stack, World world_1, BlockState blockState_1, BlockPos blockPos_1, LivingEntity livingEntity_1) {
         if (!world_1.isClient && blockState_1.getHardness(world_1, blockPos_1) != 0.0F)
@@ -109,7 +105,7 @@ public class MaterialisedHammerItem extends PickaxeItem implements MaterialisedM
                     MaterialisationUtils.applyDamage(stack, 1, livingEntity_1.getRandom());
         return true;
     }
-
+    
     @Override
     public boolean canMine(BlockState blockState, World world, BlockPos pos, PlayerEntity player) {
         if (world.isClient)
@@ -141,7 +137,7 @@ public class MaterialisedHammerItem extends PickaxeItem implements MaterialisedM
             }
         return true;
     }
-
+    
     public boolean breakBlock(World world, BlockState blockState_1, BlockPos blockPos_1, boolean boolean_1, Entity entity_1, ItemStack itemStack_1) {
         if (blockState_1.isAir()) {
             return false;
@@ -155,7 +151,7 @@ public class MaterialisedHammerItem extends PickaxeItem implements MaterialisedM
             return world.setBlockState(blockPos_1, fluidState_1.getBlockState(), 3);
         }
     }
-
+    
     private boolean canBreak(ItemStack stack, BlockState state) {
         TriState triState = MaterialisationUtils.mt_handleIsEffectiveOn(stack, state);
         if (triState != TriState.DEFAULT) {
@@ -166,18 +162,18 @@ public class MaterialisedHammerItem extends PickaxeItem implements MaterialisedM
             return ((MaterialisedHammerItem) stack.getItem()).canEffectivelyBreak(stack, state);
         }
     }
-
+    
     private void takeDamage(World world, BlockState blockState, BlockPos blockPos, PlayerEntity playerEntity, ItemStack stack) {
         if (!world.isClient && blockState.getHardness(world, blockPos) != 0.0F)
             if (!playerEntity.world.isClient && (!(playerEntity instanceof PlayerEntity) || !playerEntity.abilities.creativeMode))
                 if (MaterialisationUtils.getToolDurability(stack) > 0)
                     MaterialisationUtils.applyDamage(stack, 1, playerEntity.getRandom());
     }
-
+    
     @Environment(EnvType.CLIENT)
     @Override
     public void appendTooltip(ItemStack stack, World world_1, List<Text> list_1, TooltipContext tooltipContext_1) {
         MaterialisationUtils.appendToolTooltip(stack, this, world_1, list_1, tooltipContext_1);
     }
-
+    
 }

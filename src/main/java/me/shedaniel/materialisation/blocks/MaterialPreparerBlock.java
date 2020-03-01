@@ -21,29 +21,29 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 public class MaterialPreparerBlock extends HorizontalFacingBlock {
-
+    
     private static final VoxelShape SHAPE;
-
+    
     static {
         VoxelShape base = Block.createCuboidShape(0, 14, 0, 16, 16, 16);
         SHAPE = VoxelShapes.union(base, Block.createCuboidShape(0, 0, 0, 2, 14, 2), Block.createCuboidShape(0, 0, 14, 2, 14, 16), Block.createCuboidShape(14, 0, 14, 16, 14, 16), Block.createCuboidShape(14, 0, 0, 16, 14, 2));
     }
-
+    
     public MaterialPreparerBlock() {
         super(FabricBlockSettings.copy(Blocks.CRAFTING_TABLE).drops(new Identifier(ModReference.MOD_ID, "blocks/material_preparer")).build());
         this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH));
     }
-
+    
     @Override
     public BlockState getPlacementState(ItemPlacementContext placementContext) {
         return getDefaultState().with(FACING, placementContext.getPlayerFacing().getOpposite());
     }
-
+    
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         builder.add(FACING);
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public ActionResult onUse(BlockState blockState, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hitResult) {
@@ -51,29 +51,29 @@ public class MaterialPreparerBlock extends HorizontalFacingBlock {
             ContainerProviderRegistry.INSTANCE.openContainer(Materialisation.MATERIAL_PREPARER_CONTAINER, player, buf -> buf.writeBlockPos(pos));
         return ActionResult.SUCCESS;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public BlockRenderType getRenderType(BlockState blockState_1) {
         return BlockRenderType.MODEL;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean hasSidedTransparency(BlockState blockState_1) {
         return true;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public boolean canPlaceAtSide(BlockState blockState_1, BlockView blockView_1, BlockPos blockPos_1, BlockPlacementEnvironment blockPlacementEnvironment_1) {
         return false;
     }
-
+    
     @SuppressWarnings("deprecation")
     @Override
     public VoxelShape getOutlineShape(BlockState blockState_1, BlockView blockView_1, BlockPos blockPos_1, EntityContext entityContext_1) {
         return SHAPE;
     }
-
+    
 }

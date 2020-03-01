@@ -13,14 +13,14 @@ import java.text.ParsePosition;
 import java.util.List;
 
 public class DoubleEditEntry extends MaterialisationCreateOverrideListWidget.EditEntry {
-
+    
     private double defaultValue;
     private TextFieldWidget buttonWidget;
     private ButtonWidget resetButton;
     private List<Element> widgets;
     private ParsePosition parsePosition = new ParsePosition(0);
     private static final DecimalFormat DF = new DecimalFormat("#.##");
-
+    
     public DoubleEditEntry(String s, double defaultValue) {
         super(s);
         this.defaultValue = defaultValue;
@@ -42,7 +42,7 @@ public class DoubleEditEntry extends MaterialisationCreateOverrideListWidget.Edi
         });
         this.widgets = Lists.newArrayList(buttonWidget, resetButton);
     }
-
+    
     @Override
     public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
         super.render(index, y, x, entryWidth, entryHeight, mouseX, mouseY, isSelected, delta);
@@ -54,17 +54,17 @@ public class DoubleEditEntry extends MaterialisationCreateOverrideListWidget.Edi
         resetButton.render(mouseX, mouseY, delta);
         buttonWidget.render(mouseX, mouseY, delta);
     }
-
+    
     @Override
     public String getDefaultValueString() {
         return DF.format(defaultValue);
     }
-
+    
     @Override
     public String getValueString() {
         return DF.format(getValue());
     }
-
+    
     @Override
     public Double getValue() {
         parsePosition.setIndex(0);
@@ -74,7 +74,7 @@ public class DoubleEditEntry extends MaterialisationCreateOverrideListWidget.Edi
         }
         return defaultValue;
     }
-
+    
     @Override
     public boolean isValid() {
         parsePosition.setIndex(0);
@@ -82,7 +82,7 @@ public class DoubleEditEntry extends MaterialisationCreateOverrideListWidget.Edi
         DF.parse(text, parsePosition);
         return parsePosition.getIndex() == text.length();
     }
-
+    
     @Override
     public List<? extends Element> children() {
         return widgets;

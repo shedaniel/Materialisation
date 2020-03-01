@@ -7,15 +7,15 @@ import java.util.Collections;
 import java.util.List;
 
 public class CottonResourcesMaterials implements DefaultMaterialSupplier {
-
+    
     @Override
     public List<MaterialsPack> getMaterialPacks() {
         try {
-            return List.class.cast(Class.forName("me.shedaniel.materialisation.materials.CottonResourcesMaterialsGetter").getDeclaredMethod("get").invoke(null));
+            return (List) Class.forName("me.shedaniel.materialisation.materials.CottonResourcesMaterialsGetter").getDeclaredMethod("get").invoke(null);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return Collections.emptyList();
     }
-
+    
 }

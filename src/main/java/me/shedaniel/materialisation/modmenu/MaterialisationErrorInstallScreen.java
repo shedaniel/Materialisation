@@ -20,18 +20,18 @@ import java.util.List;
 import static me.shedaniel.materialisation.modmenu.MaterialisationMaterialsScreen.overlayBackground;
 
 public class MaterialisationErrorInstallScreen extends Screen {
-
+    
     private Screen parent;
     private Throwable throwable;
     private MaterialisationOverridesListWidget listWidget;
-
+    
     public MaterialisationErrorInstallScreen(Screen parent, Throwable throwable) {
         super(new TranslatableText("message.materialisation.installation_errored").formatted(Formatting.RED));
         this.parent = parent;
         this.throwable = throwable;
         throwable.printStackTrace();
     }
-
+    
     @Override
     public boolean keyPressed(int int_1, int int_2, int int_3) {
         if (int_1 == 256 && this.shouldCloseOnEsc()) {
@@ -40,7 +40,7 @@ public class MaterialisationErrorInstallScreen extends Screen {
         }
         return super.keyPressed(int_1, int_2, int_3);
     }
-
+    
     @Override
     protected void init() {
         super.init();
@@ -63,7 +63,7 @@ public class MaterialisationErrorInstallScreen extends Screen {
             listWidget.addItem(entry);
         }
     }
-
+    
     @Override
     public void render(int mouseX, int mouseY, float delta) {
         renderDirtBackground(0);

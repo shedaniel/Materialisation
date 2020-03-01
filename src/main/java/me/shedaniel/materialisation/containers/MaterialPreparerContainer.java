@@ -19,17 +19,17 @@ import net.minecraft.util.math.MathHelper;
 import java.util.stream.Collectors;
 
 public class MaterialPreparerContainer extends Container {
-
+    
     private final Inventory main, result;
     private final PlayerEntity player;
     private BlockContext context;
     private String itemName;
     private int takingFirst, takingSecond;
-
+    
     public MaterialPreparerContainer(int syncId, PlayerInventory main) {
         this(syncId, main, BlockContext.EMPTY);
     }
-
+    
     public MaterialPreparerContainer(int syncId, PlayerInventory playerInventory, final BlockContext context) {
         super(null, syncId);
         this.context = context;
@@ -52,11 +52,11 @@ public class MaterialPreparerContainer extends Container {
             public boolean canInsert(ItemStack itemStack_1) {
                 return false;
             }
-
+            
             public boolean canTakeItems(PlayerEntity playerEntity_1) {
                 return hasStack() && main.getInvStack(0).getCount() >= takingFirst && main.getInvStack(1).getCount() >= takingSecond;
             }
-
+            
             public ItemStack onTakeItem(PlayerEntity playerEntity_1, ItemStack itemStack_1) {
                 ItemStack first = main.getInvStack(0);
                 first.decrement(takingFirst);
@@ -74,14 +74,14 @@ public class MaterialPreparerContainer extends Container {
         for (int_4 = 0; int_4 < 9; ++int_4)
             this.addSlot(new Slot(playerInventory, int_4, 8 + int_4 * 18, 116));
     }
-
+    
     @Override
     public boolean canUse(PlayerEntity playerEntity) {
         return this.context.run((world, blockPos) -> {
-            return world.getBlockState(blockPos).getBlock() != Materialisation.MATERIAL_PREPARER ? false : playerEntity.squaredDistanceTo(blockPos.getX() + .5D, blockPos.getY() + .5D, blockPos.getZ() + .5D) < 64D;
+            return world.getBlockState(blockPos).getBlock() == Materialisation.MATERIAL_PREPARER && playerEntity.squaredDistanceTo(blockPos.getX() + .5D, blockPos.getY() + .5D, blockPos.getZ() + .5D) < 64D;
         }, true);
     }
-
+    
     @Override
     public void onContentChanged(Inventory inventory_1) {
         super.onContentChanged(inventory_1);
@@ -89,7 +89,7 @@ public class MaterialPreparerContainer extends Container {
             this.updateResult();
         }
     }
-
+    
     private void updateResult() {
         takingFirst = 0;
         takingSecond = 0;
@@ -253,7 +253,7 @@ public class MaterialPreparerContainer extends Container {
         }
         this.sendContentUpdates();
     }
-
+    
     @Override
     public void close(PlayerEntity playerEntity_1) {
         super.close(playerEntity_1);
@@ -261,11 +261,11 @@ public class MaterialPreparerContainer extends Container {
             this.dropInventory(playerEntity_1, world_1, this.main);
         });
     }
-
+    
     @Override
     public ItemStack transferSlot(PlayerEntity playerEntity_1, int int_1) {
         ItemStack itemStack_1 = ItemStack.EMPTY;
-        Slot slot_1 = (Slot) this.slotList.get(int_1);
+        Slot slot_1 = this.slotList.get(int_1);
         if (slot_1 != null && slot_1.hasStack()) {
             ItemStack itemStack_2 = slot_1.getStack();
             itemStack_1 = itemStack_2.copy();
@@ -273,7 +273,7 @@ public class MaterialPreparerContainer extends Container {
                 if (!this.insertItem(itemStack_2, 3, 39, true)) {
                     return ItemStack.EMPTY;
                 }
-
+                
                 slot_1.onStackChanged(itemStack_2, itemStack_1);
             } else if (int_1 != 0 && int_1 != 1) {
                 if (int_1 >= 3 && int_1 < 39 && !this.insertItem(itemStack_2, 0, 2, false)) {
@@ -282,21 +282,21 @@ public class MaterialPreparerContainer extends Container {
             } else if (!this.insertItem(itemStack_2, 3, 39, false)) {
                 return ItemStack.EMPTY;
             }
-
+            
             if (itemStack_2.isEmpty()) {
                 slot_1.setStack(ItemStack.EMPTY);
             } else {
                 slot_1.markDirty();
             }
-
+            
             if (itemStack_2.getCount() == itemStack_1.getCount()) {
                 return ItemStack.EMPTY;
             }
-
+            
             slot_1.onTakeItem(playerEntity_1, itemStack_2);
         }
-
+        
         return itemStack_1;
     }
-
+    
 }
