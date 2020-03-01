@@ -34,7 +34,7 @@ public class BetterIngredient {
     public BetterIngredient(Type type, String content, int count) {
         this.type = type;
         this.content = content;
-        this.count = count;
+        this.count = Math.max(1, count);
     }
     
     public static BetterIngredient fromItem(Item item) {

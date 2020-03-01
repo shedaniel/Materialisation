@@ -15,6 +15,7 @@ import me.shedaniel.rei.api.RecipeHelper;
 import me.shedaniel.rei.api.plugins.REIPluginV0;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 import net.minecraft.util.math.MathHelper;
@@ -47,12 +48,15 @@ public class MaterialisationREIPlugin implements REIPluginV0 {
     public void registerRecipeDisplays(RecipeHelper recipeHelper) {
         PartMaterials.getKnownMaterials().forEach(knownMaterial -> knownMaterial.getIngredientMap().forEach((ingredient, aFloat) -> {
             List<EntryStack> itemStacks = map(map(ingredient.getStacksList(), EntryStack::create), EntryStack::copy);
-            itemStacks.forEach(stack -> stack.setAmount(MathHelper.ceil(1f / aFloat)));
+            for (EntryStack stack : itemStacks)
+                stack.setAmount(MathHelper.ceil(1f / aFloat));
+            System.out.println(ingredient.content + " x" + ingredient.count);
             recipeHelper.registerDisplay(new MaterialPreparerDisplay(EntryStack.create(Materialisation.TOOL_HANDLE_PATTERN), itemStacks, EntryStack.create(MaterialisationUtils.createToolHandle(knownMaterial))));
         }));
         PartMaterials.getKnownMaterials().forEach(knownMaterial -> knownMaterial.getIngredientMap().forEach((ingredient, aFloat) -> {
             List<EntryStack> itemStacks = map(map(ingredient.getStacksList(), EntryStack::create), EntryStack::copy);
-            itemStacks.forEach(stack -> stack.setAmount(MathHelper.ceil(4f / aFloat)));
+            for (EntryStack stack : itemStacks)
+                stack.setAmount(MathHelper.ceil(4f / aFloat));
             recipeHelper.registerDisplay(new MaterialPreparerDisplay(EntryStack.create(Materialisation.AXE_HEAD_PATTERN), itemStacks, EntryStack.create(MaterialisationUtils.createAxeHead(knownMaterial))));
             recipeHelper.registerDisplay(new MaterialPreparerDisplay(EntryStack.create(Materialisation.PICKAXE_HEAD_PATTERN), itemStacks, EntryStack.create(MaterialisationUtils.createPickaxeHead(knownMaterial))));
             recipeHelper.registerDisplay(new MaterialPreparerDisplay(EntryStack.create(Materialisation.SHOVEL_HEAD_PATTERN), itemStacks, EntryStack.create(MaterialisationUtils.createShovelHead(knownMaterial))));
@@ -60,12 +64,14 @@ public class MaterialisationREIPlugin implements REIPluginV0 {
         }));
         PartMaterials.getKnownMaterials().forEach(knownMaterial -> knownMaterial.getIngredientMap().forEach((ingredient, aFloat) -> {
             List<EntryStack> itemStacks = map(map(ingredient.getStacksList(), EntryStack::create), EntryStack::copy);
-            itemStacks.forEach(stack -> stack.setAmount(MathHelper.ceil(16f / aFloat)));
+            for (EntryStack stack : itemStacks)
+                stack.setAmount(MathHelper.ceil(16f / aFloat));
             recipeHelper.registerDisplay(new MaterialPreparerDisplay(EntryStack.create(Materialisation.HAMMER_HEAD_PATTERN), itemStacks, EntryStack.create(MaterialisationUtils.createHammerHead(knownMaterial))));
         }));
         PartMaterials.getKnownMaterials().forEach(knownMaterial -> knownMaterial.getIngredientMap().forEach((ingredient, aFloat) -> {
             List<EntryStack> itemStacks = map(map(ingredient.getStacksList(), EntryStack::create), EntryStack::copy);
-            itemStacks.forEach(stack -> stack.setAmount(MathHelper.ceil(64f / aFloat)));
+            for (EntryStack stack : itemStacks)
+                stack.setAmount(MathHelper.ceil(64f / aFloat));
             recipeHelper.registerDisplay(new MaterialPreparerDisplay(EntryStack.create(Materialisation.MEGAAXE_HEAD_PATTERN), itemStacks, EntryStack.create(MaterialisationUtils.createMegaAxeHead(knownMaterial))));
         }));
         PartMaterials.getKnownMaterials().forEach(handle -> PartMaterials.getKnownMaterials().forEach(head -> {
@@ -111,6 +117,7 @@ public class MaterialisationREIPlugin implements REIPluginV0 {
         List<EntryStack> hammer = Lists.newArrayList();
         List<EntryStack> megaaxe = Lists.newArrayList();
         for (PartMaterial material : PartMaterials.getKnownMaterialList()) {
+            System.out.println(material.getIdentifier());
             handle.add(EntryStack.create(MaterialisationUtils.createToolHandle(material)));
             pickaxe_head.add(EntryStack.create(MaterialisationUtils.createPickaxeHead(material)));
             axe_head.add(EntryStack.create(MaterialisationUtils.createAxeHead(material)));
@@ -126,6 +133,33 @@ public class MaterialisationREIPlugin implements REIPluginV0 {
             hammer.add(EntryStack.create(MaterialisationUtils.createHammer(material, material)));
             megaaxe.add(EntryStack.create(MaterialisationUtils.createMegaAxe(material, material)));
         }
+        for (EntryStack stack : handle)
+            stack.setting(EntryStack.Settings.CHECK_TAGS, EntryStack.Settings.TRUE);
+        for (EntryStack stack : pickaxe_head)
+            stack.setting(EntryStack.Settings.CHECK_TAGS, EntryStack.Settings.TRUE);
+        for (EntryStack stack : axe_head)
+            stack.setting(EntryStack.Settings.CHECK_TAGS, EntryStack.Settings.TRUE);
+        for (EntryStack stack : shovel_head)
+            stack.setting(EntryStack.Settings.CHECK_TAGS, EntryStack.Settings.TRUE);
+        for (EntryStack stack : sword_head)
+            stack.setting(EntryStack.Settings.CHECK_TAGS, EntryStack.Settings.TRUE);
+        for (EntryStack stack : hammer_head)
+            stack.setting(EntryStack.Settings.CHECK_TAGS, EntryStack.Settings.TRUE);
+        for (EntryStack stack : megaaxe_head)
+            stack.setting(EntryStack.Settings.CHECK_TAGS, EntryStack.Settings.TRUE);
+        for (EntryStack stack : pickaxe)
+            stack.setting(EntryStack.Settings.CHECK_TAGS, EntryStack.Settings.TRUE);
+        for (EntryStack stack : axe)
+            stack.setting(EntryStack.Settings.CHECK_TAGS, EntryStack.Settings.TRUE);
+        for (EntryStack stack : shovel)
+            stack.setting(EntryStack.Settings.CHECK_TAGS, EntryStack.Settings.TRUE);
+        for (EntryStack stack : sword)
+            stack.setting(EntryStack.Settings.CHECK_TAGS, EntryStack.Settings.TRUE);
+        for (EntryStack stack : hammer)
+            stack.setting(EntryStack.Settings.CHECK_TAGS, EntryStack.Settings.TRUE);
+        for (EntryStack stack : megaaxe)
+            stack.setting(EntryStack.Settings.CHECK_TAGS, EntryStack.Settings.TRUE);
+        
         entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.HANDLE), handle);
         entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.PICKAXE_HEAD), pickaxe_head);
         entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.AXE_HEAD), axe_head);

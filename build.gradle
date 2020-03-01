@@ -3,7 +3,7 @@ plugins {
 }
 
 archivesBaseName = "Materialisation"
-version = "2.3.0"
+version = "2.4.0"
 
 def minecraftVersion = "1.15.2"
 def yarnBuild = "1"
