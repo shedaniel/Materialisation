@@ -151,7 +151,7 @@ public class ConfigHelper implements ModifierIngredientsHandler {
                             try {
                                 File packInfoFile = new File(file, "materials.info.json");
                                 if (packInfoFile.exists()) {
-                                    ConfigPackInfo packInfo = GSON.fromJson(new FileReader(packInfoFile), ConfigPackInfo.class);
+                                    ConfigPackInfo packInfo = GSON.fromJson(new FileReader(packInfoFile), ConfigPackInfoJson.class).toInfo();
                                     ConfigPack configPack = new ConfigPack(packInfo, Maps.newLinkedHashMap());
                                     loadedPacks.add(configPack);
                                     Materialisation.LOGGER.info("[Materialisation] Loading material pack: " + packInfo.getIdentifier());
@@ -189,7 +189,7 @@ public class ConfigHelper implements ModifierIngredientsHandler {
                             try (ZipFile zipFile = new ZipFile(file)) {
                                 ZipEntry packInfoEntry = zipFile.getEntry("materials.info.json");
                                 if (packInfoEntry != null) {
-                                    ConfigPackInfo packInfo = GSON.fromJson(new InputStreamReader(zipFile.getInputStream(packInfoEntry)), ConfigPackInfo.class);
+                                    ConfigPackInfo packInfo = GSON.fromJson(new InputStreamReader(zipFile.getInputStream(packInfoEntry)), ConfigPackInfoJson.class).toInfo();
                                     ConfigPack configPack = new ConfigPack(packInfo, Maps.newLinkedHashMap());
                                     loadedPacks.add(configPack);
                                     Materialisation.LOGGER.info("[Materialisation] Loading material pack: " + packInfo.getIdentifier());
