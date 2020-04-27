@@ -6,7 +6,7 @@ import me.shedaniel.materialisation.config.ConfigHelper;
 import me.shedaniel.materialisation.items.ColoredItem;
 import me.shedaniel.materialisation.items.MaterialisedMiningTool;
 import net.fabricmc.fabric.api.util.TriState;
-import net.fabricmc.fabric.impl.mining.level.ToolManager;
+import net.fabricmc.fabric.impl.tool.attribute.ToolManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.enchantment.EnchantmentHelper;
