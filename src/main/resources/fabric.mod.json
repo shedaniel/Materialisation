@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "id": "materialisation",
   "name": "Materialisation",
-  "description": "Customise the tools yes you can do it.\n-Danielshe",
+  "description": "Customise the tools yes you can do it.\n-shedaniel",
   "version": "${version}",
   "authors": [
-    "Danielshe"
+    "shedaniel"
   ],
   "icon": "icon.png",
   "contact": {

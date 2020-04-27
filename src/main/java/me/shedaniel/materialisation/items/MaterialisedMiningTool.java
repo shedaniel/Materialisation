@@ -5,10 +5,13 @@ import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.ModReference;
 import me.shedaniel.materialisation.api.Modifier;
 import me.shedaniel.materialisation.api.ToolType;
+import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 
 import javax.annotation.Nonnull;
@@ -16,7 +19,7 @@ import javax.annotation.Nonnull;
 import static me.shedaniel.materialisation.MaterialisationUtils.isHandleBright;
 import static me.shedaniel.materialisation.MaterialisationUtils.isHeadBright;
 
-public interface MaterialisedMiningTool {
+public interface MaterialisedMiningTool extends DynamicAttributeTool {
     static float getExtraDamage(ToolType toolType) {
         if (toolType == ToolType.SWORD)
             return 4f;
@@ -39,13 +42,24 @@ public interface MaterialisedMiningTool {
         return 0f;
     }
     
-    boolean canEffectivelyBreak(ItemStack itemStack, BlockState state);
+    @Override
+    default float getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+        return MaterialisationUtils.getToolBreakingSpeed(stack);
+    }
+    
+    @Override
+    default int getMiningLevel(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+        return MaterialisationUtils.getToolMiningLevel(stack);
+    }
+    
+    @Override
+    default float postProcessMiningSpeed(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user, float currentSpeed, boolean isEffective) {
+        return MaterialisationUtils.getToolDurability(stack) > 0 ? currentSpeed : 0f;
+    }
     
     default int getEnchantability(ItemStack stack) {
         return MaterialisationUtils.getToolEnchantability(stack);
     }
-    
-    float getToolBlockBreakingSpeed(ItemStack itemStack, BlockState state);
     
     double getAttackSpeed();
     

@@ -32,49 +32,6 @@ public abstract class MixinItemStack {
     @Shadow
     public abstract CompoundTag getTag();
     
-    @Inject(at = @At("HEAD"), method = "isEffectiveOn", cancellable = true)
-    public void isEffectiveOn(BlockState state, CallbackInfoReturnable<Boolean> info) {
-        if (getItem() instanceof MaterialisedMiningTool) {
-            ItemStack itemStack = (ItemStack) (Object) this;
-            if (MaterialisationUtils.getToolDurability(itemStack) <= 0) {
-                // If there is not durability left
-                info.setReturnValue(false);
-            } else {
-                TriState triState = MaterialisationUtils.mt_handleIsEffectiveOn(itemStack, state);
-                if (triState != TriState.DEFAULT) {
-                    // If we are dealing with 3rd party blocks
-                    info.setReturnValue(triState.get());
-                } else {
-                    // Lastly if we are not dealing with 3rd party blocks with durability left
-                    info.setReturnValue(((MaterialisedMiningTool) getItem()).canEffectivelyBreak(itemStack, state));
-                }
-            }
-        }
-    }
-    
-    /**
-     * Applies the block breaking speed of tools, using the fabric api, overrides the hook that fabric provides
-     */
-    @Inject(at = @At("HEAD"), method = "getMiningSpeed", cancellable = true)
-    public void getBlockBreakingSpeed(BlockState state, CallbackInfoReturnable<Float> info) {
-        if (this.getItem() instanceof MaterialisedMiningTool) {
-            ItemStack itemStack = (ItemStack) (Object) this;
-            if (MaterialisationUtils.getToolDurability(itemStack) <= 0) {
-                // If there is not durability left
-                info.setReturnValue(-1f);
-            } else {
-                TriState triState = MaterialisationUtils.mt_handleIsEffectiveOn(itemStack, state);
-                if (triState != TriState.DEFAULT) {
-                    // If we are dealing with 3rd party blocks
-                    info.setReturnValue(triState.get() ? MaterialisationUtils.getToolBreakingSpeed(itemStack) : 1.0F);
-                } else {
-                    // Lastly if we are not dealing with 3rd party blocks with durability left
-                    info.setReturnValue(((MaterialisedMiningTool) getItem()).getToolBlockBreakingSpeed(itemStack, state));
-                }
-            }
-        }
-    }
-    
     /**
      * Disable italic on tools
      */

@@ -5,19 +5,14 @@ import me.shedaniel.materialisation.api.*;
 import me.shedaniel.materialisation.config.ConfigHelper;
 import me.shedaniel.materialisation.items.ColoredItem;
 import me.shedaniel.materialisation.items.MaterialisedMiningTool;
-import net.fabricmc.fabric.api.util.TriState;
-import net.fabricmc.fabric.impl.mining.level.ToolManager;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.enchantment.UnbreakingEnchantment;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolMaterial;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.recipe.Ingredient;
-import net.minecraft.tag.Tag;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
@@ -459,17 +454,6 @@ public class MaterialisationUtils {
         tag.putString("mt_0_material", material.getIdentifier().toString());
         stack.setTag(tag);
         return stack;
-    }
-    
-    public static TriState mt_handleIsEffectiveOn(ItemStack stack, BlockState state) {
-        ToolManager.Entry entry = ToolManager.entry(state.getBlock());
-        Tag<Item>[] tags = Materialisation.getReflectionField(entry, Tag[].class, 0).orElse(new Tag[0]);
-        int[] tagLevels = Materialisation.getReflectionField(entry, int[].class, 1).orElse(new int[tags.length]);
-        Item item = stack.getItem();
-        for (int i = 0; i < tags.length; ++i)
-            if (tags[i].contains(item))
-                return TriState.of(MaterialisationUtils.getToolMiningLevel(stack) >= tagLevels[i]);
-        return Materialisation.getReflectionField(entry, TriState.class, 2).orElse(TriState.DEFAULT);
     }
     
     public static ItemStack createHammerHead(PartMaterial material) {

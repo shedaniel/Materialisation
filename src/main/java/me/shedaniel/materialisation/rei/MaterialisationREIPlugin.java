@@ -50,7 +50,6 @@ public class MaterialisationREIPlugin implements REIPluginV0 {
             List<EntryStack> itemStacks = map(map(ingredient.getStacksList(), EntryStack::create), EntryStack::copy);
             for (EntryStack stack : itemStacks)
                 stack.setAmount(MathHelper.ceil(1f / aFloat));
-            System.out.println(ingredient.content + " x" + ingredient.count);
             recipeHelper.registerDisplay(new MaterialPreparerDisplay(EntryStack.create(Materialisation.TOOL_HANDLE_PATTERN), itemStacks, EntryStack.create(MaterialisationUtils.createToolHandle(knownMaterial))));
         }));
         PartMaterials.getKnownMaterials().forEach(knownMaterial -> knownMaterial.getIngredientMap().forEach((ingredient, aFloat) -> {
@@ -117,7 +116,6 @@ public class MaterialisationREIPlugin implements REIPluginV0 {
         List<EntryStack> hammer = Lists.newArrayList();
         List<EntryStack> megaaxe = Lists.newArrayList();
         for (PartMaterial material : PartMaterials.getKnownMaterialList()) {
-            System.out.println(material.getIdentifier());
             handle.add(EntryStack.create(MaterialisationUtils.createToolHandle(material)));
             pickaxe_head.add(EntryStack.create(MaterialisationUtils.createPickaxeHead(material)));
             axe_head.add(EntryStack.create(MaterialisationUtils.createAxeHead(material)));
