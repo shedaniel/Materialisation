@@ -74,16 +74,6 @@ public class MaterialisedShovelItem extends ShovelItem implements MaterialisedMi
     }
     
     @Override
-    public boolean canEffectivelyBreak(ItemStack itemStack, BlockState state) {
-        return ((MiningToolItemAccessor) itemStack.getItem()).getEffectiveBlocks().contains(state.getBlock()) || isEffectiveOn(state);
-    }
-    
-    @Override
-    public float getToolBlockBreakingSpeed(ItemStack itemStack, BlockState state) {
-        return ((MiningToolItemAccessor) itemStack.getItem()).getEffectiveBlocks().contains(state.getBlock()) ? MaterialisationUtils.getToolBreakingSpeed(itemStack) : 1f;
-    }
-    
-    @Override
     public boolean canRepair(ItemStack itemStack_1, ItemStack itemStack_2) {
         return false;
     }

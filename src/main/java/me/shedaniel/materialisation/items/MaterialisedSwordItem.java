@@ -32,17 +32,6 @@ public class MaterialisedSwordItem extends SwordItem implements MaterialisedMini
     }
     
     @Override
-    public float getToolBlockBreakingSpeed(ItemStack stack, BlockState state) {
-        Block block_1 = state.getBlock();
-        if (block_1 == Blocks.COBWEB) {
-            return 15.0F;
-        } else {
-            Material material_1 = state.getMaterial();
-            return material_1 != Material.PLANT && material_1 != Material.REPLACEABLE_PLANT && material_1 != Material.UNUSED_PLANT && !state.matches(BlockTags.LEAVES) && material_1 != Material.PUMPKIN ? 1.0F : 1.5F;
-        }
-    }
-    
-    @Override
     public double getAttackSpeed() {
         return -2.4f;
     }
@@ -51,11 +40,6 @@ public class MaterialisedSwordItem extends SwordItem implements MaterialisedMini
     @Override
     public ToolType getToolType() {
         return ToolType.SWORD;
-    }
-    
-    @Override
-    public boolean canEffectivelyBreak(ItemStack itemStack, BlockState state) {
-        return state.getBlock() == Blocks.COBWEB;
     }
     
     @Override

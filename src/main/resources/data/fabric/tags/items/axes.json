@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "materialisation:materialised_axe"
+    "materialisation:materialised_axe",
+    "materialisation:materialised_megaaxe"
   ]
 }

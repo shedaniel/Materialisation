@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "materialisation:materialised_pickaxe"
+    "materialisation:materialised_pickaxe",
+    "materialisation:materialised_hammer"
   ]
 }

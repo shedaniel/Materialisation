@@ -2,8 +2,10 @@ package me.shedaniel.materialisation.blocks;
 
 import me.shedaniel.materialisation.Materialisation;
 import me.shedaniel.materialisation.ModReference;
-import net.fabricmc.fabric.api.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder;
+import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.*;
 import net.minecraft.entity.EntityContext;
 import net.minecraft.entity.player.PlayerEntity;
@@ -30,7 +32,7 @@ public class MaterialPreparerBlock extends HorizontalFacingBlock {
     }
     
     public MaterialPreparerBlock() {
-        super(FabricBlockSettings.copy(Blocks.CRAFTING_TABLE).drops(new Identifier(ModReference.MOD_ID, "blocks/material_preparer")).build());
+        super(FabricBlockSettings.of(new FabricMaterialBuilder(MaterialColor.WOOD).burnable().build()).strength(3, 3).drops(new Identifier(ModReference.MOD_ID, "blocks/material_preparer")));
         this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH));
     }
     

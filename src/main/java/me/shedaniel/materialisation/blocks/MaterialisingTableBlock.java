@@ -2,9 +2,9 @@ package me.shedaniel.materialisation.blocks;
 
 import me.shedaniel.materialisation.Materialisation;
 import me.shedaniel.materialisation.ModReference;
-import net.fabricmc.fabric.api.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
-import net.fabricmc.fabric.api.tools.FabricToolTags;
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.*;
 import net.minecraft.entity.EntityContext;
 import net.minecraft.entity.player.PlayerEntity;
@@ -31,7 +31,7 @@ public class MaterialisingTableBlock extends HorizontalFacingBlock {
     }
     
     public MaterialisingTableBlock() {
-        super(FabricBlockSettings.of(Material.METAL, MaterialColor.WHITE).strength(5.0F, 1200.0F).breakByTool(FabricToolTags.PICKAXES).drops(new Identifier(ModReference.MOD_ID, "blocks/materialising_table")).build());
+        super(FabricBlockSettings.of(Material.METAL, MaterialColor.WHITE).strength(5.0F, 1200.0F).breakByTool(FabricToolTags.PICKAXES).drops(new Identifier(ModReference.MOD_ID, "blocks/materialising_table")));
         this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH));
     }
     
