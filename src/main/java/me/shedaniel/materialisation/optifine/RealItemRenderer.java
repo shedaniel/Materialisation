@@ -15,23 +15,22 @@ public class RealItemRenderer {
             float float_1 = MaterialisationUtils.getToolDurability(stack);
             float float_2 = MaterialisationUtils.getToolMaxDurability(stack);
             if (float_1 < float_2) {
-                RenderSystem.disableLighting();
+                RenderSystem.pushMatrix();
                 RenderSystem.disableDepthTest();
                 RenderSystem.disableTexture();
                 RenderSystem.disableAlphaTest();
                 RenderSystem.disableBlend();
-                Tessellator tessellator = Tessellator.getInstance();
-                BufferBuilder buffer = tessellator.getBuffer();
+                Tessellator tessellator_1 = Tessellator.getInstance();
+                BufferBuilder bufferBuilder_1 = tessellator_1.getBuffer();
                 float float_3 = Math.max(0.0F, float_1 / float_2);
                 int int_3 = Math.round(13.0F - (float_2 - float_1) * 13.0F / float_2);
                 int int_4 = MathHelper.hsvToRgb(float_3 / 3.0F, 1.0F, 1.0F);
-                renderGuiQuad(buffer, x + 2, y + 13, 13, 2, 0, 0, 0, 255);
-                renderGuiQuad(buffer, x + 2, y + 13, int_3, 1, int_4 >> 16 & 255, int_4 >> 8 & 255, int_4 & 255, 255);
+                renderGuiQuad(bufferBuilder_1, x + 2, y + 13, 13, 2, 0, 0, 0, 255);
+                renderGuiQuad(bufferBuilder_1, x + 2, y + 13, int_3, 1, int_4 >> 16 & 255, int_4 >> 8 & 255, int_4 & 255, 255);
                 RenderSystem.enableBlend();
                 RenderSystem.enableAlphaTest();
                 RenderSystem.enableTexture();
-                RenderSystem.enableLighting();
-                RenderSystem.enableDepthTest();
+                RenderSystem.popMatrix();
             }
         }
     }

@@ -62,17 +62,27 @@ public class MaterialisationMixinPlugin implements IMixinConfigPlugin {
         String itemStack = mappingResolver.mapClassName("intermediary", "net.minecraft.class_1799");
         String description = "(L" + textRenderer.replace('.', '/') + ";L" + itemStack.replace('.', '/') + ";IILjava/lang/String;)V";
         String renderGuiItemOverlay = mappingResolver.mapMethodName("intermediary", "net.minecraft.class_918", "method_4022", "(Lnet/minecraft/class_327;Lnet/minecraft/class_1799;IILjava/lang/String;)V");
+        String isDamaged = mappingResolver.mapMethodName("intermediary", "net.minecraft.class_1799", "method_7986", "()Z");
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT && isOptifineLoaded()) {
             if (targetClassName.equals(itemRenderer))
                 for (MethodNode method : targetClass.methods) {
                     if (method.name.equals(renderGuiItemOverlay) && method.desc.equals(description)) {
                         InsnList instructions = method.instructions;
-                        AbstractInsnNode first = instructions.get(0);
-                        instructions.insertBefore(first, new VarInsnNode(Opcodes.ALOAD, 2)); // ItemStack
-                        instructions.insertBefore(first, new VarInsnNode(Opcodes.ILOAD, 3)); // x
-                        instructions.insertBefore(first, new VarInsnNode(Opcodes.ILOAD, 4)); // y
-                        MethodInsnNode render = new MethodInsnNode(Opcodes.INVOKESTATIC, "me/shedaniel/materialisation/optifine/RealItemRenderer", "renderGuiItemOverlay", "(L" + itemStack.replace('.', '/') + ";II)V", false);
-                        instructions.insertBefore(first, render);
+                        for (AbstractInsnNode instruction : instructions) {
+                            if (instruction instanceof MethodInsnNode && ((MethodInsnNode) instruction).owner.equals(itemStack) && ((MethodInsnNode) instruction).name.equals(isDamaged)) {
+                                AbstractInsnNode current = instruction;
+                                while (!(current instanceof LabelNode)) {
+                                    current = current.getPrevious();
+                                }
+                                instructions.insertBefore(current, new LabelNode());
+                                instructions.insertBefore(current, new VarInsnNode(Opcodes.ALOAD, 2)); // ItemStack
+                                instructions.insertBefore(current, new VarInsnNode(Opcodes.ILOAD, 3)); // x
+                                instructions.insertBefore(current, new VarInsnNode(Opcodes.ILOAD, 4)); // y
+                                MethodInsnNode render = new MethodInsnNode(Opcodes.INVOKESTATIC, "me/shedaniel/materialisation/optifine/RealItemRenderer", "renderGuiItemOverlay", "(L" + itemStack.replace('.', '/') + ";II)V", false);
+                                instructions.insertBefore(current, render);
+                                break;
+                            }
+                        }
                         break;
                     }
                 }
