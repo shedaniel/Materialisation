@@ -75,7 +75,6 @@ public class Materialisation implements ModInitializer {
     @Override
     public void onInitialize() {
         MaterialisationModifierMaterials.register();
-        registerBlock("carbonado_ore", carbonadoOre, ItemGroup.DECORATIONS);
         registerBlock("materialising_table", MATERIALISING_TABLE, ItemGroup.DECORATIONS);
         registerBlock("material_preparer", MATERIAL_PREPARER, ItemGroup.DECORATIONS);
         ContainerProviderRegistry.INSTANCE.registerFactory(MATERIALISING_TABLE_CONTAINER, (syncId, identifier, playerEntity, packetByteBuf) -> {
