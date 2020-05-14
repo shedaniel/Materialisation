@@ -10,7 +10,10 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.Rect2i;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
@@ -48,9 +51,9 @@ public class MaterialisationMaterialListWidget extends DynamicElementListWidget<
         }
         
         @Override
-        public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
+        public void render(MatrixStack stack, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
             widget.bounds = new Rect2i(x, y, entryWidth, getItemHeight());
-            widget.render(mouseX, mouseY, delta);
+            widget.render(stack, mouseX, mouseY, delta);
         }
         
         @Override
@@ -70,21 +73,21 @@ public class MaterialisationMaterialListWidget extends DynamicElementListWidget<
             private boolean focused;
             
             @Override
-            public void render(int mouseX, int mouseY, float delta) {
+            public void render(MatrixStack stack, int mouseX, int mouseY, float delta) {
                 RenderSystem.disableAlphaTest();
-                fill(bounds.getX(), bounds.getY(), bounds.getX() + bounds.getWidth(), bounds.getY() + bounds.getHeight(), 0x15FFFFFF);
+                fill(stack, bounds.getX(), bounds.getY(), bounds.getX() + bounds.getWidth(), bounds.getY() + bounds.getHeight(), 0x15FFFFFF);
                 boolean isHovered = focused || bounds.contains(mouseX, mouseY);
-                drawString(MinecraftClient.getInstance().textRenderer, (isHovered ? Formatting.UNDERLINE.toString() : "") + packInfo.getDisplayName(), bounds.getX() + 5, bounds.getY() + 6, 16777215);
-                Iterator<String> var7 = MinecraftClient.getInstance().textRenderer.wrapStringToWidthAsList(trimEndNewlines(packInfo.getDescription()), bounds.getWidth() - 10).stream().limit(2).iterator();
+                MinecraftClient.getInstance().textRenderer.draw(stack, (isHovered ? Formatting.UNDERLINE.toString() : "") + packInfo.getDisplayName(), bounds.getX() + 5, bounds.getY() + 6, 16777215);
+                Iterator<Text> var7 = MinecraftClient.getInstance().textRenderer.wrapStringToWidthAsList(new LiteralText(trimEndNewlines(packInfo.getDescription())), bounds.getWidth() - 10).stream().limit(2).iterator();
                 int int_2 = bounds.getY() + 6 + 11;
                 for (int lolWot = 0; var7.hasNext(); int_2 += 9) {
-                    String string_2 = var7.next();
+                    Text string_2 = var7.next();
                     float float_1 = (float) (bounds.getX() + 5);
                     if (MinecraftClient.getInstance().textRenderer.isRightToLeft()) {
-                        int int_5 = MinecraftClient.getInstance().textRenderer.getStringWidth(MinecraftClient.getInstance().textRenderer.mirror(string_2));
+                        int int_5 = MinecraftClient.getInstance().textRenderer.getWidth(MinecraftClient.getInstance().textRenderer.mirror(string_2.getString()));
                         float_1 += (float) (bounds.getWidth() - 10 - int_5);
                     }
-                    MinecraftClient.getInstance().textRenderer.draw(string_2, float_1, (float) int_2, 0xEEFFFFFF);
+                    MinecraftClient.getInstance().textRenderer.draw(stack, string_2, float_1, (float) int_2, 0xEEFFFFFF);
                 }
             }
             
@@ -112,12 +115,12 @@ public class MaterialisationMaterialListWidget extends DynamicElementListWidget<
                 }
             }
             
-            private String trimEndNewlines(String string_1) {
-                while (string_1 != null && string_1.endsWith("\n")) {
-                    string_1 = string_1.substring(0, string_1.length() - 1);
+            private String trimEndNewlines(String s) {
+                while (s != null && s.endsWith("\n")) {
+                    s = s.substring(0, s.length() - 1);
                 }
                 
-                return string_1;
+                return s;
             }
             
             @Override
@@ -139,9 +142,9 @@ public class MaterialisationMaterialListWidget extends DynamicElementListWidget<
         }
         
         @Override
-        public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
+        public void render(MatrixStack stack, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
             widget.bounds = new Rect2i(x, y, entryWidth, getItemHeight());
-            widget.render(mouseX, mouseY, delta);
+            widget.render(stack, mouseX, mouseY, delta);
         }
         
         @Override
@@ -161,9 +164,9 @@ public class MaterialisationMaterialListWidget extends DynamicElementListWidget<
             private boolean focused;
             
             @Override
-            public void render(int mouseX, int mouseY, float delta) {
+            public void render(MatrixStack stack, int mouseX, int mouseY, float delta) {
                 boolean isHovered = focused || bounds.contains(mouseX, mouseY);
-                drawString(MinecraftClient.getInstance().textRenderer, (isHovered ? Formatting.UNDERLINE.toString() : "") + I18n.translate(partMaterial.getMaterialTranslateKey()), bounds.getX() + 5, bounds.getY() + 5, 16777215);
+                MinecraftClient.getInstance().textRenderer.draw(stack, (isHovered ? Formatting.UNDERLINE.toString() : "") + I18n.translate(partMaterial.getMaterialTranslateKey()), bounds.getX() + 5, bounds.getY() + 5, 16777215);
             }
             
             @Override
@@ -199,6 +202,6 @@ public class MaterialisationMaterialListWidget extends DynamicElementListWidget<
     }
     
     public static abstract class Entry extends DynamicElementListWidget.ElementEntry<Entry> {
-    
+        
     }
 }

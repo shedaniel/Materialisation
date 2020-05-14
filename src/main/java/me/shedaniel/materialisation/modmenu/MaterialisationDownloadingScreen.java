@@ -1,6 +1,7 @@
 package me.shedaniel.materialisation.modmenu;
 
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Util;
 
@@ -30,14 +31,14 @@ public class MaterialisationDownloadingScreen extends Screen {
     }
     
     @Override
-    public void render(int int_1, int int_2, float float_1) {
+    public void render(MatrixStack stack, int int_1, int int_2, float float_1) {
         if (newScreen != null) {
-            minecraft.openScreen(newScreen);
+            client.openScreen(newScreen);
             newScreen = null;
             return;
         }
-        this.renderDirtBackground(0);
-        this.drawCenteredString(this.font, title.asFormattedString(), this.width / 2, this.height / 2 - 50, 16777215);
+        this.renderBackgroundTexture(0);
+        this.drawCenteredText(stack, this.textRenderer, title, this.width / 2, this.height / 2 - 50, 16777215);
         String string_3;
         switch ((int) (Util.getMeasuringTimeMs() / 300L % 4L)) {
             case 0:
@@ -51,8 +52,8 @@ public class MaterialisationDownloadingScreen extends Screen {
             case 2:
                 string_3 = "o o O";
         }
-        this.drawCenteredString(this.font, string_3, this.width / 2, this.height / 2 - 41, 8421504);
-        super.render(int_1, int_2, float_1);
+        this.drawCenteredString(stack, this.textRenderer, string_3, this.width / 2, this.height / 2 - 41, 8421504);
+        super.render(stack, int_1, int_2, float_1);
     }
     
     @Override

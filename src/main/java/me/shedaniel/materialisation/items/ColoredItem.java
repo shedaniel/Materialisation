@@ -2,19 +2,16 @@ package me.shedaniel.materialisation.items;
 
 import me.shedaniel.materialisation.Materialisation;
 import me.shedaniel.materialisation.MaterialisationUtils;
-import me.shedaniel.materialisation.ModReference;
 import me.shedaniel.materialisation.api.PartMaterial;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemPropertyGetter;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
@@ -22,12 +19,8 @@ import java.util.List;
 import java.util.UUID;
 
 public class ColoredItem extends Item {
-    
-    private static final ItemPropertyGetter COLORED_ITEM_BRIGHT_ITEM = (itemStack, world, livingEntity) -> MaterialisationUtils.isHandleBright(itemStack) ? 1 : 0;
-    
     public ColoredItem(Settings item$Settings_1) {
         super(item$Settings_1);
-        addPropertyGetter(new Identifier(ModReference.MOD_ID, "bright"), COLORED_ITEM_BRIGHT_ITEM);
     }
     
     public static UUID getItemModifierDamage() {

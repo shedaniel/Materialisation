@@ -4,17 +4,15 @@ import com.google.common.collect.ImmutableList;
 import me.shedaniel.materialisation.items.MaterialisedMiningTool;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-@SuppressWarnings("SpellCheckingInspection")
 public interface Modifier {
     
     static Builder builder() {
@@ -65,7 +63,7 @@ public interface Modifier {
         return ImmutableList.of();
     }
     
-    default List<String> getModifierDescription(int level) {
+    default List<Text> getModifierDescription(int level) {
         return Collections.emptyList();
     }
     
@@ -80,6 +78,11 @@ public interface Modifier {
         return null;
     }
     
+    @Nullable
+    default Identifier getModelIdentifier(ToolType type) {
+        return null;
+    }
+    
     class ModifierImpl implements Modifier {
         private final BiFunction<ItemStack, Integer, Integer> durabilityCost;
         private final Supplier<ImmutableList<ToolType>> applicableToolTypes;
@@ -91,6 +94,7 @@ public interface Modifier {
         private final BiFunction<ItemStack, Integer, Float> durabilityMultiplier;
         private final BiFunction<ItemStack, Integer, Float> miningSpeedMultiplier;
         private final BiFunction<ItemStack, Integer, Float> attackDamageMultiplier;
+        private final Function<ToolType, Identifier> modelIdentifier;
         @Nullable
         private final Function<Integer, List<Text>> description;
         @Nullable
@@ -108,7 +112,8 @@ public interface Modifier {
                 BiFunction<ItemStack, Integer, Float> miningSpeedMultiplier,
                 BiFunction<ItemStack, Integer, Float> attackDamageMultiplier,
                 @Nullable Function<Integer, List<Text>> description,
-                @Nullable Pair<Integer, Integer> graphicalDescriptionRange
+                @Nullable Pair<Integer, Integer> graphicalDescriptionRange,
+                Function<ToolType, Identifier> modelIdentifier
         ) {
             this.durabilityCost = durabilityCost;
             this.applicableToolTypes = applicableToolTypes;
@@ -122,6 +127,7 @@ public interface Modifier {
             this.attackDamageMultiplier = attackDamageMultiplier;
             this.description = description;
             this.graphicalDescriptionRange = graphicalDescriptionRange;
+            this.modelIdentifier = modelIdentifier;
         }
         
         private static Modifier create(
@@ -136,7 +142,8 @@ public interface Modifier {
                 BiFunction<ItemStack, Integer, Float> miningSpeedMultiplier,
                 BiFunction<ItemStack, Integer, Float> attackDamageMultiplier,
                 @Nullable Function<Integer, List<Text>> description,
-                @Nullable Pair<Integer, Integer> graphicalDescriptionRange
+                @Nullable Pair<Integer, Integer> graphicalDescriptionRange,
+                Function<ToolType, Identifier> modelIdentifier
         ) {
             return new ModifierImpl(
                     durabilityCost,
@@ -150,17 +157,18 @@ public interface Modifier {
                     miningSpeedMultiplier,
                     attackDamageMultiplier,
                     description,
-                    graphicalDescriptionRange
+                    graphicalDescriptionRange,
+                    modelIdentifier
             );
         }
         
         @Override
-        public List<String> getModifierDescription(int level) {
+        public List<Text> getModifierDescription(int level) {
             if (description != null) {
                 List<Text> apply = description.apply(level);
                 if (apply != null) {
-                    List<String> desc = new ArrayList<>();
-                    for (Text s : apply) desc.add(s.asFormattedString());
+                    List<Text> desc = new ArrayList<>();
+                    for (Text s : apply) desc.add(s);
                     return desc;
                 }
             }
@@ -223,6 +231,12 @@ public interface Modifier {
         public ImmutableList<ToolType> getApplicableToolTypes() {
             return applicableToolTypes.get();
         }
+        
+        @Nullable
+        @Override
+        public Identifier getModelIdentifier(ToolType type) {
+            return modelIdentifier.apply(type);
+        }
     }
     
     class Builder {
@@ -236,6 +250,7 @@ public interface Modifier {
         private BiFunction<ItemStack, Integer, Float> durabilityMultiplier = (tool, level) -> 1f;
         private BiFunction<ItemStack, Integer, Float> miningSpeedMultiplier = (tool, level) -> 1f;
         private BiFunction<ItemStack, Integer, Float> attackDamageMultiplier = (tool, level) -> 1f;
+        private Map<ToolType, Identifier> modelIdentifiers = new HashMap<>();
         @Nullable
         private Function<Integer, List<Text>> description;
         @Nullable
@@ -257,7 +272,8 @@ public interface Modifier {
                     miningSpeedMultiplier,
                     attackDamageMultiplier,
                     description,
-                    graphicalDescriptionRange
+                    graphicalDescriptionRange,
+                    type -> modelIdentifiers.get(type)
             );
         }
         
@@ -373,6 +389,13 @@ public interface Modifier {
         
         public Builder attackDamageMultiplier(float attackDamageMultiplier) {
             this.attackDamageMultiplier = (tool, level) -> attackDamageMultiplier;
+            return this;
+        }
+        
+        public Builder model(Identifier modelId, ToolType... types) {
+            for (ToolType type : types) {
+                modelIdentifiers.put(type, modelId);
+            }
             return this;
         }
     }

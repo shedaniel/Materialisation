@@ -9,7 +9,7 @@ import me.shedaniel.materialisation.modmenu.entries.StringEditEntry;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
 
 import java.util.List;
@@ -38,7 +38,7 @@ public class MaterialisationCreateOverrideScreen extends Screen {
     @Override
     public boolean keyPressed(int int_1, int int_2, int int_3) {
         if (int_1 == 256 && this.shouldCloseOnEsc()) {
-            minecraft.openScreen(parent);
+            client.openScreen(parent);
             return true;
         }
         return super.keyPressed(int_1, int_2, int_3);
@@ -47,11 +47,11 @@ public class MaterialisationCreateOverrideScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-        addButton(new ButtonWidget(4, 4, 75, 20, I18n.translate("gui.back"), var1 -> {
-            minecraft.openScreen(parent);
+        addButton(new ButtonWidget(4, 4, 75, 20, new TranslatableText("gui.back"), var1 -> {
+            client.openScreen(parent);
         }));
-        addButton(createButton = new ButtonWidget(width - 79, 4, 75, 20, I18n.translate("config.button.materialisation.create"), var1 -> {
-            minecraft.openScreen(new MaterialisationCreateOverrideConfirmationScreen(og, this, partMaterial, fileName, priority, listWidget.children()));
+        addButton(createButton = new ButtonWidget(width - 79, 4, 75, 20, new TranslatableText("config.button.materialisation.create"), var1 -> {
+            client.openScreen(new MaterialisationCreateOverrideConfirmationScreen(og, this, partMaterial, fileName, priority, listWidget.children()));
         }));
         List<MaterialisationCreateOverrideListWidget.EditEntry> entries = Lists.newArrayList();
         if (listWidget != null) {
@@ -70,7 +70,7 @@ public class MaterialisationCreateOverrideScreen extends Screen {
             entries.add(new BooleanEditEntry("bright", partMaterial.isBright()));
             entries.add(new IntEditEntry("fullAmount", partMaterial.getFullAmount()));
         }
-        children.add(listWidget = new MaterialisationCreateOverrideListWidget(minecraft, width, height, 28, height, DrawableHelper.BACKGROUND_LOCATION));
+        children.add(listWidget = new MaterialisationCreateOverrideListWidget(client, width, height, 28, height, DrawableHelper.BACKGROUND_TEXTURE));
         for (MaterialisationCreateOverrideListWidget.EditEntry entry : entries) {
             listWidget.addItem(entry);
         }
@@ -93,7 +93,7 @@ public class MaterialisationCreateOverrideScreen extends Screen {
     }
     
     @Override
-    public void render(int int_1, int int_2, float float_1) {
+    public void render(MatrixStack stack, int int_1, int int_2, float float_1) {
         createButton.active = !listWidget.children().isEmpty();
         for (MaterialisationCreateOverrideListWidget.EditEntry child : listWidget.children()) {
             if (!createButton.active)
@@ -110,8 +110,8 @@ public class MaterialisationCreateOverrideScreen extends Screen {
         }
         if (!edited)
             createButton.active = false;
-        listWidget.render(int_1, int_2, float_1);
-        super.render(int_1, int_2, float_1);
-        drawCenteredString(font, title.asFormattedString(), width / 2, 10, 16777215);
+        listWidget.render(stack, int_1, int_2, float_1);
+        super.render(stack, int_1, int_2, float_1);
+        drawCenteredText(stack, textRenderer, title, width / 2, 10, 16777215);
     }
 }

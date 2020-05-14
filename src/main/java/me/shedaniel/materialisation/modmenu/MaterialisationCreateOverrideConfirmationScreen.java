@@ -8,7 +8,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
@@ -41,7 +41,7 @@ public class MaterialisationCreateOverrideConfirmationScreen extends Screen {
     @Override
     public boolean keyPressed(int int_1, int int_2, int int_3) {
         if (int_1 == 256 && this.shouldCloseOnEsc()) {
-            minecraft.openScreen(parent);
+            client.openScreen(parent);
             return true;
         }
         return super.keyPressed(int_1, int_2, int_3);
@@ -50,10 +50,10 @@ public class MaterialisationCreateOverrideConfirmationScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-        addButton(new ButtonWidget(4, 4, 75, 20, I18n.translate("gui.back"), var1 -> {
-            minecraft.openScreen(parent);
+        addButton(new ButtonWidget(4, 4, 75, 20, new TranslatableText("gui.back"), var1 -> {
+            client.openScreen(parent);
         }));
-        addButton(new ButtonWidget(width - 79, 4, 75, 20, I18n.translate("config.button.materialisation.confirm"), var1 -> {
+        addButton(new ButtonWidget(width - 79, 4, 75, 20, new TranslatableText("config.button.materialisation.confirm"), var1 -> {
             if (!ConfigHelper.loading) {
                 try {
                     FileWriter fileWriter = new FileWriter(file, false);
@@ -83,7 +83,7 @@ public class MaterialisationCreateOverrideConfirmationScreen extends Screen {
             entries = listWidget.children();
         } else {
             entries.add(new MaterialisationOverridesListWidget.TextEntry(new LiteralText(" ")));
-            entries.add(new MaterialisationOverridesListWidget.TextEntry(new TranslatableText("config.text.materialisation.create_for", I18n.translate(partMaterial.getMaterialTranslateKey()))));
+            entries.add(new MaterialisationOverridesListWidget.TextEntry(new TranslatableText("config.text.materialisation.create_for", new TranslatableText(partMaterial.getMaterialTranslateKey()))));
             entries.add(new MaterialisationOverridesListWidget.TextEntry(new LiteralText(" ")));
             entries.add(new MaterialisationOverridesListWidget.TextEntry(new TranslatableText("config.text.materialisation.create.changed_amount", editedEntries.size())));
             for (MaterialisationCreateOverrideListWidget.EditEntry entry : editedEntries) {
@@ -99,16 +99,16 @@ public class MaterialisationCreateOverrideConfirmationScreen extends Screen {
             }
             entries.add(new MaterialisationOverridesListWidget.TextEntry(new LiteralText(" ")));
         }
-        children.add(listWidget = new MaterialisationOverridesListWidget(minecraft, width, height, 28, height, DrawableHelper.BACKGROUND_LOCATION));
+        children.add(listWidget = new MaterialisationOverridesListWidget(client, width, height, 28, height, DrawableHelper.BACKGROUND_TEXTURE));
         for (MaterialisationOverridesListWidget.Entry entry : entries) {
             listWidget.addItem(entry);
         }
     }
     
     @Override
-    public void render(int int_1, int int_2, float float_1) {
-        listWidget.render(int_1, int_2, float_1);
-        super.render(int_1, int_2, float_1);
-        drawCenteredString(font, title.asFormattedString(), width / 2, 10, 16777215);
+    public void render(MatrixStack stack, int int_1, int int_2, float float_1) {
+        listWidget.render(stack, int_1, int_2, float_1);
+        super.render(stack, int_1, int_2, float_1);
+        drawCenteredText(stack, textRenderer, title, width / 2, 10, 16777215);
     }
 }

@@ -5,10 +5,9 @@ import me.shedaniel.materialisation.api.*;
 import me.shedaniel.materialisation.config.ConfigHelper;
 import me.shedaniel.materialisation.items.ColoredItem;
 import me.shedaniel.materialisation.items.MaterialisedMiningTool;
+import me.shedaniel.materialisation.modifiers.DefaultModifiers;
+import me.shedaniel.materialisation.utils.RomanNumber;
 import net.minecraft.client.item.TooltipContext;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.enchantment.UnbreakingEnchantment;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolMaterial;
 import net.minecraft.nbt.CompoundTag;
@@ -140,8 +139,8 @@ public class MaterialisationUtils {
             if (tag.contains("mt_0_material") && tag.contains("mt_1_material"))
                 speed = getMatFromString(tag.getString("mt_0_material")).map(PartMaterial::getBreakingSpeedMultiplier).orElse(0d).floatValue() * getMatFromString(tag.getString("mt_1_material")).map(PartMaterial::getToolSpeed).orElse(0d).floatValue();
         }
-        if (stack.getItem() == Materialisation.MATERIALISED_HAMMER) speed /= 6f;
-        if (stack.getItem() == Materialisation.MATERIALISED_MEGAAXE) speed /= 6.5f;
+        if (stack.getItem() == Materialisation.MATERIALISED_HAMMER) speed /= 4.5f;
+        if (stack.getItem() == Materialisation.MATERIALISED_MEGAAXE) speed /= 6f;
         return speed;
     }
     
@@ -285,24 +284,24 @@ public class MaterialisationUtils {
         stack.setTag(tag);
     }
     
-    public static boolean applyDamage(ItemStack stack, int int_1, Random random_1) {
+    public static boolean applyDamage(ItemStack stack, int toDamage, Random random) {
         if (getToolDurability(stack) <= 0) {
             return false;
         } else {
-            int int_2;
-            if (int_1 > 0) {
-                int_2 = EnchantmentHelper.getLevel(Enchantments.UNBREAKING, stack);
-                int int_3 = 0;
-                for (int int_4 = 0; int_2 > 0 && int_4 < int_1; ++int_4)
-                    if (UnbreakingEnchantment.shouldPreventDamage(stack, int_2, random_1))
-                        ++int_3;
-                int_1 -= int_3;
-                if (int_1 <= 0)
+            int reinforcedLevel;
+            if (toDamage > 0) {
+                reinforcedLevel = ((MaterialisedMiningTool) stack.getItem()).getModifierLevel(stack, DefaultModifiers.REINFORCED);
+                int reducedDamage = 0;
+                for (int i = 0; reinforcedLevel > 0 && i < toDamage; ++i)
+                    if (random.nextFloat() <= .2f * reinforcedLevel)
+                        ++reducedDamage;
+                toDamage -= reducedDamage;
+                if (toDamage <= 0)
                     return false;
             }
-            int_2 = getToolDurability(stack) - int_1;
-            setToolDurability(stack, int_2);
-            return int_2 < getToolDurability(stack);
+            reinforcedLevel = getToolDurability(stack) - toDamage;
+            setToolDurability(stack, reinforcedLevel);
+            return reinforcedLevel < getToolDurability(stack);
         }
     }
     
@@ -534,8 +533,8 @@ public class MaterialisationUtils {
             list_1.add(new LiteralText(" "));
             for (Map.Entry<Modifier, Integer> entry : modifiers.entrySet()) {
                 Identifier id = Materialisation.MODIFIERS.getId(entry.getKey());
-                if (entry.getValue() != 1)
-                    list_1.add(new TranslatableText("modifier." + id.getNamespace() + "." + id.getPath()).append(" " + entry.getValue()));
+                if (entry.getValue() != 1 || entry.getKey().getMaximumLevel(stack) != 1)
+                    list_1.add(new TranslatableText("modifier." + id.getNamespace() + "." + id.getPath()).append(" " + RomanNumber.toRoman(entry.getValue())));
                 else
                     list_1.add(new TranslatableText("modifier." + id.getNamespace() + "." + id.getPath()));
             }

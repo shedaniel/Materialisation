@@ -21,7 +21,7 @@ public class BetterIngredient {
         if (type == Type.ITEM)
             return new ItemStack[]{new ItemStack(Registry.ITEM.get(new Identifier(content)), count)};
         List<ItemStack> itemStacks = new ArrayList<>();
-        for (Item value : new ItemTags.CachingTag(new Identifier(content)).values()) {
+        for (Item value : ItemTags.getContainer().get(new Identifier(content)).values()) {
             itemStacks.add(new ItemStack(value, count));
         }
         return itemStacks.toArray(new ItemStack[0]);
@@ -53,11 +53,11 @@ public class BetterIngredient {
         return new BetterIngredient(Type.ITEM, item.toString(), count);
     }
     
-    public static BetterIngredient fromTag(Tag<Item> tag) {
+    public static BetterIngredient fromTag(Tag.Identified<Item> tag) {
         return new BetterIngredient(Type.TAG, tag.getId().toString());
     }
     
-    public static BetterIngredient fromTag(Tag<Item> tag, int count) {
+    public static BetterIngredient fromTag(Tag.Identified<Item> tag, int count) {
         return new BetterIngredient(Type.TAG, tag.getId().toString(), count);
     }
     

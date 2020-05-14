@@ -14,7 +14,10 @@ import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.Rect2i;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
@@ -64,7 +67,7 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
         public PackEntry(MaterialisationInstallListWidget listWidget, OnlinePack onlinePack) {
             this.listWidget = listWidget;
             this.onlinePack = onlinePack;
-            this.clickWidget = new ButtonWidget(0, 0, 100, 20, I18n.translate("config.button.materialisation.download"), var1 -> {
+            this.clickWidget = new ButtonWidget(0, 0, 100, 20, new TranslatableText("config.button.materialisation.download"), var1 -> {
                 MaterialisationInstallScreen screen = (MaterialisationInstallScreen) MinecraftClient.getInstance().currentScreen;
                 MinecraftClient.getInstance().openScreen(new MaterialisationDownloadingScreen(new TranslatableText("message.materialisation.fetching_file_data"), downloadingScreen -> {
                     long size;
@@ -109,7 +112,7 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
         }
         
         @Override
-        public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
+        public void render(MatrixStack stack, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
             this.bounds = new Rect2i(x, y, entryWidth, entryHeight);
             if (listWidget.visible && listWidget.selected == this) {
                 int itemMinX = listWidget.left + listWidget.width / 2 - listWidget.getItemWidth() / 2;
@@ -135,18 +138,18 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
                 RenderSystem.enableTexture();
             }
             TextRenderer font = MinecraftClient.getInstance().textRenderer;
-            drawString(font, "§l§n" + onlinePack.displayName, x + 5, y + 5, 16777215);
+            font.draw(stack, "§l§n" + onlinePack.displayName, x + 5, y + 5, 16777215);
             int i = 0;
             if (onlinePack.description != null)
-                for (String string : MinecraftClient.getInstance().textRenderer.wrapStringToWidthAsList(onlinePack.description, entryWidth)) {
-                    drawString(font, "§7" + string, x + 5, y + 7 + 9 + i * 9, 16777215);
+                for (Text text : MinecraftClient.getInstance().textRenderer.wrapStringToWidthAsList(new LiteralText(onlinePack.description), entryWidth)) {
+                    font.draw(stack, "§7" + text, x + 5, y + 7 + 9 + i * 9, 16777215);
                     i++;
                     if (i > 1)
                         break;
                 }
             clickWidget.x = x + entryWidth - 110;
             clickWidget.y = y + entryHeight / 2 - 10;
-            clickWidget.render(mouseX, mouseY, delta);
+            clickWidget.render(stack, mouseX, mouseY, delta);
         }
         
         @Override
@@ -173,7 +176,7 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
     
     public static class LoadingEntry extends Entry {
         @Override
-        public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
+        public void render(MatrixStack stack, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
             String string_3;
             switch ((int) (Util.getMeasuringTimeMs() / 300L % 4L)) {
                 case 0:
@@ -188,8 +191,8 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
                     string_3 = "o o O";
             }
             TextRenderer font = MinecraftClient.getInstance().textRenderer;
-            drawCenteredString(font, I18n.translate("config.text.materialisation.loading_packs"), x + entryWidth / 2, y + 5, 16777215);
-            drawCenteredString(font, string_3, x + entryWidth / 2, y + 5 + 9, 8421504);
+            drawCenteredText(stack, font, new TranslatableText("config.text.materialisation.loading_packs"), x + entryWidth / 2, y + 5, 16777215);
+            drawCenteredString(stack, font, string_3, x + entryWidth / 2, y + 5 + 9, 8421504);
         }
         
         @Override
@@ -205,9 +208,9 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
     
     public static class FailedEntry extends Entry {
         @Override
-        public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
+        public void render(MatrixStack stack, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
             TextRenderer font = MinecraftClient.getInstance().textRenderer;
-            drawCenteredString(font, I18n.translate("config.text.materialisation.failed"), x + entryWidth / 2, y + 5, 16777215);
+            drawCenteredText(stack, font, new TranslatableText("config.text.materialisation.failed"), x + entryWidth / 2, y + 5, 16777215);
         }
         
         @Override
@@ -229,8 +232,8 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
         }
         
         @Override
-        public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
-        
+        public void render(MatrixStack matrixStack, int i, int i1, int i2, int i3, int i4, int i5, int i6, boolean b, float v) {
+            
         }
         
         @Override
@@ -245,6 +248,6 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
     }
     
     public static abstract class Entry extends DynamicElementListWidget.ElementEntry<Entry> {
-    
+        
     }
 }

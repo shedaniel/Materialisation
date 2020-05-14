@@ -2,13 +2,9 @@ package me.shedaniel.materialisation.items;
 
 import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.api.ToolType;
-import me.shedaniel.materialisation.mixin.MiningToolItemAccessor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.Material;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
@@ -27,12 +23,11 @@ import java.util.List;
 public class MaterialisedPickaxeItem extends PickaxeItem implements MaterialisedMiningTool {
     public MaterialisedPickaxeItem(Settings settings) {
         super(MaterialisationUtils.DUMMY_MATERIAL, 0, -2.8F, settings.maxDamage(0));
-        initProperty();
     }
     
     @Override
-    public double getAttackSpeed() {
-        return attackSpeed;
+    public float getMiningSpeed(ItemStack stack, BlockState state) {
+        return MaterialisationUtils.getToolDurability(stack) <= 0 ? -1 : super.getMiningSpeed(stack, state);
     }
     
     @Nonnull
@@ -84,5 +79,4 @@ public class MaterialisedPickaxeItem extends PickaxeItem implements Materialised
     public void appendTooltip(ItemStack stack, World world_1, List<Text> list_1, TooltipContext tooltipContext_1) {
         MaterialisationUtils.appendToolTooltip(stack, this, world_1, list_1, tooltipContext_1);
     }
-    
 }

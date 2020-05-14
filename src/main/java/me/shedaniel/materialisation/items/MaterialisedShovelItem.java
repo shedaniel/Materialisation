@@ -30,7 +30,11 @@ public class MaterialisedShovelItem extends ShovelItem implements MaterialisedMi
     
     public MaterialisedShovelItem(Settings settings) {
         super(MaterialisationUtils.DUMMY_MATERIAL, 0, -3.0F, settings.maxDamage(0));
-        initProperty();
+    }
+    
+    @Override
+    public float getMiningSpeed(ItemStack stack, BlockState state) {
+        return MaterialisationUtils.getToolDurability(stack) <= 0 ? -1 : super.getMiningSpeed(stack, state);
     }
     
     @Override
@@ -60,11 +64,6 @@ public class MaterialisedShovelItem extends ShovelItem implements MaterialisedMi
                 }
             }
         return ActionResult.PASS;
-    }
-    
-    @Override
-    public double getAttackSpeed() {
-        return attackSpeed;
     }
     
     @Nonnull

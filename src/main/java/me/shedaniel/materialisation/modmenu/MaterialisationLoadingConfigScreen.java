@@ -8,6 +8,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
 
 import static me.shedaniel.materialisation.modmenu.MaterialisationMaterialsScreen.overlayBackground;
@@ -35,8 +36,8 @@ public class MaterialisationLoadingConfigScreen extends Screen {
     }
     
     @Override
-    public void render(int mouseX, int mouseY, float delta) {
-        renderDirtBackground(0);
+    public void render(MatrixStack stack, int mouseX, int mouseY, float delta) {
+        renderBackgroundTexture(0);
         overlayBackground(0, 0, width, 28, 64, 64, 64, 255, 255);
         RenderSystem.enableBlend();
         RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SrcFactor.ZERO, GlStateManager.DstFactor.ONE);
@@ -55,7 +56,7 @@ public class MaterialisationLoadingConfigScreen extends Screen {
         RenderSystem.shadeModel(7424);
         RenderSystem.enableAlphaTest();
         RenderSystem.disableBlend();
-        drawCenteredString(font, title.asFormattedString(), width / 2, 10, 16777215);
-        super.render(mouseX, mouseY, delta);
+        drawCenteredText(stack, textRenderer, title, width / 2, 10, 16777215);
+        super.render(stack, mouseX, mouseY, delta);
     }
 }

@@ -1,14 +1,7 @@
 package me.shedaniel.materialisation.mixin;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.items.MaterialisedMiningTool;
-import net.fabricmc.fabric.api.util.TriState;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -27,9 +20,6 @@ public abstract class MixinItemStack {
     public abstract Item getItem();
     
     @Shadow
-    public abstract boolean hasEnchantments();
-    
-    @Shadow
     public abstract CompoundTag getTag();
     
     /**
@@ -40,29 +30,22 @@ public abstract class MixinItemStack {
         if (getItem() instanceof MaterialisedMiningTool)
             callbackInfo.setReturnValue(false);
     }
-    
-    @Inject(method = "getAttributeModifiers", at = @At(value = "INVOKE",
-                                                       target = "Lnet/minecraft/item/Item;getModifiers(Lnet/minecraft/entity/EquipmentSlot;)Lcom/google/common/collect/Multimap;",
-                                                       shift = At.Shift.BEFORE), cancellable = true)
-    public void getAttributeModifiers(EquipmentSlot slot, CallbackInfoReturnable<Multimap<String, EntityAttributeModifier>> callbackInfo) {
-        if (getItem() instanceof MaterialisedMiningTool) {
-            HashMultimap<String, EntityAttributeModifier> multimap = HashMultimap.create();
-            if (slot == EquipmentSlot.MAINHAND) {
-                multimap.put(EntityAttributes.ATTACK_SPEED.getId(), new EntityAttributeModifier(MaterialisationUtils.getItemModifierSwingSpeed(), "Tool modifier", ((MaterialisedMiningTool) getItem()).getAttackSpeed(), EntityAttributeModifier.Operation.ADDITION));
-                if (MaterialisationUtils.getToolDurability((ItemStack) (Object) this) > 0)
-                    multimap.put(EntityAttributes.ATTACK_DAMAGE.getId(), new EntityAttributeModifier(MaterialisationUtils.getItemModifierDamage(), "Tool modifier", MaterialisationUtils.getToolAttackDamage((ItemStack) (Object) this), EntityAttributeModifier.Operation.ADDITION));
-                else
-                    multimap.put(EntityAttributes.ATTACK_DAMAGE.getId(), new EntityAttributeModifier(MaterialisationUtils.getItemModifierDamage(), "Tool modifier", -10000, EntityAttributeModifier.Operation.ADDITION));
-            }
-            callbackInfo.setReturnValue(multimap);
-        }
-    }
-    
-    @Inject(method = "isEnchantable", at = @At("HEAD"), cancellable = true)
-    public void isEnchantable(CallbackInfoReturnable<Boolean> returnable) {
-        if (getItem() instanceof MaterialisedMiningTool)
-            returnable.setReturnValue(!hasEnchantments());
-    }
+
+//    @Inject(method = "getAttributeModifiers", at = @At(value = "INVOKE",
+//                                                       target = "Lnet/minecraft/item/Item;getModifiers(Lnet/minecraft/entity/EquipmentSlot;)Lcom/google/common/collect/Multimap;",
+//                                                       shift = At.Shift.BEFORE), cancellable = true)
+//    public void getAttributeModifiers(EquipmentSlot slot, CallbackInfoReturnable<Multimap<String, EntityAttributeModifier>> callbackInfo) {
+//        if (getItem() instanceof MaterialisedMiningTool) {
+//            HashMultimap<String, EntityAttributeModifier> multimap = HashMultimap.create();
+//            if (slot == EquipmentSlot.MAINHAND) {
+//                if (MaterialisationUtils.getToolDurability((ItemStack) (Object) this) > 0)
+//                    multimap.put(EntityAttributes.ATTACK_DAMAGE.getId(), new EntityAttributeModifier(MaterialisationUtils.getItemModifierDamage(), "Tool modifier", MaterialisationUtils.getToolAttackDamage((ItemStack) (Object) this), EntityAttributeModifier.Operation.ADDITION));
+//                else
+//                    multimap.put(EntityAttributes.ATTACK_DAMAGE.getId(), new EntityAttributeModifier(MaterialisationUtils.getItemModifierDamage(), "Tool modifier", -10000, EntityAttributeModifier.Operation.ADDITION));
+//            }
+//            callbackInfo.setReturnValue(multimap);
+//        }
+//    }
     
     @Inject(method = "isDamageable", at = @At("HEAD"), cancellable = true)
     public void isDamageable(CallbackInfoReturnable<Boolean> returnable) {

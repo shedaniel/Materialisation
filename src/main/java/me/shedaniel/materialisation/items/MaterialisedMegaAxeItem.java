@@ -34,7 +34,6 @@ public class MaterialisedMegaAxeItem extends AxeItem implements MaterialisedMini
     
     public MaterialisedMegaAxeItem(Settings settings) {
         super(MaterialisationUtils.DUMMY_MATERIAL, 0, -3.65F, settings.maxDamage(0));
-        initProperty();
     }
     
     @Override
@@ -55,6 +54,11 @@ public class MaterialisedMegaAxeItem extends AxeItem implements MaterialisedMini
                         tryBreak(posList, world, add, player, mainHandStack, pos, log, leaves);
                 }
         return true;
+    }
+    
+    @Override
+    public float getMiningSpeed(ItemStack stack, BlockState state) {
+        return MaterialisationUtils.getToolDurability(stack) <= 0 ? -1 : super.getMiningSpeed(stack, state);
     }
     
     public void tryBreak(List<BlockPos> posList, World world, BlockPos blockPos, PlayerEntity player, ItemStack stack, BlockPos ogPos, Block log, AtomicReference<Block> leaves) {
@@ -94,11 +98,6 @@ public class MaterialisedMegaAxeItem extends AxeItem implements MaterialisedMini
     
     private boolean isLeaves(BlockState state) {
         return BlockTags.LEAVES.contains(state.getBlock());
-    }
-    
-    @Override
-    public double getAttackSpeed() {
-        return attackSpeed;
     }
     
     @Nonnull

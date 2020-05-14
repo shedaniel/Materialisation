@@ -3,6 +3,7 @@ package me.shedaniel.materialisation.modmenu;
 import me.shedaniel.clothconfig2.gui.widget.DynamicElementListWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -35,19 +36,15 @@ public class MaterialisationOverridesListWidget extends DynamicElementListWidget
     }
     
     public static class TextEntry extends MaterialisationOverridesListWidget.Entry {
-        protected String s;
-        
-        public TextEntry(String s) {
-            this.s = s;
-        }
+        protected Text s;
         
         public TextEntry(Text text) {
-            this.s = text.asFormattedString();
+            this.s = text;
         }
         
         @Override
-        public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
-            MinecraftClient.getInstance().textRenderer.drawWithShadow(s, x, y, 16777215);
+        public void render(MatrixStack stack, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
+            MinecraftClient.getInstance().textRenderer.drawWithShadow(stack, s, x, y, 16777215);
         }
         
         @Override
@@ -62,7 +59,7 @@ public class MaterialisationOverridesListWidget extends DynamicElementListWidget
     }
     
     public static abstract class Entry extends DynamicElementListWidget.ElementEntry<Entry> {
-    
+        
     }
     
 }

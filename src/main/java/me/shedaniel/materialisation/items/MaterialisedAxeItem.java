@@ -30,12 +30,6 @@ public class MaterialisedAxeItem extends AxeItem implements MaterialisedMiningTo
     
     public MaterialisedAxeItem(Settings settings) {
         super(MaterialisationUtils.DUMMY_MATERIAL, 0, -3.1F, settings.maxDamage(0));
-        initProperty();
-    }
-    
-    @Override
-    public double getAttackSpeed() {
-        return attackSpeed;
     }
     
     @Nonnull

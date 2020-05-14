@@ -34,12 +34,6 @@ public class MaterialisedHammerItem extends PickaxeItem implements MaterialisedM
     
     public MaterialisedHammerItem(Settings settings) {
         super(MaterialisationUtils.DUMMY_MATERIAL, 0, -3.6F, settings.maxDamage(0));
-        initProperty();
-    }
-    
-    @Override
-    public double getAttackSpeed() {
-        return attackSpeed;
     }
     
     @Nonnull
@@ -69,6 +63,10 @@ public class MaterialisedHammerItem extends PickaxeItem implements MaterialisedM
         return true;
     }
     
+    @Override
+    public float getMiningSpeed(ItemStack stack, BlockState state) {
+        return MaterialisationUtils.getToolDurability(stack) <= 0 ? -1 : super.getMiningSpeed(stack, state);
+    }
     
     @Override
     public boolean postMine(ItemStack stack, World world_1, BlockState blockState_1, BlockPos blockPos_1, LivingEntity livingEntity_1) {

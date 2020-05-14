@@ -2,20 +2,17 @@ package me.shedaniel.materialisation.rei;
 
 import com.google.common.collect.Lists;
 import me.shedaniel.materialisation.Materialisation;
-import me.shedaniel.math.api.Point;
-import me.shedaniel.math.api.Rectangle;
+import me.shedaniel.math.Point;
+import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.EntryStack;
 import me.shedaniel.rei.api.RecipeCategory;
-import me.shedaniel.rei.gui.widget.CategoryBaseWidget;
-import me.shedaniel.rei.gui.widget.EntryWidget;
+import me.shedaniel.rei.api.widgets.Widgets;
 import me.shedaniel.rei.gui.widget.Widget;
 import me.shedaniel.rei.plugin.DefaultPlugin;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.Identifier;
 
 import java.util.List;
-import java.util.function.Supplier;
 
 public class MaterialPreparerCategory implements RecipeCategory<MaterialPreparerDisplay> {
     
@@ -37,20 +34,13 @@ public class MaterialPreparerCategory implements RecipeCategory<MaterialPreparer
     }
     
     @Override
-    public List<Widget> setupDisplay(Supplier<MaterialPreparerDisplay> recipeDisplaySupplier, Rectangle bounds) {
+    public List<Widget> setupDisplay(MaterialPreparerDisplay display, Rectangle bounds) {
         final Point startPoint = new Point(bounds.getCenterX() - 41, bounds.getCenterY() - 13);
-        List<Widget> widgets = Lists.newArrayList(new CategoryBaseWidget(bounds) {
-            @Override
-            public void render(int mouseX, int mouseY, float delta) {
-                super.render(mouseX, mouseY, delta);
-                MinecraftClient.getInstance().getTextureManager().bindTexture(DefaultPlugin.getDisplayTexture());
-                this.blit(startPoint.x, startPoint.y, 0, 221, 82, 26);
-            }
-        });
-        MaterialPreparerDisplay display = recipeDisplaySupplier.get();
-        widgets.add(EntryWidget.create(startPoint.x - 18, startPoint.y + 5).entry(display.getFirst()).markIsInput());
-        widgets.add(EntryWidget.create(startPoint.x + 4, startPoint.y + 5).entries(display.getSecond()).markIsInput());
-        widgets.add(EntryWidget.create(startPoint.x + 61, startPoint.y + 5).entry(display.getResult()).noBackground().markIsOutput());
+        List<Widget> widgets = Lists.newArrayList(Widgets.createCategoryBase(bounds));
+        widgets.add(Widgets.createTexturedWidget(DefaultPlugin.getDisplayTexture(), startPoint.x, startPoint.y, 0, 221, 82, 26));
+        widgets.add(Widgets.createSlot(new Point(startPoint.x - 18, startPoint.y + 5)).entry(display.getFirst()).markInput());
+        widgets.add(Widgets.createSlot(new Point(startPoint.x + 4, startPoint.y + 5)).entries(display.getSecond()).markInput());
+        widgets.add(Widgets.createSlot(new Point(startPoint.x + 61, startPoint.y + 5)).entry(display.getResult()).disableBackground().markOutput());
         return widgets;
     }
     

@@ -68,7 +68,7 @@ public class MaterialPreparerBlock extends HorizontalFacingBlock {
     
     @SuppressWarnings("deprecation")
     @Override
-    public boolean canPlaceAtSide(BlockState blockState_1, BlockView blockView_1, BlockPos blockPos_1, BlockPlacementEnvironment blockPlacementEnvironment_1) {
+    public boolean canPathfindThrough(BlockState blockState_1, BlockView blockView_1, BlockPos blockPos_1, BlockPlacementEnvironment blockPlacementEnvironment_1) {
         return false;
     }
     

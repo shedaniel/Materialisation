@@ -6,7 +6,9 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.util.NarratorManager;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.TranslatableText;
 
 import java.text.DecimalFormat;
 import java.text.ParsePosition;
@@ -24,11 +26,11 @@ public class DoubleEditEntry extends MaterialisationCreateOverrideListWidget.Edi
     public DoubleEditEntry(String s, double defaultValue) {
         super(s);
         this.defaultValue = defaultValue;
-        this.buttonWidget = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, 0, 0, 150, 16, "") {
+        this.buttonWidget = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, 0, 0, 150, 16, NarratorManager.EMPTY) {
             @Override
-            public void render(int int_1, int int_2, float float_1) {
+            public void render(MatrixStack stack, int int_1, int int_2, float float_1) {
                 setEditableColor(isValid() ? 0xe0e0e0 : 0xff5555);
-                super.render(int_1, int_2, float_1);
+                super.render(stack, int_1, int_2, float_1);
             }
         };
         buttonWidget.setMaxLength(1000);
@@ -36,7 +38,7 @@ public class DoubleEditEntry extends MaterialisationCreateOverrideListWidget.Edi
         buttonWidget.setChangedListener(ss -> {
             DoubleEditEntry.this.setEdited(!ss.equals(DF.format(defaultValue)));
         });
-        this.resetButton = new ButtonWidget(0, 0, MinecraftClient.getInstance().textRenderer.getStringWidth(I18n.translate("text.cloth-config.reset_value")) + 6, 20, I18n.translate("text.cloth-config.reset_value"), widget -> {
+        this.resetButton = new ButtonWidget(0, 0, MinecraftClient.getInstance().textRenderer.getStringWidth(new TranslatableText("text.cloth-config.reset_value")) + 6, 20, new TranslatableText("text.cloth-config.reset_value"), widget -> {
             buttonWidget.setText(DF.format(defaultValue));
             DoubleEditEntry.this.setEdited(false);
         });
@@ -44,15 +46,15 @@ public class DoubleEditEntry extends MaterialisationCreateOverrideListWidget.Edi
     }
     
     @Override
-    public void render(int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
-        super.render(index, y, x, entryWidth, entryHeight, mouseX, mouseY, isSelected, delta);
+    public void render(MatrixStack stack, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
+        super.render(stack, index, y, x, entryWidth, entryHeight, mouseX, mouseY, isSelected, delta);
         this.resetButton.y = y;
         this.buttonWidget.y = y + 2;
         this.resetButton.x = x + entryWidth - resetButton.getWidth();
         this.buttonWidget.x = x + entryWidth - 150 + 2;
         this.buttonWidget.setWidth(150 - resetButton.getWidth() - 2 - 4);
-        resetButton.render(mouseX, mouseY, delta);
-        buttonWidget.render(mouseX, mouseY, delta);
+        resetButton.render(stack, mouseX, mouseY, delta);
+        buttonWidget.render(stack, mouseX, mouseY, delta);
     }
     
     @Override

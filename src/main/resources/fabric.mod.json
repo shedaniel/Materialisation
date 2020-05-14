@@ -35,6 +35,7 @@
   "depends": {
     "fabricloader": ">=0.4.0"
   },
+  "accessWidener": "materialisation.accesswidener",
   "mixins": [
     "materialisation.mixins.json",
     "materialisation.plugin.mixins.json"

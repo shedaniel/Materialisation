@@ -1,7 +1,0 @@
-{
-  "parent": "item/handheld",
-  "textures": {
-    "layer0": "materialisation:item/materialised_sword_handle_bright",
-    "layer1": "materialisation:item/materialised_sword_blade_bright"
-  }
-}

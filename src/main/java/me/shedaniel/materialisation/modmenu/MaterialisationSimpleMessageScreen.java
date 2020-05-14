@@ -7,8 +7,10 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 
 import static me.shedaniel.materialisation.modmenu.MaterialisationMaterialsScreen.overlayBackground;
 
@@ -25,7 +27,7 @@ public class MaterialisationSimpleMessageScreen extends Screen {
     @Override
     public boolean keyPressed(int int_1, int int_2, int int_3) {
         if (int_1 == 256 && this.shouldCloseOnEsc()) {
-            minecraft.openScreen(parent);
+            client.openScreen(parent);
             return true;
         }
         return super.keyPressed(int_1, int_2, int_3);
@@ -34,13 +36,13 @@ public class MaterialisationSimpleMessageScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-        addButton(new ButtonWidget(4, 4, 75, 20, I18n.translate("gui.back"), var1 -> {
-            minecraft.openScreen(parent);
+        addButton(new ButtonWidget(4, 4, 75, 20, new TranslatableText("gui.back"), var1 -> {
+            client.openScreen(parent);
         }));
     }
     
     @Override
-    public void render(int mouseX, int mouseY, float delta) {
+    public void render(MatrixStack stack, int mouseX, int mouseY, float delta) {
         overlayBackground(0, 0, width, height, 32, 32, 32, 255, 255);
         overlayBackground(0, 0, width, 28, 64, 64, 64, 255, 255);
         RenderSystem.enableBlend();
@@ -60,14 +62,14 @@ public class MaterialisationSimpleMessageScreen extends Screen {
         RenderSystem.shadeModel(7424);
         RenderSystem.enableAlphaTest();
         RenderSystem.disableBlend();
-        drawCenteredString(font, title.asFormattedString(), width / 2, 10, 16777215);
+        drawCenteredText(stack, textRenderer, title, width / 2, 10, 16777215);
         int y = 40;
         for (String s : text.split("\n")) {
-            for (String s1 : font.wrapStringToWidthAsList(s, width - 20)) {
-                font.draw(s1, width / 2 - font.getStringWidth(s1) / 2, y, 16777215);
+            for (Text s1 : textRenderer.wrapStringToWidthAsList(new LiteralText(s), width - 20)) {
+                textRenderer.draw(stack, s1, width / 2 - textRenderer.getStringWidth(s1) / 2, y, 16777215);
                 y += 9;
             }
         }
-        super.render(mouseX, mouseY, delta);
+        super.render(stack, mouseX, mouseY, delta);
     }
 }

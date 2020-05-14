@@ -1,18 +1,17 @@
 plugins {
-    id 'fabric-loom' version '0.4.3'
+    id "fabric-loom" version "0.4.3"
 }
 
 archivesBaseName = "Materialisation"
-version = "2.6"
+version = "3.0.0-unstable"
 
-def minecraftVersion = "1.15.2"
-def yarnBuild = "1"
-def cr_version = "1.4.1+1.14.4"
-def netherthings_version = "1.2.0"
+def minecraftVersion = "20w19a"
+def yarnBuild = "20w19a+build.5+legacy.20w09a+build.8"
 
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 
 minecraft {
+    accessWidener = file("src/main/resources/materialisation.accesswidener")
 }
 
 processResources {
@@ -24,40 +23,23 @@ processResources {
 
 repositories {
     jcenter()
+    maven { url "https://dl.bintray.com/shedaniel/legacy-yarn-updated" }
 }
 
 dependencies {
     minecraft "com.mojang:minecraft:${minecraftVersion}"
-    mappings "net.fabricmc:yarn:${minecraftVersion}+build.${yarnBuild}:v2"
-    implementation "net.fabricmc:yarn:${minecraftVersion}+build.${yarnBuild}"
-    modImplementation("net.fabricmc.fabric-api:fabric-api:0.10.8+build.310-1.15") {
+    mappings "net.fabricmc:yarn:${yarnBuild}:v2"
+    modImplementation("net.fabricmc.fabric-api:fabric-api:0.10.8+build.345-1.16") {
         force = true
     }
-    modImplementation "net.fabricmc:fabric-loader:0.7.8+build.184"
-    modImplementation("me.shedaniel.cloth:config-2:2.13.4") {
+    modImplementation "net.fabricmc:fabric-loader:0.8.2+build.194"
+    modImplementation("me.shedaniel.cloth:config-2:4.1.0-unstable") {
         exclude(group: "net.fabricmc.fabric-api")
     }
-    include("me.shedaniel.cloth:config-2:2.13.4")
+    include("me.shedaniel.cloth:config-2:4.1.0-unstable")
     compileOnly("com.google.code.findbugs:jsr305:3.0.2")
-    modImplementation("me.shedaniel:RoughlyEnoughItems:3.6.14") {
+    modImplementation("io.github.prospector:modmenu:1.11.4+build.9")
+    modImplementation("me.shedaniel:RoughlyEnoughItems:4.3.6-unstable") {
         exclude(group: "net.fabricmc.fabric-api")
     }
-//    modRuntime ("io.github.cottonmc:cotton-resources:${cr_version}") {
-//        exclude group: "net.fabricmc.fabric-api"
-//        exclude module: "modmenu"
-//        exclude module: "RoughlyEnoughItems"
-//    }
-//    modRuntime "nether-things:netherthings:${netherthings_version}"
-//    modRuntime "fabric-more-enchantments:MoEnchantments:1.5.9"
-//    modRuntime("me.sargunvohra.mcmods:auto-config:1.1.2+mc1.14.1") {
-//        transitive = false
-//    }
-
-    // OptiFabric
-//    modRuntime "optifabric:optifabric:0.4.0"
-//    modRuntime 'org.zeroturnaround:zt-zip:1.13'
-//    modRuntime('net.fabricmc:stitch:0.2.1.61') {
-//        transitive = false
-//    }
-//    modRuntime 'com.github.Chocohead:Fabric-ASM:c4ad22d'
 }

@@ -10,7 +10,9 @@ import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 
@@ -35,7 +37,7 @@ public class MaterialisationErrorInstallScreen extends Screen {
     @Override
     public boolean keyPressed(int int_1, int int_2, int int_3) {
         if (int_1 == 256 && this.shouldCloseOnEsc()) {
-            minecraft.openScreen(parent);
+            client.openScreen(parent);
             return true;
         }
         return super.keyPressed(int_1, int_2, int_3);
@@ -44,8 +46,8 @@ public class MaterialisationErrorInstallScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-        addButton(new ButtonWidget(4, 4, 75, 20, I18n.translate("gui.back"), var1 -> {
-            minecraft.openScreen(parent);
+        addButton(new ButtonWidget(4, 4, 75, 20, new TranslatableText("gui.back"), var1 -> {
+            client.openScreen(parent);
         }));
         List<MaterialisationOverridesListWidget.Entry> entries = Lists.newArrayList();
         List<String> s = new ArrayList<>();
@@ -54,20 +56,20 @@ public class MaterialisationErrorInstallScreen extends Screen {
             s.add("  at " + traceElement);
         }
         for (String s1 : s) {
-            for (String s2 : font.wrapStringToWidthAsList(s1, width - 40)) {
-                entries.add(new MaterialisationOverridesListWidget.TextEntry(new LiteralText(s2)));
+            for (Text s2 : textRenderer.wrapStringToWidthAsList(new LiteralText(s1), width - 40)) {
+                entries.add(new MaterialisationOverridesListWidget.TextEntry(s2));
             }
         }
-        children.add(listWidget = new MaterialisationOverridesListWidget(minecraft, width, height, 28, height, DrawableHelper.BACKGROUND_LOCATION));
+        children.add(listWidget = new MaterialisationOverridesListWidget(client, width, height, 28, height, DrawableHelper.BACKGROUND_TEXTURE));
         for (MaterialisationOverridesListWidget.Entry entry : entries) {
             listWidget.addItem(entry);
         }
     }
     
     @Override
-    public void render(int mouseX, int mouseY, float delta) {
-        renderDirtBackground(0);
-        listWidget.render(mouseX, mouseY, delta);
+    public void render(MatrixStack stack, int mouseX, int mouseY, float delta) {
+        renderBackgroundTexture(0);
+        listWidget.render(stack, mouseX, mouseY, delta);
         overlayBackground(0, 0, width, 28, 64, 64, 64, 255, 255);
         RenderSystem.enableBlend();
         RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SrcFactor.ZERO, GlStateManager.DstFactor.ONE);
@@ -86,7 +88,7 @@ public class MaterialisationErrorInstallScreen extends Screen {
         RenderSystem.shadeModel(7424);
         RenderSystem.enableAlphaTest();
         RenderSystem.disableBlend();
-        drawCenteredString(font, title.asFormattedString(), width / 2, 10, 16777215);
-        super.render(mouseX, mouseY, delta);
+        drawCenteredText(stack, textRenderer, title, width / 2, 10, 16777215);
+        super.render(stack, mouseX, mouseY, delta);
     }
 }

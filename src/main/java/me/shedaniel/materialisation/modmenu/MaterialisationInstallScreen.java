@@ -9,7 +9,7 @@ import me.shedaniel.materialisation.config.ConfigHelper;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Util;
 
@@ -41,7 +41,7 @@ public class MaterialisationInstallScreen extends Screen {
     @Override
     public boolean keyPressed(int int_1, int int_2, int int_3) {
         if (int_1 == 256 && this.shouldCloseOnEsc()) {
-            minecraft.openScreen(parent);
+            client.openScreen(parent);
             return true;
         }
         return super.keyPressed(int_1, int_2, int_3);
@@ -50,7 +50,7 @@ public class MaterialisationInstallScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-        children.add(listWidget = new MaterialisationInstallListWidget(minecraft, width, height, 28, height - 28, DrawableHelper.BACKGROUND_LOCATION));
+        children.add(listWidget = new MaterialisationInstallListWidget(client, width, height, 28, height - 28, DrawableHelper.BACKGROUND_TEXTURE));
         if (!loaded) {
             loaded = true;
             refresh();
@@ -67,14 +67,14 @@ public class MaterialisationInstallScreen extends Screen {
                 listWidget.addItem(new MaterialisationInstallListWidget.PackEntry(listWidget, onlinePack));
             }
         }
-        addButton(new ButtonWidget(4, 4, 100, 20, I18n.translate("config.button.materialisation.refresh"), var1 -> {
+        addButton(new ButtonWidget(4, 4, 100, 20, new TranslatableText("config.button.materialisation.refresh"), var1 -> {
             if (!loading)
                 refresh();
         }));
-        addButton(new ButtonWidget(4, height - 24, 100, 20, I18n.translate("gui.back"), var1 -> {
-            minecraft.openScreen(parent);
+        addButton(new ButtonWidget(4, height - 24, 100, 20, new TranslatableText("gui.back"), var1 -> {
+            client.openScreen(parent);
         }));
-        addButton(new ButtonWidget(width - 104, 4, 100, 20, I18n.translate("config.button.materialisation.open_folder"), var1 -> {
+        addButton(new ButtonWidget(width - 104, 4, 100, 20, new TranslatableText("config.button.materialisation.open_folder"), var1 -> {
             Util.getOperatingSystem().open(ConfigHelper.MATERIALS_DIRECTORY);
         }));
     }
@@ -117,11 +117,11 @@ public class MaterialisationInstallScreen extends Screen {
     }
     
     @Override
-    public void render(int mouseX, int mouseY, float delta) {
-        renderDirtBackground(0);
-        listWidget.render(mouseX, mouseY, delta);
+    public void render(MatrixStack stack, int mouseX, int mouseY, float delta) {
+        renderBackgroundTexture(0);
+        listWidget.render(stack, mouseX, mouseY, delta);
         overlayBackground(0, height - 28, width, height, 64, 64, 64, 255, 255);
-        drawCenteredString(font, title.asFormattedString(), width / 2, 10, 16777215);
-        super.render(mouseX, mouseY, delta);
+        drawCenteredText(stack, textRenderer, title, width / 2, 10, 16777215);
+        super.render(stack, mouseX, mouseY, delta);
     }
 }

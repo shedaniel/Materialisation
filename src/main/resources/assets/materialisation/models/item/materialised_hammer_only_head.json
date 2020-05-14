@@ -1,7 +1,0 @@
-{
-  "parent": "item/handheld",
-  "textures": {
-    "layer0": "materialisation:item/materialised_hammer_handle",
-    "layer1": "materialisation:item/materialised_hammer_head_bright"
-  }
-}
