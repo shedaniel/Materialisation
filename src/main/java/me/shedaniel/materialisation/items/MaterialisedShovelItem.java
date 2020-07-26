@@ -2,7 +2,6 @@ package me.shedaniel.materialisation.items;
 
 import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.api.ToolType;
-import me.shedaniel.materialisation.mixin.MiningToolItemAccessor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;

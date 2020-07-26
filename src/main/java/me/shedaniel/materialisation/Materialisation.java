@@ -57,7 +57,7 @@ public class Materialisation implements ModInitializer {
     public static final Item SWORD_BLADE_PATTERN = new PatternItem(new Item.Settings().group(ItemGroup.MATERIALS));
     public static final Item HAMMER_HEAD_PATTERN = new PatternItem(new Item.Settings().group(ItemGroup.MATERIALS));
     public static final Item MEGAAXE_HEAD_PATTERN = new PatternItem(new Item.Settings().group(ItemGroup.MATERIALS));
-    public static final Registry<Modifier> MODIFIERS = new ResettableSimpleRegistry<>();
+    public static final Registry<Modifier> MODIFIERS = new ResettableSimpleRegistry<>("modifiers");
     public static MaterialisationConfig config;
     
     public static <T> Optional<T> getReflectionField(Object parent, Class<T> clazz, int index) {

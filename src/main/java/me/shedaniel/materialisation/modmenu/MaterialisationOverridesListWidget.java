@@ -4,6 +4,7 @@ import me.shedaniel.clothconfig2.gui.widget.DynamicElementListWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.StringRenderable;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -36,9 +37,9 @@ public class MaterialisationOverridesListWidget extends DynamicElementListWidget
     }
     
     public static class TextEntry extends MaterialisationOverridesListWidget.Entry {
-        protected Text s;
+        protected StringRenderable s;
         
-        public TextEntry(Text text) {
+        public TextEntry(StringRenderable text) {
             this.s = text;
         }
         

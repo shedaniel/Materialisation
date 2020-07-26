@@ -167,9 +167,7 @@ public interface Modifier {
             if (description != null) {
                 List<Text> apply = description.apply(level);
                 if (apply != null) {
-                    List<Text> desc = new ArrayList<>();
-                    for (Text s : apply) desc.add(s);
-                    return desc;
+                    return new ArrayList<>(apply);
                 }
             }
             return Collections.emptyList();

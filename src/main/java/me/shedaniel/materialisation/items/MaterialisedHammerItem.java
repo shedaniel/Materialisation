@@ -114,7 +114,7 @@ public class MaterialisedHammerItem extends PickaxeItem implements MaterialisedM
             return false;
         } else {
             FluidState fluidState_1 = world.getFluidState(blockPos_1);
-            world.playLevelEvent(2001, blockPos_1, Block.getRawIdFromState(blockState_1));
+            world.playLevelEvent(null, 2001, blockPos_1, Block.getRawIdFromState(blockState_1));
             if (boolean_1) {
                 BlockEntity blockEntity_1 = blockState_1.getBlock().hasBlockEntity() ? world.getBlockEntity(blockPos_1) : null;
                 Block.dropStacks(blockState_1, world, blockPos_1, blockEntity_1, entity_1, itemStack_1);

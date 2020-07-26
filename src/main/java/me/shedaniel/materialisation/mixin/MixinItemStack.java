@@ -30,22 +30,6 @@ public abstract class MixinItemStack {
         if (getItem() instanceof MaterialisedMiningTool)
             callbackInfo.setReturnValue(false);
     }
-
-//    @Inject(method = "getAttributeModifiers", at = @At(value = "INVOKE",
-//                                                       target = "Lnet/minecraft/item/Item;getModifiers(Lnet/minecraft/entity/EquipmentSlot;)Lcom/google/common/collect/Multimap;",
-//                                                       shift = At.Shift.BEFORE), cancellable = true)
-//    public void getAttributeModifiers(EquipmentSlot slot, CallbackInfoReturnable<Multimap<String, EntityAttributeModifier>> callbackInfo) {
-//        if (getItem() instanceof MaterialisedMiningTool) {
-//            HashMultimap<String, EntityAttributeModifier> multimap = HashMultimap.create();
-//            if (slot == EquipmentSlot.MAINHAND) {
-//                if (MaterialisationUtils.getToolDurability((ItemStack) (Object) this) > 0)
-//                    multimap.put(EntityAttributes.ATTACK_DAMAGE.getId(), new EntityAttributeModifier(MaterialisationUtils.getItemModifierDamage(), "Tool modifier", MaterialisationUtils.getToolAttackDamage((ItemStack) (Object) this), EntityAttributeModifier.Operation.ADDITION));
-//                else
-//                    multimap.put(EntityAttributes.ATTACK_DAMAGE.getId(), new EntityAttributeModifier(MaterialisationUtils.getItemModifierDamage(), "Tool modifier", -10000, EntityAttributeModifier.Operation.ADDITION));
-//            }
-//            callbackInfo.setReturnValue(multimap);
-//        }
-//    }
     
     @Inject(method = "isDamageable", at = @At("HEAD"), cancellable = true)
     public void isDamageable(CallbackInfoReturnable<Boolean> returnable) {

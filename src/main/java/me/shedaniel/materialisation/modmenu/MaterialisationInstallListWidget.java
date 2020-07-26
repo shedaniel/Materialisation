@@ -14,11 +14,11 @@ import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.Rect2i;
+import net.minecraft.client.util.TextCollector;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.*;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import org.apache.commons.io.FileUtils;
@@ -31,6 +31,7 @@ import java.nio.file.FileAlreadyExistsException;
 import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class MaterialisationInstallListWidget extends DynamicElementListWidget<MaterialisationInstallListWidget.Entry> {
     private PackEntry selected;
@@ -114,7 +115,7 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
         @Override
         public void render(MatrixStack stack, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
             this.bounds = new Rect2i(x, y, entryWidth, entryHeight);
-            if (listWidget.visible && listWidget.selected == this) {
+            if (listWidget.selectionVisible && listWidget.selected == this) {
                 int itemMinX = listWidget.left + listWidget.width / 2 - listWidget.getItemWidth() / 2;
                 int itemMaxX = itemMinX + listWidget.getItemWidth();
                 RenderSystem.disableTexture();
@@ -141,8 +142,8 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
             font.draw(stack, "§l§n" + onlinePack.displayName, x + 5, y + 5, 16777215);
             int i = 0;
             if (onlinePack.description != null)
-                for (Text text : MinecraftClient.getInstance().textRenderer.wrapStringToWidthAsList(new LiteralText(onlinePack.description), entryWidth)) {
-                    font.draw(stack, "§7" + text, x + 5, y + 7 + 9 + i * 9, 16777215);
+                for (StringRenderable text : MinecraftClient.getInstance().textRenderer.wrapStringToWidthAsList(new LiteralText(onlinePack.description), entryWidth)) {
+                    font.draw(stack, MaterialisationCloth.color(text, Formatting.GRAY), x + 5, y + 7 + 9 + i * 9, 16777215);
                     i++;
                     if (i > 1)
                         break;

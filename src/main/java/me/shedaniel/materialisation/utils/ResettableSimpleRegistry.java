@@ -2,108 +2,142 @@ package me.shedaniel.materialisation.utils;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.google.common.collect.ImmutableList;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import com.google.common.collect.Sets;
+import com.mojang.serialization.Lifecycle;
+import me.shedaniel.materialisation.ModReference;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
 import net.minecraft.util.collection.Int2ObjectBiMap;
 import net.minecraft.util.registry.MutableRegistry;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
 import org.apache.commons.lang3.Validate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.*;
 
 public class ResettableSimpleRegistry<T> extends MutableRegistry<T> {
     protected static final Logger LOGGER = LogManager.getLogger();
-    protected Int2ObjectBiMap<T> indexedEntries = new Int2ObjectBiMap(256);
+    protected Int2ObjectBiMap<T> indexedEntries = new Int2ObjectBiMap<>(256);
     protected BiMap<Identifier, T> entries = HashBiMap.create();
-    protected List<T> randomEntries;
+    private BiMap<RegistryKey<T>, T> entriesByKey = HashBiMap.create();
+    private Set<RegistryKey<T>> loadedKeys = Sets.newIdentityHashSet();
+    protected Object[] randomEntries;
     private int nextId;
     
-    public ResettableSimpleRegistry() {
+    public ResettableSimpleRegistry(String id) {
+        super(RegistryKey.ofRegistry(new Identifier(ModReference.MOD_ID, id)), Lifecycle.stable());
+    }
+    
+    public ResettableSimpleRegistry(RegistryKey<Registry<T>> registryKey, Lifecycle lifecycle) {
+        super(registryKey, lifecycle);
     }
     
     public void reset() {
         indexedEntries = new Int2ObjectBiMap<>(256);
         entries = HashBiMap.create();
+        entriesByKey = HashBiMap.create();
+        loadedKeys = Sets.newIdentityHashSet();
         randomEntries = null;
         nextId = 0;
     }
     
-    public <V extends T> V set(int int_1, Identifier identifier_1, V object_1) {
-        this.indexedEntries.put(object_1, int_1);
-        Validate.notNull(identifier_1);
-        Validate.notNull(object_1);
+    public <V extends T> V set(int rawId, RegistryKey<T> key, V entry) {
+        this.indexedEntries.put(entry, rawId);
+        Validate.notNull(key);
+        Validate.notNull(entry);
         this.randomEntries = null;
-        if (this.entries.containsKey(identifier_1)) {
-            LOGGER.debug("Adding duplicate key '{}' to registry", identifier_1);
+        if (this.entriesByKey.containsKey(key)) {
+            LOGGER.debug("Adding duplicate key '{}' to registry", key);
         }
         
-        this.entries.put(identifier_1, object_1);
-        if (this.nextId <= int_1) {
-            this.nextId = int_1 + 1;
+        this.entries.put(key.getValue(), entry);
+        this.entriesByKey.put(key, entry);
+        if (this.nextId <= rawId) {
+            this.nextId = rawId + 1;
         }
         
-        return object_1;
+        return entry;
     }
     
-    public <V extends T> V add(Identifier identifier_1, V object_1) {
-        return this.set(this.nextId, identifier_1, object_1);
+    public <V extends T> V add(RegistryKey<T> key, V entry) {
+        return this.set(this.nextId, key, entry);
     }
     
     @Nullable
-    public Identifier getId(T object_1) {
-        return this.entries.inverse().get(object_1);
+    public Identifier getId(T entry) {
+        return this.entries.inverse().get(entry);
     }
     
-    public int getRawId(@Nullable T object_1) {
-        return this.indexedEntries.getId(object_1);
+    public Optional<RegistryKey<T>> getKey(T value) {
+        return Optional.ofNullable(this.entriesByKey.inverse().get(value));
+    }
+    
+    public int getRawId(@Nullable T entry) {
+        return this.indexedEntries.getId(entry);
     }
     
     @Nullable
-    public T get(int int_1) {
-        return this.indexedEntries.get(int_1);
+    public T get(@Nullable RegistryKey<T> key) {
+        return this.entriesByKey.get(key);
     }
     
-    public Iterator<T> iterator() {
+    @Nullable
+    public T get(int index) {
+        return this.indexedEntries.get(index);
+    }
+    
+    public @NotNull Iterator<T> iterator() {
         return this.indexedEntries.iterator();
     }
     
     @Nullable
-    public T get(@Nullable Identifier identifier_1) {
-        return this.entries.get(identifier_1);
+    public T get(@Nullable Identifier id) {
+        return this.entries.get(id);
     }
     
-    public Optional<T> getOrEmpty(@Nullable Identifier identifier_1) {
-        return Optional.ofNullable(this.entries.get(identifier_1));
+    public Optional<T> getOrEmpty(@Nullable Identifier id) {
+        return Optional.ofNullable(this.entries.get(id));
     }
     
     public Set<Identifier> getIds() {
         return Collections.unmodifiableSet(this.entries.keySet());
     }
     
-    public boolean isEmpty() {
-        return this.entries.isEmpty();
+    public Set<Map.Entry<RegistryKey<T>, T>> getEntries() {
+        return Collections.unmodifiableMap(this.entriesByKey).entrySet();
     }
     
     @Nullable
-    public T getRandom(Random random_1) {
+    public T getRandom(Random random) {
         if (this.randomEntries == null) {
-            Collection<T> collection_1 = this.entries.values();
-            if (collection_1.isEmpty()) {
+            Collection<T> collection = this.entries.values();
+            if (collection.isEmpty()) {
                 return null;
             }
             
-            this.randomEntries = ImmutableList.copyOf(collection_1);
+            this.randomEntries = collection.toArray(new Object[0]);
         }
         
-        return (T) this.randomEntries.get(random_1.nextInt(this.randomEntries.size()));
+        return (T) Util.getRandom(this.randomEntries, random);
     }
     
-    @Environment(EnvType.CLIENT)
-    public boolean containsId(Identifier identifier_1) {
-        return this.entries.containsKey(identifier_1);
+    public boolean containsId(Identifier id) {
+        return this.entries.containsKey(id);
+    }
+    
+    public boolean containsId(int id) {
+        return this.indexedEntries.containsId(id);
+    }
+    
+    public boolean isLoaded(RegistryKey<T> registryKey) {
+        return this.loadedKeys.contains(registryKey);
+    }
+    
+    public void markLoaded(RegistryKey<T> registryKey) {
+        this.loadedKeys.add(registryKey);
     }
 }

@@ -39,7 +39,7 @@ public class IntEditEntry extends MaterialisationCreateOverrideListWidget.EditEn
         buttonWidget.setChangedListener(ss -> {
             IntEditEntry.this.setEdited(!ss.equals(defaultValue + ""));
         });
-        this.resetButton = new ButtonWidget(0, 0, MinecraftClient.getInstance().textRenderer.getStringWidth(new TranslatableText("text.cloth-config.reset_value")) + 6, 20, new TranslatableText("text.cloth-config.reset_value"), widget -> {
+        this.resetButton = new ButtonWidget(0, 0, MinecraftClient.getInstance().textRenderer.getWidth(new TranslatableText("text.cloth-config.reset_value")) + 6, 20, new TranslatableText("text.cloth-config.reset_value"), widget -> {
             buttonWidget.setText(IntEditEntry.this.defaultValue + "");
             IntEditEntry.this.setEdited(false);
         });

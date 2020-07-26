@@ -9,6 +9,7 @@ import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.StringRenderable;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
@@ -65,8 +66,8 @@ public class MaterialisationSimpleMessageScreen extends Screen {
         drawCenteredText(stack, textRenderer, title, width / 2, 10, 16777215);
         int y = 40;
         for (String s : text.split("\n")) {
-            for (Text s1 : textRenderer.wrapStringToWidthAsList(new LiteralText(s), width - 20)) {
-                textRenderer.draw(stack, s1, width / 2 - textRenderer.getStringWidth(s1) / 2, y, 16777215);
+            for (StringRenderable s1 : textRenderer.wrapStringToWidthAsList(new LiteralText(s), width - 20)) {
+                textRenderer.draw(stack, s1, width / 2 - textRenderer.getWidth(s1) / 2, y, 16777215);
                 y += 9;
             }
         }

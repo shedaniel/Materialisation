@@ -7,14 +7,16 @@ import me.shedaniel.materialisation.items.ColoredItem;
 import me.shedaniel.materialisation.items.MaterialisedMiningTool;
 import me.shedaniel.materialisation.modifiers.DefaultModifiers;
 import me.shedaniel.materialisation.utils.RomanNumber;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolMaterial;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
@@ -471,72 +473,73 @@ public class MaterialisationUtils {
         return ColoredItem.getItemModifierSwingSpeed();
     }
     
-    public static void appendToolTooltip(ItemStack stack, MaterialisedMiningTool tool, World world_1, List<Text> list_1, TooltipContext tooltipContext_1) {
+    @Environment(EnvType.CLIENT)
+    public static void appendToolTooltip(ItemStack stack, MaterialisedMiningTool tool, World world, List<Text> texts, TooltipContext context) {
         int toolDurability = getToolDurability(stack);
         int baseMaxDurability = getToolMaxDurability(stack, false);
         int maxDurability = getToolMaxDurability(stack);
         if (baseMaxDurability > maxDurability)
-            list_1.add(new TranslatableText("text.materialisation.max_durability_less", maxDurability, baseMaxDurability - maxDurability));
+            texts.add(new LiteralText(I18n.translate("text.materialisation.max_durability_less", maxDurability, baseMaxDurability - maxDurability)));
         else if (baseMaxDurability < maxDurability)
-            list_1.add(new TranslatableText("text.materialisation.max_durability_more", maxDurability, maxDurability - baseMaxDurability));
-        else list_1.add(new TranslatableText("text.materialisation.max_durability", maxDurability));
+            texts.add(new LiteralText(I18n.translate("text.materialisation.max_durability_more", maxDurability, maxDurability - baseMaxDurability)));
+        else texts.add(new LiteralText(I18n.translate("text.materialisation.max_durability", maxDurability)));
         if (toolDurability > 0) {
             float percentage = toolDurability / (float) maxDurability * 100;
             Formatting coloringPercentage = getColoringPercentage(percentage);
-            list_1.add(new TranslatableText("text.materialisation.durability", coloringPercentage.toString() + toolDurability, coloringPercentage.toString() + TWO_DECIMAL_FORMATTER.format(percentage) + Formatting.WHITE.toString()));
+            texts.add(new LiteralText(I18n.translate("text.materialisation.durability", coloringPercentage.toString() + toolDurability, coloringPercentage.toString() + TWO_DECIMAL_FORMATTER.format(percentage) + Formatting.WHITE.toString())));
         } else
-            list_1.add(new TranslatableText("text.materialisation.broken"));
+            texts.add(new LiteralText(I18n.translate("text.materialisation.broken")));
         if (ImmutableList.copyOf(ToolType.MINING_TOOLS).contains(tool.getToolType())) {
             {
                 float breakingSpeed = getToolBreakingSpeed(stack, false);
                 float extra = getToolBreakingSpeed(stack) - breakingSpeed;
                 if (extra > 0)
-                    list_1.add(new TranslatableText("text.materialisation.breaking_speed_extra", TWO_DECIMAL_FORMATTER.format(breakingSpeed + extra), TWO_DECIMAL_FORMATTER.format(extra)));
+                    texts.add(new LiteralText(I18n.translate("text.materialisation.breaking_speed_extra", TWO_DECIMAL_FORMATTER.format(breakingSpeed + extra), TWO_DECIMAL_FORMATTER.format(extra))));
                 else if (extra < 0)
-                    list_1.add(new TranslatableText("text.materialisation.breaking_speed_less", TWO_DECIMAL_FORMATTER.format(breakingSpeed + extra), TWO_DECIMAL_FORMATTER.format(-extra)));
+                    texts.add(new LiteralText(I18n.translate("text.materialisation.breaking_speed_less", TWO_DECIMAL_FORMATTER.format(breakingSpeed + extra), TWO_DECIMAL_FORMATTER.format(-extra))));
                 else
-                    list_1.add(new TranslatableText("text.materialisation.breaking_speed", TWO_DECIMAL_FORMATTER.format(breakingSpeed)));
+                    texts.add(new LiteralText(I18n.translate("text.materialisation.breaking_speed", TWO_DECIMAL_FORMATTER.format(breakingSpeed))));
             }
             {
                 int miningLevel = getToolMiningLevel(stack, false);
                 int extra = getToolMiningLevel(stack) - miningLevel;
                 if (extra > 0)
-                    list_1.add(new TranslatableText("text.materialisation.mining_level_extra", miningLevel + extra, extra));
+                    texts.add(new LiteralText(I18n.translate("text.materialisation.mining_level_extra", miningLevel + extra, extra)));
                 else if (extra < 0)
-                    list_1.add(new TranslatableText("text.materialisation.mining_level_less", miningLevel + extra, -extra));
+                    texts.add(new LiteralText(I18n.translate("text.materialisation.mining_level_less", miningLevel + extra, -extra)));
                 else
-                    list_1.add(new TranslatableText("text.materialisation.mining_level", miningLevel));
+                    texts.add(new LiteralText(I18n.translate("text.materialisation.mining_level", miningLevel)));
             }
         }
         {
             int enchantability = getToolEnchantability(stack, false);
             int extra = getToolEnchantability(stack) - enchantability;
             if (extra > 0)
-                list_1.add(new TranslatableText("text.materialisation.enchantability_extra", enchantability + extra, extra));
+                texts.add(new LiteralText(I18n.translate("text.materialisation.enchantability_extra", enchantability + extra, extra)));
             else if (extra < 0)
-                list_1.add(new TranslatableText("text.materialisation.enchantability_less", enchantability + extra, -extra));
+                texts.add(new LiteralText(I18n.translate("text.materialisation.enchantability_less", enchantability + extra, -extra)));
             else
-                list_1.add(new TranslatableText("text.materialisation.enchantability", enchantability));
+                texts.add(new LiteralText(I18n.translate("text.materialisation.enchantability", enchantability)));
         }
         {
             float attackDamage = getToolAttackDamage(stack, false);
             float extra = getToolAttackDamage(stack) - attackDamage;
             if (extra > 0)
-                list_1.add(new TranslatableText("text.materialisation.attack_damage_extra", TWO_DECIMAL_FORMATTER.format(attackDamage + extra), TWO_DECIMAL_FORMATTER.format(extra)));
+                texts.add(new LiteralText(I18n.translate("text.materialisation.attack_damage_extra", TWO_DECIMAL_FORMATTER.format(attackDamage + extra), TWO_DECIMAL_FORMATTER.format(extra))));
             else if (extra < 0)
-                list_1.add(new TranslatableText("text.materialisation.attack_damage_less", TWO_DECIMAL_FORMATTER.format(attackDamage + extra), TWO_DECIMAL_FORMATTER.format(-extra)));
+                texts.add(new LiteralText(I18n.translate("text.materialisation.attack_damage_less", TWO_DECIMAL_FORMATTER.format(attackDamage + extra), TWO_DECIMAL_FORMATTER.format(-extra))));
             else
-                list_1.add(new TranslatableText("text.materialisation.attack_damage", TWO_DECIMAL_FORMATTER.format(attackDamage)));
+                texts.add(new LiteralText(I18n.translate("text.materialisation.attack_damage", TWO_DECIMAL_FORMATTER.format(attackDamage))));
         }
         Map<Modifier, Integer> modifiers = getToolModifiers(stack);
         if (!modifiers.isEmpty()) {
-            list_1.add(new LiteralText(" "));
+            texts.add(new LiteralText(" "));
             for (Map.Entry<Modifier, Integer> entry : modifiers.entrySet()) {
                 Identifier id = Materialisation.MODIFIERS.getId(entry.getKey());
                 if (entry.getValue() != 1 || entry.getKey().getMaximumLevel(stack) != 1)
-                    list_1.add(new TranslatableText("modifier." + id.getNamespace() + "." + id.getPath()).append(" " + RomanNumber.toRoman(entry.getValue())));
+                    texts.add(new LiteralText(I18n.translate("modifier." + id.getNamespace() + "." + id.getPath()) + " " + RomanNumber.toRoman(entry.getValue())));
                 else
-                    list_1.add(new TranslatableText("modifier." + id.getNamespace() + "." + id.getPath()));
+                    texts.add(new LiteralText(I18n.translate("modifier." + id.getNamespace() + "." + id.getPath())));
             }
         }
     }

@@ -5,7 +5,6 @@ import me.shedaniel.materialisation.Materialisation;
 import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.ModReference;
 import me.shedaniel.materialisation.api.Modifier;
-import me.shedaniel.materialisation.api.PartMaterial;
 import me.shedaniel.materialisation.api.PartMaterials;
 import me.shedaniel.materialisation.items.ColoredItem;
 import me.shedaniel.materialisation.items.MaterialisedMiningTool;
@@ -15,7 +14,6 @@ import me.shedaniel.rei.api.RecipeHelper;
 import me.shedaniel.rei.api.plugins.REIPluginV0;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 import net.minecraft.util.math.MathHelper;
@@ -99,82 +97,85 @@ public class MaterialisationREIPlugin implements REIPluginV0 {
         return l;
     }
     
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings("UnstableApiUsage")
     @Override
     public void registerEntries(EntryRegistry entryRegistry) {
-        List<EntryStack> handle = Lists.newArrayList();
-        List<EntryStack> pickaxe_head = Lists.newArrayList();
-        List<EntryStack> axe_head = Lists.newArrayList();
-        List<EntryStack> shovel_head = Lists.newArrayList();
-        List<EntryStack> sword_head = Lists.newArrayList();
-        List<EntryStack> hammer_head = Lists.newArrayList();
-        List<EntryStack> megaaxe_head = Lists.newArrayList();
-        List<EntryStack> pickaxe = Lists.newArrayList();
-        List<EntryStack> axe = Lists.newArrayList();
-        List<EntryStack> shovel = Lists.newArrayList();
-        List<EntryStack> sword = Lists.newArrayList();
-        List<EntryStack> hammer = Lists.newArrayList();
-        List<EntryStack> megaaxe = Lists.newArrayList();
-        for (PartMaterial material : PartMaterials.getKnownMaterialList()) {
-            handle.add(EntryStack.create(MaterialisationUtils.createToolHandle(material)));
-            pickaxe_head.add(EntryStack.create(MaterialisationUtils.createPickaxeHead(material)));
-            axe_head.add(EntryStack.create(MaterialisationUtils.createAxeHead(material)));
-            shovel_head.add(EntryStack.create(MaterialisationUtils.createShovelHead(material)));
-            sword_head.add(EntryStack.create(MaterialisationUtils.createSwordBlade(material)));
-            hammer_head.add(EntryStack.create(MaterialisationUtils.createHammerHead(material)));
-            megaaxe_head.add(EntryStack.create(MaterialisationUtils.createMegaAxeHead(material)));
-            
-            pickaxe.add(EntryStack.create(MaterialisationUtils.createPickaxe(material, material)));
-            axe.add(EntryStack.create(MaterialisationUtils.createAxe(material, material)));
-            shovel.add(EntryStack.create(MaterialisationUtils.createShovel(material, material)));
-            sword.add(EntryStack.create(MaterialisationUtils.createSwordBlade(material)));
-            hammer.add(EntryStack.create(MaterialisationUtils.createHammer(material, material)));
-            megaaxe.add(EntryStack.create(MaterialisationUtils.createMegaAxe(material, material)));
-        }
-        for (EntryStack stack : handle)
+        List<EntryStack> handles = Lists.newArrayList();
+        List<EntryStack> pickaxeHeads = Lists.newArrayList();
+        List<EntryStack> axeHeads = Lists.newArrayList();
+        List<EntryStack> shovelHeads = Lists.newArrayList();
+        List<EntryStack> swordHeads = Lists.newArrayList();
+        List<EntryStack> hammerHeads = Lists.newArrayList();
+        List<EntryStack> megaaxeHeads = Lists.newArrayList();
+        List<EntryStack> pickaxes = Lists.newArrayList();
+        List<EntryStack> axes = Lists.newArrayList();
+        List<EntryStack> shovels = Lists.newArrayList();
+        List<EntryStack> swords = Lists.newArrayList();
+        List<EntryStack> hammers = Lists.newArrayList();
+        List<EntryStack> megaaxes = Lists.newArrayList();
+        PartMaterials.getKnownMaterials().forEach(material -> {
+            handles.add(EntryStack.create(MaterialisationUtils.createToolHandle(material)));
+            pickaxeHeads.add(EntryStack.create(MaterialisationUtils.createPickaxeHead(material)));
+            axeHeads.add(EntryStack.create(MaterialisationUtils.createAxeHead(material)));
+            shovelHeads.add(EntryStack.create(MaterialisationUtils.createShovelHead(material)));
+            swordHeads.add(EntryStack.create(MaterialisationUtils.createSwordBlade(material)));
+            hammerHeads.add(EntryStack.create(MaterialisationUtils.createHammerHead(material)));
+            megaaxeHeads.add(EntryStack.create(MaterialisationUtils.createMegaAxeHead(material)));
+        });
+        PartMaterials.getKnownMaterials().forEach(firstMaterial -> {
+            PartMaterials.getKnownMaterials().forEach(secondMaterial -> {
+                pickaxes.add(EntryStack.create(MaterialisationUtils.createPickaxe(firstMaterial, secondMaterial)));
+                axes.add(EntryStack.create(MaterialisationUtils.createAxe(firstMaterial, secondMaterial)));
+                shovels.add(EntryStack.create(MaterialisationUtils.createShovel(firstMaterial, secondMaterial)));
+                swords.add(EntryStack.create(MaterialisationUtils.createSword(firstMaterial, secondMaterial)));
+                hammers.add(EntryStack.create(MaterialisationUtils.createHammer(firstMaterial, secondMaterial)));
+                megaaxes.add(EntryStack.create(MaterialisationUtils.createMegaAxe(firstMaterial, secondMaterial)));
+            });
+        });
+        for (EntryStack stack : handles)
             stack.setting(EntryStack.Settings.CHECK_TAGS, EntryStack.Settings.TRUE);
-        for (EntryStack stack : pickaxe_head)
+        for (EntryStack stack : pickaxeHeads)
             stack.setting(EntryStack.Settings.CHECK_TAGS, EntryStack.Settings.TRUE);
-        for (EntryStack stack : axe_head)
+        for (EntryStack stack : axeHeads)
             stack.setting(EntryStack.Settings.CHECK_TAGS, EntryStack.Settings.TRUE);
-        for (EntryStack stack : shovel_head)
+        for (EntryStack stack : shovelHeads)
             stack.setting(EntryStack.Settings.CHECK_TAGS, EntryStack.Settings.TRUE);
-        for (EntryStack stack : sword_head)
+        for (EntryStack stack : swordHeads)
             stack.setting(EntryStack.Settings.CHECK_TAGS, EntryStack.Settings.TRUE);
-        for (EntryStack stack : hammer_head)
+        for (EntryStack stack : hammerHeads)
             stack.setting(EntryStack.Settings.CHECK_TAGS, EntryStack.Settings.TRUE);
-        for (EntryStack stack : megaaxe_head)
+        for (EntryStack stack : megaaxeHeads)
             stack.setting(EntryStack.Settings.CHECK_TAGS, EntryStack.Settings.TRUE);
-        for (EntryStack stack : pickaxe)
+        for (EntryStack stack : pickaxes)
             stack.setting(EntryStack.Settings.CHECK_TAGS, EntryStack.Settings.TRUE);
-        for (EntryStack stack : axe)
+        for (EntryStack stack : axes)
             stack.setting(EntryStack.Settings.CHECK_TAGS, EntryStack.Settings.TRUE);
-        for (EntryStack stack : shovel)
+        for (EntryStack stack : shovels)
             stack.setting(EntryStack.Settings.CHECK_TAGS, EntryStack.Settings.TRUE);
-        for (EntryStack stack : sword)
+        for (EntryStack stack : swords)
             stack.setting(EntryStack.Settings.CHECK_TAGS, EntryStack.Settings.TRUE);
-        for (EntryStack stack : hammer)
+        for (EntryStack stack : hammers)
             stack.setting(EntryStack.Settings.CHECK_TAGS, EntryStack.Settings.TRUE);
-        for (EntryStack stack : megaaxe)
+        for (EntryStack stack : megaaxes)
             stack.setting(EntryStack.Settings.CHECK_TAGS, EntryStack.Settings.TRUE);
         
-        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.HANDLE), handle);
-        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.PICKAXE_HEAD), pickaxe_head);
-        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.AXE_HEAD), axe_head);
-        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.SHOVEL_HEAD), shovel_head);
-        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.SWORD_BLADE), sword_head);
-        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.HAMMER_HEAD), hammer_head);
-        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.MEGAAXE_HEAD), megaaxe_head);
+        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.HANDLE), handles);
+        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.PICKAXE_HEAD), pickaxeHeads);
+        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.AXE_HEAD), axeHeads);
+        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.SHOVEL_HEAD), shovelHeads);
+        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.SWORD_BLADE), swordHeads);
+        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.HAMMER_HEAD), hammerHeads);
+        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.MEGAAXE_HEAD), megaaxeHeads);
         
-        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.MATERIALISED_PICKAXE), pickaxe);
-        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.MATERIALISED_AXE), axe);
-        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.MATERIALISED_SHOVEL), shovel);
-        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.MATERIALISED_SWORD), sword);
-        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.MATERIALISED_HAMMER), hammer);
-        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.MATERIALISED_MEGAAXE), megaaxe);
+        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.MATERIALISED_PICKAXE), pickaxes);
+        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.MATERIALISED_AXE), axes);
+        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.MATERIALISED_SHOVEL), shovels);
+        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.MATERIALISED_SWORD), swords);
+        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.MATERIALISED_HAMMER), hammers);
+        entryRegistry.registerEntriesAfter(EntryStack.create(Materialisation.MATERIALISED_MEGAAXE), megaaxes);
         
-        entryRegistry.getStacksList().removeIf(entry -> entry.getType() == EntryStack.Type.ITEM && entry.getItemStack().getItem() instanceof MaterialisedMiningTool && !entry.getItemStack().getOrCreateTag().contains("mt_done_tool") && !entry.getItemStack().getOrCreateTag().getBoolean("mt_done_tool"));
-        entryRegistry.getStacksList().removeIf(entry -> entry.getType() == EntryStack.Type.ITEM && entry.getItemStack().getItem() instanceof ColoredItem && !entry.getItemStack().getOrCreateTag().contains("mt_0_material"));
+        entryRegistry.removeEntryIf(entry -> entry.getType() == EntryStack.Type.ITEM && entry.getItemStack().getItem() instanceof MaterialisedMiningTool && !entry.getItemStack().getOrCreateTag().contains("mt_done_tool") && !entry.getItemStack().getOrCreateTag().getBoolean("mt_done_tool"));
+        entryRegistry.removeEntryIf(entry -> entry.getType() == EntryStack.Type.ITEM && entry.getItemStack().getItem() instanceof ColoredItem && !entry.getItemStack().getOrCreateTag().contains("mt_0_material"));
     }
     
 }

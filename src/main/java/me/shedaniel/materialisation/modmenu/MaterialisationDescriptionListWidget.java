@@ -10,6 +10,7 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.StringRenderable;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
@@ -55,13 +56,13 @@ public class MaterialisationDescriptionListWidget extends DynamicElementListWidg
         addItem(new TextEntry(new TranslatableText("config.text.materialisation.version", packInfo.getVersion().getFriendlyString()).formatted(Formatting.GRAY)));
         addItem(new TextEntry(new TranslatableText("config.text.materialisation.identifier", packInfo.getIdentifier().toString()).formatted(Formatting.GRAY)));
         if (!packInfo.getDescription().isEmpty()) {
-            for (Text text : MinecraftClient.getInstance().textRenderer.wrapStringToWidthAsList(new LiteralText(packInfo.getDescription()), getItemWidth())) {
-                addItem(new TextEntry(text.shallowCopy().formatted(Formatting.GRAY)));
+            for (StringRenderable text : MinecraftClient.getInstance().textRenderer.wrapStringToWidthAsList(new LiteralText(packInfo.getDescription()), getItemWidth())) {
+                addItem(new TextEntry(MaterialisationCloth.color(text, Formatting.GRAY)));
             }
         }
         addItem(new EmptyEntry(11));
-        for (Text text : MinecraftClient.getInstance().textRenderer.wrapStringToWidthAsList(new TranslatableText("config.text.materialisation.materials", materialsPack.getKnownMaterials().count(), materialsPack.getKnownMaterials().map(PartMaterial::getMaterialTranslateKey).map(I18n::translate).collect(Collectors.joining(", "))), getItemWidth())) {
-            addItem(new TextEntry(text.shallowCopy().formatted(Formatting.GRAY)));
+        for (StringRenderable text : MinecraftClient.getInstance().textRenderer.wrapStringToWidthAsList(new TranslatableText("config.text.materialisation.materials", materialsPack.getKnownMaterials().count(), materialsPack.getKnownMaterials().map(PartMaterial::getMaterialTranslateKey).map(I18n::translate).collect(Collectors.joining(", "))), getItemWidth())) {
+            addItem(new TextEntry(MaterialisationCloth.color(text, Formatting.GRAY)));
         }
     }
     
@@ -124,7 +125,7 @@ public class MaterialisationDescriptionListWidget extends DynamicElementListWidg
         public TitleMaterialOverrideEntry(MaterialisationMaterialsScreen og, PartMaterial partMaterial, Text text) {
             this.s = text;
             Text btnText = new TranslatableText("config.button.materialisation.create_override");
-            overrideButton = new ButtonWidget(0, 0, MinecraftClient.getInstance().textRenderer.getStringWidth(btnText) + 10, 20, btnText, widget -> {
+            overrideButton = new ButtonWidget(0, 0, MinecraftClient.getInstance().textRenderer.getWidth(btnText) + 10, 20, btnText, widget -> {
                 MinecraftClient.getInstance().openScreen(new MaterialisationCreateOverrideNameScreen(og, MinecraftClient.getInstance().currentScreen, partMaterial));
             });
         }
@@ -149,9 +150,9 @@ public class MaterialisationDescriptionListWidget extends DynamicElementListWidg
     }
     
     public static class TextEntry extends Entry {
-        protected Text s;
+        protected StringRenderable s;
         
-        public TextEntry(Text text) {
+        public TextEntry(StringRenderable text) {
             this.s = text;
         }
         

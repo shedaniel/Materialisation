@@ -41,7 +41,7 @@ public class StringEditEntry extends MaterialisationCreateOverrideListWidget.Edi
         buttonWidget.setChangedListener(ss -> {
             StringEditEntry.this.setEdited(!ss.equals(defaultValue));
         });
-        this.resetButton = new ButtonWidget(0, 0, MinecraftClient.getInstance().textRenderer.getStringWidth(new TranslatableText("text.cloth-config.reset_value")) + 6, 20, new TranslatableText("text.cloth-config.reset_value"), widget -> {
+        this.resetButton = new ButtonWidget(0, 0, MinecraftClient.getInstance().textRenderer.getWidth(new TranslatableText("text.cloth-config.reset_value")) + 6, 20, new TranslatableText("text.cloth-config.reset_value"), widget -> {
             buttonWidget.setText(StringEditEntry.this.defaultValue);
             StringEditEntry.this.setEdited(false);
         });

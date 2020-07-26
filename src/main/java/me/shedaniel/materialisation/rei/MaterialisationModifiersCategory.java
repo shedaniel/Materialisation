@@ -1,6 +1,7 @@
 package me.shedaniel.materialisation.rei;
 
 import me.shedaniel.materialisation.api.Modifier;
+import me.shedaniel.materialisation.modmenu.MaterialisationCloth;
 import me.shedaniel.materialisation.utils.RomanNumber;
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
@@ -11,6 +12,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.StringRenderable;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -54,8 +56,8 @@ public class MaterialisationModifiersCategory implements RecipeCategory<Material
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
         int currentY = 24;
         for (Text descLine : modifier.getModifierDescription(level)) {
-            for (Text s : textRenderer.wrapStringToWidthAsList(descLine, bounds.width - 4)) {
-                widgets.add(Widgets.createLabel(new Point(bounds.x + 2, bounds.y + currentY), s).leftAligned().color(0xFF404040, 0xFFBBBBBB).noShadow());
+            for (StringRenderable s : textRenderer.wrapStringToWidthAsList(descLine, bounds.width - 4)) {
+                widgets.add(Widgets.createLabel(new Point(bounds.x + 2, bounds.y + currentY), MaterialisationCloth.wrap(s)).leftAligned().color(0xFF404040, 0xFFBBBBBB).noShadow());
                 currentY += 9;
             }
         }
