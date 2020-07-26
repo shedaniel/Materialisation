@@ -129,6 +129,7 @@ public class DefaultModifiers implements DefaultModifiersSupplier {
                 })
                 .build();
         LUCK = Modifier.builder()
+                .applicableToolTypes(ImmutableList.copyOf(ToolType.ALL))
                 .maximumLevel(3)
                 .durabilityMultiplier((tool, level) -> {
                     float multiplier = 1;
@@ -239,6 +240,14 @@ public class DefaultModifiers implements DefaultModifiersSupplier {
                 .registerIngredient(6, BetterIngredient.fromItem(Items.QUARTZ_BLOCK, 16))
                 .registerIngredient(7, BetterIngredient.fromItem(Items.QUARTZ_BLOCK, 24))
                 .registerIngredient(8, BetterIngredient.fromItem(Items.QUARTZ_BLOCK, 32))
+                .build());
+        handler.registerDefaultIngredient(LUCK, ModifierIngredient.builder()
+                .registerIngredient(1, BetterIngredient.fromItem(Items.LAPIS_BLOCK, 3))
+                .registerIngredient(1, BetterIngredient.fromItem(Items.LAPIS_LAZULI, 27))
+                .registerIngredient(2, BetterIngredient.fromItem(Items.LAPIS_BLOCK, 6))
+                .registerIngredient(2, BetterIngredient.fromItem(Items.LAPIS_LAZULI, 54))
+                .registerIngredient(3, BetterIngredient.fromItem(Items.LAPIS_BLOCK, 10))
+                .registerIngredient(4, BetterIngredient.fromItem(Items.LAPIS_BLOCK, 16))
                 .build());
         handler.registerDefaultIngredient(FIRE, ModifierIngredient.builder()
                 .registerIngredient(1, BetterIngredient.fromItem(Items.MAGMA_CREAM, 16))

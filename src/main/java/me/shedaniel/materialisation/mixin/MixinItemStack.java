@@ -22,6 +22,8 @@ public abstract class MixinItemStack {
     @Shadow
     public abstract CompoundTag getTag();
     
+    @Shadow public abstract boolean hasEnchantments();
+    
     /**
      * Disable italic on tools
      */
@@ -37,6 +39,12 @@ public abstract class MixinItemStack {
             CompoundTag compoundTag_1 = getTag();
             returnable.setReturnValue(compoundTag_1 == null || !compoundTag_1.getBoolean("Unbreakable"));
         }
+    }
+    
+    @Inject(method = "isEnchantable", at = @At("HEAD"), cancellable = true)
+    public void isEnchantable(CallbackInfoReturnable<Boolean> returnable) {
+        if (getItem() instanceof MaterialisedMiningTool)
+            returnable.setReturnValue(!hasEnchantments());
     }
     
     @Inject(method = "getDamage", at = @At("HEAD"), cancellable = true)

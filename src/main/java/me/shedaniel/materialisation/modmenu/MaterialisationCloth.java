@@ -28,15 +28,17 @@ public class MaterialisationCloth {
     }
     
     public static Text wrap(StringRenderable text) {
-        return text.visit(new StringRenderable.StyledVisitor<Text>() {
+        MutableText result = new LiteralText("");
+        text.visit(new StringRenderable.StyledVisitor<Text>() {
             MutableText text = new LiteralText("");
             
             @Override
             public Optional<Text> accept(Style style, String asString) {
-                text = text.append(new LiteralText(asString).fillStyle(style));
-                return Optional.of(text);
+                result.append(new LiteralText(asString).fillStyle(style));
+                return Optional.empty();
             }
         }, Style.EMPTY).orElse(Text.method_30163(text.getString()));
+        return result;
     }
     
 }
