@@ -14,9 +14,12 @@ public class GeneratedMaterial implements PartMaterial {
     
     private int toolColor = -1, toolDurability = 1, miningLevel = 0, enchantability = 0;
     private float durabilityMultiplier = 1f, breakingSpeedMultiplier = 1f, toolSpeed = -1f, attackDamage = 0f;
+    @SuppressWarnings("CanBeFinal")
     private Identifier name;
     private boolean bright = false;
+    @SuppressWarnings("CanBeFinal")
     private Map<BetterIngredient, Float> amountMultiplierMap = Maps.newHashMap();
+    @SuppressWarnings("CanBeFinal")
     private AmountGetter amountGetter = ingredient -> {
         Optional<Map.Entry<BetterIngredient, Float>> any = amountMultiplierMap.entrySet().stream().filter(entry -> entry.getKey().equals(ingredient)).findAny();
         return any.map(Map.Entry::getValue).orElse(-1f);

@@ -11,6 +11,7 @@ import me.shedaniel.rei.gui.widget.Widget;
 import me.shedaniel.rei.plugin.DefaultPlugin;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -18,21 +19,25 @@ public class MaterialPreparerCategory implements RecipeCategory<MaterialPreparer
     
     public static final EntryStack LOGO = EntryStack.create(Materialisation.MATERIAL_PREPARER);
     
+    @NotNull
     @Override
     public Identifier getIdentifier() {
         return MaterialisationREIPlugin.MATERIAL_PREPARER;
     }
     
+    @NotNull
     @Override
     public String getCategoryName() {
         return I18n.translate("category.materialisation.material_preparer");
     }
     
+    @NotNull
     @Override
     public EntryStack getLogo() {
         return LOGO;
     }
     
+    @NotNull
     @Override
     public List<Widget> setupDisplay(MaterialPreparerDisplay display, Rectangle bounds) {
         final Point startPoint = new Point(bounds.getCenterX() - 41, bounds.getCenterY() - 13);

@@ -2,18 +2,15 @@ package me.shedaniel.materialisation;
 
 import me.shedaniel.materialisation.api.Modifier;
 import me.shedaniel.materialisation.api.ToolType;
-import me.shedaniel.materialisation.containers.MaterialPreparerContainer;
-import me.shedaniel.materialisation.containers.MaterialPreparerScreen;
-import me.shedaniel.materialisation.containers.MaterialisingTableContainer;
-import me.shedaniel.materialisation.containers.MaterialisingTableScreen;
+import me.shedaniel.materialisation.gui.MaterialPreparerScreen;
+import me.shedaniel.materialisation.gui.MaterialisingTableScreen;
 import me.shedaniel.materialisation.items.MaterialisedMiningTool;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
-import net.fabricmc.fabric.api.client.screen.ScreenProviderRegistry;
+import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
@@ -23,21 +20,19 @@ import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.item.ModelPredicateProvider;
 import net.minecraft.client.render.model.*;
 import net.minecraft.client.render.model.json.JsonUnbakedModel;
-import net.minecraft.client.render.model.json.ModelItemPropertyOverrideList;
+import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemPropertyGetter;
 import net.minecraft.item.ItemStack;
 import net.minecraft.resource.Resource;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Lazy;
 import net.minecraft.util.math.BlockPos;
@@ -54,17 +49,13 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@SuppressWarnings("unused")
 @Environment(EnvType.CLIENT)
 public class MaterialisationClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), Materialisation.MATERIALISING_TABLE, Materialisation.MATERIAL_PREPARER);
-        ScreenProviderRegistry.INSTANCE.registerFactory(Materialisation.MATERIALISING_TABLE_CONTAINER, (syncId, identifier, playerEntity, packetByteBuf) ->
-                new MaterialisingTableScreen(new MaterialisingTableContainer(syncId, playerEntity.inventory), playerEntity.inventory, new TranslatableText("container.materialisation.materialising_table"))
-        );
-        ScreenProviderRegistry.INSTANCE.registerFactory(Materialisation.MATERIAL_PREPARER_CONTAINER, (syncId, identifier, playerEntity, packetByteBuf) ->
-                new MaterialPreparerScreen(new MaterialPreparerContainer(syncId, playerEntity.inventory), playerEntity.inventory, new TranslatableText("container.materialisation.material_preparer"))
-        );
+        ScreenRegistry.register(Materialisation.MATERIALISING_TABLE_SCREEN_HANDLER, MaterialisingTableScreen::new);
+        ScreenRegistry.register(Materialisation.MATERIAL_PREPARER_SCREEN_HANDLER, MaterialPreparerScreen::new);
         ClientSidePacketRegistry.INSTANCE.register(Materialisation.MATERIALISING_TABLE_PLAY_SOUND, (packetContext, packetByteBuf) ->
                 MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(SoundEvents.BLOCK_ANVIL_USE, 1, 1))
         );
@@ -77,7 +68,7 @@ public class MaterialisationClient implements ClientModInitializer {
                 Materialisation.PICKAXE_HEAD,
                 Materialisation.AXE_HEAD
         };
-        ItemPropertyGetter brightProvider = (itemStack, world, livingEntity) -> MaterialisationUtils.isHandleBright(itemStack) ? 1 : 0;
+        ModelPredicateProvider brightProvider = (itemStack, world, livingEntity) -> MaterialisationUtils.isHandleBright(itemStack) ? 1 : 0;
         ColorProviderRegistry.ITEM.register(MaterialisationUtils::getItemLayerColor, colorableToolParts);
         for (Item colorableToolPart : colorableToolParts) {
             FabricModelPredicateProviderRegistry.register(colorableToolPart, new Identifier(ModReference.MOD_ID, "bright"), brightProvider);
@@ -139,9 +130,7 @@ public class MaterialisationClient implements ClientModInitializer {
     }
     
     public static class DynamicToolBakedModel implements BakedModel, FabricBakedModel {
-        private final Item item;
         private final MaterialisedMiningTool tool;
-        private final Identifier identifier;
         private final ModelIdentifier handleIdentifier;
         private final ModelIdentifier headIdentifier;
         private final ModelIdentifier brightHandleIdentifier;
@@ -149,12 +138,10 @@ public class MaterialisationClient implements ClientModInitializer {
         private final Map<Modifier, Optional<ModelIdentifier>> modifierModelMap = new HashMap<>();
         
         public DynamicToolBakedModel(Identifier identifier, Item item) {
-            this.identifier = identifier;
             this.handleIdentifier = new ModelIdentifier(new Identifier(identifier.getNamespace(), identifier.getPath() + "_handle"), "inventory");
             this.headIdentifier = new ModelIdentifier(new Identifier(identifier.getNamespace(), identifier.getPath() + "_head"), "inventory");
             this.brightHandleIdentifier = new ModelIdentifier(new Identifier(identifier.getNamespace(), identifier.getPath() + "_handle_bright"), "inventory");
             this.brightHeadIdentifier = new ModelIdentifier(new Identifier(identifier.getNamespace(), identifier.getPath() + "_head_bright"), "inventory");
-            this.item = item;
             this.tool = (MaterialisedMiningTool) item;
         }
         
@@ -204,7 +191,7 @@ public class MaterialisationClient implements ClientModInitializer {
         
         public ModelIdentifier getModifierModel(Modifier modifier) {
             Optional<ModelIdentifier> identifier = modifierModelMap.get(modifier);
-            if (identifier != null) return identifier.orElse(null);
+            if (identifier.isPresent()) return identifier.orElse(null);
             Identifier modelIdentifier = modifier.getModelIdentifier(tool.getToolType());
             modifierModelMap.put(modifier, Optional.ofNullable(modelIdentifier).map(id -> new ModelIdentifier(id, "inventory")));
             identifier = modifierModelMap.get(modifier);
@@ -254,10 +241,10 @@ public class MaterialisationClient implements ClientModInitializer {
         public ModelTransformation getTransformation() {
             return ITEM_HANDHELD.get();
         }
-        
+
         @Override
-        public ModelItemPropertyOverrideList getItemPropertyOverrides() {
-            return ModelItemPropertyOverrideList.EMPTY;
+        public ModelOverrideList getOverrides() {
+            return ModelOverrideList.EMPTY;
         }
     }
 }

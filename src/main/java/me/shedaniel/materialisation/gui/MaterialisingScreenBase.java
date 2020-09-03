@@ -18,10 +18,10 @@ import org.lwjgl.opengl.GL11;
 
 @SuppressWarnings("ConstantConditions")
 @Environment(EnvType.CLIENT)
-public class MaterialisingTableScreenBase<T extends AbstractMaterialisingHandlerBase> extends HandledScreen<T> implements ScreenHandlerListener {
+public class MaterialisingScreenBase<T extends AbstractMaterialisingHandlerBase> extends HandledScreen<T> implements ScreenHandlerListener {
   private Identifier texture;
 
-  public MaterialisingTableScreenBase(T handler, PlayerInventory inventory, Text title, Identifier texture) {
+  public MaterialisingScreenBase(T handler, PlayerInventory inventory, Text title, Identifier texture) {
     super(handler, inventory, title);
     this.texture = texture;
   }

@@ -11,6 +11,7 @@ import me.shedaniel.rei.gui.widget.Widget;
 import me.shedaniel.rei.plugin.DefaultPlugin;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -18,21 +19,25 @@ public class MaterialisingTableCategory implements RecipeCategory<MaterialisingT
     
     public static final EntryStack LOGO = EntryStack.create(Materialisation.MATERIALISING_TABLE);
     
+    @NotNull
     @Override
     public Identifier getIdentifier() {
         return MaterialisationREIPlugin.MATERIALISING_TABLE;
     }
     
+    @NotNull
     @Override
     public String getCategoryName() {
         return I18n.translate("category.materialisation.materialising_table");
     }
     
+    @NotNull
     @Override
     public EntryStack getLogo() {
         return LOGO;
     }
     
+    @NotNull
     @Override
     public List<Widget> setupDisplay(MaterialisingTableDisplay display, Rectangle bounds) {
         final Point startPoint = new Point(bounds.getCenterX() - 41, bounds.getCenterY() - 13);

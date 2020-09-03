@@ -21,11 +21,11 @@ import net.minecraft.util.Identifier;
 
 @SuppressWarnings("ConstantConditions")
 @Environment(EnvType.CLIENT)
-public class MaterialisingTableScreen extends MaterialisingTableScreenBase<MaterialisingHandlerTableScreenHandler> {
+public class MaterialisingTableScreen extends MaterialisingScreenBase<MaterialisingTableScreenHandler> {
     private static final Identifier TEXTURE = new Identifier(ModReference.MOD_ID, "textures/gui/container/materialising_table.png");
     private TextFieldWidget nameField;
     
-    public MaterialisingTableScreen(MaterialisingHandlerTableScreenHandler container, PlayerInventory inventory, Text title) {
+    public MaterialisingTableScreen(MaterialisingTableScreenHandler container, PlayerInventory inventory, Text title) {
         super(container, inventory, title, TEXTURE);
         this.titleX = 60;
     }
@@ -90,6 +90,17 @@ public class MaterialisingTableScreen extends MaterialisingTableScreenBase<Mater
 
     public void renderForeground(MatrixStack matrixStack, int mouseY, int i, float f) {
         this.nameField.render(matrixStack, mouseY, i, f);
+    }
+
+    protected void drawBackground(MatrixStack matrixStack, float delta, int mouseX, int mouseY) {
+        this.client.getTextureManager().bindTexture(TEXTURE);
+        int posX = x;
+        int posY = y;
+        this.drawTexture(matrixStack, posX, posY, 0, 0, this.backgroundWidth, this.backgroundHeight);
+        this.drawTexture(matrixStack, posX + 34, posY + 20, 0, this.backgroundHeight + (this.handler.getSlot(0).hasStack() ? 0 : 16), 110, 16);
+        if ((this.handler.getSlot(0).hasStack() || this.handler.getSlot(1).hasStack()) && !this.handler.getSlot(2).hasStack()) {
+            this.drawTexture(matrixStack, posX + 99, posY + 45, this.backgroundWidth, 0, 28, 21);
+        }
     }
 
     public void onSlotUpdate(ScreenHandler handler, int slotId, ItemStack stack) {

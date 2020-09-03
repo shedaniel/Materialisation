@@ -10,9 +10,13 @@ import java.util.stream.Stream;
 
 public class ConfigPack implements MaterialsPack {
     
+    @SuppressWarnings("CanBeFinal")
     private ConfigPackInfo configPackInfo;
+    @SuppressWarnings("CanBeFinal")
     private Map<String, PartMaterial> materialMap;
+    @SuppressWarnings("CanBeFinal")
     private AtomicInteger overrides = new AtomicInteger(0);
+    @SuppressWarnings("CanBeFinal")
     private AtomicInteger modifiers = new AtomicInteger(0);
     
     public ConfigPack(ConfigPackInfo configPackInfo, Map<String, PartMaterial> materialMap) {

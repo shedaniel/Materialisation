@@ -24,11 +24,11 @@ public class ColoredItem extends Item {
     }
     
     public static UUID getItemModifierDamage() {
-        return ATTACK_DAMAGE_MODIFIER_UUID;
+        return ATTACK_DAMAGE_MODIFIER_ID;
     }
     
     public static UUID getItemModifierSwingSpeed() {
-        return ATTACK_SPEED_MODIFIER_UUID;
+        return ATTACK_SPEED_MODIFIER_ID;
     }
     
     public static float getExtraDamage(Item item) {

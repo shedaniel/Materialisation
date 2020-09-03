@@ -58,7 +58,8 @@ public interface Modifier {
     default float getAttackDamageMultiplier(ItemStack tool, int level) {
         return 1f;
     }
-    
+
+    @SuppressWarnings("unused")
     default ImmutableList<ToolType> getApplicableToolTypes() {
         return ImmutableList.of();
     }
@@ -66,7 +67,8 @@ public interface Modifier {
     default List<Text> getModifierDescription(int level) {
         return Collections.emptyList();
     }
-    
+
+    @SuppressWarnings("unused")
     default boolean hasGraphicalDescription(int level) {
         Pair<Integer, Integer> range = getGraphicalDescriptionRange();
         if (range == null) return false;
@@ -237,6 +239,7 @@ public interface Modifier {
         }
     }
     
+    @SuppressWarnings("CanBeFinal")
     class Builder {
         private BiFunction<ItemStack, Integer, Integer> durabilityCost = (tool, level) -> 0;
         private Supplier<ImmutableList<ToolType>> applicableToolTypes = ImmutableList::of;
@@ -279,7 +282,8 @@ public interface Modifier {
             this.description = description;
             return this;
         }
-        
+
+        @SuppressWarnings("unused")
         public Builder graphicalDescriptionLevelRange(@Nullable Pair<Integer, Integer> range) {
             this.graphicalDescriptionRange = range;
             return this;
@@ -289,37 +293,44 @@ public interface Modifier {
             this.graphicalDescriptionRange = new Pair<>(min, max);
             return this;
         }
-        
+
+        @SuppressWarnings("unused")
         public Builder durabilityCost(BiFunction<ItemStack, Integer, Integer> durabilityCost) {
             this.durabilityCost = durabilityCost;
             return this;
         }
-        
+
+        @SuppressWarnings("unused")
         public Builder applicableToolTypes(Supplier<ImmutableList<ToolType>> applicableToolTypes) {
             this.applicableToolTypes = applicableToolTypes;
             return this;
         }
-        
+
+        @SuppressWarnings("unused")
         public Builder maximumLevel(Function<ToolType, Integer> maximumLevel) {
             this.maximumLevel = maximumLevel;
             return this;
         }
-        
+
+        @SuppressWarnings("unused")
         public Builder extraMiningSpeed(BiFunction<ItemStack, Integer, Integer> extraMiningSpeed) {
             this.extraMiningSpeed = extraMiningSpeed;
             return this;
         }
-        
+
+        @SuppressWarnings("unused")
         public Builder extraAttackDamage(BiFunction<ItemStack, Integer, Integer> extraAttackDamage) {
             this.extraAttackDamage = extraAttackDamage;
             return this;
         }
-        
+
+        @SuppressWarnings("unused")
         public Builder extraMiningLevel(BiFunction<ItemStack, Integer, Integer> extraMiningLevel) {
             this.extraMiningLevel = extraMiningLevel;
             return this;
         }
-        
+
+        @SuppressWarnings("unused")
         public Builder extraEnchantability(BiFunction<ItemStack, Integer, Integer> extraEnchantability) {
             this.extraEnchantability = extraEnchantability;
             return this;
@@ -354,12 +365,14 @@ public interface Modifier {
             this.maximumLevel = type -> maximumLevel;
             return this;
         }
-        
+
+        @SuppressWarnings("unused")
         public Builder extraMiningSpeed(int extraMiningSpeed) {
             this.extraMiningSpeed = (tool, level) -> extraMiningSpeed;
             return this;
         }
-        
+
+        @SuppressWarnings("unused")
         public Builder extraAttackDamage(int extraAttackDamage) {
             this.extraAttackDamage = (tool, level) -> extraAttackDamage;
             return this;
@@ -369,7 +382,8 @@ public interface Modifier {
             this.extraMiningLevel = (tool, level) -> extraMiningLevel;
             return this;
         }
-        
+
+        @SuppressWarnings("unused")
         public Builder extraEnchantability(int extraEnchantability) {
             this.extraEnchantability = (tool, level) -> extraEnchantability;
             return this;
@@ -379,12 +393,14 @@ public interface Modifier {
             this.durabilityMultiplier = (tool, level) -> durabilityMultiplier;
             return this;
         }
-        
+
+        @SuppressWarnings("unused")
         public Builder miningSpeedMultiplier(float miningSpeedMultiplier) {
             this.miningSpeedMultiplier = (tool, level) -> miningSpeedMultiplier;
             return this;
         }
-        
+
+        @SuppressWarnings("unused")
         public Builder attackDamageMultiplier(float attackDamageMultiplier) {
             this.attackDamageMultiplier = (tool, level) -> attackDamageMultiplier;
             return this;

@@ -1,10 +1,11 @@
-package me.shedaniel.materialisation.containers;
+package me.shedaniel.materialisation.gui;
 
 import me.shedaniel.materialisation.Materialisation;
 import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.api.PartMaterial;
 import me.shedaniel.materialisation.api.PartMaterials;
 import me.shedaniel.materialisation.items.PatternItem;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.CraftingResultInventory;
@@ -14,20 +15,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.slot.Slot;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.math.MathHelper;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.stream.Collectors;
 
 @SuppressWarnings("CanBeFinal")
-public class MaterialPreparerScreenHandler extends ScreenHandler {
-    private final CraftingResultInventory result = new CraftingResultInventory();
-    private final Inventory main = new SimpleInventory(2) {
-        public void markDirty() {
-            super.markDirty();
-            onContentChanged(this);
-        }
-    };
-    private ScreenHandlerContext context;
+public class MaterialPreparerScreenHandler extends AbstractMaterialisingHandlerBase {
     private int takingFirst, takingSecond;
 
     public MaterialPreparerScreenHandler(int syncId, PlayerInventory main) {
@@ -36,9 +31,7 @@ public class MaterialPreparerScreenHandler extends ScreenHandler {
 
     @SuppressWarnings("unused")
     public MaterialPreparerScreenHandler(int syncId, PlayerInventory inventory, final ScreenHandlerContext context) {
-        super(null, syncId);
-        this.context = context;
-        PlayerEntity player = inventory.player;
+        super(Materialisation.MATERIAL_PREPARER_SCREEN_HANDLER, syncId, inventory, context);
         this.addSlot(new Slot(this.main, 0, 27, 21) {
             @Override
             public boolean canInsert(ItemStack itemStack) {
@@ -72,21 +65,30 @@ public class MaterialPreparerScreenHandler extends ScreenHandler {
         for (int_4 = 0; int_4 < 9; ++int_4)
             this.addSlot(new Slot(inventory, int_4, 8 + int_4 * 18, 116));
     }
-    
-    @Override
-    public boolean canUse(PlayerEntity playerEntity) {
-        return this.context.run((world, blockPos) -> world.getBlockState(blockPos).getBlock() == Materialisation.MATERIAL_PREPARER && playerEntity.squaredDistanceTo(blockPos.getX() + .5D, blockPos.getY() + .5D, blockPos.getZ() + .5D) < 64D, true);
+
+    protected boolean canUse(BlockState state) {
+        return state.getBlock() == Materialisation.MATERIAL_PREPARER;
     }
-    
+
     @Override
-    public void onContentChanged(Inventory inventory_1) {
-        super.onContentChanged(inventory_1);
-        if (inventory_1 == this.main) {
-            this.updateResult();
+    protected boolean canTakeOutput(PlayerEntity player, boolean present) {
+        return true;
+    }
+
+    @Override
+    protected ItemStack onTakeOutput(PlayerEntity player, ItemStack stack) {
+        this.main.setStack(0, ItemStack.EMPTY);
+        ItemStack itemStack = this.main.getStack(1);
+        if (!itemStack.isEmpty()) {
+            itemStack.decrement(1);
+            this.main.setStack(1, itemStack);
+        } else {
+            this.main.setStack(1, ItemStack.EMPTY);
         }
+        return stack;
     }
-    
-    private void updateResult() {
+
+    public void updateResult() {
         takingFirst = 0;
         takingSecond = 0;
         ItemStack first = this.main.getStack(0);
@@ -249,50 +251,41 @@ public class MaterialPreparerScreenHandler extends ScreenHandler {
         }
         this.sendContentUpdates();
     }
-    
-    @Override
-    public void close(PlayerEntity player) {
-        super.close(player);
-        this.context.run((world, blockPos) -> {
-            this.dropInventory(player, world, this.main);
-        });
-    }
-    
-    @Override
+
+    @SuppressWarnings("ConstantConditions")
     public ItemStack transferSlot(PlayerEntity player, int index) {
-        ItemStack itemStack_1 = ItemStack.EMPTY;
-        Slot slot_1 = this.slots.get(index);
-        if (slot_1 != null && slot_1.hasStack()) {
-            ItemStack itemStack_2 = slot_1.getStack();
-            itemStack_1 = itemStack_2.copy();
+        ItemStack itemStack1 = ItemStack.EMPTY;
+        Slot slot1 = this.slots.get(index);
+        if (slot1 != null && slot1.hasStack()) {
+            ItemStack itemStack2 = slot1.getStack();
+            itemStack1 = itemStack2.copy();
             if (index == 2) {
-                if (!this.insertItem(itemStack_2, 3, 39, true)) {
+                if (!this.insertItem(itemStack2, 3, 39, true)) {
                     return ItemStack.EMPTY;
                 }
-                
-                slot_1.onStackChanged(itemStack_2, itemStack_1);
+
+                slot1.onStackChanged(itemStack2, itemStack1);
             } else if (index != 0 && index != 1) {
-                if (index < 39 && !this.insertItem(itemStack_2, 0, 2, false)) {
+                if (index >= 3 && index < 39 && !this.insertItem(itemStack2, 0, 2, false)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (!this.insertItem(itemStack_2, 3, 39, false)) {
+            } else if (!this.insertItem(itemStack2, 3, 39, false)) {
                 return ItemStack.EMPTY;
             }
-            
-            if (itemStack_2.isEmpty()) {
-                slot_1.setStack(ItemStack.EMPTY);
+
+            if (itemStack2.isEmpty()) {
+                slot1.setStack(ItemStack.EMPTY);
             } else {
-                slot_1.markDirty();
+                slot1.markDirty();
             }
-            
-            if (itemStack_2.getCount() == itemStack_1.getCount()) {
+
+            if (itemStack2.getCount() == itemStack1.getCount()) {
                 return ItemStack.EMPTY;
             }
-            
-            slot_1.onTakeItem(player, itemStack_2);
+
+            slot1.onTakeItem(player, itemStack2);
         }
-        
-        return itemStack_1;
+
+        return itemStack1;
     }
-    
 }

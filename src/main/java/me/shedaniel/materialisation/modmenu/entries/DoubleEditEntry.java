@@ -14,8 +14,9 @@ import java.text.DecimalFormat;
 import java.text.ParsePosition;
 import java.util.List;
 
+@SuppressWarnings("CanBeFinal")
 public class DoubleEditEntry extends MaterialisationCreateOverrideListWidget.EditEntry {
-    
+
     private double defaultValue;
     private TextFieldWidget buttonWidget;
     private ButtonWidget resetButton;
@@ -35,9 +36,7 @@ public class DoubleEditEntry extends MaterialisationCreateOverrideListWidget.Edi
         };
         buttonWidget.setMaxLength(1000);
         buttonWidget.setText(DF.format(defaultValue));
-        buttonWidget.setChangedListener(ss -> {
-            DoubleEditEntry.this.setEdited(!ss.equals(DF.format(defaultValue)));
-        });
+        buttonWidget.setChangedListener(ss -> DoubleEditEntry.this.setEdited(!ss.equals(DF.format(defaultValue))));
         this.resetButton = new ButtonWidget(0, 0, MinecraftClient.getInstance().textRenderer.getWidth(new TranslatableText("text.cloth-config.reset_value")) + 6, 20, new TranslatableText("text.cloth-config.reset_value"), widget -> {
             buttonWidget.setText(DF.format(defaultValue));
             DoubleEditEntry.this.setEdited(false);

@@ -6,6 +6,7 @@ import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
+@SuppressWarnings({"unused", "CanBeFinal"})
 public class MaterialisationCreateOverrideListWidget extends DynamicElementListWidget<MaterialisationCreateOverrideListWidget.EditEntry> {
     
     public MaterialisationCreateOverrideListWidget(MinecraftClient client, int width, int height, int top, int bottom, Identifier backgroundLocation) {
@@ -26,7 +27,7 @@ public class MaterialisationCreateOverrideListWidget extends DynamicElementListW
     public int addItem(MaterialisationCreateOverrideListWidget.EditEntry item) {
         return super.addItem(item);
     }
-    
+
     public void clearItemsPublic() {
         clearItems();
     }
@@ -72,7 +73,7 @@ public class MaterialisationCreateOverrideListWidget extends DynamicElementListW
         public abstract String getValueString();
         
         public abstract Object getValue();
-        
+
         public abstract boolean isValid();
     }
     

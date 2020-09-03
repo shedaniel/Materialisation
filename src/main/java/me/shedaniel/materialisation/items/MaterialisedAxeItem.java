@@ -51,7 +51,7 @@ public class MaterialisedAxeItem extends AxeItem implements MaterialisedMiningTo
             if (!world.isClient) {
                 world.setBlockState(blockPos, block.getDefaultState().with(PillarBlock.AXIS, blockState.get(PillarBlock.AXIS)), 11);
                 if (playerEntity_1 != null) {
-                    if (!playerEntity_1.world.isClient && (!(playerEntity_1 instanceof PlayerEntity) || !(playerEntity_1.abilities.creativeMode)))
+                    if (!playerEntity_1.world.isClient && !playerEntity_1.abilities.creativeMode)
                         if (MaterialisationUtils.applyDamage(itemStack, 1, playerEntity_1.getRandom())) {
                             playerEntity_1.sendToolBreakStatus(context.getHand());
                             Item item_1 = itemStack.getItem();

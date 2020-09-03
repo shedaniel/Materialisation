@@ -2,6 +2,7 @@ package me.shedaniel.materialisation.config;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class ConfigPackInfoJson {
     private String displayName;
     private String identifier;

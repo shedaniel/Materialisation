@@ -7,7 +7,6 @@ import net.minecraft.inventory.CraftingResultInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.screen.ForgingScreenHandler;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.ScreenHandlerType;
@@ -15,12 +14,12 @@ import net.minecraft.screen.slot.Slot;
 
 import javax.annotation.Nullable;
 
-public abstract class AbstractMaterialisingBase extends ScreenHandler {
-  protected final CraftingResultInventory output = new CraftingResultInventory();
-  protected final Inventory input = new SimpleInventory(2) {
+public abstract class AbstractMaterialisingHandlerBase extends ScreenHandler {
+  protected final CraftingResultInventory result = new CraftingResultInventory();
+  protected final Inventory main = new SimpleInventory(2) {
     public void markDirty() {
       super.markDirty();
-      AbstractMaterialisingBase.this.onContentChanged(this);
+      AbstractMaterialisingHandlerBase.this.onContentChanged(this);
     }
   };
 
@@ -33,7 +32,7 @@ public abstract class AbstractMaterialisingBase extends ScreenHandler {
 
   protected abstract boolean canUse(BlockState state);
 
-  public AbstractMaterialisingBase(@Nullable ScreenHandlerType<?> type, int syncId, PlayerInventory playerInventory, ScreenHandlerContext context) {
+  public AbstractMaterialisingHandlerBase(@Nullable ScreenHandlerType<?> type, int syncId, PlayerInventory playerInventory, ScreenHandlerContext context) {
     super(type, syncId);
     this.context = context;
     this.player = playerInventory.player;
@@ -43,7 +42,7 @@ public abstract class AbstractMaterialisingBase extends ScreenHandler {
 
   public void onContentChanged(Inventory inventory) {
     super.onContentChanged(inventory);
-    if (inventory == this.input) {
+    if (inventory == this.main) {
       this.updateResult();
     }
   }
@@ -52,7 +51,7 @@ public abstract class AbstractMaterialisingBase extends ScreenHandler {
   public void close(PlayerEntity player) {
     super.close(player);
     this.context.run((world, blockPos) -> {
-      this.dropInventory(player, world, this.input);
+      this.dropInventory(player, world, this.main);
     });
   }
 

@@ -12,8 +12,9 @@ import net.minecraft.text.TranslatableText;
 
 import java.util.List;
 
+@SuppressWarnings("CanBeFinal")
 public class BooleanEditEntry extends MaterialisationCreateOverrideListWidget.EditEntry {
-    
+
     private boolean defaultValue;
     private boolean value;
     private ButtonWidget buttonWidget, resetButton;

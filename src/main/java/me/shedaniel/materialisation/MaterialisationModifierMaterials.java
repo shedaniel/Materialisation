@@ -15,11 +15,13 @@ public class MaterialisationModifierMaterials {
         registerItem("reinforcer", REINFORCER);
         registerItem("gold_infused_cream", GOLD_INFUSED_CREAM);
     }
-    
+
+    @SuppressWarnings("unused")
     private static void registerBlock(String name, Block block) {
         registerBlock(name, block, new Item.Settings());
     }
-    
+
+    @SuppressWarnings("unused")
     private static void registerBlock(String name, Block block, ItemGroup group) {
         registerBlock(name, block, new Item.Settings().group(group));
     }

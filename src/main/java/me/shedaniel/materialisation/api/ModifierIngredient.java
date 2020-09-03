@@ -32,6 +32,7 @@ public interface ModifierIngredient {
         ModifierIngredient build();
     }
     
+    @SuppressWarnings("CanBeFinal")
     final class ModifierIngredientImpl implements ModifierIngredient {
         private Map<Integer, List<BetterIngredient>> map;
         
@@ -46,6 +47,7 @@ public interface ModifierIngredient {
     }
     
     class BuilderImpl implements Builder {
+        @SuppressWarnings("CanBeFinal")
         private Map<Integer, List<BetterIngredient>> map;
         
         private BuilderImpl() {

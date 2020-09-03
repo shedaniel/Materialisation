@@ -1,5 +1,6 @@
 package me.shedaniel.materialisation.modmenu;
 
+import io.github.prospector.modmenu.api.ConfigScreenFactory;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screen.Screen;
@@ -10,26 +11,27 @@ import net.minecraft.util.Formatting;
 import java.util.Optional;
 import java.util.function.Function;
 
+@SuppressWarnings({"Convert2MethodRef", "ResultOfMethodCallIgnored", "CanBeFinal", "unused"})
 @Environment(EnvType.CLIENT)
 public class MaterialisationCloth {
+
+    public static ConfigScreenFactory<?> config = screen -> new MaterialisationMaterialsScreen(screen);
     
-    @SuppressWarnings("Convert2MethodRef") public static Function<Screen, Screen> config = screen -> new MaterialisationMaterialsScreen(screen);
-    
-    public static StringRenderable color(StringRenderable text, Formatting formatting) {
-        return text.visit(new StringRenderable.StyledVisitor<StringRenderable>() {
+    public static Text color(Text text, Formatting formatting) {
+        return text.visit(new Text.StyledVisitor<Text>() {
             TextCollector collector = new TextCollector();
             
             @Override
-            public Optional<StringRenderable> accept(Style style, String asString) {
-                collector.add(StringRenderable.styled(asString, style));
-                return Optional.of(collector.getCombined());
+            public Optional<Text> accept(Style style, String asString) {
+                collector.add(StringVisitable.styled(asString, style));
+                return Optional.of((Text)collector.getCombined());
             }
         }, Style.EMPTY.withFormatting(formatting)).orElse(text);
     }
     
-    public static Text wrap(StringRenderable text) {
+    public static Text wrap(Text text) {
         MutableText result = new LiteralText("");
-        text.visit(new StringRenderable.StyledVisitor<Text>() {
+        text.visit(new Text.StyledVisitor<Text>() {
             MutableText text = new LiteralText("");
             
             @Override
@@ -37,7 +39,7 @@ public class MaterialisationCloth {
                 result.append(new LiteralText(asString).fillStyle(style));
                 return Optional.empty();
             }
-        }, Style.EMPTY).orElse(Text.method_30163(text.getString()));
+        }, Style.EMPTY).orElse(Text.of(text.getString()));
         return result;
     }
     

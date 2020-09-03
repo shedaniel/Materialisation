@@ -16,11 +16,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
+@SuppressWarnings("CanBeFinal")
 public class MaterialisationCreateOverrideScreen extends Screen {
     public static final Pattern HEX_COLOR = Pattern.compile("^#([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6}|[A-Fa-f0-9]{8})$");
     private MaterialisationMaterialsScreen og;
     private Screen parent;
-    private PartMaterial partMaterial;
+    private final PartMaterial partMaterial;
     private String fileName;
     private double priority;
     private MaterialisationCreateOverrideListWidget listWidget;
@@ -38,6 +39,7 @@ public class MaterialisationCreateOverrideScreen extends Screen {
     @Override
     public boolean keyPressed(int int_1, int int_2, int int_3) {
         if (int_1 == 256 && this.shouldCloseOnEsc()) {
+            assert client != null;
             client.openScreen(parent);
             return true;
         }
@@ -48,9 +50,11 @@ public class MaterialisationCreateOverrideScreen extends Screen {
     protected void init() {
         super.init();
         addButton(new ButtonWidget(4, 4, 75, 20, new TranslatableText("gui.back"), var1 -> {
+            assert client != null;
             client.openScreen(parent);
         }));
         addButton(createButton = new ButtonWidget(width - 79, 4, 75, 20, new TranslatableText("config.button.materialisation.create"), var1 -> {
+            assert client != null;
             client.openScreen(new MaterialisationCreateOverrideConfirmationScreen(og, this, partMaterial, fileName, priority, listWidget.children()));
         }));
         List<MaterialisationCreateOverrideListWidget.EditEntry> entries = Lists.newArrayList();

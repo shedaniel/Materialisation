@@ -19,12 +19,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@SuppressWarnings({"unused", "CanBeFinal"})
 public class MaterialisationCreateOverrideConfirmationScreen extends Screen {
     private MaterialisationMaterialsScreen og;
     private Screen parent;
     private PartMaterial partMaterial;
     private File file;
-    private double priority;
     private MaterialisationOverridesListWidget listWidget;
     private List<MaterialisationCreateOverrideListWidget.EditEntry> editedEntries;
     
@@ -34,13 +34,13 @@ public class MaterialisationCreateOverrideConfirmationScreen extends Screen {
         this.parent = parent;
         this.partMaterial = partMaterial;
         this.file = new File(ConfigHelper.MATERIALS_DIRECTORY, fileName);
-        this.priority = priority;
         this.editedEntries = entries.stream().filter(MaterialisationCreateOverrideListWidget.EditEntry::isEdited).collect(Collectors.toList());
     }
     
     @Override
     public boolean keyPressed(int int_1, int int_2, int int_3) {
         if (int_1 == 256 && this.shouldCloseOnEsc()) {
+            assert client != null;
             client.openScreen(parent);
             return true;
         }
@@ -51,6 +51,7 @@ public class MaterialisationCreateOverrideConfirmationScreen extends Screen {
     protected void init() {
         super.init();
         addButton(new ButtonWidget(4, 4, 75, 20, new TranslatableText("gui.back"), var1 -> {
+            assert client != null;
             client.openScreen(parent);
         }));
         addButton(new ButtonWidget(width - 79, 4, 75, 20, new TranslatableText("config.button.materialisation.confirm"), var1 -> {
