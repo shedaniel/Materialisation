@@ -11,11 +11,15 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+@SuppressWarnings("ALL")
 public class MaterialisationConfig {
     
     public static class ConfigIngredient {
+        @SuppressWarnings("CanBeFinal")
         public BetterIngredient.Type type;
+        @SuppressWarnings("CanBeFinal")
         public String content;
+        @SuppressWarnings("CanBeFinal")
         public int count;
         
         public ConfigIngredient(BetterIngredient.Type type, String content) {
@@ -34,7 +38,9 @@ public class MaterialisationConfig {
     }
     
     public static class ConfigIngredients {
+        @SuppressWarnings("CanBeFinal")
         public ConfigIngredient ingredient;
+        @SuppressWarnings("CanBeFinal")
         public float multiplier;
         
         public ConfigIngredients(ConfigIngredient ingredient, float multiplier) {
@@ -44,23 +50,36 @@ public class MaterialisationConfig {
     }
     
     public static class ConfigMaterial implements PartMaterial {
+        @SuppressWarnings("CanBeFinal")
         public boolean enabled = true;
+        @SuppressWarnings("CanBeFinal")
         public String toolColor;
         // Will be rounded down
+        @SuppressWarnings("CanBeFinal")
         public double toolDurability;
         // Will be rounded down
+        @SuppressWarnings("CanBeFinal")
         public double miningLevel;
         // Will be rounded down
+        @SuppressWarnings("CanBeFinal")
         public double enchantability;
+        @SuppressWarnings("CanBeFinal")
         public double durabilityMultiplier;
+        @SuppressWarnings("CanBeFinal")
         public double breakingSpeedMultiplier;
+        @SuppressWarnings("CanBeFinal")
         public double toolSpeed;
+        @SuppressWarnings("CanBeFinal")
         public double attackDamage;
+        @SuppressWarnings("CanBeFinal")
         public String name;
         public String materialTranslationKey;
+        @SuppressWarnings("CanBeFinal")
         public boolean bright;
+        @SuppressWarnings("CanBeFinal")
         public List<ConfigIngredients> ingredients;
         // Will be rounded down
+        @SuppressWarnings("CanBeFinal")
         public double fullAmount;
         private transient Integer color;
         private transient Map<BetterIngredient, Float> ingredientFloatMap = null;

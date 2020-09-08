@@ -14,15 +14,18 @@ import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.Rect2i;
-import net.minecraft.client.util.TextCollector;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.*;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.OrderedText;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.lwjgl.opengl.GL11;
 
 import java.io.File;
 import java.net.HttpURLConnection;
@@ -31,7 +34,6 @@ import java.nio.file.FileAlreadyExistsException;
 import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 public class MaterialisationInstallListWidget extends DynamicElementListWidget<MaterialisationInstallListWidget.Entry> {
     private PackEntry selected;
@@ -59,6 +61,7 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
         clearItems();
     }
     
+    @SuppressWarnings("CanBeFinal")
     public static class PackEntry extends Entry {
         private OnlinePack onlinePack;
         private MaterialisationInstallListWidget listWidget;
@@ -91,6 +94,7 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
                         file = new File(ConfigHelper.MATERIALS_DIRECTORY, name);
                         if (file.exists()) throw new FileAlreadyExistsException("File already exists!");
                     } catch (Throwable e) {
+                        assert screen != null;
                         downloadingScreen.queueNewScreen(new MaterialisationErrorInstallScreen(screen.getParent(), e));
                         return;
                     }
@@ -99,8 +103,10 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
                             MinecraftClient.getInstance().openScreen(new MaterialisationDownloadingScreen(new TranslatableText("message.materialisation.file_is_downloading"), screen1 -> {
                                 try {
                                     FileUtils.copyURLToFile(url, file);
+                                    assert screen != null;
                                     screen1.queueNewScreen(new MaterialisationSimpleMessageScreen(screen.getParent(), new TranslatableText("message.materialisation.file_downloaded"), I18n.translate("message.materialisation.file_is_downloaded")));
                                 } catch (Exception e) {
+                                    assert screen != null;
                                     screen1.queueNewScreen(new MaterialisationErrorInstallScreen(screen.getParent(), e));
                                 }
                             }));
@@ -122,14 +128,14 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
                 Tessellator tessellator = Tessellator.getInstance();
                 BufferBuilder buffer = tessellator.getBuffer();
                 float float_2 = listWidget.isFocused() ? 1.0F : 0.5F;
-                RenderSystem.color4f(float_2, float_2, float_2, 1.0F);
+                GL11.glColor4f(float_2, float_2, float_2, 1.0F);
                 buffer.begin(7, VertexFormats.POSITION);
                 buffer.vertex(itemMinX, y + getItemHeight() + 2, 0.0D).next();
                 buffer.vertex(itemMaxX, y + getItemHeight() + 2, 0.0D).next();
                 buffer.vertex(itemMaxX, y - 2, 0.0D).next();
                 buffer.vertex(itemMinX, y - 2, 0.0D).next();
                 tessellator.draw();
-                RenderSystem.color4f(0.0F, 0.0F, 0.0F, 1.0F);
+                GL11.glColor4f(0.0F, 0.0F, 0.0F, 1.0F);
                 buffer.begin(7, VertexFormats.POSITION);
                 buffer.vertex(itemMinX + 1, y + getItemHeight() + 1, 0.0D).next();
                 buffer.vertex(itemMaxX - 1, y + getItemHeight() + 1, 0.0D).next();
@@ -142,8 +148,8 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
             font.draw(stack, "§l§n" + onlinePack.displayName, x + 5, y + 5, 16777215);
             int i = 0;
             if (onlinePack.description != null)
-                for (StringRenderable text : MinecraftClient.getInstance().textRenderer.wrapStringToWidthAsList(new LiteralText(onlinePack.description), entryWidth)) {
-                    font.draw(stack, MaterialisationCloth.color(text, Formatting.GRAY), x + 5, y + 7 + 9 + i * 9, 16777215);
+                for (OrderedText text : MinecraftClient.getInstance().textRenderer.wrapLines(new LiteralText(onlinePack.description), entryWidth)) {
+                    font.draw(stack, MaterialisationCloth.color((Text)text, Formatting.GRAY), x + 5, y + 7 + 9 + i * 9, 16777215);
                     i++;
                     if (i > 1)
                         break;
@@ -226,6 +232,7 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
     }
     
     public static class EmptyEntry extends Entry {
+        @SuppressWarnings("CanBeFinal")
         private int height;
         
         public EmptyEntry(int height) {

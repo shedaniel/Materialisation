@@ -12,12 +12,15 @@ import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.NarratorManager;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
+import org.lwjgl.opengl.GL11;
 
 import java.util.Locale;
 import java.util.UUID;
 
 import static me.shedaniel.materialisation.modmenu.MaterialisationMaterialsScreen.overlayBackground;
 
+
+@SuppressWarnings("CanBeFinal")
 public class MaterialisationCreateOverrideNameScreen extends Screen {
     private MaterialisationMaterialsScreen og;
     private Screen parent;
@@ -38,6 +41,7 @@ public class MaterialisationCreateOverrideNameScreen extends Screen {
     @Override
     public boolean keyPressed(int int_1, int int_2, int int_3) {
         if (int_1 == 256 && this.shouldCloseOnEsc()) {
+            assert client != null;
             client.openScreen(parent);
             return true;
         }
@@ -48,11 +52,14 @@ public class MaterialisationCreateOverrideNameScreen extends Screen {
     protected void init() {
         super.init();
         addButton(new ButtonWidget(4, 4, 75, 20, new TranslatableText("gui.back"), var1 -> {
+            assert client != null;
             client.openScreen(parent);
         }));
         addButton(continueButton = new ButtonWidget(width - 79, 4, 75, 20, new TranslatableText("config.button.materialisation.continue"), var1 -> {
+            assert client != null;
             client.openScreen(new MaterialisationCreateOverrideScreen(og, this, partMaterial, fileName.getText().isEmpty() ? randomFileName : fileName.getText(), priority.getText().isEmpty() ? 0 : Double.parseDouble(priority.getText())));
         }));
+        assert client != null;
         addButton(fileName = new TextFieldWidget(client.textRenderer, width / 4, 50, width / 2, 18, fileName, NarratorManager.EMPTY) {
             @Override
             public void render(MatrixStack stack, int int_1, int int_2, float float_1) {
@@ -95,20 +102,20 @@ public class MaterialisationCreateOverrideNameScreen extends Screen {
         overlayBackground(0, 28, width, height, 32, 32, 32, 255, 255);
         RenderSystem.enableBlend();
         RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SrcFactor.ZERO, GlStateManager.DstFactor.ONE);
-        RenderSystem.disableAlphaTest();
-        RenderSystem.shadeModel(7425);
+        GL11.glDisable(GL11.GL_ALPHA_TEST);
+        GL11.glShadeModel(7425);
         RenderSystem.disableTexture();
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
-        buffer.begin(7, VertexFormats.POSITION_TEXTURE_COLOR);
-        buffer.vertex(0, 28 + 4, 0.0D).texture(0.0F, 1.0F).color(0, 0, 0, 0).next();
-        buffer.vertex(this.width, 28 + 4, 0.0D).texture(1.0F, 1.0F).color(0, 0, 0, 0).next();
-        buffer.vertex(this.width, 28, 0.0D).texture(1.0F, 0.0F).color(0, 0, 0, 255).next();
-        buffer.vertex(0, 28, 0.0D).texture(0.0F, 0.0F).color(0, 0, 0, 255).next();
+        buffer.begin(7, VertexFormats.POSITION_COLOR_TEXTURE);
+        buffer.vertex(0, 28 + 4, 0.0D).color(0, 0, 0, 0).texture(0.0F, 1.0F).next();
+        buffer.vertex(this.width, 28 + 4, 0.0D).color(0, 0, 0, 0).texture(1.0F, 1.0F).next();
+        buffer.vertex(this.width, 28, 0.0D).color(0, 0, 0, 255).texture(1.0F, 0.0F).next();
+        buffer.vertex(0, 28, 0.0D).color(0, 0, 0, 255).texture(0.0F, 0.0F).next();
         tessellator.draw();
         RenderSystem.enableTexture();
-        RenderSystem.shadeModel(7424);
-        RenderSystem.enableAlphaTest();
+        GL11.glShadeModel(7424);
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
         RenderSystem.disableBlend();
         drawCenteredText(stack, textRenderer, title, width / 2, 10, 16777215);
         drawTextWithShadow(stack, textRenderer, new TranslatableText("config.text.materialisation.override_json_file_name"), width / 4, 36, -6250336);

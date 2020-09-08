@@ -1,6 +1,5 @@
 package me.shedaniel.materialisation.modmenu;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import me.shedaniel.clothconfig2.gui.widget.DynamicElementListWidget;
 import me.shedaniel.materialisation.api.PartMaterial;
 import me.shedaniel.materialisation.config.ConfigPackInfo;
@@ -13,15 +12,17 @@ import net.minecraft.client.util.Rect2i;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.LiteralText;
-import net.minecraft.text.StringRenderable;
+import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import org.lwjgl.opengl.GL11;
 
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+@SuppressWarnings({"CanBeFinal", "unused"})
 public class MaterialisationMaterialListWidget extends DynamicElementListWidget<MaterialisationMaterialListWidget.Entry> {
     public MaterialisationMaterialListWidget(MinecraftClient client, int width, int height, int top, int bottom, Identifier backgroundLocation) {
         super(client, width, height, top, bottom, backgroundLocation);
@@ -41,7 +42,7 @@ public class MaterialisationMaterialListWidget extends DynamicElementListWidget<
     public int addItem(Entry item) {
         return super.addItem(item);
     }
-    
+
     public abstract static class PackEntry extends Entry {
         private PackWidget widget;
         private ConfigPackInfo packInfo;
@@ -72,20 +73,20 @@ public class MaterialisationMaterialListWidget extends DynamicElementListWidget<
         public class PackWidget implements Element, Drawable {
             private Rect2i bounds;
             private boolean focused;
-            
+
             @Override
             public void render(MatrixStack stack, int mouseX, int mouseY, float delta) {
-                RenderSystem.disableAlphaTest();
+                GL11.glDisable(GL11.GL_ALPHA_TEST);
                 fill(stack, bounds.getX(), bounds.getY(), bounds.getX() + bounds.getWidth(), bounds.getY() + bounds.getHeight(), 0x15FFFFFF);
                 boolean isHovered = focused || bounds.contains(mouseX, mouseY);
                 MinecraftClient.getInstance().textRenderer.draw(stack, (isHovered ? Formatting.UNDERLINE.toString() : "") + packInfo.getDisplayName(), bounds.getX() + 5, bounds.getY() + 6, 16777215);
-                Iterator<StringRenderable> var7 = MinecraftClient.getInstance().textRenderer.wrapStringToWidthAsList(new LiteralText(trimEndNewlines(packInfo.getDescription())), bounds.getWidth() - 10).stream().limit(2).iterator();
+                Iterator<OrderedText> var7 = MinecraftClient.getInstance().textRenderer.wrapLines(new LiteralText(trimEndNewlines(packInfo.getDescription())), bounds.getWidth() - 10).stream().limit(2).iterator();
                 int int_2 = bounds.getY() + 6 + 11;
                 for (int lolWot = 0; var7.hasNext(); int_2 += 9) {
-                    StringRenderable string_2 = var7.next();
+                    Text string_2 = (Text)var7.next();
                     float float_1 = (float) (bounds.getX() + 5);
                     if (MinecraftClient.getInstance().textRenderer.isRightToLeft()) {
-                        int int_5 = MinecraftClient.getInstance().textRenderer.getStringWidth(MinecraftClient.getInstance().textRenderer.mirror(string_2.getString()));
+                        int int_5 = MinecraftClient.getInstance().textRenderer.getWidth(MinecraftClient.getInstance().textRenderer.mirror(string_2.getString()));
                         float_1 += (float) (bounds.getWidth() - 10 - int_5);
                     }
                     MinecraftClient.getInstance().textRenderer.draw(stack, string_2, float_1, (float) int_2, 0xEEFFFFFF);
@@ -133,7 +134,6 @@ public class MaterialisationMaterialListWidget extends DynamicElementListWidget<
     }
     
     public static abstract class MaterialEntry extends Entry {
-        
         private MaterialWidget widget;
         private PartMaterial partMaterial;
         

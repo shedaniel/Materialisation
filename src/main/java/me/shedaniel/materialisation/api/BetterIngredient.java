@@ -14,13 +14,17 @@ import java.util.Arrays;
 import java.util.List;
 
 public class BetterIngredient {
+    @SuppressWarnings("CanBeFinal")
     public Type type;
+    @SuppressWarnings("CanBeFinal")
     public String content;
+    @SuppressWarnings("CanBeFinal")
     public int count;
+    @SuppressWarnings("CanBeFinal")
     private transient Lazy<ItemStack[]> stacks = new Lazy<>(() -> {
         if (type == Type.ITEM)
             return new ItemStack[]{new ItemStack(Registry.ITEM.get(new Identifier(content)), count)};
-        Tag<Item> tag = ItemTags.getContainer().get(new Identifier(content));
+        Tag<Item> tag = ItemTags.getTagGroup().getTag(new Identifier(content));
         List<ItemStack> itemStacks = new ArrayList<>();
         if (tag != null) {
             for (Item value : tag.values()) {
@@ -52,14 +56,16 @@ public class BetterIngredient {
         return new BetterIngredient(Type.ITEM, item.toString());
     }
     
+    @SuppressWarnings("unused")
     public static BetterIngredient fromItem(Identifier item, int count) {
         return new BetterIngredient(Type.ITEM, item.toString(), count);
     }
-    
+
+    @SuppressWarnings("unused")
     public static BetterIngredient fromTag(Tag.Identified<Item> tag) {
         return new BetterIngredient(Type.TAG, tag.getId().toString());
     }
-    
+
     public static BetterIngredient fromTag(Tag.Identified<Item> tag, int count) {
         return new BetterIngredient(Type.TAG, tag.getId().toString(), count);
     }
@@ -67,7 +73,8 @@ public class BetterIngredient {
     public static BetterIngredient fromTag(Identifier tag) {
         return new BetterIngredient(Type.TAG, tag.toString());
     }
-    
+
+    @SuppressWarnings("unused")
     public static BetterIngredient fromTag(Identifier tag, int count) {
         return new BetterIngredient(Type.TAG, tag.toString(), count);
     }

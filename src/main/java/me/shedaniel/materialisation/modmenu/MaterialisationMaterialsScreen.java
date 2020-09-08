@@ -15,7 +15,9 @@ import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
+import org.lwjgl.opengl.GL11;
 
+@SuppressWarnings("CanBeFinal")
 public class MaterialisationMaterialsScreen extends Screen {
     
     Screen parent;
@@ -33,12 +35,12 @@ public class MaterialisationMaterialsScreen extends Screen {
         BufferBuilder buffer = tessellator.getBuffer();
         MinecraftClient.getInstance().getTextureManager().bindTexture(DrawableHelper.BACKGROUND_TEXTURE);
         int width = MinecraftClient.getInstance().getWindow().getScaledWidth();
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        buffer.begin(7, VertexFormats.POSITION_TEXTURE_COLOR);
-        buffer.vertex(x1, y2, 0.0D).texture(0, y2 / 32.0F).color(red, green, blue, endAlpha).next();
-        buffer.vertex(x2, y2, 0.0D).texture(width / 32.0F, y2 / 32.0F).color(red, green, blue, endAlpha).next();
-        buffer.vertex(x2, y1, 0.0D).texture(width / 32.0F, y1 / 32.0F).color(red, green, blue, startAlpha).next();
-        buffer.vertex(x1, y1, 0.0D).texture(0, y1 / 32.0F).color(red, green, blue, startAlpha).next();
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        buffer.begin(7, VertexFormats.POSITION_COLOR_TEXTURE);
+        buffer.vertex(x1, y2, 0.0D).color(red, green, blue, endAlpha).texture(0, y2 / 32.0F).next();
+        buffer.vertex(x2, y2, 0.0D).color(red, green, blue, endAlpha).texture(width / 32.0F, y2 / 32.0F).next();
+        buffer.vertex(x2, y1, 0.0D).color(red, green, blue, startAlpha).texture(width / 32.0F, y1 / 32.0F).next();
+        buffer.vertex(x1, y1, 0.0D).color(red, green, blue, startAlpha).texture(0, y1 / 32.0F).next();
         tessellator.draw();
     }
     
@@ -53,6 +55,7 @@ public class MaterialisationMaterialsScreen extends Screen {
     @Override
     public boolean keyPressed(int int_1, int int_2, int int_3) {
         if (int_1 == 256 && this.shouldCloseOnEsc()) {
+            assert client != null;
             client.openScreen(parent);
             return true;
         }
@@ -63,6 +66,7 @@ public class MaterialisationMaterialsScreen extends Screen {
     protected void init() {
         super.init();
         addButton(new ButtonWidget(width - 104, 4, 100, 20, new TranslatableText("config.button.materialisation.install"), var1 -> {
+            assert client != null;
             client.openScreen(new MaterialisationInstallScreen(this));
         }));
         addButton(new ButtonWidget(59, 4, 85, 20, new TranslatableText("config.button.materialisation.reload"), var1 -> {
@@ -72,6 +76,7 @@ public class MaterialisationMaterialsScreen extends Screen {
             }
         }));
         addButton(new ButtonWidget(4, 4, 50, 20, new TranslatableText("gui.back"), var1 -> {
+            assert client != null;
             client.openScreen(parent);
         }));
         children.add(materialList = new MaterialisationMaterialListWidget(client, width / 2 - 10, height, 28 + 5, height - 5, DrawableHelper.BACKGROUND_TEXTURE));
@@ -95,15 +100,13 @@ public class MaterialisationMaterialsScreen extends Screen {
                     descriptionList.addPack(materialsPack.getConfigPackInfo(), materialsPack);
                 }
             });
-            materialsPack.getKnownMaterials().forEach(partMaterial -> {
-                materialList.addItem(new MaterialisationMaterialListWidget.MaterialEntry(partMaterial) {
-                    @Override
-                    public void onClick() {
-                        lastDescription = partMaterial;
-                        descriptionList.addMaterial(MaterialisationMaterialsScreen.this, partMaterial);
-                    }
-                });
-            });
+            materialsPack.getKnownMaterials().forEach(partMaterial -> materialList.addItem(new MaterialisationMaterialListWidget.MaterialEntry(partMaterial) {
+                @Override
+                public void onClick() {
+                    lastDescription = partMaterial;
+                    descriptionList.addMaterial(MaterialisationMaterialsScreen.this, partMaterial);
+                }
+            }));
         });
         if (defaultPack.getKnownMaterials().count() > 0) {
             materialList.addItem(new MaterialisationMaterialListWidget.PackEntry(defaultPack.getConfigPackInfo()) {
@@ -113,15 +116,13 @@ public class MaterialisationMaterialsScreen extends Screen {
                     descriptionList.addPack(defaultPack.getConfigPackInfo(), defaultPack);
                 }
             });
-            defaultPack.getKnownMaterials().forEach(partMaterial -> {
-                materialList.addItem(new MaterialisationMaterialListWidget.MaterialEntry(partMaterial) {
-                    @Override
-                    public void onClick() {
-                        lastDescription = partMaterial;
-                        descriptionList.addMaterial(MaterialisationMaterialsScreen.this, partMaterial);
-                    }
-                });
-            });
+            defaultPack.getKnownMaterials().forEach(partMaterial -> materialList.addItem(new MaterialisationMaterialListWidget.MaterialEntry(partMaterial) {
+                @Override
+                public void onClick() {
+                    lastDescription = partMaterial;
+                    descriptionList.addMaterial(MaterialisationMaterialsScreen.this, partMaterial);
+                }
+            }));
         }
     }
     
@@ -134,20 +135,20 @@ public class MaterialisationMaterialsScreen extends Screen {
         overlayBackground(0, height - 5, width, height, 64, 64, 64, 255, 255);
         RenderSystem.enableBlend();
         RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SrcFactor.ZERO, GlStateManager.DstFactor.ONE);
-        RenderSystem.disableAlphaTest();
-        RenderSystem.shadeModel(7425);
+        GL11.glDisable(GL11.GL_ALPHA_TEST);
+        GL11.glShadeModel(7425);
         RenderSystem.disableTexture();
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
-        buffer.begin(7, VertexFormats.POSITION_TEXTURE_COLOR);
-        buffer.vertex(0, 28 + 4, 0.0D).texture(0.0F, 1.0F).color(0, 0, 0, 0).next();
-        buffer.vertex(this.width, 28 + 4, 0.0D).texture(1.0F, 1.0F).color(0, 0, 0, 0).next();
-        buffer.vertex(this.width, 28, 0.0D).texture(1.0F, 0.0F).color(0, 0, 0, 255).next();
-        buffer.vertex(0, 28, 0.0D).texture(0.0F, 0.0F).color(0, 0, 0, 255).next();
-        tessellator.draw();
+        buffer.begin(7, VertexFormats.POSITION_COLOR_TEXTURE);
+        buffer.vertex(0, 28 + 4, 0.0D).color(0, 0, 0, 0).texture(0.0F, 1.0F).next();
+        buffer.vertex(this.width, 28 + 4, 0.0D).color(0, 0, 0, 0).texture(1.0F, 1.0F).next();
+        buffer.vertex(this.width, 28, 0.0D).color(0, 0, 0, 255).texture(1.0F, 0.0F).next();
+        buffer.vertex(0, 28, 0.0D).color(0, 0, 0, 255).texture(0.0F, 0.0F).next();
+        tessellator.draw();;
         RenderSystem.enableTexture();
-        RenderSystem.shadeModel(7424);
-        RenderSystem.enableAlphaTest();
+        GL11.glShadeModel(7424);
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
         RenderSystem.disableBlend();
         drawCenteredText(stack, textRenderer, title, width / 2, 10, 16777215);
         super.render(stack, mouseX, mouseY, delta);

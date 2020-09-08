@@ -21,6 +21,7 @@ import java.util.concurrent.Executors;
 
 import static me.shedaniel.materialisation.modmenu.MaterialisationMaterialsScreen.overlayBackground;
 
+@SuppressWarnings("CanBeFinal")
 public class MaterialisationInstallScreen extends Screen {
     public static final List<OnlinePack> ONLINE_PACKS = Lists.newArrayList();
     public static boolean loaded = false;
@@ -41,6 +42,7 @@ public class MaterialisationInstallScreen extends Screen {
     @Override
     public boolean keyPressed(int int_1, int int_2, int int_3) {
         if (int_1 == 256 && this.shouldCloseOnEsc()) {
+            assert client != null;
             client.openScreen(parent);
             return true;
         }
@@ -72,11 +74,10 @@ public class MaterialisationInstallScreen extends Screen {
                 refresh();
         }));
         addButton(new ButtonWidget(4, height - 24, 100, 20, new TranslatableText("gui.back"), var1 -> {
+            assert client != null;
             client.openScreen(parent);
         }));
-        addButton(new ButtonWidget(width - 104, 4, 100, 20, new TranslatableText("config.button.materialisation.open_folder"), var1 -> {
-            Util.getOperatingSystem().open(ConfigHelper.MATERIALS_DIRECTORY);
-        }));
+        addButton(new ButtonWidget(width - 104, 4, 100, 20, new TranslatableText("config.button.materialisation.open_folder"), var1 -> Util.getOperatingSystem().open(ConfigHelper.MATERIALS_DIRECTORY)));
     }
     
     public void refresh() {

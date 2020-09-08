@@ -2,44 +2,46 @@ plugins {
     id "fabric-loom" version "0.4-SNAPSHOT"
 }
 
-archivesBaseName = "Materialisation"
-version = "3.0.2"
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 
-def minecraftVersion = "1.16.1"
-def yarnBuild = "1.16.1+build.4+legacy.20w09a+build.8"
-
-sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
+group = project.maven_group
+version = project.mod_version
+archivesBaseName = project.archives_base_name
 
 minecraft {
     accessWidener = file("src/main/resources/materialisation.accesswidener")
 }
 
 processResources {
+    inputs.property "version", project.version
+    inputs.property "name", project.display_name
     filesMatching('fabric.mod.json') {
         expand 'version': project.version
+        expand 'name': project.display_name
     }
-    inputs.property "version", project.version
 }
 
 repositories {
     jcenter()
-    maven { url "https://dl.bintray.com/shedaniel/legacy-yarn-updated" }
 }
 
 dependencies {
-    minecraft "com.mojang:minecraft:${minecraftVersion}"
-    mappings "me.shedaniel:legacy-yarn:${yarnBuild}:v2"
-    modImplementation("net.fabricmc.fabric-api:fabric-api:0.16.0+build.384-1.16.1") {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarnBuild}:v2"
+    modImplementation("net.fabricmc.fabric-api:fabric-api:${project.fabric_api}") {
         force(true)
     }
-    modImplementation "net.fabricmc:fabric-loader:0.8.2+build.194"
-    modImplementation("me.shedaniel.cloth:config-2:4.6.0") {
+    modImplementation "net.fabricmc:fabric-loader:${project.fabric}"
+    modImplementation("me.shedaniel.cloth:config-2:${project.cloth_config}") {
         exclude(group: "net.fabricmc.fabric-api")
     }
-    include("me.shedaniel.cloth:config-2:4.6.0")
-    compileOnly("com.google.code.findbugs:jsr305:3.0.2")
-    modImplementation("io.github.prospector:modmenu:1.14.5+build.30")
-    modImplementation("me.shedaniel:RoughlyEnoughItems:4.10.3") {
+    include("me.shedaniel.cloth:config-2:${project.cloth_config}")
+    compileOnly("com.google.code.findbugs:jsr305:3.0.2") { transitive = false }
+    modImplementation("io.github.prospector:modmenu:${project.modmenu}")
+    modImplementation("me.shedaniel:RoughlyEnoughItems:${project.rei}") {
         exclude(group: "net.fabricmc.fabric-api")
     }
 }
+
+

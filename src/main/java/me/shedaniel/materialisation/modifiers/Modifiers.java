@@ -69,7 +69,8 @@ public class Modifiers {
             if (!MODIFIER_MAP.containsKey(modifier)) MODIFIER_MAP.put(modifier, new ArrayList<>());
         }
     }
-    
+
+    @SuppressWarnings("unused")
     public static boolean isIngredient(ItemStack itemStack, Modifier modifier, int level) {
         return getModifierByIngredient(itemStack, modifier, level).isPresent();
     }

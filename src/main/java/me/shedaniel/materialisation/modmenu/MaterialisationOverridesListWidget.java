@@ -4,7 +4,6 @@ import me.shedaniel.clothconfig2.gui.widget.DynamicElementListWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.StringRenderable;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -12,7 +11,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class MaterialisationOverridesListWidget extends DynamicElementListWidget<MaterialisationOverridesListWidget.Entry> {
-    
     public MaterialisationOverridesListWidget(MinecraftClient client, int width, int height, int top, int bottom, Identifier backgroundLocation) {
         super(client, width, height, top, bottom, backgroundLocation);
     }
@@ -31,15 +29,17 @@ public class MaterialisationOverridesListWidget extends DynamicElementListWidget
     public int addItem(Entry item) {
         return super.addItem(item);
     }
-    
+
+    @SuppressWarnings("unused")
     public void clearItemsPublic() {
         clearItems();
     }
     
+    @SuppressWarnings("CanBeFinal")
     public static class TextEntry extends MaterialisationOverridesListWidget.Entry {
-        protected StringRenderable s;
+        protected Text s;
         
-        public TextEntry(StringRenderable text) {
+        public TextEntry(Text text) {
             this.s = text;
         }
         

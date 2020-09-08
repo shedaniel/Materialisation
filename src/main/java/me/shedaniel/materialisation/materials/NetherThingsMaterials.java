@@ -11,6 +11,7 @@ public class NetherThingsMaterials implements DefaultMaterialSupplier {
     @Override
     public List<MaterialsPack> getMaterialPacks() {
         try {
+            //noinspection unchecked,rawtypes
             return (List) Class.forName("me.shedaniel.materialisation.materials.NetherThingsMaterialsGetter").getDeclaredMethod("get").invoke(null);
         } catch (Exception e) {
             e.printStackTrace();

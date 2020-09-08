@@ -31,7 +31,8 @@ public class ResettableSimpleRegistry<T> extends MutableRegistry<T> {
     public ResettableSimpleRegistry(String id) {
         super(RegistryKey.ofRegistry(new Identifier(ModReference.MOD_ID, id)), Lifecycle.stable());
     }
-    
+
+    @SuppressWarnings("unused")
     public ResettableSimpleRegistry(RegistryKey<Registry<T>> registryKey, Lifecycle lifecycle) {
         super(registryKey, lifecycle);
     }
@@ -44,8 +45,9 @@ public class ResettableSimpleRegistry<T> extends MutableRegistry<T> {
         randomEntries = null;
         nextId = 0;
     }
-    
-    public <V extends T> V set(int rawId, RegistryKey<T> key, V entry) {
+
+    @Override
+    public <V extends T> V set(int rawId, RegistryKey<T> key, V entry, Lifecycle lifecycle) {
         this.indexedEntries.put(entry, rawId);
         Validate.notNull(key);
         Validate.notNull(entry);
@@ -62,9 +64,10 @@ public class ResettableSimpleRegistry<T> extends MutableRegistry<T> {
         
         return entry;
     }
-    
-    public <V extends T> V add(RegistryKey<T> key, V entry) {
-        return this.set(this.nextId, key, entry);
+
+    @Override
+    public <V extends T> V add(RegistryKey<T> key, V entry, Lifecycle lifecycle) {
+        return this.set(this.nextId, key, entry, lifecycle);
     }
     
     @Nullable
@@ -77,7 +80,7 @@ public class ResettableSimpleRegistry<T> extends MutableRegistry<T> {
     }
     
     public int getRawId(@Nullable T entry) {
-        return this.indexedEntries.getId(entry);
+        return this.indexedEntries.getRawId(entry);
     }
     
     @Nullable
@@ -98,7 +101,17 @@ public class ResettableSimpleRegistry<T> extends MutableRegistry<T> {
     public T get(@Nullable Identifier id) {
         return this.entries.get(id);
     }
-    
+
+    @Override
+    protected Lifecycle method_31139(T object) {
+        return null;
+    }
+
+    @Override
+    public Lifecycle method_31138() {
+        return null;
+    }
+
     public Optional<T> getOrEmpty(@Nullable Identifier id) {
         return Optional.ofNullable(this.entries.get(id));
     }
@@ -112,6 +125,7 @@ public class ResettableSimpleRegistry<T> extends MutableRegistry<T> {
     }
     
     @Nullable
+    @SuppressWarnings("unused")
     public T getRandom(Random random) {
         if (this.randomEntries == null) {
             Collection<T> collection = this.entries.values();
@@ -121,23 +135,27 @@ public class ResettableSimpleRegistry<T> extends MutableRegistry<T> {
             
             this.randomEntries = collection.toArray(new Object[0]);
         }
-        
+
+        //noinspection unchecked
         return (T) Util.getRandom(this.randomEntries, random);
     }
     
     public boolean containsId(Identifier id) {
         return this.entries.containsKey(id);
     }
-    
-    public boolean containsId(int id) {
-        return this.indexedEntries.containsId(id);
-    }
-    
+
+    @SuppressWarnings("unused")
     public boolean isLoaded(RegistryKey<T> registryKey) {
         return this.loadedKeys.contains(registryKey);
     }
-    
+
+    @SuppressWarnings("unused")
     public void markLoaded(RegistryKey<T> registryKey) {
         this.loadedKeys.add(registryKey);
+    }
+
+    @Override
+    public <V extends T> V method_31062(OptionalInt optionalInt, RegistryKey<T> registryKey, V object, Lifecycle lifecycle) {
+        return null;
     }
 }

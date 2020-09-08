@@ -39,9 +39,7 @@ public abstract class MixinBlock {
                             recipe -> recipe.getPreviewInputs().get(0).test(itemStack)
                     ).findFirst();
                     int finalI = i;
-                    first.ifPresent(recipe -> {
-                        outputStacks.set(finalI, recipe.getOutput().copy());
-                    });
+                    first.ifPresent(recipe -> outputStacks.set(finalI, recipe.getOutput().copy()));
                 }
                 cir.setReturnValue(outputStacks);
             }

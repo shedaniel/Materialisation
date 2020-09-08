@@ -96,8 +96,7 @@ public class MaterialisationREIPlugin implements REIPluginV0 {
         }
         return l;
     }
-    
-    @SuppressWarnings("UnstableApiUsage")
+
     @Override
     public void registerEntries(EntryRegistry entryRegistry) {
         List<EntryStack> handles = Lists.newArrayList();
@@ -122,16 +121,14 @@ public class MaterialisationREIPlugin implements REIPluginV0 {
             hammerHeads.add(EntryStack.create(MaterialisationUtils.createHammerHead(material)));
             megaaxeHeads.add(EntryStack.create(MaterialisationUtils.createMegaAxeHead(material)));
         });
-        PartMaterials.getKnownMaterials().forEach(firstMaterial -> {
-            PartMaterials.getKnownMaterials().forEach(secondMaterial -> {
-                pickaxes.add(EntryStack.create(MaterialisationUtils.createPickaxe(firstMaterial, secondMaterial)));
-                axes.add(EntryStack.create(MaterialisationUtils.createAxe(firstMaterial, secondMaterial)));
-                shovels.add(EntryStack.create(MaterialisationUtils.createShovel(firstMaterial, secondMaterial)));
-                swords.add(EntryStack.create(MaterialisationUtils.createSword(firstMaterial, secondMaterial)));
-                hammers.add(EntryStack.create(MaterialisationUtils.createHammer(firstMaterial, secondMaterial)));
-                megaaxes.add(EntryStack.create(MaterialisationUtils.createMegaAxe(firstMaterial, secondMaterial)));
-            });
-        });
+        PartMaterials.getKnownMaterials().forEach(firstMaterial -> PartMaterials.getKnownMaterials().forEach(secondMaterial -> {
+            pickaxes.add(EntryStack.create(MaterialisationUtils.createPickaxe(firstMaterial, secondMaterial)));
+            axes.add(EntryStack.create(MaterialisationUtils.createAxe(firstMaterial, secondMaterial)));
+            shovels.add(EntryStack.create(MaterialisationUtils.createShovel(firstMaterial, secondMaterial)));
+            swords.add(EntryStack.create(MaterialisationUtils.createSword(firstMaterial, secondMaterial)));
+            hammers.add(EntryStack.create(MaterialisationUtils.createHammer(firstMaterial, secondMaterial)));
+            megaaxes.add(EntryStack.create(MaterialisationUtils.createMegaAxe(firstMaterial, secondMaterial)));
+        }));
         for (EntryStack stack : handles)
             stack.setting(EntryStack.Settings.CHECK_TAGS, EntryStack.Settings.TRUE);
         for (EntryStack stack : pickaxeHeads)

@@ -13,6 +13,7 @@ import net.minecraft.text.TranslatableText;
 import java.util.List;
 import java.util.regex.Pattern;
 
+@SuppressWarnings("CanBeFinal")
 public class StringEditEntry extends MaterialisationCreateOverrideListWidget.EditEntry {
     
     private String defaultValue;
@@ -38,9 +39,7 @@ public class StringEditEntry extends MaterialisationCreateOverrideListWidget.Edi
         };
         buttonWidget.setMaxLength(1000);
         buttonWidget.setText(defaultValue);
-        buttonWidget.setChangedListener(ss -> {
-            StringEditEntry.this.setEdited(!ss.equals(defaultValue));
-        });
+        buttonWidget.setChangedListener(ss -> StringEditEntry.this.setEdited(!ss.equals(defaultValue)));
         this.resetButton = new ButtonWidget(0, 0, MinecraftClient.getInstance().textRenderer.getWidth(new TranslatableText("text.cloth-config.reset_value")) + 6, 20, new TranslatableText("text.cloth-config.reset_value"), widget -> {
             buttonWidget.setText(StringEditEntry.this.defaultValue);
             StringEditEntry.this.setEdited(false);

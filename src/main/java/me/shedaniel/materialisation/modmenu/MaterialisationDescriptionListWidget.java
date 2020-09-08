@@ -10,7 +10,7 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
-import net.minecraft.text.StringRenderable;
+import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@SuppressWarnings({"unused", "CanBeFinal"})
 public class MaterialisationDescriptionListWidget extends DynamicElementListWidget<MaterialisationDescriptionListWidget.Entry> {
     public MaterialisationDescriptionListWidget(MinecraftClient client, int width, int height, int top, int bottom, Identifier backgroundLocation) {
         super(client, width, height, top, bottom, backgroundLocation);
@@ -40,7 +41,7 @@ public class MaterialisationDescriptionListWidget extends DynamicElementListWidg
     public int addItem(Entry item) {
         return super.addItem(item);
     }
-    
+
     public void clearItemsPublic() {
         clearItems();
     }
@@ -56,13 +57,13 @@ public class MaterialisationDescriptionListWidget extends DynamicElementListWidg
         addItem(new TextEntry(new TranslatableText("config.text.materialisation.version", packInfo.getVersion().getFriendlyString()).formatted(Formatting.GRAY)));
         addItem(new TextEntry(new TranslatableText("config.text.materialisation.identifier", packInfo.getIdentifier().toString()).formatted(Formatting.GRAY)));
         if (!packInfo.getDescription().isEmpty()) {
-            for (StringRenderable text : MinecraftClient.getInstance().textRenderer.wrapStringToWidthAsList(new LiteralText(packInfo.getDescription()), getItemWidth())) {
-                addItem(new TextEntry(MaterialisationCloth.color(text, Formatting.GRAY)));
+            for (OrderedText text : MinecraftClient.getInstance().textRenderer.wrapLines(new LiteralText(packInfo.getDescription()), getItemWidth())) {
+                addItem(new TextEntry(MaterialisationCloth.color((Text)text, Formatting.GRAY)));
             }
         }
         addItem(new EmptyEntry(11));
-        for (StringRenderable text : MinecraftClient.getInstance().textRenderer.wrapStringToWidthAsList(new TranslatableText("config.text.materialisation.materials", materialsPack.getKnownMaterials().count(), materialsPack.getKnownMaterials().map(PartMaterial::getMaterialTranslateKey).map(I18n::translate).collect(Collectors.joining(", "))), getItemWidth())) {
-            addItem(new TextEntry(MaterialisationCloth.color(text, Formatting.GRAY)));
+        for (OrderedText text : MinecraftClient.getInstance().textRenderer.wrapLines((new TranslatableText("config.text.materialisation.materials", materialsPack.getKnownMaterials().count(), materialsPack.getKnownMaterials().map(PartMaterial::getMaterialTranslateKey).map(I18n::translate).collect(Collectors.joining(", ")))), getItemWidth())) {
+            addItem(new TextEntry(MaterialisationCloth.color((Text)text, Formatting.GRAY)));
         }
     }
     
@@ -91,7 +92,7 @@ public class MaterialisationDescriptionListWidget extends DynamicElementListWidg
                ((Math.max((int) (g * 0.7), 0) & 0xFF) << 8) |
                ((Math.max((int) (b * 0.7), 0) & 0xFF));
     }
-    
+
     public static class ColorEntry extends Entry {
         private Text s;
         private int color;
@@ -119,15 +120,15 @@ public class MaterialisationDescriptionListWidget extends DynamicElementListWidg
     }
     
     public static class TitleMaterialOverrideEntry extends Entry {
+        @SuppressWarnings("CanBeFinal")
         protected Text s;
+        @SuppressWarnings("CanBeFinal")
         private ButtonWidget overrideButton;
         
         public TitleMaterialOverrideEntry(MaterialisationMaterialsScreen og, PartMaterial partMaterial, Text text) {
             this.s = text;
             Text btnText = new TranslatableText("config.button.materialisation.create_override");
-            overrideButton = new ButtonWidget(0, 0, MinecraftClient.getInstance().textRenderer.getWidth(btnText) + 10, 20, btnText, widget -> {
-                MinecraftClient.getInstance().openScreen(new MaterialisationCreateOverrideNameScreen(og, MinecraftClient.getInstance().currentScreen, partMaterial));
-            });
+            overrideButton = new ButtonWidget(0, 0, MinecraftClient.getInstance().textRenderer.getWidth(btnText) + 10, 20, btnText, widget -> MinecraftClient.getInstance().openScreen(new MaterialisationCreateOverrideNameScreen(og, MinecraftClient.getInstance().currentScreen, partMaterial)));
         }
         
         @Override
@@ -150,9 +151,10 @@ public class MaterialisationDescriptionListWidget extends DynamicElementListWidg
     }
     
     public static class TextEntry extends Entry {
-        protected StringRenderable s;
+        @SuppressWarnings("CanBeFinal")
+        protected Text s;
         
-        public TextEntry(StringRenderable text) {
+        public TextEntry(Text text) {
             this.s = text;
         }
         
@@ -173,6 +175,7 @@ public class MaterialisationDescriptionListWidget extends DynamicElementListWidg
     }
     
     public static class EmptyEntry extends Entry {
+        @SuppressWarnings("CanBeFinal")
         private int height;
         
         public EmptyEntry(int height) {
