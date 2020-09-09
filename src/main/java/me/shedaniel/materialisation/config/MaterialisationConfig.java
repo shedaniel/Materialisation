@@ -2,14 +2,12 @@ package me.shedaniel.materialisation.config;
 
 import me.shedaniel.materialisation.api.BetterIngredient;
 import me.shedaniel.materialisation.api.PartMaterial;
+import me.shedaniel.materialisation.api.ToolType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @SuppressWarnings("ALL")
 public class MaterialisationConfig {
@@ -50,37 +48,26 @@ public class MaterialisationConfig {
     }
     
     public static class ConfigMaterial implements PartMaterial {
-        @SuppressWarnings("CanBeFinal")
         public boolean enabled = true;
-        @SuppressWarnings("CanBeFinal")
         public String toolColor;
         // Will be rounded down
-        @SuppressWarnings("CanBeFinal")
         public double toolDurability;
         // Will be rounded down
-        @SuppressWarnings("CanBeFinal")
         public double miningLevel;
         // Will be rounded down
-        @SuppressWarnings("CanBeFinal")
         public double enchantability;
-        @SuppressWarnings("CanBeFinal")
         public double durabilityMultiplier;
-        @SuppressWarnings("CanBeFinal")
         public double breakingSpeedMultiplier;
-        @SuppressWarnings("CanBeFinal")
         public double toolSpeed;
-        @SuppressWarnings("CanBeFinal")
         public double attackDamage;
-        @SuppressWarnings("CanBeFinal")
         public String name;
         public String materialTranslationKey;
-        @SuppressWarnings("CanBeFinal")
         public boolean bright;
-        @SuppressWarnings("CanBeFinal")
         public List<ConfigIngredients> ingredients;
         // Will be rounded down
-        @SuppressWarnings("CanBeFinal")
         public double fullAmount;
+        public Map<ToolType, Identifier> texturedHeadIdentifiers = new HashMap<>();
+        public Map<ToolType, Identifier> texturedHandleIdentifiers = new HashMap<>();
         private transient Integer color;
         private transient Map<BetterIngredient, Float> ingredientFloatMap = null;
         private transient Identifier identifierCache = null;
@@ -100,6 +87,32 @@ public class MaterialisationConfig {
             this.bright = partMaterial.isBright();
             this.ingredients = ConfigHelper.fromMap(partMaterial.getIngredientMap());
             this.fullAmount = partMaterial.getFullAmount();
+            this.texturedHeadIdentifiers = new HashMap<>(partMaterial.getTexturedHeadIdentifiers());
+            this.texturedHandleIdentifiers = new HashMap<>(partMaterial.getTexturedHandleIdentifiers());
+        }
+        
+        @Override
+        public Map<ToolType, Identifier> getTexturedHeadIdentifiers() {
+            if (texturedHeadIdentifiers == null) return Collections.emptyMap();
+            return texturedHeadIdentifiers;
+        }
+        
+        @Override
+        public Map<ToolType, Identifier> getTexturedHandleIdentifiers() {
+            if (texturedHandleIdentifiers == null) return Collections.emptyMap();
+            return texturedHandleIdentifiers;
+        }
+        
+        @Override
+        public Optional<Identifier> getTexturedHeadIdentifier(ToolType toolType) {
+            if (texturedHeadIdentifiers == null) return Optional.empty();
+            return Optional.ofNullable(texturedHeadIdentifiers.get(toolType));
+        }
+        
+        @Override
+        public Optional<Identifier> getTexturedHandleIdentifier(ToolType toolType) {
+            if (texturedHandleIdentifiers == null) return Optional.empty();
+            return Optional.ofNullable(texturedHandleIdentifiers.get(toolType));
         }
         
         @Override

@@ -13,7 +13,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.OrderedText;
-import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import org.lwjgl.opengl.GL11;
@@ -42,7 +41,7 @@ public class MaterialisationMaterialListWidget extends DynamicElementListWidget<
     public int addItem(Entry item) {
         return super.addItem(item);
     }
-
+    
     public abstract static class PackEntry extends Entry {
         private PackWidget widget;
         private ConfigPackInfo packInfo;
@@ -73,7 +72,7 @@ public class MaterialisationMaterialListWidget extends DynamicElementListWidget<
         public class PackWidget implements Element, Drawable {
             private Rect2i bounds;
             private boolean focused;
-
+            
             @Override
             public void render(MatrixStack stack, int mouseX, int mouseY, float delta) {
                 GL11.glDisable(GL11.GL_ALPHA_TEST);
@@ -83,10 +82,10 @@ public class MaterialisationMaterialListWidget extends DynamicElementListWidget<
                 Iterator<OrderedText> var7 = MinecraftClient.getInstance().textRenderer.wrapLines(new LiteralText(trimEndNewlines(packInfo.getDescription())), bounds.getWidth() - 10).stream().limit(2).iterator();
                 int int_2 = bounds.getY() + 6 + 11;
                 for (int lolWot = 0; var7.hasNext(); int_2 += 9) {
-                    Text string_2 = (Text)var7.next();
+                    OrderedText string_2 = var7.next();
                     float float_1 = (float) (bounds.getX() + 5);
                     if (MinecraftClient.getInstance().textRenderer.isRightToLeft()) {
-                        int int_5 = MinecraftClient.getInstance().textRenderer.getWidth(MinecraftClient.getInstance().textRenderer.mirror(string_2.getString()));
+                        int int_5 = MinecraftClient.getInstance().textRenderer.getWidth(string_2);
                         float_1 += (float) (bounds.getWidth() - 10 - int_5);
                     }
                     MinecraftClient.getInstance().textRenderer.draw(stack, string_2, float_1, (float) int_2, 0xEEFFFFFF);

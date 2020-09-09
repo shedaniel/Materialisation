@@ -1,5 +1,6 @@
 package me.shedaniel.materialisation.items;
 
+import com.google.common.collect.ImmutableMultimap;
 import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.api.ToolType;
 import net.fabricmc.api.EnvType;
@@ -11,6 +12,9 @@ import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.attribute.EntityAttribute;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
@@ -33,7 +37,11 @@ import static net.minecraft.util.math.Direction.Axis.*;
 public class MaterialisedHammerItem extends PickaxeItem implements MaterialisedMiningTool {
     
     public MaterialisedHammerItem(Settings settings) {
-        super(MaterialisationUtils.DUMMY_MATERIAL, 0, -3.6F, settings.maxDamage(0));
+        super(MaterialisationUtils.DUMMY_MATERIAL, 0, 0, settings.maxDamage(0));
+        
+        ImmutableMultimap.Builder<EntityAttribute, EntityAttributeModifier> builder = ImmutableMultimap.builder();
+        builder.put(EntityAttributes.GENERIC_ATTACK_SPEED, new EntityAttributeModifier(ATTACK_SPEED_MODIFIER_ID, "Tool modifier", -3.6F, EntityAttributeModifier.Operation.ADDITION));
+        this.attributeModifiers = builder.build();
     }
     
     @Nonnull
@@ -98,7 +106,7 @@ public class MaterialisedHammerItem extends PickaxeItem implements MaterialisedM
                         return true;
                     BlockPos newPos = new BlockPos(axis == X ? pos.getX() : pos.getX() + i, axis == X ? pos.getY() + i : axis == Y ? pos.getY() : pos.getY() + j, axis != Z ? pos.getZ() + j : pos.getZ());
                     BlockState newState = world.getBlockState(newPos);
-                    boolean canBreak = newState.getHardness(world, newPos) >= 0 && mainHandStack.isEffectiveOn(newState);
+                    boolean canBreak = newState.getHardness(world, newPos) >= 0 && (mainHandStack.isEffectiveOn(newState) || (!newState.isToolRequired() && mainHandStack.getMiningSpeedMultiplier(newState) > 1));
                     if (!canBreak)
                         continue;
                     // Let's break the block!

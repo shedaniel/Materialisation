@@ -40,19 +40,19 @@ public class MaterialPreparerScreen extends MaterialisingScreenBase<MaterialPrep
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (keyCode == 256) {
-            assert this.client != null;
-            assert this.client.player != null;
             this.client.player.closeHandledScreen();
             return true;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
-
+    
+    @Override
     protected void drawForeground(MatrixStack matrices, int mouseX, int mouseY) {
         RenderSystem.disableBlend();
         this.textRenderer.draw(matrices, this.title, 6f, 6f, 4210752);
     }
 
+    @Override
     protected void drawBackground(MatrixStack matrixStack, float v, int i, int i1) {
         this.client.getTextureManager().bindTexture(TEXTURE);
         this.drawTexture(matrixStack, x, y, 0, 0, this.backgroundWidth, this.backgroundHeight);

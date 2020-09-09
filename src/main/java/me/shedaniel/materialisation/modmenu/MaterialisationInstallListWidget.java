@@ -149,7 +149,7 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
             int i = 0;
             if (onlinePack.description != null)
                 for (OrderedText text : MinecraftClient.getInstance().textRenderer.wrapLines(new LiteralText(onlinePack.description), entryWidth)) {
-                    font.draw(stack, MaterialisationCloth.color((Text)text, Formatting.GRAY), x + 5, y + 7 + 9 + i * 9, 16777215);
+                    font.draw(stack, MaterialisationCloth.color(text, Formatting.GRAY), x + 5, y + 7 + 9 + i * 9, 16777215);
                     i++;
                     if (i > 1)
                         break;

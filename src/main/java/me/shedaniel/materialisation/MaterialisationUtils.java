@@ -157,9 +157,9 @@ public class MaterialisationUtils {
       speed /= 4.5f;
     }
     if (stack.getItem() == Materialisation.MATERIALISED_MEGAAXE) {
-      speed /= 6f;
+      speed /= 5.5f;
     }
-    return speed;
+    return Math.max(1.001f, speed);
   }
 
   public static int getToolMiningLevel(ItemStack stack) {

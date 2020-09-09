@@ -1,5 +1,6 @@
 package me.shedaniel.materialisation.items;
 
+import com.google.common.collect.ImmutableMultimap;
 import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.api.ToolType;
 import net.fabricmc.api.EnvType;
@@ -10,6 +11,9 @@ import net.minecraft.block.PillarBlock;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.attribute.EntityAttribute;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.AxeItem;
 import net.minecraft.item.Item;
@@ -27,9 +31,12 @@ import javax.annotation.Nonnull;
 import java.util.List;
 
 public class MaterialisedAxeItem extends AxeItem implements MaterialisedMiningTool {
-    
     public MaterialisedAxeItem(Settings settings) {
-        super(MaterialisationUtils.DUMMY_MATERIAL, 0, -3.1F, settings.maxDamage(0));
+        super(MaterialisationUtils.DUMMY_MATERIAL, 0, 0, settings.maxDamage(0));
+        
+        ImmutableMultimap.Builder<EntityAttribute, EntityAttributeModifier> builder = ImmutableMultimap.builder();
+        builder.put(EntityAttributes.GENERIC_ATTACK_SPEED, new EntityAttributeModifier(ATTACK_SPEED_MODIFIER_ID, "Tool modifier", -3.1F, EntityAttributeModifier.Operation.ADDITION));
+        this.attributeModifiers = builder.build();
     }
     
     @Nonnull
@@ -109,5 +116,4 @@ public class MaterialisedAxeItem extends AxeItem implements MaterialisedMiningTo
     public void appendTooltip(ItemStack stack, World world_1, List<Text> list_1, TooltipContext tooltipContext_1) {
         MaterialisationUtils.appendToolTooltip(stack, this, world_1, list_1, tooltipContext_1);
     }
-    
 }

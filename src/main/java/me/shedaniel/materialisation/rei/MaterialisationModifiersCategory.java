@@ -11,9 +11,7 @@ import me.shedaniel.rei.gui.widget.Widget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.resource.language.I18n;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.OrderedText;
-import net.minecraft.text.Text;
+import net.minecraft.text.*;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
@@ -61,8 +59,8 @@ public class MaterialisationModifiersCategory implements RecipeCategory<Material
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
         int currentY = 24;
         for (Text descLine : modifier.getModifierDescription(level)) {
-            for (OrderedText s : textRenderer.wrapLines(descLine, bounds.width - 4)) {
-                widgets.add(Widgets.createLabel(new Point(bounds.x + 2, bounds.y + currentY), MaterialisationCloth.wrap((Text)s)).leftAligned().color(0xFF404040, 0xFFBBBBBB).noShadow());
+            for (StringVisitable s : textRenderer.getTextHandler().wrapLines(descLine, bounds.width - 4, Style.EMPTY)) {
+                widgets.add(Widgets.createLabel(new Point(bounds.x + 2, bounds.y + currentY), MaterialisationCloth.wrap(s)).leftAligned().color(0xFF404040, 0xFFBBBBBB).noShadow());
                 currentY += 9;
             }
         }

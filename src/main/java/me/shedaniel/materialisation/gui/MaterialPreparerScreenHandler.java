@@ -29,7 +29,6 @@ public class MaterialPreparerScreenHandler extends AbstractMaterialisingHandlerB
         this(syncId, main, ScreenHandlerContext.EMPTY);
     }
 
-    @SuppressWarnings("unused")
     public MaterialPreparerScreenHandler(int syncId, PlayerInventory inventory, final ScreenHandlerContext context) {
         super(Materialisation.MATERIAL_PREPARER_SCREEN_HANDLER, syncId, inventory, context);
         this.addSlot(new Slot(this.main, 0, 27, 21) {
@@ -65,7 +64,8 @@ public class MaterialPreparerScreenHandler extends AbstractMaterialisingHandlerB
         for (int_4 = 0; int_4 < 9; ++int_4)
             this.addSlot(new Slot(inventory, int_4, 8 + int_4 * 18, 116));
     }
-
+    
+    @Override
     protected boolean canUse(BlockState state) {
         return state.getBlock() == Materialisation.MATERIAL_PREPARER;
     }
@@ -251,7 +251,8 @@ public class MaterialPreparerScreenHandler extends AbstractMaterialisingHandlerB
         }
         this.sendContentUpdates();
     }
-
+    
+    @Override
     @SuppressWarnings("ConstantConditions")
     public ItemStack transferSlot(PlayerEntity player, int index) {
         ItemStack itemStack1 = ItemStack.EMPTY;

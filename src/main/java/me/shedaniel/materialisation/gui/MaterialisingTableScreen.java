@@ -29,7 +29,8 @@ public class MaterialisingTableScreen extends MaterialisingScreenBase<Materialis
         super(container, inventory, title, TEXTURE);
         this.titleX = 60;
     }
-
+    
+    @Override
     protected void setup() {
         this.client.keyboard.setRepeatEvents(true);
         int x = (this.width - this.backgroundWidth) / 2;
@@ -45,20 +46,22 @@ public class MaterialisingTableScreen extends MaterialisingScreenBase<Materialis
         this.children.add(this.nameField);
         this.setInitialFocus(this.nameField);
     }
-
+    
+    @Override
     public void resize(MinecraftClient client, int width, int height) {
         String string = this.nameField.getText();
         this.init(client, width, height);
         this.nameField.setText(string);
     }
-
+    
+    @Override
     public void removed() {
         super.removed();
-        assert this.client != null;
         this.client.keyboard.setRepeatEvents(false);
         this.handler.removeListener(this);
     }
-
+    
+    @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (keyCode == 256) {
             assert this.client != null;
@@ -67,7 +70,7 @@ public class MaterialisingTableScreen extends MaterialisingScreenBase<Materialis
         }
         return this.nameField.keyPressed(keyCode, scanCode, modifiers) && this.nameField.isActive() || super.keyPressed(keyCode, scanCode, modifiers);
     }
-
+    
     private void onRenamed(String name) {
         if (!name.isEmpty()) {
             String string = name;
@@ -75,23 +78,20 @@ public class MaterialisingTableScreen extends MaterialisingScreenBase<Materialis
             if (slot_1 != null && slot_1.hasStack() && !slot_1.getStack().hasCustomName() && name.equals(slot_1.getStack().getName().getString())) {
                 string = "";
             }
-
+            
             this.handler.setNewItemName(string);
             PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
             buf.writeString(string);
             ClientSidePacketRegistry.INSTANCE.sendToServer(Materialisation.MATERIALISING_TABLE_RENAME, buf);
         }
     }
-
+    
     protected void drawForeground(MatrixStack matrixStack, int mouseX, int mouseY) {
         RenderSystem.disableBlend();
         this.textRenderer.draw(matrixStack, this.title, 6f, 6f, 4210752);
     }
-
-    public void renderForeground(MatrixStack matrixStack, int mouseY, int i, float f) {
-        this.nameField.render(matrixStack, mouseY, i, f);
-    }
-
+    
+    @Override
     protected void drawBackground(MatrixStack matrixStack, float delta, int mouseX, int mouseY) {
         this.client.getTextureManager().bindTexture(TEXTURE);
         int posX = x;
@@ -101,8 +101,10 @@ public class MaterialisingTableScreen extends MaterialisingScreenBase<Materialis
         if ((this.handler.getSlot(0).hasStack() || this.handler.getSlot(1).hasStack()) && !this.handler.getSlot(2).hasStack()) {
             this.drawTexture(matrixStack, posX + 99, posY + 45, this.backgroundWidth, 0, 28, 21);
         }
+        this.nameField.render(matrixStack, mouseY, mouseY, delta);
     }
-
+    
+    @Override
     public void onSlotUpdate(ScreenHandler handler, int slotId, ItemStack stack) {
         if (slotId == 2) {
             this.nameField.setChangedListener(null);

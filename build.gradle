@@ -1,5 +1,5 @@
 plugins {
-    id "fabric-loom" version "0.4-SNAPSHOT"
+    id "fabric-loom" version "0.5-SNAPSHOT"
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -8,6 +8,10 @@ targetCompatibility = JavaVersion.VERSION_1_8
 group = project.maven_group
 version = project.mod_version
 archivesBaseName = project.archives_base_name
+
+repositories {
+    maven { url 'https://raw.githubusercontent.com/Devan-Kerman/Devan-Repo/master/' }
+}
 
 minecraft {
     accessWidener = file("src/main/resources/materialisation.accesswidener")
@@ -42,6 +46,8 @@ dependencies {
     modImplementation("me.shedaniel:RoughlyEnoughItems:${project.rei}") {
         exclude(group: "net.fabricmc.fabric-api")
     }
+    modImplementation group: 'net.devtech', name: 'arrp', version: '0.2.6'
+    include group: 'net.devtech', name: 'arrp', version: '0.2.6'
 }
 
 

@@ -52,7 +52,9 @@ public class MaterialPreparerBlock extends HorizontalFacingBlock implements Name
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         builder.add(FACING);
     }
-
+    
+    @SuppressWarnings("deprecation")
+    @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hitResult) {
         if (world.isClient) {
             return ActionResult.SUCCESS;
@@ -62,7 +64,9 @@ public class MaterialPreparerBlock extends HorizontalFacingBlock implements Name
             return ActionResult.CONSUME;
         }
     }
-
+    
+    @SuppressWarnings("deprecation")
+    @Override
     public NamedScreenHandlerFactory createScreenHandlerFactory(BlockState state, World world, BlockPos pos) {
         return new SimpleNamedScreenHandlerFactory((i, playerInventory, playerEntity) -> {
             return new MaterialPreparerScreenHandler(i, playerInventory, ScreenHandlerContext.create(world, pos));

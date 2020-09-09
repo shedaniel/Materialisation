@@ -1,7 +1,12 @@
 package me.shedaniel.materialisation.mixin;
 
+import com.google.common.collect.Multimap;
 import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.items.MaterialisedMiningTool;
+import net.fabricmc.fabric.impl.tool.attribute.AttributeManager;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.attribute.EntityAttribute;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -22,7 +27,8 @@ public abstract class MixinItemStack {
     @Shadow
     public abstract CompoundTag getTag();
     
-    @Shadow public abstract boolean hasEnchantments();
+    @Shadow
+    public abstract boolean hasEnchantments();
     
     /**
      * Disable italic on tools
@@ -67,6 +73,13 @@ public abstract class MixinItemStack {
             int maxDurability = MaterialisationUtils.getToolMaxDurability((ItemStack) (Object) this);
             MaterialisationUtils.setToolDurability((ItemStack) (Object) this, maxDurability - MathHelper.clamp(damage, 0, maxDurability));
             info.cancel();
+        }
+    }
+    
+    @Inject(method = "getAttributeModifiers", at = @At("RETURN"), cancellable = true)
+    public void getAttributeModifiers(EquipmentSlot equipmentSlot, CallbackInfoReturnable<Multimap<EntityAttribute, EntityAttributeModifier>> cir) {
+        if (getItem() instanceof MaterialisedMiningTool) {
+            cir.setReturnValue(AttributeManager.mergeAttributes(cir.getReturnValue(), ((MaterialisedMiningTool) getItem()).getModifiers(equipmentSlot, (ItemStack) (Object) this)));
         }
     }
     

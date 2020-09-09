@@ -69,7 +69,8 @@ public class MaterialisingTableScreenHandler extends AbstractMaterialisingHandle
             this.addSlot(new Slot(inventory, k, 8 + k * 18, 142));
         }
     }
-
+    
+    @Override
     protected boolean canUse(BlockState state) {
         return state.getBlock() == Materialisation.MATERIALISING_TABLE;
     }
@@ -91,7 +92,8 @@ public class MaterialisingTableScreenHandler extends AbstractMaterialisingHandle
         }
         return stack;
     }
-
+    
+    @Override
     public void updateResult() {
         ItemStack first = this.main.getStack(0);
         ItemStack second = this.main.getStack(1);
@@ -315,7 +317,8 @@ public class MaterialisingTableScreenHandler extends AbstractMaterialisingHandle
         }
         this.sendContentUpdates();
     }
-
+    
+    @Override
     public ItemStack transferSlot(PlayerEntity player, int index) {
         ItemStack itemStack1 = ItemStack.EMPTY;
         Slot slot1 = this.slots.get(index);

@@ -1,2 +1,6 @@
 accessWidener	v1  named
+accessible field net/minecraft/item/MiningToolItem attributeModifiers Lcom/google/common/collect/Multimap;
+mutable field net/minecraft/item/MiningToolItem attributeModifiers Lcom/google/common/collect/Multimap;
+accessible field net/minecraft/item/SwordItem field_23745 Lcom/google/common/collect/Multimap;
+mutable field net/minecraft/item/SwordItem field_23745 Lcom/google/common/collect/Multimap;
 accessible method net/minecraft/recipe/RecipeManager getAllOfType (Lnet/minecraft/recipe/RecipeType;)Ljava/util/Map;
