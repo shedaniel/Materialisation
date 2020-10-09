@@ -57,7 +57,7 @@ public class DefaultMaterials implements DefaultMaterialSupplier {
                 .aIngr(fromItem(Items.DIAMOND), 2)
                 .aIngr(fromItem(Items.DIAMOND_BLOCK), 18)
                 .autoTex()
-                .wAtta(3).setFullAmount(250).setBright(true).setToolSpeed(9f).wDuraMulti(0.8f).wSpeedMulti(1.0f).wColor(0xff68e8d9).setToolDurability(2031);
+                .wAtta(3).setFullAmount(250).setBright(true).setToolSpeed(9f).wDuraMulti(0.8f).wSpeedMulti(1.0f).wColor(0xff68e8d9).setToolDurability(2031).setMiningLevel(3);
     }
     
     @Override
