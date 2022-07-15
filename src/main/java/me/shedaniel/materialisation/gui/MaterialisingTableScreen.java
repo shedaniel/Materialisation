@@ -104,7 +104,7 @@ public class MaterialisingTableScreen extends MaterialisingScreenBase<Materialis
         if ((this.handler.getSlot(0).hasStack() || this.handler.getSlot(1).hasStack()) && !this.handler.getSlot(2).hasStack()) {
             this.drawTexture(matrixStack, posX + 99, posY + 45, this.backgroundWidth, 0, 28, 21);
         }
-        this.nameField.render(matrixStack, mouseY, mouseY, delta);
+        this.nameField.render(matrixStack, mouseX, mouseY, delta);
     }
     
     @Override
