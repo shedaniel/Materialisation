@@ -8,25 +8,28 @@ import me.shedaniel.rei.api.common.util.EntryIngredients;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.item.ItemStack;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("CanBeFinal")
 public class MaterialPreparerDisplay implements Display {
 
-    private List<EntryIngredient> inputs;
-    private List<EntryIngredient> outputs;
+    private final List<EntryIngredient> inputs;
+    private final List<EntryIngredient> outputs;
 
-    private EntryStack<?> first;
-    private EntryStack<?> second;
-    private EntryStack<?> result;
+    private final EntryStack<?> first;
+    private final List<EntryStack<?>> second;
+    private final EntryStack<?> result;
 
     
-    public MaterialPreparerDisplay(ItemStack patternStack, List<ItemStack> inputs, ItemStack outputStack) {
-        inputs.add(patternStack);
-        this.inputs = MaterialisationREIPlugin.map(inputs, EntryIngredients::of);
+    public MaterialPreparerDisplay(ItemStack patternStack, List<ItemStack> secondInputs, ItemStack outputStack) {
+        List<ItemStack> inputStacks = new ArrayList<>();
+        inputStacks.add(patternStack);
+        inputStacks.addAll(secondInputs);
+        this.inputs = MaterialisationREIPlugin.map(inputStacks, EntryIngredients::of);
         this.outputs = MaterialisationREIPlugin.stackToIngredients(outputStack);
-        this.first = EntryStacks.of(inputs.get(0));
-        this.second = EntryStacks.of(inputs.get(1));
+        this.first = EntryStacks.of(patternStack);
+        this.second = MaterialisationREIPlugin.map(secondInputs, EntryStacks::of);
         this.result = EntryStacks.of(outputStack);
     }
 
@@ -34,7 +37,7 @@ public class MaterialPreparerDisplay implements Display {
         return first;
     }
 
-    public EntryStack<?> getSecond() {
+    public List<EntryStack<?>> getSecond() {
         return second;
     }
 
@@ -47,6 +50,7 @@ public class MaterialPreparerDisplay implements Display {
     }
 
     public List<EntryIngredient> getOutputs() {
+        if (outputs.isEmpty()) outputs.add(EntryIngredients.of(ItemStack.EMPTY));
         return outputs;
     }
 

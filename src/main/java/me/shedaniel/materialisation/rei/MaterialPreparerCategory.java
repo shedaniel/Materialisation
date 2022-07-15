@@ -16,7 +16,6 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
-import java.util.Collection;
 import java.util.List;
 
 public class MaterialPreparerCategory implements DisplayCategory<MaterialPreparerDisplay> {
@@ -57,7 +56,7 @@ public class MaterialPreparerCategory implements DisplayCategory<MaterialPrepare
         List<Widget> widgets = Lists.newArrayList(Widgets.createCategoryBase(bounds));
         widgets.add(Widgets.createTexturedWidget(DefaultPlugin.INFO.getIdentifier(), startPoint.x, startPoint.y, 0, 221, 82, 26));
         widgets.add(Widgets.createSlot(new Point(startPoint.x - 18, startPoint.y + 5)).entry(display.getFirst()).markInput());
-        widgets.add(Widgets.createSlot(new Point(startPoint.x + 4, startPoint.y + 5)).entry(display.getSecond()).markInput());
+        widgets.add(Widgets.createSlot(new Point(startPoint.x + 4, startPoint.y + 5)).entries(display.getSecond()).markInput());
         widgets.add(Widgets.createSlot(new Point(startPoint.x + 61, startPoint.y + 5)).entry(display.getResult()).disableBackground().markOutput());
         return widgets;
     }
