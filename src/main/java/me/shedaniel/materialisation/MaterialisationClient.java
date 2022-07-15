@@ -27,6 +27,7 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.ModelPredicateProvider;
+import net.minecraft.client.item.UnclampedModelPredicateProvider;
 import net.minecraft.client.render.model.*;
 import net.minecraft.client.render.model.json.JsonUnbakedModel;
 import net.minecraft.client.render.model.json.ModelOverrideList;
@@ -74,7 +75,7 @@ public class MaterialisationClient implements ClientModInitializer {
                 Materialisation.PICKAXE_HEAD,
                 Materialisation.AXE_HEAD
         };
-        ModelPredicateProvider brightProvider = (itemStack, world, livingEntity) -> MaterialisationUtils.isHandleBright(itemStack) ? 1 : 0;
+        UnclampedModelPredicateProvider brightProvider = (itemStack, world, livingEntity, seed) -> MaterialisationUtils.isHandleBright(itemStack) ? 1 : 0;
         ColorProviderRegistry.ITEM.register(MaterialisationUtils::getItemLayerColor, colorableToolParts);
         for (Item colorableToolPart : colorableToolParts) {
             FabricModelPredicateProviderRegistry.register(colorableToolPart, new Identifier(ModReference.MOD_ID, "bright"), brightProvider);
@@ -185,8 +186,8 @@ public class MaterialisationClient implements ClientModInitializer {
         @Override
         public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
             BakedModelManager modelManager = MinecraftClient.getInstance().getBakedModelManager();
-            PartMaterial handleMaterial = MaterialisationUtils.getMatFromString(stack.getOrCreateTag().getString("mt_0_material")).orElseGet(() -> PartMaterials.getKnownMaterials().findFirst().get());
-            PartMaterial headMaterial = MaterialisationUtils.getMatFromString(stack.getOrCreateTag().getString("mt_1_material")).orElseGet(() -> PartMaterials.getKnownMaterials().findFirst().get());
+            PartMaterial handleMaterial = MaterialisationUtils.getMatFromString(stack.getOrCreateNbt().getString("mt_0_material")).orElseGet(() -> PartMaterials.getKnownMaterials().findFirst().get());
+            PartMaterial headMaterial = MaterialisationUtils.getMatFromString(stack.getOrCreateNbt().getString("mt_1_material")).orElseGet(() -> PartMaterials.getKnownMaterials().findFirst().get());
             boolean headBright = headMaterial.isBright();
             int headColor = headMaterial.getToolColor();
             Optional<Identifier> texturedHandleIdentifier = handleMaterial.getTexturedHandleIdentifier(tool.getToolType());
@@ -265,9 +266,9 @@ public class MaterialisationClient implements ClientModInitializer {
         public boolean isBuiltin() {
             return false;
         }
-        
+
         @Override
-        public Sprite getSprite() {
+        public Sprite getParticleSprite() {
             return null;
         }
         

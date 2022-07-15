@@ -6,6 +6,7 @@ import me.shedaniel.materialisation.api.PartMaterial;
 import me.shedaniel.materialisation.config.ConfigPackInfo;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
@@ -112,7 +113,12 @@ public class MaterialisationDescriptionListWidget extends DynamicElementListWidg
         public int getItemHeight() {
             return 11;
         }
-        
+
+        @Override
+        public List<? extends Selectable> narratables() {
+            return null;
+        }
+
         @Override
         public List<? extends Element> children() {
             return Collections.emptyList();
@@ -128,7 +134,7 @@ public class MaterialisationDescriptionListWidget extends DynamicElementListWidg
         public TitleMaterialOverrideEntry(MaterialisationMaterialsScreen og, PartMaterial partMaterial, Text text) {
             this.s = text;
             Text btnText = new TranslatableText("config.button.materialisation.create_override");
-            overrideButton = new ButtonWidget(0, 0, MinecraftClient.getInstance().textRenderer.getWidth(btnText) + 10, 20, btnText, widget -> MinecraftClient.getInstance().openScreen(new MaterialisationCreateOverrideNameScreen(og, MinecraftClient.getInstance().currentScreen, partMaterial)));
+            overrideButton = new ButtonWidget(0, 0, MinecraftClient.getInstance().textRenderer.getWidth(btnText) + 10, 20, btnText, widget -> MinecraftClient.getInstance().setScreen(new MaterialisationCreateOverrideNameScreen(og, MinecraftClient.getInstance().currentScreen, partMaterial)));
         }
         
         @Override
@@ -143,7 +149,12 @@ public class MaterialisationDescriptionListWidget extends DynamicElementListWidg
         public int getItemHeight() {
             return 21;
         }
-        
+
+        @Override
+        public List<? extends Selectable> narratables() {
+            return null;
+        }
+
         @Override
         public List<? extends Element> children() {
             return Collections.singletonList(overrideButton);
@@ -167,7 +178,12 @@ public class MaterialisationDescriptionListWidget extends DynamicElementListWidg
         public int getItemHeight() {
             return 11;
         }
-        
+
+        @Override
+        public List<? extends Selectable> narratables() {
+            return null;
+        }
+
         @Override
         public List<? extends Element> children() {
             return Collections.emptyList();
@@ -191,7 +207,12 @@ public class MaterialisationDescriptionListWidget extends DynamicElementListWidg
         public int getItemHeight() {
             return height;
         }
-        
+
+        @Override
+        public List<? extends Selectable> narratables() {
+            return null;
+        }
+
         @Override
         public List<? extends Element> children() {
             return Collections.emptyList();

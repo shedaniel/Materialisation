@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -50,8 +51,9 @@ public class MaterialisingScreenBase<T extends AbstractMaterialisingHandlerBase>
     
     @Override
     protected void drawBackground(MatrixStack matrices, float delta, int mouseX, int mouseY) {
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.client.getTextureManager().bindTexture(this.texture);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderTexture(0, this.texture);
         int i = (this.width - this.backgroundWidth) / 2;
         int j = (this.height - this.backgroundHeight) / 2;
         this.drawTexture(matrices, i, j, 0, 0, this.backgroundWidth, this.backgroundHeight);
@@ -60,11 +62,14 @@ public class MaterialisingScreenBase<T extends AbstractMaterialisingHandlerBase>
             this.drawTexture(matrices, i + 99, j + 45, this.backgroundWidth, 0, 28, 21);
         }
     }
-    
+
+/*
     @Override
-    public void onHandlerRegistered(ScreenHandler handler, DefaultedList<ItemStack> stacks) {
+    public void onHandlerRegistered(ScreenHandler handler) {
         this.onSlotUpdate(handler, 0, handler.getSlot(0).getStack());
     }
+
+ */
     
     @Override
     public void onPropertyUpdate(ScreenHandler handler, int property, int value) {

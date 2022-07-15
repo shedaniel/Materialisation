@@ -5,6 +5,7 @@ import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.items.MaterialisedMiningTool;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
@@ -39,7 +40,7 @@ public class RealItemRenderer {
     
     @SuppressWarnings("SameParameterValue")
     private static void renderGuiQuad(BufferBuilder bufferBuilder_1, int int_1, int int_2, int int_3, int int_4, int int_5, int int_6, int int_7, int int_8) {
-        bufferBuilder_1.begin(7, VertexFormats.POSITION_COLOR);
+        bufferBuilder_1.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
         bufferBuilder_1.vertex(int_1, int_2, 0.0D).color(int_5, int_6, int_7, int_8).next();
         bufferBuilder_1.vertex(int_1, int_2 + int_4, 0.0D).color(int_5, int_6, int_7, int_8).next();
         bufferBuilder_1.vertex(int_1 + int_3, int_2 + int_4, 0.0D).color(int_5, int_6, int_7, int_8).next();

@@ -52,13 +52,13 @@ public abstract class AbstractMaterialisingHandlerBase extends ScreenHandler {
     public void close(PlayerEntity player) {
         super.close(player);
         this.context.run((world, blockPos) -> {
-            this.dropInventory(player, world, this.main);
+            this.dropInventory(player, this.main);
         });
     }
     
     @Override
     public boolean canUse(PlayerEntity player) {
-        return this.context.run((world, blockPos) -> {
+        return this.context.get((world, blockPos) -> {
             return this.canUse(world.getBlockState(blockPos)) && player.squaredDistanceTo((double) blockPos.getX() + 0.5D, (double) blockPos.getY() + 0.5D, (double) blockPos.getZ() + 0.5D) <= 64.0D;
         }, true);
     }
@@ -79,7 +79,7 @@ public abstract class AbstractMaterialisingHandlerBase extends ScreenHandler {
                     return ItemStack.EMPTY;
                 }
                 
-                slot.onStackChanged(itemStack2, itemStack);
+                slot.onQuickTransfer(itemStack2, itemStack);
             } else if (index != 0 && index != 1) {
                 if (index < 39) {
                     int i = this.returnFalse(itemStack) ? 1 : 0;

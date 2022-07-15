@@ -53,7 +53,7 @@ public class MaterialisedPickaxeItem extends PickaxeItem implements Materialised
     
     @Override
     public boolean postHit(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-        if (!target.world.isClient && (!(target instanceof PlayerEntity) || !((PlayerEntity) target).abilities.creativeMode)) {
+        if (!target.world.isClient && (!(target instanceof PlayerEntity) || !((PlayerEntity) target).getAbilities().creativeMode)) {
             if (MaterialisationUtils.getToolDurability(stack) > 0) {
                 if (MaterialisationUtils.applyDamage(stack, 2, target.getRandom())) {
                     target.sendEquipmentBreakStatus(EquipmentSlot.MAINHAND);
@@ -73,7 +73,7 @@ public class MaterialisedPickaxeItem extends PickaxeItem implements Materialised
     @Override
     public boolean postMine(ItemStack stack, World world, BlockState blockState, BlockPos blockPos, LivingEntity miner) {
         if (!world.isClient && blockState.getHardness(world, blockPos) != 0.0F) {
-            if (!miner.world.isClient && (!(miner instanceof PlayerEntity) || !((PlayerEntity) miner).abilities.creativeMode)) {
+            if (!miner.world.isClient && (!(miner instanceof PlayerEntity) || !((PlayerEntity) miner).getAbilities().creativeMode)) {
                 if (MaterialisationUtils.getToolDurability(stack) > 0) {
                     if (MaterialisationUtils.applyDamage(stack, 1, miner.getRandom())) {
                         miner.sendEquipmentBreakStatus(EquipmentSlot.MAINHAND);

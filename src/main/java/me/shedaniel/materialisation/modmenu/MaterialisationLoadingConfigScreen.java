@@ -7,6 +7,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
@@ -28,7 +29,7 @@ public class MaterialisationLoadingConfigScreen extends Screen {
     public void tick() {
         super.tick();
         if (!ConfigHelper.loading) {
-            MinecraftClient.getInstance().openScreen(new MaterialisationMaterialsScreen(previousScreen.parent));
+            MinecraftClient.getInstance().setScreen(new MaterialisationMaterialsScreen(previousScreen.parent));
         }
     }
     
@@ -48,7 +49,7 @@ public class MaterialisationLoadingConfigScreen extends Screen {
         RenderSystem.disableTexture();
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
-        buffer.begin(7, VertexFormats.POSITION_COLOR_TEXTURE);
+        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR_TEXTURE);
         buffer.vertex(0, 28 + 4, 0.0D).color(0, 0, 0, 0).texture(0.0F, 1.0F).next();
         buffer.vertex(this.width, 28 + 4, 0.0D).color(0, 0, 0, 0).texture(1.0F, 1.0F).next();
         buffer.vertex(this.width, 28, 0.0D).color(0, 0, 0, 255).texture(1.0F, 0.0F).next();

@@ -6,14 +6,16 @@ import me.shedaniel.materialisation.config.ConfigHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.sound.PositionedSoundInstance;
-import net.minecraft.client.util.Rect2i;
+import net.minecraft.client.util.math.Rect2i;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.LiteralText;
@@ -73,7 +75,7 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
             this.onlinePack = onlinePack;
             this.clickWidget = new ButtonWidget(0, 0, 100, 20, new TranslatableText("config.button.materialisation.download"), var1 -> {
                 MaterialisationInstallScreen screen = (MaterialisationInstallScreen) MinecraftClient.getInstance().currentScreen;
-                MinecraftClient.getInstance().openScreen(new MaterialisationDownloadingScreen(new TranslatableText("message.materialisation.fetching_file_data"), downloadingScreen -> {
+                MinecraftClient.getInstance().setScreen(new MaterialisationDownloadingScreen(new TranslatableText("message.materialisation.fetching_file_data"), downloadingScreen -> {
                     long size;
                     String textSize;
                     String name;
@@ -100,7 +102,7 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
                     }
                     downloadingScreen.queueNewScreen(new ConfirmScreen(t -> {
                         if (t) {
-                            MinecraftClient.getInstance().openScreen(new MaterialisationDownloadingScreen(new TranslatableText("message.materialisation.file_is_downloading"), screen1 -> {
+                            MinecraftClient.getInstance().setScreen(new MaterialisationDownloadingScreen(new TranslatableText("message.materialisation.file_is_downloading"), screen1 -> {
                                 try {
                                     FileUtils.copyURLToFile(url, file);
                                     assert screen != null;
@@ -112,7 +114,7 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
                             }));
                             return;
                         }
-                        MinecraftClient.getInstance().openScreen(screen);
+                        MinecraftClient.getInstance().setScreen(screen);
                     }, new TranslatableText("message.materialisation.do_you_want_to_download"), new TranslatableText("message.materialisation.download_file_details", name, textSize)));
                 }));
             });
@@ -129,14 +131,14 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
                 BufferBuilder buffer = tessellator.getBuffer();
                 float float_2 = listWidget.isFocused() ? 1.0F : 0.5F;
                 GL11.glColor4f(float_2, float_2, float_2, 1.0F);
-                buffer.begin(7, VertexFormats.POSITION);
+                buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
                 buffer.vertex(itemMinX, y + getItemHeight() + 2, 0.0D).next();
                 buffer.vertex(itemMaxX, y + getItemHeight() + 2, 0.0D).next();
                 buffer.vertex(itemMaxX, y - 2, 0.0D).next();
                 buffer.vertex(itemMinX, y - 2, 0.0D).next();
                 tessellator.draw();
                 GL11.glColor4f(0.0F, 0.0F, 0.0F, 1.0F);
-                buffer.begin(7, VertexFormats.POSITION);
+                buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
                 buffer.vertex(itemMinX + 1, y + getItemHeight() + 1, 0.0D).next();
                 buffer.vertex(itemMaxX - 1, y + getItemHeight() + 1, 0.0D).next();
                 buffer.vertex(itemMaxX - 1, y - 1, 0.0D).next();
@@ -174,7 +176,12 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
         public int getItemHeight() {
             return 39;
         }
-        
+
+        @Override
+        public List<? extends Selectable> narratables() {
+            return null;
+        }
+
         @Override
         public List<? extends Element> children() {
             return Collections.singletonList(clickWidget);
@@ -199,14 +206,19 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
             }
             TextRenderer font = MinecraftClient.getInstance().textRenderer;
             drawCenteredText(stack, font, new TranslatableText("config.text.materialisation.loading_packs"), x + entryWidth / 2, y + 5, 16777215);
-            drawCenteredString(stack, font, string_3, x + entryWidth / 2, y + 5 + 9, 8421504);
+            drawCenteredText(stack, font, string_3, x + entryWidth / 2, y + 5 + 9, 8421504);
         }
         
         @Override
         public int getItemHeight() {
             return 20;
         }
-        
+
+        @Override
+        public List<? extends Selectable> narratables() {
+            return null;
+        }
+
         @Override
         public List<? extends Element> children() {
             return Collections.emptyList();
@@ -224,7 +236,12 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
         public int getItemHeight() {
             return 11;
         }
-        
+
+        @Override
+        public List<? extends Selectable> narratables() {
+            return null;
+        }
+
         @Override
         public List<? extends Element> children() {
             return Collections.emptyList();
@@ -248,7 +265,12 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
         public int getItemHeight() {
             return height;
         }
-        
+
+        @Override
+        public List<? extends Selectable> narratables() {
+            return null;
+        }
+
         @Override
         public List<? extends Element> children() {
             return Collections.emptyList();

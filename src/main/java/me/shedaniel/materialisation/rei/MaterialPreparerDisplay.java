@@ -1,16 +1,17 @@
 package me.shedaniel.materialisation.rei;
 
 import com.google.common.collect.ImmutableList;
-import me.shedaniel.rei.api.EntryStack;
-import me.shedaniel.rei.api.RecipeDisplay;
-import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.NotNull;
+import me.shedaniel.rei.api.common.category.CategoryIdentifier;
+import me.shedaniel.rei.api.common.display.Display;
+import me.shedaniel.rei.api.common.entry.EntryIngredient;
+import me.shedaniel.rei.api.common.entry.EntryStack;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("CanBeFinal")
-public class MaterialPreparerDisplay implements RecipeDisplay {
+public class MaterialPreparerDisplay implements Display {
     
     private EntryStack first, result;
     private List<EntryStack> second;
@@ -33,20 +34,20 @@ public class MaterialPreparerDisplay implements RecipeDisplay {
         return result;
     }
     
-    @NotNull
     @Override
-    public List<List<EntryStack>> getInputEntries() {
-        return ImmutableList.of(Collections.singletonList(getFirst()), getSecond());
+    public List<EntryIngredient> getInputEntries() {
+        List<EntryIngredient> ingredients = new ArrayList<>(Collections.singletonList(EntryIngredient.of(getFirst())));
+        ingredients.addAll(MaterialisationREIPlugin.map(getSecond(), EntryIngredient::of));
+        return ingredients;
     }
-    
+
     @Override
-    public @NotNull List<List<EntryStack>> getResultingEntries() {
-        return ImmutableList.of(Collections.singletonList(getResult()));
+    public CategoryIdentifier<?> getCategoryIdentifier() {
+        return CategoryIdentifier.of(MaterialisationREIPlugin.MATERIAL_PREPARER);
     }
-    
-    @NotNull
+
     @Override
-    public Identifier getRecipeCategory() {
-        return MaterialisationREIPlugin.MATERIAL_PREPARER;
+    public List<EntryIngredient> getOutputEntries() {
+        return Collections.singletonList(EntryIngredient.of(getResult()));
     }
 }

@@ -43,7 +43,7 @@ public class MaterialisationInstallScreen extends Screen {
     public boolean keyPressed(int int_1, int int_2, int int_3) {
         if (int_1 == 256 && this.shouldCloseOnEsc()) {
             assert client != null;
-            client.openScreen(parent);
+            client.setScreen(parent);
             return true;
         }
         return super.keyPressed(int_1, int_2, int_3);
@@ -52,7 +52,7 @@ public class MaterialisationInstallScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-        children.add(listWidget = new MaterialisationInstallListWidget(client, width, height, 28, height - 28, DrawableHelper.BACKGROUND_TEXTURE));
+        addDrawableChild(listWidget = new MaterialisationInstallListWidget(client, width, height, 28, height - 28, DrawableHelper.OPTIONS_BACKGROUND_TEXTURE));
         if (!loaded) {
             loaded = true;
             refresh();
@@ -69,15 +69,15 @@ public class MaterialisationInstallScreen extends Screen {
                 listWidget.addItem(new MaterialisationInstallListWidget.PackEntry(listWidget, onlinePack));
             }
         }
-        addButton(new ButtonWidget(4, 4, 100, 20, new TranslatableText("config.button.materialisation.refresh"), var1 -> {
+        addSelectableChild(new ButtonWidget(4, 4, 100, 20, new TranslatableText("config.button.materialisation.refresh"), var1 -> {
             if (!loading)
                 refresh();
         }));
-        addButton(new ButtonWidget(4, height - 24, 100, 20, new TranslatableText("gui.back"), var1 -> {
+        addSelectableChild(new ButtonWidget(4, height - 24, 100, 20, new TranslatableText("gui.back"), var1 -> {
             assert client != null;
-            client.openScreen(parent);
+            client.setScreen(parent);
         }));
-        addButton(new ButtonWidget(width - 104, 4, 100, 20, new TranslatableText("config.button.materialisation.open_folder"), var1 -> Util.getOperatingSystem().open(ConfigHelper.MATERIALS_DIRECTORY)));
+        addSelectableChild(new ButtonWidget(width - 104, 4, 100, 20, new TranslatableText("config.button.materialisation.open_folder"), var1 -> Util.getOperatingSystem().open(ConfigHelper.MATERIALS_DIRECTORY)));
     }
     
     public void refresh() {

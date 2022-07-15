@@ -34,8 +34,9 @@ public class MaterialisingTableBlock extends HorizontalFacingBlock {
     }
     
     public MaterialisingTableBlock() {
-        super(FabricBlockSettings.of(Material.METAL, MaterialColor.WHITE).strength(5.0F, 1200.0F).breakByTool(FabricToolTags.PICKAXES).drops(new Identifier(ModReference.MOD_ID, "blocks/materialising_table")).sounds(BlockSoundGroup.METAL));
+        super(FabricBlockSettings.of(Material.METAL, MapColor.WHITE).strength(5.0F, 1200.0F).drops(new Identifier(ModReference.MOD_ID, "blocks/materialising_table")).sounds(BlockSoundGroup.METAL));
         this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH));
+        //breakByTool(FabricToolTags.PICKAXES)
     }
     
     @Override

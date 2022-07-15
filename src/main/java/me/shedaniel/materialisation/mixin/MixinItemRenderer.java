@@ -20,7 +20,7 @@ public abstract class MixinItemRenderer {
      * @author shedaniel
      */
     @Inject(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;isDamaged()Z", ordinal = 0))
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;isItemBarVisible()Z", ordinal = 0))
     public void renderGuiItemOverlay(TextRenderer font, ItemStack stack, int x, int y, String overlayText, CallbackInfo callbackInfo) {
         RealItemRenderer.renderGuiItemOverlay(stack, x, y);
     }

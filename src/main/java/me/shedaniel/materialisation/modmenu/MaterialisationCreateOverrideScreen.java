@@ -40,7 +40,7 @@ public class MaterialisationCreateOverrideScreen extends Screen {
     public boolean keyPressed(int int_1, int int_2, int int_3) {
         if (int_1 == 256 && this.shouldCloseOnEsc()) {
             assert client != null;
-            client.openScreen(parent);
+            client.setScreen(parent);
             return true;
         }
         return super.keyPressed(int_1, int_2, int_3);
@@ -49,13 +49,13 @@ public class MaterialisationCreateOverrideScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-        addButton(new ButtonWidget(4, 4, 75, 20, new TranslatableText("gui.back"), var1 -> {
+        addSelectableChild(new ButtonWidget(4, 4, 75, 20, new TranslatableText("gui.back"), var1 -> {
             assert client != null;
-            client.openScreen(parent);
+            client.setScreen(parent);
         }));
-        addButton(createButton = new ButtonWidget(width - 79, 4, 75, 20, new TranslatableText("config.button.materialisation.create"), var1 -> {
+        addSelectableChild(createButton = new ButtonWidget(width - 79, 4, 75, 20, new TranslatableText("config.button.materialisation.create"), var1 -> {
             assert client != null;
-            client.openScreen(new MaterialisationCreateOverrideConfirmationScreen(og, this, partMaterial, fileName, priority, listWidget.children()));
+            client.setScreen(new MaterialisationCreateOverrideConfirmationScreen(og, this, partMaterial, fileName, priority, listWidget.children()));
         }));
         List<MaterialisationCreateOverrideListWidget.EditEntry> entries = Lists.newArrayList();
         if (listWidget != null) {
@@ -74,7 +74,7 @@ public class MaterialisationCreateOverrideScreen extends Screen {
             entries.add(new BooleanEditEntry("bright", partMaterial.isBright()));
             entries.add(new IntEditEntry("fullAmount", partMaterial.getFullAmount()));
         }
-        children.add(listWidget = new MaterialisationCreateOverrideListWidget(client, width, height, 28, height, DrawableHelper.BACKGROUND_TEXTURE));
+        addDrawableChild(listWidget = new MaterialisationCreateOverrideListWidget(client, width, height, 28, height, DrawableHelper.OPTIONS_BACKGROUND_TEXTURE));
         for (MaterialisationCreateOverrideListWidget.EditEntry entry : entries) {
             listWidget.addItem(entry);
         }

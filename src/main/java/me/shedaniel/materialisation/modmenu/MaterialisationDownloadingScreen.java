@@ -34,7 +34,7 @@ public class MaterialisationDownloadingScreen extends Screen {
     public void render(MatrixStack stack, int int_1, int int_2, float float_1) {
         if (newScreen != null) {
             assert client != null;
-            client.openScreen(newScreen);
+            client.setScreen(newScreen);
             newScreen = null;
             return;
         }
@@ -53,7 +53,7 @@ public class MaterialisationDownloadingScreen extends Screen {
             case 2:
                 string_3 = "o o O";
         }
-        drawCenteredString(stack, this.textRenderer, string_3, this.width / 2, this.height / 2 - 41, 8421504);
+        drawCenteredText(stack, this.textRenderer, string_3, this.width / 2, this.height / 2 - 41, 8421504);
         super.render(stack, int_1, int_2, float_1);
     }
     

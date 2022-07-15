@@ -45,7 +45,7 @@ public class MaterialisingTableScreenHandler extends AbstractMaterialisingHandle
                 return hasStack();
             }
 
-            public ItemStack onTakeItem(PlayerEntity player, ItemStack itemStack) {
+            public void onTakeItem(PlayerEntity player, ItemStack itemStack) {
                 ItemStack stack = main.getStack(0).copy();
                 stack.decrement(1);
                 main.setStack(0, stack);
@@ -55,7 +55,6 @@ public class MaterialisingTableScreenHandler extends AbstractMaterialisingHandle
                 context.run((world, blockPos) -> {
                     ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, Materialisation.MATERIALISING_TABLE_PLAY_SOUND, new PacketByteBuf(Unpooled.buffer()));
                 });
-                return itemStack;
             }
         });
         int k;
@@ -100,8 +99,8 @@ public class MaterialisingTableScreenHandler extends AbstractMaterialisingHandle
         if (first.isEmpty()) {
             this.result.setStack(0, ItemStack.EMPTY);
         } else if (first.getItem() instanceof MaterialisedMiningTool
-            && first.getOrCreateTag().contains("mt_0_material")
-            && first.getOrCreateTag().contains("mt_1_material")
+            && first.getOrCreateNbt().contains("mt_0_material")
+            && first.getOrCreateNbt().contains("mt_1_material")
         ) {
             // Modifiers
             if (!second.isEmpty()) {
@@ -143,8 +142,8 @@ public class MaterialisingTableScreenHandler extends AbstractMaterialisingHandle
                     return;
                 }
                 PartMaterial material = null;
-                if (copy.getOrCreateTag().contains("mt_1_material"))
-                    material = MaterialisationUtils.getMaterialFromString(copy.getOrCreateTag().getString("mt_1_material"));
+                if (copy.getOrCreateNbt().contains("mt_1_material"))
+                    material = MaterialisationUtils.getMaterialFromString(copy.getOrCreateNbt().getString("mt_1_material"));
                 if (material == null) {
                     this.result.setStack(0, ItemStack.EMPTY);
                     this.sendContentUpdates();
@@ -330,7 +329,7 @@ public class MaterialisingTableScreenHandler extends AbstractMaterialisingHandle
                     return ItemStack.EMPTY;
                 }
 
-                slot1.onStackChanged(itemStack2, itemStack1);
+                slot1.onQuickTransfer(itemStack2, itemStack1);
             } else if (index != 0 && index != 1) {
                 if (index >= 3 && index < 39 && !this.insertItem(itemStack2, 0, 2, false)) {
                     return ItemStack.EMPTY;

@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import me.shedaniel.materialisation.modmenu.MaterialisationCreateOverrideListWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.NarratorManager;
 import net.minecraft.client.util.math.MatrixStack;
@@ -47,7 +48,12 @@ public class BooleanEditEntry extends MaterialisationCreateOverrideListWidget.Ed
         resetButton.render(stack, mouseX, mouseY, delta);
         buttonWidget.render(stack, mouseX, mouseY, delta);
     }
-    
+
+    @Override
+    public List<? extends Selectable> narratables() {
+        return null;
+    }
+
     @Override
     public String getDefaultValueString() {
         return defaultValue ? "§aYes" : "§cNo";

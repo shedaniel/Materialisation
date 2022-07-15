@@ -8,6 +8,7 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.NarratorManager;
 import net.minecraft.client.util.math.MatrixStack;
@@ -42,7 +43,7 @@ public class MaterialisationCreateOverrideNameScreen extends Screen {
     public boolean keyPressed(int int_1, int int_2, int int_3) {
         if (int_1 == 256 && this.shouldCloseOnEsc()) {
             assert client != null;
-            client.openScreen(parent);
+            client.setScreen(parent);
             return true;
         }
         return super.keyPressed(int_1, int_2, int_3);
@@ -51,16 +52,16 @@ public class MaterialisationCreateOverrideNameScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-        addButton(new ButtonWidget(4, 4, 75, 20, new TranslatableText("gui.back"), var1 -> {
+        addSelectableChild(new ButtonWidget(4, 4, 75, 20, new TranslatableText("gui.back"), var1 -> {
             assert client != null;
-            client.openScreen(parent);
+            client.setScreen(parent);
         }));
-        addButton(continueButton = new ButtonWidget(width - 79, 4, 75, 20, new TranslatableText("config.button.materialisation.continue"), var1 -> {
+        addSelectableChild(continueButton = new ButtonWidget(width - 79, 4, 75, 20, new TranslatableText("config.button.materialisation.continue"), var1 -> {
             assert client != null;
-            client.openScreen(new MaterialisationCreateOverrideScreen(og, this, partMaterial, fileName.getText().isEmpty() ? randomFileName : fileName.getText(), priority.getText().isEmpty() ? 0 : Double.parseDouble(priority.getText())));
+            client.setScreen(new MaterialisationCreateOverrideScreen(og, this, partMaterial, fileName.getText().isEmpty() ? randomFileName : fileName.getText(), priority.getText().isEmpty() ? 0 : Double.parseDouble(priority.getText())));
         }));
         assert client != null;
-        addButton(fileName = new TextFieldWidget(client.textRenderer, width / 4, 50, width / 2, 18, fileName, NarratorManager.EMPTY) {
+        addSelectableChild(fileName = new TextFieldWidget(client.textRenderer, width / 4, 50, width / 2, 18, fileName, NarratorManager.EMPTY) {
             @Override
             public void render(MatrixStack stack, int int_1, int int_2, float float_1) {
                 if (getText().isEmpty())
@@ -70,7 +71,7 @@ public class MaterialisationCreateOverrideNameScreen extends Screen {
                 super.render(stack, int_1, int_2, float_1);
             }
         });
-        addButton(priority = new TextFieldWidget(client.textRenderer, width / 4, 118, width / 2, 18, priority, NarratorManager.EMPTY) {
+        addSelectableChild(priority = new TextFieldWidget(client.textRenderer, width / 4, 118, width / 2, 18, priority, NarratorManager.EMPTY) {
             @Override
             public void render(MatrixStack stack, int int_1, int int_2, float float_1) {
                 if (getText().isEmpty())
@@ -107,7 +108,7 @@ public class MaterialisationCreateOverrideNameScreen extends Screen {
         RenderSystem.disableTexture();
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
-        buffer.begin(7, VertexFormats.POSITION_COLOR_TEXTURE);
+        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR_TEXTURE);
         buffer.vertex(0, 28 + 4, 0.0D).color(0, 0, 0, 0).texture(0.0F, 1.0F).next();
         buffer.vertex(this.width, 28 + 4, 0.0D).color(0, 0, 0, 0).texture(1.0F, 1.0F).next();
         buffer.vertex(this.width, 28, 0.0D).color(0, 0, 0, 255).texture(1.0F, 0.0F).next();

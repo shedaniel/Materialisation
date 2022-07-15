@@ -15,7 +15,7 @@ import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 
@@ -87,9 +87,9 @@ public interface MaterialisedMiningTool extends DynamicAttributeTool {
     }
     
     default int getModifierLevel(ItemStack stack, String modifier) {
-        CompoundTag tag = stack.getTag();
+        NbtCompound tag = stack.getNbt();
         if (tag != null && tag.contains("modifiers")) {
-            CompoundTag modifiers = tag.getCompound("modifiers");
+            NbtCompound modifiers = tag.getCompound("modifiers");
             if (modifiers.contains(modifier))
                 return modifiers.getInt(modifier);
         }
@@ -97,10 +97,10 @@ public interface MaterialisedMiningTool extends DynamicAttributeTool {
     }
     
     default void setModifierLevel(ItemStack stack, Identifier modifier, int level) {
-        CompoundTag tag = stack.getOrCreateTag();
+        NbtCompound tag = stack.getOrCreateNbt();
         if (!tag.contains("modifiers"))
-            tag.put("modifiers", new CompoundTag());
-        CompoundTag modifiers = tag.getCompound("modifiers");
+            tag.put("modifiers", new NbtCompound());
+        NbtCompound modifiers = tag.getCompound("modifiers");
         modifiers.putInt(modifier.toString(), level);
     }
     

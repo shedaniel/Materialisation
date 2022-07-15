@@ -47,14 +47,14 @@ public class MaterialPreparerScreenHandler extends AbstractMaterialisingHandlerB
                 return hasStack() && main.getStack(0).getCount() >= takingFirst && main.getStack(1).getCount() >= takingSecond;
             }
             
-            public ItemStack onTakeItem(PlayerEntity player, ItemStack itemStack) {
+            public void onTakeItem(PlayerEntity player, ItemStack itemStack) {
                 ItemStack first = main.getStack(0);
                 first.decrement(takingFirst);
                 main.setStack(0, first);
                 ItemStack second = main.getStack(1);
                 second.decrement(takingSecond);
                 main.setStack(1, second);
-                return itemStack;
+                //super.onTakeItem(player, itemStack);
             }
         });
         int int_4;
@@ -265,7 +265,7 @@ public class MaterialPreparerScreenHandler extends AbstractMaterialisingHandlerB
                     return ItemStack.EMPTY;
                 }
 
-                slot1.onStackChanged(itemStack2, itemStack1);
+                slot1.onQuickTransfer(itemStack2, itemStack1);
             } else if (index != 0 && index != 1) {
                 if (index >= 3 && index < 39 && !this.insertItem(itemStack2, 0, 2, false)) {
                     return ItemStack.EMPTY;

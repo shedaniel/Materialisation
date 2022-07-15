@@ -5,18 +5,20 @@ import me.shedaniel.materialisation.api.BetterIngredient;
 import me.shedaniel.materialisation.api.LevelMap;
 import me.shedaniel.materialisation.api.Modifier;
 import me.shedaniel.materialisation.modifiers.Modifiers;
-import me.shedaniel.rei.api.EntryStack;
-import me.shedaniel.rei.api.RecipeDisplay;
+import me.shedaniel.rei.api.common.category.CategoryIdentifier;
+import me.shedaniel.rei.api.common.display.Display;
+import me.shedaniel.rei.api.common.entry.EntryIngredient;
+import me.shedaniel.rei.api.common.entry.EntryStack;
+import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("CanBeFinal")
-public class MaterialisationModifiersDisplay implements RecipeDisplay {
+public class MaterialisationModifiersDisplay implements Display {
     private final Identifier modifierId;
     private int level;
     
@@ -37,36 +39,34 @@ public class MaterialisationModifiersDisplay implements RecipeDisplay {
         return level;
     }
     
-    @NotNull
     @Override
-    public List<List<EntryStack>> getInputEntries() {
+    public List<EntryIngredient> getInputEntries() {
         LevelMap<BetterIngredient> ingredient = Modifiers.getIngredient(getModifier());
         if (ingredient.containsKey(level)) {
             List<EntryStack> stacks = new ArrayList<>();
             for (BetterIngredient betterIngredient : ingredient.get(level)) {
                 for (ItemStack stack : betterIngredient.getStacks()) {
-                    stacks.add(EntryStack.create(stack));
+                    stacks.add(EntryStacks.of(stack));
                 }
             }
-            return stacks.isEmpty() ? Collections.emptyList() : Collections.singletonList(stacks);
+            return stacks.isEmpty() ? Collections.emptyList() : MaterialisationREIPlugin.map(stacks, EntryIngredient::of);
         }
         List<EntryStack> stacks = new ArrayList<>();
         for (BetterIngredient betterIngredient : ingredient.getBase()) {
             for (ItemStack stack : betterIngredient.getStacks()) {
-                stacks.add(EntryStack.create(stack));
+                stacks.add(EntryStacks.of(stack));
             }
         }
-        return stacks.isEmpty() ? Collections.emptyList() : Collections.singletonList(stacks);
+        return stacks.isEmpty() ? Collections.emptyList() : MaterialisationREIPlugin.map(stacks, EntryIngredient::of);
     }
 
     @Override
-    public @NotNull List<List<EntryStack>> getResultingEntries() {
-        return Collections.emptyList();
+    public List<EntryIngredient> getOutputEntries() {
+        return null;
     }
 
-    @NotNull
     @Override
-    public Identifier getRecipeCategory() {
+    public CategoryIdentifier<?> getCategoryIdentifier() {
         return MaterialisationREIPlugin.MODIFIERS;
     }
 }

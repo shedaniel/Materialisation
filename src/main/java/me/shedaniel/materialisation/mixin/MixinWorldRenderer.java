@@ -46,21 +46,21 @@ public class MixinWorldRenderer {
     
     @ModifyVariable(method = "render",
                     at = @At(value = "INVOKE", target = "Lit/unimi/dsi/fastutil/objects/ObjectSet;iterator()Lit/unimi/dsi/fastutil/objects/ObjectIterator;",
-                             shift = At.Shift.BY, by = 2), ordinal = 0)
+                             shift = At.Shift.BY, by = 2), ordinal = 0, remap = false)
     private ObjectIterator<Long2ObjectMap.Entry<SortedSet<BlockBreakingInfo>>> appendBlockBreakingProgressions(ObjectIterator<Long2ObjectMap.Entry<SortedSet<BlockBreakingInfo>>> originalIterator) {
         return new AppendedObjectIterator<>(originalIterator, getCurrentExtraBreakingInfos());
     }
     
     @Unique
     private Long2ObjectMap<BlockBreakingInfo> getCurrentExtraBreakingInfos() {
-        ItemStack heldStack = this.client.player.inventory.getMainHandStack();
+        ItemStack heldStack = this.client.player.getInventory().getMainHandStack();
         if (heldStack.getItem() instanceof MaterialisedHammerItem || heldStack.getItem() instanceof MaterialisedMegaAxeItem) {
             if (!client.player.isSneaking()) {
                 HitResult crosshairTarget = client.crosshairTarget;
                 if (crosshairTarget instanceof BlockHitResult) {
                     BlockPos crosshairPos = ((BlockHitResult) crosshairTarget).getBlockPos();
                     BlockState crosshairState = world.getBlockState(crosshairPos);
-                    if (heldStack.isEffectiveOn(crosshairState) || (!crosshairState.isToolRequired() && heldStack.getMiningSpeedMultiplier(crosshairState) > 1)) {
+                    if (heldStack.isSuitableFor(crosshairState) || (!crosshairState.isToolRequired() && heldStack.getMiningSpeedMultiplier(crosshairState) > 1)) {
                         SortedSet<BlockBreakingInfo> infos = this.blockBreakingProgressions.get(crosshairPos.asLong());
                         if (infos != null && !infos.isEmpty()) {
                             BlockBreakingInfo breakingInfo = infos.last();
@@ -70,7 +70,7 @@ public class MixinWorldRenderer {
                             Long2ObjectMap<BlockBreakingInfo> map = new Long2ObjectLinkedOpenHashMap<>(positions.size());
                             for (BlockPos position : positions) {
                                 BlockState state = world.getBlockState(position);
-                                if (heldStack.isEffectiveOn(state) || (!state.isToolRequired() && heldStack.getMiningSpeedMultiplier(state) > 1)) {
+                                if (heldStack.isSuitableFor(state) || (!state.isToolRequired() && heldStack.getMiningSpeedMultiplier(state) > 1)) {
                                     BlockBreakingInfo info = new BlockBreakingInfo(breakingInfo.hashCode(), position);
                                     info.setStage(stage);
                                     map.put(position.asLong(), info);
@@ -131,7 +131,7 @@ public class MixinWorldRenderer {
         boolean equalsLeaves = block.equals(leaves.get());
         if (!equalsLog && !equalsLeaves)
             return;
-        if (equalsLog && (stack.isEffectiveOn(state) || (!state.isToolRequired() && stack.getMiningSpeedMultiplier(state) > 1))) {
+        if (equalsLog && (stack.isSuitableFor(state) || (!state.isToolRequired() && stack.getMiningSpeedMultiplier(state) > 1))) {
             positions.add(blockPos);
         }
         for (int x = -1; x <= 1; x++)

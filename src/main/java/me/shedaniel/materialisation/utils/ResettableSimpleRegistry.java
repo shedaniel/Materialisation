@@ -69,7 +69,17 @@ public class ResettableSimpleRegistry<T> extends MutableRegistry<T> {
     public <V extends T> V add(RegistryKey<T> key, V entry, Lifecycle lifecycle) {
         return this.set(this.nextId, key, entry, lifecycle);
     }
-    
+
+    @Override
+    public <V extends T> V replace(OptionalInt rawId, RegistryKey<T> key, V newEntry, Lifecycle lifecycle) {
+        return null;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return false;
+    }
+
     @Nullable
     public Identifier getId(T entry) {
         return this.entries.inverse().get(entry);
@@ -103,11 +113,19 @@ public class ResettableSimpleRegistry<T> extends MutableRegistry<T> {
     }
 
     @Override
-    protected Lifecycle method_31139(T object) {
+    protected Lifecycle getEntryLifecycle(T entry) {
         return null;
     }
 
     @Override
+    public Lifecycle getLifecycle() {
+        return null;
+    }
+
+    protected Lifecycle method_31139(T object) {
+        return null;
+    }
+
     public Lifecycle method_31138() {
         return null;
     }
@@ -144,6 +162,11 @@ public class ResettableSimpleRegistry<T> extends MutableRegistry<T> {
         return this.entries.containsKey(id);
     }
 
+    @Override
+    public boolean contains(RegistryKey<T> key) {
+        return false;
+    }
+
     @SuppressWarnings("unused")
     public boolean isLoaded(RegistryKey<T> registryKey) {
         return this.loadedKeys.contains(registryKey);
@@ -154,7 +177,6 @@ public class ResettableSimpleRegistry<T> extends MutableRegistry<T> {
         this.loadedKeys.add(registryKey);
     }
 
-    @Override
     public <V extends T> V method_31062(OptionalInt optionalInt, RegistryKey<T> registryKey, V object, Lifecycle lifecycle) {
         return null;
     }
