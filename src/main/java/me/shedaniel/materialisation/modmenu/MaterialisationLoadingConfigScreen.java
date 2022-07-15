@@ -11,7 +11,6 @@ import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
-import org.lwjgl.opengl.GL11;
 
 import static me.shedaniel.materialisation.modmenu.MaterialisationMaterialsScreen.overlayBackground;
 
@@ -44,8 +43,6 @@ public class MaterialisationLoadingConfigScreen extends Screen {
         overlayBackground(0, 0, width, 28, 64, 64, 64, 255, 255);
         RenderSystem.enableBlend();
         RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SrcFactor.ZERO, GlStateManager.DstFactor.ONE);
-        GL11.glDisable(GL11.GL_ALPHA_TEST);
-        GL11.glShadeModel(7425);
         RenderSystem.disableTexture();
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
@@ -56,8 +53,6 @@ public class MaterialisationLoadingConfigScreen extends Screen {
         buffer.vertex(0, 28, 0.0D).color(0, 0, 0, 255).texture(0.0F, 0.0F).next();
         tessellator.draw();
         RenderSystem.enableTexture();
-        GL11.glShadeModel(7424);
-        GL11.glEnable(GL11.GL_ALPHA_TEST);
         RenderSystem.disableBlend();
         drawCenteredText(stack, textRenderer, title, width / 2, 10, 16777215);
         super.render(stack, mouseX, mouseY, delta);

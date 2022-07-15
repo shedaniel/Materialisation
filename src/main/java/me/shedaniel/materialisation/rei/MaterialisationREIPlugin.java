@@ -14,9 +14,11 @@ import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
 import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
 import me.shedaniel.rei.api.client.registry.entry.EntryRegistry;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
+import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.entry.type.EntryType;
 import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
+import me.shedaniel.rei.api.common.util.EntryIngredients;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -25,6 +27,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 import net.minecraft.util.math.MathHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -48,32 +51,37 @@ public class MaterialisationREIPlugin implements REIClientPlugin {
         recipeHelper.removePlusButton(MODIFIERS);
     }
 
+    public static List<EntryIngredient> stackToIngredients(ItemStack stack) {
+        return new ArrayList<>(){{add(EntryIngredient.of(EntryStacks.of(stack)));}};
+    }
+
     @Override
     public void registerDisplays(DisplayRegistry recipeHelper) {
         PartMaterials.getKnownMaterials().forEach(knownMaterial -> knownMaterial.getIngredientMap().forEach((ingredient, aFloat) -> {
-            List<EntryStack> itemStacks = map(map(ingredient.getStacksList(), EntryStacks::of), EntryStack::copy);
-            recipeHelper.add(new MaterialPreparerDisplay(EntryStacks.of(Materialisation.TOOL_HANDLE_PATTERN), itemStacks, EntryStacks.of(MaterialisationUtils.createToolHandle(knownMaterial))));
+            recipeHelper.add(new MaterialPreparerDisplay(new ItemStack(Materialisation.TOOL_HANDLE_PATTERN), ingredient.getStacksList(), MaterialisationUtils.createToolHandle(knownMaterial)));
+            //List<EntryStack> itemStacks = map(map(ingredient.getStacksList(), EntryStacks::of), EntryStack::copy);
+            //recipeHelper.add(new MaterialPreparerDisplay(EntryStacks.of(Materialisation.TOOL_HANDLE_PATTERN), itemStacks, EntryStacks.of(MaterialisationUtils.createToolHandle(knownMaterial))));
         }));
         PartMaterials.getKnownMaterials().forEach(knownMaterial -> knownMaterial.getIngredientMap().forEach((ingredient, aFloat) -> {
             List<EntryStack> itemStacks = map(map(ingredient.getStacksList(), EntryStacks::of), EntryStack::copy);
             for (EntryStack stack : itemStacks)
                 ((ItemStack) stack.getValue()).setCount(MathHelper.ceil(4f / aFloat));
-            recipeHelper.add(new MaterialPreparerDisplay(EntryStacks.of(Materialisation.AXE_HEAD_PATTERN), itemStacks, EntryStacks.of(MaterialisationUtils.createAxeHead(knownMaterial))));
-            recipeHelper.add(new MaterialPreparerDisplay(EntryStacks.of(Materialisation.PICKAXE_HEAD_PATTERN), itemStacks, EntryStacks.of(MaterialisationUtils.createPickaxeHead(knownMaterial))));
-            recipeHelper.add(new MaterialPreparerDisplay(EntryStacks.of(Materialisation.SHOVEL_HEAD_PATTERN), itemStacks, EntryStacks.of(MaterialisationUtils.createShovelHead(knownMaterial))));
-            recipeHelper.add(new MaterialPreparerDisplay(EntryStacks.of(Materialisation.SWORD_BLADE_PATTERN), itemStacks, EntryStacks.of(MaterialisationUtils.createSwordBlade(knownMaterial))));
+            recipeHelper.add(new MaterialPreparerDisplay(new ItemStack(Materialisation.AXE_HEAD_PATTERN), ingredient.getStacksList(), MaterialisationUtils.createAxeHead(knownMaterial)));
+            recipeHelper.add(new MaterialPreparerDisplay(new ItemStack(Materialisation.PICKAXE_HEAD_PATTERN), ingredient.getStacksList(), MaterialisationUtils.createPickaxeHead(knownMaterial)));
+            recipeHelper.add(new MaterialPreparerDisplay(new ItemStack(Materialisation.SHOVEL_HEAD_PATTERN), ingredient.getStacksList(), MaterialisationUtils.createShovelHead(knownMaterial)));
+            recipeHelper.add(new MaterialPreparerDisplay(new ItemStack(Materialisation.SWORD_BLADE_PATTERN), ingredient.getStacksList(), MaterialisationUtils.createSwordBlade(knownMaterial)));
         }));
         PartMaterials.getKnownMaterials().forEach(knownMaterial -> knownMaterial.getIngredientMap().forEach((ingredient, aFloat) -> {
             List<EntryStack> itemStacks = map(map(ingredient.getStacksList(), EntryStacks::of), EntryStack::copy);
             for (EntryStack stack : itemStacks)
                 ((ItemStack) stack.getValue()).setCount(MathHelper.ceil(16f / aFloat));
-            recipeHelper.add(new MaterialPreparerDisplay(EntryStacks.of(Materialisation.HAMMER_HEAD_PATTERN), itemStacks, EntryStacks.of(MaterialisationUtils.createHammerHead(knownMaterial))));
+            recipeHelper.add(new MaterialPreparerDisplay(new ItemStack(Materialisation.HAMMER_HEAD_PATTERN), ingredient.getStacksList(), MaterialisationUtils.createHammerHead(knownMaterial)));
         }));
         PartMaterials.getKnownMaterials().forEach(knownMaterial -> knownMaterial.getIngredientMap().forEach((ingredient, aFloat) -> {
             List<EntryStack> itemStacks = map(map(ingredient.getStacksList(), EntryStacks::of), EntryStack::copy);
             for (EntryStack stack : itemStacks)
                 ((ItemStack) stack.getValue()).setCount(MathHelper.ceil(64f / aFloat));
-            recipeHelper.add(new MaterialPreparerDisplay(EntryStacks.of(Materialisation.MEGAAXE_HEAD_PATTERN), itemStacks, EntryStacks.of(MaterialisationUtils.createMegaAxeHead(knownMaterial))));
+            recipeHelper.add(new MaterialPreparerDisplay(new ItemStack(Materialisation.MEGAAXE_HEAD_PATTERN), ingredient.getStacksList(), MaterialisationUtils.createMegaAxeHead(knownMaterial)));
         }));
         PartMaterials.getKnownMaterials().forEach(handle -> PartMaterials.getKnownMaterials().forEach(head -> {
             recipeHelper.add(new MaterialisingTableDisplay(MaterialisationUtils.createToolHandle(handle), MaterialisationUtils.createAxeHead(head), MaterialisationUtils.createAxe(handle, head)));

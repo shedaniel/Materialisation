@@ -1,44 +1,58 @@
 package me.shedaniel.materialisation.rei;
 
-import com.google.common.collect.ImmutableList;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.entry.EntryStack;
+import me.shedaniel.rei.api.common.util.EntryIngredients;
+import me.shedaniel.rei.api.common.util.EntryStacks;
+import net.minecraft.item.ItemStack;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("CanBeFinal")
 public class MaterialPreparerDisplay implements Display {
+
+    private List<EntryIngredient> inputs;
+    private List<EntryIngredient> outputs;
+
+    private EntryStack<?> first;
+    private EntryStack<?> second;
+    private EntryStack<?> result;
+
     
-    private EntryStack first, result;
-    private List<EntryStack> second;
-    
-    public MaterialPreparerDisplay(EntryStack first, List<EntryStack> second, EntryStack result) {
-        this.first = first;
-        this.second = second;
-        this.result = result;
+    public MaterialPreparerDisplay(ItemStack patternStack, List<ItemStack> inputs, ItemStack outputStack) {
+        inputs.add(patternStack);
+        this.inputs = MaterialisationREIPlugin.map(inputs, EntryIngredients::of);
+        this.outputs = MaterialisationREIPlugin.stackToIngredients(outputStack);
+        this.first = EntryStacks.of(inputs.get(0));
+        this.second = EntryStacks.of(inputs.get(1));
+        this.result = EntryStacks.of(outputStack);
     }
-    
-    public EntryStack getFirst() {
+
+    public EntryStack<?> getFirst() {
         return first;
     }
-    
-    public List<EntryStack> getSecond() {
+
+    public EntryStack<?> getSecond() {
         return second;
     }
-    
-    public EntryStack getResult() {
+
+    public EntryStack<?> getResult() {
         return result;
     }
-    
+
+    public List<EntryIngredient> getInputs() {
+        return inputs;
+    }
+
+    public List<EntryIngredient> getOutputs() {
+        return outputs;
+    }
+
     @Override
     public List<EntryIngredient> getInputEntries() {
-        List<EntryIngredient> ingredients = new ArrayList<>(Collections.singletonList(EntryIngredient.of(getFirst())));
-        ingredients.addAll(MaterialisationREIPlugin.map(getSecond(), EntryIngredient::of));
-        return ingredients;
+        return getInputs();
     }
 
     @Override
@@ -48,6 +62,6 @@ public class MaterialPreparerDisplay implements Display {
 
     @Override
     public List<EntryIngredient> getOutputEntries() {
-        return Collections.singletonList(EntryIngredient.of(getResult()));
+        return getOutputs();
     }
 }

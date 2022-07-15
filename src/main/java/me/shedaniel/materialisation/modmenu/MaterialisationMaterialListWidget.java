@@ -15,7 +15,7 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.text.OrderedText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import org.lwjgl.opengl.GL11;
+
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -75,7 +75,7 @@ public class MaterialisationMaterialListWidget extends DynamicElementListWidget<
             
             @Override
             public void render(MatrixStack stack, int mouseX, int mouseY, float delta) {
-                GL11.glDisable(GL11.GL_ALPHA_TEST);
+                
                 fill(stack, bounds.getX(), bounds.getY(), bounds.getX() + bounds.getWidth(), bounds.getY() + bounds.getHeight(), 0x15FFFFFF);
                 boolean isHovered = focused || bounds.contains(mouseX, mouseY);
                 MinecraftClient.getInstance().textRenderer.draw(stack, (isHovered ? Formatting.UNDERLINE.toString() : "") + packInfo.getDisplayName(), bounds.getX() + 5, bounds.getY() + 6, 16777215);
