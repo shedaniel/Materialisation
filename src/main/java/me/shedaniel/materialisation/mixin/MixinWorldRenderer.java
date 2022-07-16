@@ -17,10 +17,12 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tag.BlockTags;
+import net.minecraft.tag.TagKey;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -104,7 +106,7 @@ public class MixinWorldRenderer {
         List<BlockPos> positions = new ArrayList<>();
         Direction.Axis axis = crosshairTarget.getSide().getAxis();
         Block log = world.getBlockState(crosshairPos).getBlock();
-        if (!BlockTags.LOGS.contains(log)) return Collections.emptyList();
+        if (BlockTags.LOGS != TagKey.of(Registry.BLOCK_KEY, Registry.BLOCK.getId(log))) return Collections.emptyList();
         LongSet posList = new LongOpenHashSet();
         AtomicReference<Block> leaves = new AtomicReference<>(null);
         for (int x = -1; x <= 1; x++)
@@ -145,6 +147,6 @@ public class MixinWorldRenderer {
     
     @Unique
     private boolean isLeaves(BlockState state) {
-        return BlockTags.LEAVES.contains(state.getBlock());
+        return BlockTags.LEAVES == TagKey.of(Registry.BLOCK_KEY, Registry.BLOCK.getId(state.getBlock()));
     }
 }

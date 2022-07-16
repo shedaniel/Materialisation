@@ -1,6 +1,7 @@
 package me.shedaniel.materialisation;
 
 import me.shedaniel.materialisation.api.Modifier;
+import me.shedaniel.materialisation.api.PartMaterials;
 import me.shedaniel.materialisation.blocks.MaterialPreparerBlock;
 import me.shedaniel.materialisation.blocks.MaterialisingTableBlock;
 import me.shedaniel.materialisation.config.ConfigHelper;
@@ -11,6 +12,7 @@ import me.shedaniel.materialisation.items.*;
 import me.shedaniel.materialisation.utils.ResettableSimpleRegistry;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.minecraft.SharedConstants;
 import net.minecraft.block.Block;
@@ -80,10 +82,10 @@ public class Materialisation implements ModInitializer {
         MaterialisationModifierMaterials.register();
         registerBlock("materialising_table", MATERIALISING_TABLE, ItemGroup.DECORATIONS);
         registerBlock("material_preparer", MATERIAL_PREPARER, ItemGroup.DECORATIONS);
-        ServerSidePacketRegistry.INSTANCE.register(MATERIALISING_TABLE_RENAME, (packetContext, packetByteBuf) -> {
-            if (packetContext.getPlayer().currentScreenHandler instanceof MaterialisingTableScreenHandler) {
-                MaterialisingTableScreenHandler container = (MaterialisingTableScreenHandler)packetContext.getPlayer().currentScreenHandler;
-                String string_1 = SharedConstants.stripInvalidChars(packetByteBuf.readString(32767));
+        ServerPlayNetworking.registerGlobalReceiver(MATERIALISING_TABLE_RENAME, (server, player, handler, buf, packetSender) -> {
+            if (player.currentScreenHandler instanceof MaterialisingTableScreenHandler) {
+                MaterialisingTableScreenHandler container = (MaterialisingTableScreenHandler)player.currentScreenHandler;
+                String string_1 = SharedConstants.stripInvalidChars(buf.readString(32767));
                 if (string_1.length() <= 35)
                     container.setNewItemName(string_1);
             }

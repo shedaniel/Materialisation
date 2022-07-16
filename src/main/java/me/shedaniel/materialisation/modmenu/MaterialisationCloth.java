@@ -1,6 +1,6 @@
 package me.shedaniel.materialisation.modmenu;
 
-import io.github.prospector.modmenu.api.ConfigScreenFactory;
+import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.util.TextCollector;

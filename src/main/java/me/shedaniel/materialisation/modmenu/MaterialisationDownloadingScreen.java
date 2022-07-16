@@ -56,9 +56,9 @@ public class MaterialisationDownloadingScreen extends Screen {
         drawCenteredText(stack, this.textRenderer, string_3, this.width / 2, this.height / 2 - 41, 8421504);
         super.render(stack, int_1, int_2, float_1);
     }
-    
+
     @Override
-    public boolean isPauseScreen() {
+    public boolean shouldPause() {
         return false;
     }
 }

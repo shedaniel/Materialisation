@@ -6,7 +6,7 @@ import me.shedaniel.materialisation.Materialisation;
 import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.api.Modifier;
 import me.shedaniel.materialisation.api.ToolType;
-import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
+import me.shedaniel.materialisation.utils.DynamicAttributeTool;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
@@ -16,7 +16,6 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 
 import javax.annotation.Nonnull;
@@ -45,17 +44,17 @@ public interface MaterialisedMiningTool extends DynamicAttributeTool {
     }
     
     @Override
-    default float getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+    default float getMiningSpeedMultiplier(ItemStack stack, BlockState state, LivingEntity user) {
         return MaterialisationUtils.getToolBreakingSpeed(stack);
     }
     
     @Override
-    default int getMiningLevel(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+    default int getMiningLevel(BlockState state, ItemStack stack, LivingEntity user) {
         return MaterialisationUtils.getToolMiningLevel(stack);
     }
     
     @Override
-    default float postProcessMiningSpeed(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user, float currentSpeed, boolean isEffective) {
+    default float postProcessMiningSpeed(BlockState state, ItemStack stack, LivingEntity user, float currentSpeed, boolean isEffective) {
         return MaterialisationUtils.getToolDurability(stack) <= 0 ? -1 : currentSpeed;
     }
     

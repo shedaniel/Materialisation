@@ -48,7 +48,7 @@ public class MaterialisationREIPlugin implements REIClientPlugin {
         registry.add(new MaterialPreparerCategory());
         registry.add(new MaterialisingTableCategory());
         registry.add(new MaterialisationModifiersCategory());
-        registry.removePlusButton(MODIFIERS);
+        //registry.removePlusButton(MODIFIERS);
     }
 
     @Override
