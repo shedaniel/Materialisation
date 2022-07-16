@@ -1,5 +1,6 @@
 package me.shedaniel.materialisation.rei;
 
+import me.shedaniel.materialisation.Materialisation;
 import me.shedaniel.materialisation.api.Modifier;
 import me.shedaniel.materialisation.modmenu.MaterialisationCloth;
 import me.shedaniel.materialisation.utils.RomanNumber;
@@ -10,6 +11,8 @@ import me.shedaniel.rei.api.client.gui.widgets.Widget;
 import me.shedaniel.rei.api.client.gui.widgets.Widgets;
 import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
+import me.shedaniel.rei.api.common.entry.EntryStack;
+import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.resource.language.I18n;
@@ -23,6 +26,9 @@ import java.util.List;
 import java.util.Objects;
 
 public class MaterialisationModifiersCategory implements DisplayCategory<MaterialisationModifiersDisplay> {
+
+    public static final EntryStack<?> LOGO = EntryStacks.of(Materialisation.MATERIALISED_AXE);
+
     @Override
     public Identifier getIdentifier() {
         return getCategoryIdentifier().getIdentifier();
@@ -32,14 +38,9 @@ public class MaterialisationModifiersCategory implements DisplayCategory<Materia
     public CategoryIdentifier<? extends MaterialisationModifiersDisplay> getCategoryIdentifier() {
         return MaterialisationREIPlugin.MODIFIERS;
     }
-
-    public String getCategoryName() {
-        return getTitle().asString();
-    }
-
     @Override
     public Renderer getIcon() {
-        return null;
+        return LOGO;
     }
 
     @Override

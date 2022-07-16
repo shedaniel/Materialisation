@@ -63,4 +63,8 @@ public class MaterialPreparerScreen extends MaterialisingScreenBase<MaterialPrep
             this.drawTexture(matrixStack, x + 99, y + 45 - 26, this.backgroundWidth, 0, 28, 21);
         }
     }
+
+    public static Identifier getTEXTURE() {
+        return TEXTURE;
+    }
 }

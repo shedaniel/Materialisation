@@ -2,6 +2,7 @@ package me.shedaniel.materialisation.rei;
 
 import com.google.common.collect.Lists;
 import me.shedaniel.materialisation.Materialisation;
+import me.shedaniel.materialisation.gui.MaterialisingTableScreen;
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.gui.Renderer;
@@ -22,7 +23,7 @@ import java.util.List;
 
 public class MaterialisingTableCategory implements DisplayCategory<MaterialisingTableDisplay> {
     
-    public static final EntryStack LOGO = EntryStacks.of(Materialisation.MATERIALISING_TABLE);
+    public static final EntryStack<?> LOGO = EntryStacks.of(Materialisation.MATERIALISING_TABLE);
     
     @Override
     public Identifier getIdentifier() {
@@ -33,18 +34,10 @@ public class MaterialisingTableCategory implements DisplayCategory<Materialising
     public CategoryIdentifier<? extends MaterialisingTableDisplay> getCategoryIdentifier() {
         return MaterialisationREIPlugin.MATERIALISING_TABLE;
     }
-    
-    public String getCategoryName() {
-        return getTitle().asString();
-    }
-
-    public EntryStack getLogo() {
-        return LOGO;
-    }
 
     @Override
     public Renderer getIcon() {
-        return (Renderer) getLogo().getRenderer();
+        return LOGO;
     }
 
     @Override
@@ -57,9 +50,9 @@ public class MaterialisingTableCategory implements DisplayCategory<Materialising
     public List<Widget> setupDisplay(MaterialisingTableDisplay display, Rectangle bounds) {
         final Point startPoint = new Point(bounds.getCenterX() - 41, bounds.getCenterY() - 13);
         List<Widget> widgets = Lists.newArrayList(Widgets.createCategoryBase(bounds));
-        widgets.add(Widgets.createTexturedWidget(DefaultPlugin.INFO.getIdentifier(), startPoint.x, startPoint.y, 0, 221, 82, 26));
+        widgets.add(Widgets.createTexturedWidget(MaterialisingTableScreen.getTEXTURE(), startPoint.x, startPoint.y, 0, 221, 82, 26));
         widgets.add(Widgets.createSlot(new Point(startPoint.x - 18, startPoint.y + 5)).entry(display.getFirst()).markInput());
-        widgets.add(Widgets.createSlot(new Point(startPoint.x + 4, startPoint.y + 5)).entries((Collection<? extends EntryStack<?>>) display.getSecond().iterator()).markInput());
+        widgets.add(Widgets.createSlot(new Point(startPoint.x + 4, startPoint.y + 5)).entry(display.getSecond()).markInput());
         widgets.add(Widgets.createSlot(new Point(startPoint.x + 61, startPoint.y + 5)).entry(display.getResult()).disableBackground().markOutput());
         return widgets;
     }

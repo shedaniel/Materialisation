@@ -134,5 +134,4 @@ public class Materialisation implements ModInitializer {
     private void registerItem(String name, Item item) {
         Registry.register(Registry.ITEM, new Identifier(ModReference.MOD_ID, name), item);
     }
-    
 }

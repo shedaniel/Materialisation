@@ -13,41 +13,41 @@ import java.util.List;
 
 @SuppressWarnings("CanBeFinal")
 public class MaterialisingTableDisplay implements Display {
-    private EntryStack first, result;
-    private EntryStack second;
+    private EntryStack<?> first, result;
+    private EntryStack<?> second;
     
     public MaterialisingTableDisplay(ItemStack first, ItemStack second, ItemStack result) {
         this(EntryStacks.of(first).copy(), EntryStacks.of(second).copy(), EntryStacks.of(result).copy());
     }
     
-    public MaterialisingTableDisplay(EntryStack first, EntryStack second, EntryStack result) {
+    public MaterialisingTableDisplay(EntryStack<?> first, EntryStack<?> second, EntryStack<?> result) {
         this.first = first;
         this.second = second;
         this.result = result;
     }
     
-    public EntryStack getFirst() {
+    public EntryStack<?> getFirst() {
         return first;
     }
     
-    public List<EntryStack> getSecond() {
-        return Collections.singletonList(second);
+    public EntryStack<?> getSecond() {
+        return second;
     }
     
-    public EntryStack getResult() {
+    public EntryStack<?> getResult() {
         return result;
     }
 
     @Override
     public List<EntryIngredient> getInputEntries() {
         List<EntryIngredient> ingredients = new ArrayList<>(Collections.singletonList(EntryIngredient.of(getFirst())));
-        ingredients.addAll(MaterialisationREIPlugin.map(getSecond(), EntryIngredient::of));
+        ingredients.add(EntryIngredient.of(getSecond()));
         return ingredients;
     }
 
     @Override
     public List<EntryIngredient> getOutputEntries() {
-        return null;
+        return Collections.singletonList(EntryIngredient.of(getResult()));
     }
 
     @Override

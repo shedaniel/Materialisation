@@ -62,7 +62,7 @@ public class MaterialisationModifiersDisplay implements Display {
 
     @Override
     public List<EntryIngredient> getOutputEntries() {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override

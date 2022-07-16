@@ -116,4 +116,8 @@ public class MaterialisingTableScreen extends MaterialisingScreenBase<Materialis
             this.nameField.setChangedListener(this::onRenamed);
         }
     }
+
+    public static Identifier getTEXTURE() {
+        return TEXTURE;
+    }
 }
