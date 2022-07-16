@@ -122,14 +122,6 @@ public class ResettableSimpleRegistry<T> extends MutableRegistry<T> {
         return null;
     }
 
-    protected Lifecycle method_31139(T object) {
-        return null;
-    }
-
-    public Lifecycle method_31138() {
-        return null;
-    }
-
     public Optional<T> getOrEmpty(@Nullable Identifier id) {
         return Optional.ofNullable(this.entries.get(id));
     }
@@ -177,7 +169,4 @@ public class ResettableSimpleRegistry<T> extends MutableRegistry<T> {
         this.loadedKeys.add(registryKey);
     }
 
-    public <V extends T> V method_31062(OptionalInt optionalInt, RegistryKey<T> registryKey, V object, Lifecycle lifecycle) {
-        return null;
-    }
 }
