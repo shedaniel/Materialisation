@@ -1,21 +1,18 @@
 package me.shedaniel.materialisation.api;
 
 import com.google.common.collect.Maps;
-import it.unimi.dsi.fastutil.objects.Reference2ReferenceMap;
-import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
+//import it.unimi.dsi.fastutil.objects.Reference2ReferenceMap;
+//import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @SuppressWarnings("SpellCheckingInspection")
 public class GeneratedMaterial implements PartMaterial {
-    private final Reference2ReferenceMap<ToolType, Identifier> texturedHeadIdentifiers = new Reference2ReferenceOpenHashMap<>(ToolType.values().length, 1f);
-    private final Reference2ReferenceMap<ToolType, Identifier> texturedHandleIdentifiers = new Reference2ReferenceOpenHashMap<>(ToolType.values().length, 1f);
+    private final Map<ToolType, Identifier> texturedHeadIdentifiers = new HashMap<>(ToolType.values().length, 1f);
+    private final Map<ToolType, Identifier> texturedHandleIdentifiers = new HashMap<>(ToolType.values().length, 1f);
     private int toolColor = -1, toolDurability = 1, miningLevel = 0, enchantability = 0;
     private float durabilityMultiplier = 1f, breakingSpeedMultiplier = 1f, toolSpeed = -1f, attackDamage = 0f;
     private Identifier name;
@@ -27,7 +24,7 @@ public class GeneratedMaterial implements PartMaterial {
     };
     private int fullAmount = -1;
     
-    GeneratedMaterial(Identifier name) {
+    public GeneratedMaterial(Identifier name) {
         this.name = name;
     }
     
@@ -37,7 +34,7 @@ public class GeneratedMaterial implements PartMaterial {
     }
     
     @Override
-    public Reference2ReferenceMap<ToolType, Identifier> getTexturedHandleIdentifiers() {
+    public Map<ToolType, Identifier> getTexturedHandleIdentifiers() {
         return texturedHandleIdentifiers;
     }
     
