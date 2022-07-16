@@ -23,6 +23,7 @@ public class DefaultMaterials implements DefaultMaterialSupplier {
     public static final PartMaterial WOOD;
     public static final PartMaterial STONE;
     public static final PartMaterial IRON;
+    public static final PartMaterial COPPER;
     public static final PartMaterial GOLD;
     public static final PartMaterial DIAMOND;
     
@@ -40,6 +41,12 @@ public class DefaultMaterials implements DefaultMaterialSupplier {
                 .autoTex()
                 .wAtta(1)
                 .setFullAmount(100).setToolSpeed(4f).wDuraMulti(0.4f).wSpeedMulti(0.9f).wColor(-2960686).setToolDurability(131).setMiningLevel(1);
+        COPPER = getNewMaterial("copper")
+                .wEnch(10)
+                .aIngr(fromItem(Items.COPPER_INGOT), 2)
+                .aIngr(fromItem(Items.COPPER_BLOCK), 18)
+                .autoTex()
+                .wAtta(1.5F).setFullAmount(100).setBright(true).setToolSpeed(6f).wDuraMulti(1f).wSpeedMulti(1.0f).wColor(0xffef3dff).setToolDurability(200).setMiningLevel(2);
         IRON = getNewMaterial("iron")
                 .wEnch(14)
                 .aIngr(fromItem(Items.IRON_INGOT), 2)
@@ -69,7 +76,7 @@ public class DefaultMaterials implements DefaultMaterialSupplier {
     }
     
     public List<PartMaterial> getOursMaterials() {
-        return Lists.newArrayList(WOOD, STONE, IRON, GOLD, DIAMOND);
+        return Lists.newArrayList(WOOD, STONE, COPPER, IRON, GOLD, DIAMOND);
     }
     
 }

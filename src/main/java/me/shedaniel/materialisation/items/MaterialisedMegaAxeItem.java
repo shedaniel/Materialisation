@@ -67,10 +67,10 @@ public class MaterialisedMegaAxeItem extends AxeItem implements MaterialisedMini
                 }
         return true;
     }
-    
+
     @Override
     public float getMiningSpeedMultiplier(ItemStack stack, BlockState state) {
-        return MaterialisationUtils.getToolDurability(stack) <= 0 ? -1 : super.getMiningSpeedMultiplier(stack, state);
+        return MaterialisationUtils.getToolDurability(stack) <= 0 ? -1 : MaterialisedMiningTool.super.getMiningSpeedMultiplier(stack, state);
     }
     
     public void tryBreak(LongSet posList, World world, BlockPos blockPos, PlayerEntity player, ItemStack stack, BlockPos ogPos, Block log, AtomicReference<Block> leaves, int leavesDistance) {

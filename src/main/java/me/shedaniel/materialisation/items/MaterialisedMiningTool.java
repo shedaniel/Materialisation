@@ -1,26 +1,31 @@
 package me.shedaniel.materialisation.items;
 
 import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.ImmutableSetMultimap;
 import com.google.common.collect.Multimap;
 import me.shedaniel.materialisation.Materialisation;
 import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.api.Modifier;
 import me.shedaniel.materialisation.api.ToolType;
-import me.shedaniel.materialisation.utils.DynamicAttributeTool;
+import net.fabricmc.fabric.api.item.v1.FabricItem;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.tag.BlockTags;
+import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
 
 import javax.annotation.Nonnull;
 
-public interface MaterialisedMiningTool extends DynamicAttributeTool {
+public interface MaterialisedMiningTool extends FabricItem {
+
+    Multimap<EntityAttribute, EntityAttributeModifier> EMPTY = ImmutableSetMultimap.of();
+
     static float getExtraDamage(ToolType toolType) {
         if (toolType == ToolType.SWORD)
             return 4f;
@@ -36,25 +41,45 @@ public interface MaterialisedMiningTool extends DynamicAttributeTool {
             return 2.5f;
         return 0f;
     }
-    
+
+    @Override
+    default boolean isSuitableFor(ItemStack stack, BlockState state) {
+        int i = getMiningLevel(stack);
+        if (i < 3 && state.isIn(BlockTags.NEEDS_DIAMOND_TOOL)) {
+            return false;
+        } else if (i < 2 && state.isIn(BlockTags.NEEDS_IRON_TOOL)) {
+            return false;
+        } else {
+            TagKey<Block> minableBlock;
+            if (this instanceof AxeItem)
+                minableBlock = BlockTags.AXE_MINEABLE;
+            else if (this instanceof PickaxeItem)
+                minableBlock = BlockTags.PICKAXE_MINEABLE;
+            else if (this instanceof ShovelItem)
+                minableBlock = BlockTags.SHOVEL_MINEABLE;
+            else if (this instanceof HoeItem)
+                minableBlock = BlockTags.HOE_MINEABLE;
+            else
+                return FabricItem.super.isSuitableFor(stack, state);
+            return (i >= 1 || !state.isIn(BlockTags.NEEDS_STONE_TOOL)) && state.isIn(minableBlock);
+        }
+    }
+
     static float getExtraDamageFromItem(Item item) {
         if (item instanceof MaterialisedMiningTool)
             return getExtraDamage(((MaterialisedMiningTool) item).getToolType());
         return 0f;
     }
     
-    @Override
-    default float getMiningSpeedMultiplier(ItemStack stack, BlockState state, LivingEntity user) {
+    default float getMiningSpeedMultiplier(ItemStack stack, BlockState state) {
         return MaterialisationUtils.getToolBreakingSpeed(stack);
     }
     
-    @Override
-    default int getMiningLevel(BlockState state, ItemStack stack, LivingEntity user) {
+    default int getMiningLevel(ItemStack stack) {
         return MaterialisationUtils.getToolMiningLevel(stack);
     }
     
-    @Override
-    default float postProcessMiningSpeed(BlockState state, ItemStack stack, LivingEntity user, float currentSpeed, boolean isEffective) {
+    default float postProcessMiningSpeed(BlockState state, ItemStack stack, float currentSpeed, boolean isEffective) {
         return MaterialisationUtils.getToolDurability(stack) <= 0 ? -1 : currentSpeed;
     }
     

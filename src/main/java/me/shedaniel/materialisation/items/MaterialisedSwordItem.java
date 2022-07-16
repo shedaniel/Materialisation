@@ -35,10 +35,10 @@ public class MaterialisedSwordItem extends SwordItem implements MaterialisedMini
         builder.put(EntityAttributes.GENERIC_ATTACK_SPEED, new EntityAttributeModifier(ATTACK_SPEED_MODIFIER_ID, "Tool modifier", -2.4F, EntityAttributeModifier.Operation.ADDITION));
         this.attributeModifiers = builder.build();
     }
-    
+
     @Override
     public float getMiningSpeedMultiplier(ItemStack stack, BlockState state) {
-        return MaterialisationUtils.getToolDurability(stack) <= 0 ? -1 : super.getMiningSpeedMultiplier(stack, state);
+        return MaterialisationUtils.getToolDurability(stack) <= 0 ? -1 : MaterialisedMiningTool.super.getMiningSpeedMultiplier(stack, state);
     }
     
     @Nonnull
