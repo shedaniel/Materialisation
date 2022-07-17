@@ -98,6 +98,7 @@ public class MaterialisationCreateOverrideScreen extends Screen {
     
     @Override
     public void render(MatrixStack stack, int int_1, int int_2, float float_1) {
+        super.render(stack, int_1, int_2, float_1);
         createButton.active = !listWidget.children().isEmpty();
         for (MaterialisationCreateOverrideListWidget.EditEntry child : listWidget.children()) {
             if (!createButton.active)
@@ -115,7 +116,6 @@ public class MaterialisationCreateOverrideScreen extends Screen {
         if (!edited)
             createButton.active = false;
         listWidget.render(stack, int_1, int_2, float_1);
-        super.render(stack, int_1, int_2, float_1);
         drawCenteredText(stack, textRenderer, title, width / 2, 10, 16777215);
     }
 }

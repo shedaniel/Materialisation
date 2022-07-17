@@ -16,6 +16,7 @@ import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
 import javax.annotation.Nullable;
@@ -30,6 +31,7 @@ public class MaterialisationMaterialsScreen extends Screen {
     private Object lastDescription;
     private MaterialisationMaterialListWidget materialList;
     private MaterialisationDescriptionListWidget descriptionList;
+    private ButtonWidget installButton, reloadButton, backButton;
     
     protected MaterialisationMaterialsScreen(Screen parent) {
         super(new TranslatableText("config.title.materialisation"));
@@ -71,22 +73,22 @@ public class MaterialisationMaterialsScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-        addSelectableChild(new ButtonWidget(width - 104, 4, 100, 20, new TranslatableText("config.button.materialisation.install"), var1 -> {
+        addDrawableChild(materialList = new MaterialisationMaterialListWidget(client, width / 2 - 10, height, 28 + 5, height - 5, DrawableHelper.OPTIONS_BACKGROUND_TEXTURE));
+        addDrawableChild(descriptionList = new MaterialisationDescriptionListWidget(client, width / 2 - 10, height, 28 + 5, height - 5, DrawableHelper.OPTIONS_BACKGROUND_TEXTURE));
+        addSelectableChild(installButton = new ButtonWidget(width - 104, 4, 100, 20, new TranslatableText("config.button.materialisation.install"), var1 -> {
             assert client != null;
             client.setScreen(new MaterialisationInstallScreen(this));
         }));
-        addSelectableChild(new ButtonWidget(59, 4, 85, 20, new TranslatableText("config.button.materialisation.reload"), var1 -> {
+        addSelectableChild(reloadButton = new ButtonWidget(59, 4, 85, 20, new TranslatableText("config.button.materialisation.reload"), var1 -> {
             if (!ConfigHelper.loading) {
                 MinecraftClient.getInstance().setScreen(new MaterialisationLoadingConfigScreen(this));
                 ConfigHelper.loadConfigAsync();
             }
         }));
-        addSelectableChild(new ButtonWidget(4, 4, 50, 20, new TranslatableText("gui.back"), var1 -> {
+        addSelectableChild(backButton = new ButtonWidget(4, 4, 50, 20, new TranslatableText("gui.back"), var1 -> {
             assert client != null;
             client.setScreen(parent);
         }));
-        addDrawableChild(materialList = new MaterialisationMaterialListWidget(client, width / 2 - 10, height, 28 + 5, height - 5, DrawableHelper.OPTIONS_BACKGROUND_TEXTURE));
-        addDrawableChild(descriptionList = new MaterialisationDescriptionListWidget(client, width / 2 - 10, height, 28 + 5, height - 5, DrawableHelper.OPTIONS_BACKGROUND_TEXTURE));
         materialList.setLeftPos(5);
         descriptionList.setLeftPos(width / 2 + 5);
         if (lastDescription != null) {
@@ -155,10 +157,15 @@ public class MaterialisationMaterialsScreen extends Screen {
     @Override
     public void render(MatrixStack stack, int mouseX, int mouseY, float delta) {
         renderBackgroundTexture(0);
+        super.render(stack, mouseX, mouseY, delta);
         materialList.render(stack, mouseX, mouseY, delta);
         descriptionList.render(stack, mouseX, mouseY, delta);
-        overlayBackground(0, 0, width, 28, 64, 64, 64, 255, 255);
-        overlayBackground(0, height - 5, width, height, 64, 64, 64, 255, 255);
+        //overlayBackground(0, 0, width, 28, 64, 64, 64, 255, 255);
+        //overlayBackground(0, height - 5, width, height, 64, 64, 64, 255, 255);
+        installButton.render(stack, mouseX, mouseY, delta);
+        reloadButton.render(stack, mouseX, mouseY, delta);
+        backButton.render(stack, mouseX, mouseY, delta);
+
         RenderSystem.enableBlend();
         RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SrcFactor.ZERO, GlStateManager.DstFactor.ONE);
         RenderSystem.disableTexture();
@@ -172,8 +179,8 @@ public class MaterialisationMaterialsScreen extends Screen {
         tessellator.draw();;
         RenderSystem.enableTexture();
         RenderSystem.disableBlend();
+
         drawCenteredText(stack, textRenderer, title, width / 2, 10, 16777215);
-        super.render(stack, mouseX, mouseY, delta);
     }
     
 }

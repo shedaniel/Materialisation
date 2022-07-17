@@ -20,6 +20,7 @@ import net.minecraft.client.util.math.Rect2i;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.OrderedText;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -113,7 +114,7 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
                             }));
                             return;
                         }
-                        MinecraftClient.getInstance().setScreen(screen);
+                        MinecraftClient.getInstance().setScreen(screen.getParent());
                     }, new TranslatableText("message.materialisation.do_you_want_to_download"), new TranslatableText("message.materialisation.download_file_details", name, textSize)));
                 }));
             });
@@ -178,7 +179,7 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
 
         @Override
         public List<? extends Selectable> narratables() {
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
 
         @Override
@@ -215,7 +216,7 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
 
         @Override
         public List<? extends Selectable> narratables() {
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
 
         @Override
@@ -238,7 +239,7 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
 
         @Override
         public List<? extends Selectable> narratables() {
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
 
         @Override
@@ -267,7 +268,7 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
 
         @Override
         public List<? extends Selectable> narratables() {
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
 
         @Override

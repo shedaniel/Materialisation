@@ -61,7 +61,8 @@ public class MaterialisationErrorInstallScreen extends Screen {
         }
         for (String s1 : s) {
             for (OrderedText s2 : textRenderer.wrapLines(new LiteralText(s1), width - 40)) {
-                entries.add(new MaterialisationOverridesListWidget.TextEntry((Text)s2));
+                if (s2 instanceof Text)
+                    entries.add(new MaterialisationOverridesListWidget.TextEntry((Text)s2));
             }
         }
         addDrawableChild(listWidget = new MaterialisationOverridesListWidget(client, width, height, 28, height, DrawableHelper.OPTIONS_BACKGROUND_TEXTURE));
