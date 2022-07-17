@@ -29,16 +29,16 @@ public class MaterialisationInstallScreen extends Screen {
     public boolean loading = false;
     private Screen parent;
     private MaterialisationInstallListWidget listWidget;
-    
+
     protected MaterialisationInstallScreen(Screen parent) {
         super(new TranslatableText("config.title.materialisation.install_new"));
         this.parent = parent;
     }
-    
+
     public Screen getParent() {
         return parent;
     }
-    
+
     @Override
     public boolean keyPressed(int int_1, int int_2, int int_3) {
         if (int_1 == 256 && this.shouldCloseOnEsc()) {
@@ -48,7 +48,7 @@ public class MaterialisationInstallScreen extends Screen {
         }
         return super.keyPressed(int_1, int_2, int_3);
     }
-    
+
     @Override
     protected void init() {
         super.init();
@@ -79,7 +79,7 @@ public class MaterialisationInstallScreen extends Screen {
         }));
         addSelectableChild(new ButtonWidget(width - 104, 4, 100, 20, new TranslatableText("config.button.materialisation.open_folder"), var1 -> Util.getOperatingSystem().open(ConfigHelper.MATERIALS_DIRECTORY)));
     }
-    
+
     public void refresh() {
         loading = true;
         setUpRefresh();
@@ -110,13 +110,13 @@ public class MaterialisationInstallScreen extends Screen {
             loading = false;
         });
     }
-    
+
     public void setUpRefresh() {
         listWidget.clearItemsPublic();
         listWidget.addItem(new MaterialisationInstallListWidget.EmptyEntry(10));
         listWidget.addItem(new MaterialisationInstallListWidget.LoadingEntry());
     }
-    
+
     @Override
     public void render(MatrixStack stack, int mouseX, int mouseY, float delta) {
         renderBackgroundTexture(0);

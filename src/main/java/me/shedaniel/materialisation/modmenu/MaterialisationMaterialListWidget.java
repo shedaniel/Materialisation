@@ -26,56 +26,56 @@ public class MaterialisationMaterialListWidget extends DynamicElementListWidget<
     public MaterialisationMaterialListWidget(MinecraftClient client, int width, int height, int top, int bottom, Identifier backgroundLocation) {
         super(client, width, height, top, bottom, backgroundLocation);
     }
-    
+
     @Override
     public int getItemWidth() {
         return width - 11;
     }
-    
+
     @Override
     protected int getScrollbarPosition() {
         return left + width - 6;
     }
-    
+
     @Override
     public int addItem(Entry item) {
         return super.addItem(item);
     }
-    
+
     public abstract static class PackEntry extends Entry {
         private PackWidget widget;
         private ConfigPackInfo packInfo;
-        
+
         public PackEntry(ConfigPackInfo packInfo) {
             this.widget = new PackWidget();
             this.packInfo = packInfo;
         }
-        
+
         @Override
         public void render(MatrixStack stack, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
             widget.bounds = new Rect2i(x, y, entryWidth, getItemHeight());
             widget.render(stack, mouseX, mouseY, delta);
         }
-        
+
         @Override
         public int getItemHeight() {
             return 40;
         }
-        
+
         @Override
         public List<? extends Element> children() {
             return Collections.singletonList(widget);
         }
-        
+
         public abstract void onClick();
-        
+
         public class PackWidget implements Element, Drawable {
             private Rect2i bounds;
             private boolean focused;
-            
+
             @Override
             public void render(MatrixStack stack, int mouseX, int mouseY, float delta) {
-                
+
                 fill(stack, bounds.getX(), bounds.getY(), bounds.getX() + bounds.getWidth(), bounds.getY() + bounds.getHeight(), 0x15FFFFFF);
                 boolean isHovered = focused || bounds.contains(mouseX, mouseY);
                 MinecraftClient.getInstance().textRenderer.draw(stack, (isHovered ? Formatting.UNDERLINE.toString() : "") + packInfo.getDisplayName(), bounds.getX() + 5, bounds.getY() + 6, 16777215);
@@ -91,7 +91,7 @@ public class MaterialisationMaterialListWidget extends DynamicElementListWidget<
                     MinecraftClient.getInstance().textRenderer.draw(stack, string_2, float_1, (float) int_2, 0xEEFFFFFF);
                 }
             }
-            
+
             @Override
             public boolean mouseClicked(double double_1, double double_2, int int_1) {
                 if (int_1 == 0) {
@@ -104,7 +104,7 @@ public class MaterialisationMaterialListWidget extends DynamicElementListWidget<
                 }
                 return false;
             }
-            
+
             @Override
             public boolean keyPressed(int int_1, int int_2, int int_3) {
                 if (int_1 != 257 && int_1 != 32 && int_1 != 335) {
@@ -115,15 +115,15 @@ public class MaterialisationMaterialListWidget extends DynamicElementListWidget<
                     return true;
                 }
             }
-            
+
             private String trimEndNewlines(String s) {
                 while (s != null && s.endsWith("\n")) {
                     s = s.substring(0, s.length() - 1);
                 }
-                
+
                 return s;
             }
-            
+
             @Override
             public boolean changeFocus(boolean boolean_1) {
                 this.focused = !this.focused;
@@ -131,44 +131,44 @@ public class MaterialisationMaterialListWidget extends DynamicElementListWidget<
             }
         }
     }
-    
+
     public static abstract class MaterialEntry extends Entry {
         private MaterialWidget widget;
         private PartMaterial partMaterial;
-        
+
         public MaterialEntry(PartMaterial partMaterial) {
             this.widget = new MaterialWidget();
             this.partMaterial = partMaterial;
         }
-        
+
         @Override
         public void render(MatrixStack stack, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
             widget.bounds = new Rect2i(x, y, entryWidth, getItemHeight());
             widget.render(stack, mouseX, mouseY, delta);
         }
-        
+
         @Override
         public int getItemHeight() {
             return 17;
         }
-        
+
         @Override
         public List<? extends Element> children() {
             return Collections.singletonList(widget);
         }
-        
+
         public abstract void onClick();
-        
+
         public class MaterialWidget implements Element, Drawable {
             private Rect2i bounds;
             private boolean focused;
-            
+
             @Override
             public void render(MatrixStack stack, int mouseX, int mouseY, float delta) {
                 boolean isHovered = focused || bounds.contains(mouseX, mouseY);
                 MinecraftClient.getInstance().textRenderer.draw(stack, (isHovered ? Formatting.UNDERLINE.toString() : "") + I18n.translate(partMaterial.getMaterialTranslateKey()), bounds.getX() + 5, bounds.getY() + 5, 16777215);
             }
-            
+
             @Override
             public boolean mouseClicked(double double_1, double double_2, int int_1) {
                 if (int_1 == 0) {
@@ -181,7 +181,7 @@ public class MaterialisationMaterialListWidget extends DynamicElementListWidget<
                 }
                 return false;
             }
-            
+
             @Override
             public boolean keyPressed(int int_1, int int_2, int int_3) {
                 if (int_1 != 257 && int_1 != 32 && int_1 != 335) {
@@ -192,7 +192,7 @@ public class MaterialisationMaterialListWidget extends DynamicElementListWidget<
                     return true;
                 }
             }
-            
+
             @Override
             public boolean changeFocus(boolean boolean_1) {
                 this.focused = !this.focused;
@@ -200,8 +200,8 @@ public class MaterialisationMaterialListWidget extends DynamicElementListWidget<
             }
         }
     }
-    
+
     public static abstract class Entry extends DynamicElementListWidget.ElementEntry<Entry> {
-        
+
     }
 }

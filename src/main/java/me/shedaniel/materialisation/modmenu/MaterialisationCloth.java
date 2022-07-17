@@ -16,7 +16,7 @@ public class MaterialisationCloth {
     
     public static Text color(Text text, Formatting formatting) {
         return text.visit(new Text.StyledVisitor<Text>() {
-            TextCollector collector = new TextCollector();
+            private final TextCollector collector = new TextCollector();
             
             @Override
             public Optional<Text> accept(Style style, String asString) {

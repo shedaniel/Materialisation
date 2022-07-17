@@ -20,7 +20,7 @@ public class IntEditEntry extends MaterialisationCreateOverrideListWidget.EditEn
     private TextFieldWidget buttonWidget;
     private ButtonWidget resetButton;
     private List<Element> widgets;
-    
+
     public IntEditEntry(String s, int defaultValue) {
         super(s);
         this.defaultValue = defaultValue;
@@ -45,7 +45,7 @@ public class IntEditEntry extends MaterialisationCreateOverrideListWidget.EditEn
         });
         this.widgets = Lists.newArrayList(buttonWidget, resetButton);
     }
-    
+
     @Override
     public void render(MatrixStack stack, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
         super.render(stack, index, y, x, entryWidth, entryHeight, mouseX, mouseY, isSelected, delta);
@@ -67,12 +67,12 @@ public class IntEditEntry extends MaterialisationCreateOverrideListWidget.EditEn
     public String getDefaultValueString() {
         return defaultValue + "";
     }
-    
+
     @Override
     public String getValueString() {
         return buttonWidget.getText();
     }
-    
+
     @Override
     public Double getValue() {
         try {
@@ -81,7 +81,7 @@ public class IntEditEntry extends MaterialisationCreateOverrideListWidget.EditEn
             return (double) defaultValue;
         }
     }
-    
+
     @Override
     public boolean isValid() {
         try {
@@ -91,7 +91,7 @@ public class IntEditEntry extends MaterialisationCreateOverrideListWidget.EditEn
             return false;
         }
     }
-    
+
     @Override
     public List<? extends Element> children() {
         return widgets;

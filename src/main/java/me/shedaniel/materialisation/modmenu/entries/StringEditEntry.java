@@ -11,6 +11,7 @@ import net.minecraft.client.util.NarratorManager;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -62,7 +63,7 @@ public class StringEditEntry extends MaterialisationCreateOverrideListWidget.Edi
 
     @Override
     public List<? extends Selectable> narratables() {
-        return null;
+        return new ArrayList<>();
     }
 
     @Override

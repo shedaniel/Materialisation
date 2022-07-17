@@ -20,7 +20,7 @@ public class BooleanEditEntry extends MaterialisationCreateOverrideListWidget.Ed
     private boolean value;
     private ButtonWidget buttonWidget, resetButton;
     private List<Element> widgets;
-    
+
     public BooleanEditEntry(String s, boolean defaultValue) {
         super(s);
         this.defaultValue = defaultValue;
@@ -35,7 +35,7 @@ public class BooleanEditEntry extends MaterialisationCreateOverrideListWidget.Ed
         });
         this.widgets = Lists.newArrayList(buttonWidget, resetButton);
     }
-    
+
     @Override
     public void render(MatrixStack stack, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
         super.render(stack, index, y, x, entryWidth, entryHeight, mouseX, mouseY, isSelected, delta);
@@ -58,22 +58,22 @@ public class BooleanEditEntry extends MaterialisationCreateOverrideListWidget.Ed
     public String getDefaultValueString() {
         return defaultValue ? "§aYes" : "§cNo";
     }
-    
+
     @Override
     public String getValueString() {
         return value ? "§aYes" : "§cNo";
     }
-    
+
     @Override
     public Boolean getValue() {
         return value;
     }
-    
+
     @Override
     public boolean isValid() {
         return true;
     }
-    
+
     @Override
     public List<? extends Element> children() {
         return widgets;

@@ -10,26 +10,26 @@ import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
 public class MaterialisationDownloadingScreen extends Screen {
-    
+
     public static ExecutorService executorService = Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "Materialisation"));
     private Screen newScreen;
-    
+
     public MaterialisationDownloadingScreen(Text title, Consumer<MaterialisationDownloadingScreen> consumer) {
         super(title);
         executorService.shutdown();
         executorService = Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "Materialisation"));
         executorService.submit(() -> consumer.accept(this));
     }
-    
+
     public void queueNewScreen(Screen screen) {
         newScreen = screen;
     }
-    
+
     @Override
     public boolean shouldCloseOnEsc() {
         return false;
     }
-    
+
     @Override
     public void render(MatrixStack stack, int int_1, int int_2, float float_1) {
         if (newScreen != null) {

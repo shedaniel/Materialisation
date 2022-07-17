@@ -18,6 +18,9 @@ import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
 
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("CanBeFinal")
@@ -99,7 +102,7 @@ public class MaterialisationMaterialsScreen extends Screen {
             materialList.addItem(new MaterialisationMaterialListWidget.PackEntry(materialsPack.getConfigPackInfo()) {
                 @Override
                 public List<? extends Selectable> narratables() {
-                    return null;
+                    return Collections.emptyList();
                 }
 
                 @Override
@@ -111,7 +114,7 @@ public class MaterialisationMaterialsScreen extends Screen {
             materialsPack.getKnownMaterials().forEach(partMaterial -> materialList.addItem(new MaterialisationMaterialListWidget.MaterialEntry(partMaterial) {
                 @Override
                 public List<? extends Selectable> narratables() {
-                    return null;
+                    return Collections.emptyList();
                 }
 
                 @Override
@@ -125,7 +128,7 @@ public class MaterialisationMaterialsScreen extends Screen {
             materialList.addItem(new MaterialisationMaterialListWidget.PackEntry(defaultPack.getConfigPackInfo()) {
                 @Override
                 public List<? extends Selectable> narratables() {
-                    return null;
+                    return Collections.emptyList();
                 }
 
                 @Override
@@ -137,7 +140,7 @@ public class MaterialisationMaterialsScreen extends Screen {
             defaultPack.getKnownMaterials().forEach(partMaterial -> materialList.addItem(new MaterialisationMaterialListWidget.MaterialEntry(partMaterial) {
                 @Override
                 public List<? extends Selectable> narratables() {
-                    return null;
+                    return Collections.emptyList();
                 }
 
                 @Override

@@ -83,7 +83,7 @@ public class DefaultMaterials implements DefaultMaterialSupplier {
     
     @Override
     public List<MaterialsPack> getMaterialPacks() {
-        ConfigPackInfo packInfo = new ConfigPackInfo("Vanilla Materials", "minecraft:vanilla", Collections.emptyList(), Collections.singletonList("Danielshe"), "0.1.0");
+        ConfigPackInfo packInfo = new ConfigPackInfo("Vanilla Materials", "minecraft:vanilla", Collections.emptyList(), Collections.singletonList("Danielshe"), "0.1.1");
         Map<String, PartMaterial> map = Maps.newLinkedHashMap();
         getOursMaterials().forEach(partMaterial -> map.put(partMaterial.getIdentifier().toString(), partMaterial));
         return Collections.singletonList(new ConfigPack(packInfo.withDescription("The four basic material for Minecraft vanilla."), map));
