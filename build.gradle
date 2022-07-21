@@ -37,7 +37,7 @@ dependencies {
     compileOnly("com.google.code.findbugs:jsr305:3.0.2") { transitive = false }
     modImplementation("com.terraformersmc:modmenu:${project.modmenu}")
     modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei}")
-    modImplementation("net.devtech:arrp:0.5.7")
+    modImplementation("net.devtech:arrp:0.5.5")
 }
 
 processResources {
