@@ -36,7 +36,7 @@ public class MaterialisationMixinPlugin implements IMixinConfigPlugin {
     
     private boolean isOptifineLoaded() {
         for (String modid : OPTIFINE_MODIDS) {
-            if (FabricLoader.getInstance().isModLoaded("optifabric"))
+            if (FabricLoader.getInstance().isModLoaded(modid))
                 return true;
         }
         return false;
@@ -62,14 +62,14 @@ public class MaterialisationMixinPlugin implements IMixinConfigPlugin {
         String itemStack = mappingResolver.mapClassName("intermediary", "net.minecraft.class_1799");
         String description = "(L" + textRenderer.replace('.', '/') + ";L" + itemStack.replace('.', '/') + ";IILjava/lang/String;)V";
         String renderGuiItemOverlay = mappingResolver.mapMethodName("intermediary", "net.minecraft.class_918", "method_4022", "(Lnet/minecraft/class_327;Lnet/minecraft/class_1799;IILjava/lang/String;)V");
-        String isDamaged = mappingResolver.mapMethodName("intermediary", "net.minecraft.class_1799", "method_7986", "()Z");
+        String isItemBarVisible = mappingResolver.mapMethodName("intermediary", "net.minecraft.class_1799", "method_31578", "()Z");
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT && isOptifineLoaded()) {
             if (targetClassName.equals(itemRenderer))
                 for (MethodNode method : targetClass.methods) {
                     if (method.name.equals(renderGuiItemOverlay) && method.desc.equals(description)) {
                         InsnList instructions = method.instructions;
                         for (AbstractInsnNode instruction : instructions) {
-                            if (instruction instanceof MethodInsnNode && ((MethodInsnNode) instruction).owner.equals(itemStack) && ((MethodInsnNode) instruction).name.equals(isDamaged)) {
+                            if (instruction instanceof MethodInsnNode && ((MethodInsnNode) instruction).owner.equals(itemStack) && ((MethodInsnNode) instruction).name.equals(isItemBarVisible)) {
                                 AbstractInsnNode current = instruction;
                                 while (!(current instanceof LabelNode)) {
                                     current = current.getPrevious();

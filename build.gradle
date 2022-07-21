@@ -38,6 +38,7 @@ dependencies {
     modImplementation("com.terraformersmc:modmenu:${project.modmenu}")
     modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei}")
     modImplementation("net.devtech:arrp:0.5.5")
+    include("net.devtech:arrp:0.5.5")
 }
 
 processResources {
