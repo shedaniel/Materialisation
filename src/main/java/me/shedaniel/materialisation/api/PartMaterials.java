@@ -63,7 +63,7 @@ public class PartMaterials {
     
     public static void clearMaterials() {
         MATERIALS.clear();
-        ConfigPackInfo packInfo = new ConfigPackInfo("Default Pack", "default:default", Collections.emptyList(), Collections.emptyList(), "0.1.0");
+        ConfigPackInfo packInfo = new ConfigPackInfo("Default Pack", "default:default", Collections.emptyList(), Collections.emptyList(), "0.1.1");
         MATERIALS.put("default:default", new ConfigPack(packInfo.withDescription("The default material pack that materials with no origin goes to."), Maps.newLinkedHashMap()));
     }
     

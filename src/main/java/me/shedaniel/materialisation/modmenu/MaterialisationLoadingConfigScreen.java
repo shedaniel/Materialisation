@@ -10,20 +10,21 @@ import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
 import static me.shedaniel.materialisation.modmenu.MaterialisationMaterialsScreen.overlayBackground;
 
 @SuppressWarnings("CanBeFinal")
 public class MaterialisationLoadingConfigScreen extends Screen {
-    
+
     private MaterialisationMaterialsScreen previousScreen;
-    
+
     public MaterialisationLoadingConfigScreen(MaterialisationMaterialsScreen previousScreen) {
         super(new TranslatableText("config.title.materialisation.loading"));
         this.previousScreen = previousScreen;
     }
-    
+
     @Override
     public void tick() {
         super.tick();
@@ -31,12 +32,12 @@ public class MaterialisationLoadingConfigScreen extends Screen {
             MinecraftClient.getInstance().setScreen(new MaterialisationMaterialsScreen(previousScreen.parent));
         }
     }
-    
+
     @Override
     public boolean shouldCloseOnEsc() {
         return false;
     }
-    
+
     @Override
     public void render(MatrixStack stack, int mouseX, int mouseY, float delta) {
         renderBackgroundTexture(0);

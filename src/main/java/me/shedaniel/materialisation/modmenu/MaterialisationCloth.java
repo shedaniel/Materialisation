@@ -1,6 +1,6 @@
 package me.shedaniel.materialisation.modmenu;
 
-import io.github.prospector.modmenu.api.ConfigScreenFactory;
+import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.util.TextCollector;
@@ -16,7 +16,7 @@ public class MaterialisationCloth {
     
     public static Text color(Text text, Formatting formatting) {
         return text.visit(new Text.StyledVisitor<Text>() {
-            TextCollector collector = new TextCollector();
+            private final TextCollector collector = new TextCollector();
             
             @Override
             public Optional<Text> accept(Style style, String asString) {

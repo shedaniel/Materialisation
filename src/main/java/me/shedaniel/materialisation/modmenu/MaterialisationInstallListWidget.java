@@ -20,6 +20,7 @@ import net.minecraft.client.util.math.Rect2i;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.OrderedText;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -32,42 +33,43 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.FileAlreadyExistsException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class MaterialisationInstallListWidget extends DynamicElementListWidget<MaterialisationInstallListWidget.Entry> {
     private PackEntry selected;
-    
+
     public MaterialisationInstallListWidget(MinecraftClient client, int width, int height, int top, int bottom, Identifier backgroundLocation) {
         super(client, width, height, top, bottom, backgroundLocation);
     }
-    
+
     @Override
     public int getItemWidth() {
         return width - 11;
     }
-    
+
     @Override
     protected int getScrollbarPosition() {
         return width - 6;
     }
-    
+
     @Override
     public int addItem(Entry item) {
         return super.addItem(item);
     }
-    
+
     public void clearItemsPublic() {
         clearItems();
     }
-    
+
     @SuppressWarnings("CanBeFinal")
     public static class PackEntry extends Entry {
         private OnlinePack onlinePack;
         private MaterialisationInstallListWidget listWidget;
         private Rect2i bounds;
         private ButtonWidget clickWidget;
-        
+
         public PackEntry(MaterialisationInstallListWidget listWidget, OnlinePack onlinePack) {
             this.listWidget = listWidget;
             this.onlinePack = onlinePack;
@@ -112,12 +114,12 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
                             }));
                             return;
                         }
-                        MinecraftClient.getInstance().setScreen(screen);
+                        MinecraftClient.getInstance().setScreen(screen.getParent());
                     }, new TranslatableText("message.materialisation.do_you_want_to_download"), new TranslatableText("message.materialisation.download_file_details", name, textSize)));
                 }));
             });
         }
-        
+
         @Override
         public void render(MatrixStack stack, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
             this.bounds = new Rect2i(x, y, entryWidth, entryHeight);
@@ -158,7 +160,7 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
             clickWidget.y = y + entryHeight / 2 - 10;
             clickWidget.render(stack, mouseX, mouseY, delta);
         }
-        
+
         @Override
         public boolean mouseClicked(double double_1, double double_2, int int_1) {
             boolean a = super.mouseClicked(double_1, double_2, int_1);
@@ -169,7 +171,7 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
             }
             return a;
         }
-        
+
         @Override
         public int getItemHeight() {
             return 39;
@@ -177,7 +179,7 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
 
         @Override
         public List<? extends Selectable> narratables() {
-            return null;
+            return Collections.emptyList();
         }
 
         @Override
@@ -185,7 +187,7 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
             return Collections.singletonList(clickWidget);
         }
     }
-    
+
     public static class LoadingEntry extends Entry {
         @Override
         public void render(MatrixStack stack, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
@@ -206,7 +208,7 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
             drawCenteredText(stack, font, new TranslatableText("config.text.materialisation.loading_packs"), x + entryWidth / 2, y + 5, 16777215);
             drawCenteredText(stack, font, string_3, x + entryWidth / 2, y + 5 + 9, 8421504);
         }
-        
+
         @Override
         public int getItemHeight() {
             return 20;
@@ -214,7 +216,7 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
 
         @Override
         public List<? extends Selectable> narratables() {
-            return null;
+            return Collections.emptyList();
         }
 
         @Override
@@ -222,14 +224,14 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
             return Collections.emptyList();
         }
     }
-    
+
     public static class FailedEntry extends Entry {
         @Override
         public void render(MatrixStack stack, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
             TextRenderer font = MinecraftClient.getInstance().textRenderer;
             drawCenteredText(stack, font, new TranslatableText("config.text.materialisation.failed"), x + entryWidth / 2, y + 5, 16777215);
         }
-        
+
         @Override
         public int getItemHeight() {
             return 11;
@@ -237,7 +239,7 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
 
         @Override
         public List<? extends Selectable> narratables() {
-            return null;
+            return Collections.emptyList();
         }
 
         @Override
@@ -245,20 +247,20 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
             return Collections.emptyList();
         }
     }
-    
+
     public static class EmptyEntry extends Entry {
         @SuppressWarnings("CanBeFinal")
         private int height;
-        
+
         public EmptyEntry(int height) {
             this.height = height;
         }
-        
+
         @Override
         public void render(MatrixStack matrixStack, int i, int i1, int i2, int i3, int i4, int i5, int i6, boolean b, float v) {
-            
+
         }
-        
+
         @Override
         public int getItemHeight() {
             return height;
@@ -266,7 +268,7 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
 
         @Override
         public List<? extends Selectable> narratables() {
-            return null;
+            return Collections.emptyList();
         }
 
         @Override
@@ -274,8 +276,8 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
             return Collections.emptyList();
         }
     }
-    
+
     public static abstract class Entry extends DynamicElementListWidget.ElementEntry<Entry> {
-        
+
     }
 }

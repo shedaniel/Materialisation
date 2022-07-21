@@ -56,7 +56,7 @@ public class MaterialisationOverridesListWidget extends DynamicElementListWidget
 
         @Override
         public List<? extends Selectable> narratables() {
-            return null;
+            return Collections.emptyList();
         }
 
         @Override

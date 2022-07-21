@@ -10,6 +10,7 @@ import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Util;
 
@@ -29,16 +30,18 @@ public class MaterialisationInstallScreen extends Screen {
     public boolean loading = false;
     private Screen parent;
     private MaterialisationInstallListWidget listWidget;
-    
+
+    public ButtonWidget refreshButton, backButton, openFolderButton;
+
     protected MaterialisationInstallScreen(Screen parent) {
         super(new TranslatableText("config.title.materialisation.install_new"));
         this.parent = parent;
     }
-    
+
     public Screen getParent() {
         return parent;
     }
-    
+
     @Override
     public boolean keyPressed(int int_1, int int_2, int int_3) {
         if (int_1 == 256 && this.shouldCloseOnEsc()) {
@@ -48,7 +51,7 @@ public class MaterialisationInstallScreen extends Screen {
         }
         return super.keyPressed(int_1, int_2, int_3);
     }
-    
+
     @Override
     protected void init() {
         super.init();
@@ -69,17 +72,17 @@ public class MaterialisationInstallScreen extends Screen {
                 listWidget.addItem(new MaterialisationInstallListWidget.PackEntry(listWidget, onlinePack));
             }
         }
-        addSelectableChild(new ButtonWidget(4, 4, 100, 20, new TranslatableText("config.button.materialisation.refresh"), var1 -> {
+        addSelectableChild(refreshButton = new ButtonWidget(4, 4, 100, 20, new TranslatableText("config.button.materialisation.refresh"), var1 -> {
             if (!loading)
                 refresh();
         }));
-        addSelectableChild(new ButtonWidget(4, height - 24, 100, 20, new TranslatableText("gui.back"), var1 -> {
+        addSelectableChild(backButton = new ButtonWidget(4, height - 24, 100, 20, new TranslatableText("gui.back"), var1 -> {
             assert client != null;
             client.setScreen(parent);
         }));
-        addSelectableChild(new ButtonWidget(width - 104, 4, 100, 20, new TranslatableText("config.button.materialisation.open_folder"), var1 -> Util.getOperatingSystem().open(ConfigHelper.MATERIALS_DIRECTORY)));
+        addSelectableChild(openFolderButton = new ButtonWidget(width - 104, 4, 100, 20, new TranslatableText("config.button.materialisation.open_folder"), var1 -> Util.getOperatingSystem().open(ConfigHelper.MATERIALS_DIRECTORY)));
     }
-    
+
     public void refresh() {
         loading = true;
         setUpRefresh();
@@ -110,19 +113,22 @@ public class MaterialisationInstallScreen extends Screen {
             loading = false;
         });
     }
-    
+
     public void setUpRefresh() {
         listWidget.clearItemsPublic();
         listWidget.addItem(new MaterialisationInstallListWidget.EmptyEntry(10));
         listWidget.addItem(new MaterialisationInstallListWidget.LoadingEntry());
     }
-    
+
     @Override
     public void render(MatrixStack stack, int mouseX, int mouseY, float delta) {
         renderBackgroundTexture(0);
+        super.render(stack, mouseX, mouseY, delta);
         listWidget.render(stack, mouseX, mouseY, delta);
         overlayBackground(0, height - 28, width, height, 64, 64, 64, 255, 255);
         drawCenteredText(stack, textRenderer, title, width / 2, 10, 16777215);
-        super.render(stack, mouseX, mouseY, delta);
+        refreshButton.render(stack, mouseX, mouseY, delta);
+        backButton.render(stack, mouseX, mouseY, delta);
+        openFolderButton.render(stack, mouseX, mouseY, delta);
     }
 }

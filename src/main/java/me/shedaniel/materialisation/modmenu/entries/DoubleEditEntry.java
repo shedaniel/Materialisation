@@ -9,10 +9,12 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.NarratorManager;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
 import java.text.DecimalFormat;
 import java.text.ParsePosition;
+import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("CanBeFinal")
@@ -24,7 +26,7 @@ public class DoubleEditEntry extends MaterialisationCreateOverrideListWidget.Edi
     private List<Element> widgets;
     private ParsePosition parsePosition = new ParsePosition(0);
     private static final DecimalFormat DF = new DecimalFormat("#.##");
-    
+
     public DoubleEditEntry(String s, double defaultValue) {
         super(s);
         this.defaultValue = defaultValue;
@@ -44,7 +46,7 @@ public class DoubleEditEntry extends MaterialisationCreateOverrideListWidget.Edi
         });
         this.widgets = Lists.newArrayList(buttonWidget, resetButton);
     }
-    
+
     @Override
     public void render(MatrixStack stack, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
         super.render(stack, index, y, x, entryWidth, entryHeight, mouseX, mouseY, isSelected, delta);
@@ -59,19 +61,19 @@ public class DoubleEditEntry extends MaterialisationCreateOverrideListWidget.Edi
 
     @Override
     public List<? extends Selectable> narratables() {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
     public String getDefaultValueString() {
         return DF.format(defaultValue);
     }
-    
+
     @Override
     public String getValueString() {
         return DF.format(getValue());
     }
-    
+
     @Override
     public Double getValue() {
         parsePosition.setIndex(0);
@@ -81,7 +83,7 @@ public class DoubleEditEntry extends MaterialisationCreateOverrideListWidget.Edi
         }
         return defaultValue;
     }
-    
+
     @Override
     public boolean isValid() {
         parsePosition.setIndex(0);
@@ -89,7 +91,7 @@ public class DoubleEditEntry extends MaterialisationCreateOverrideListWidget.Edi
         DF.parse(text, parsePosition);
         return parsePosition.getIndex() == text.length();
     }
-    
+
     @Override
     public List<? extends Element> children() {
         return widgets;

@@ -47,6 +47,7 @@
     "material.materialisation.minecraft.stone":"pierre",
     "material.materialisation.minecraft.iron":"fer",
     "material.materialisation.minecraft.gold":"or",
+    "material.materialisation.minecraft.copper":"cuivre",
     "material.materialisation.common.copper":"cuivre",
     "material.materialisation.common.silver":"argent",
     "material.materialisation.common.lead":"plomb",
