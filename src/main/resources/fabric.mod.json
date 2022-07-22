@@ -19,7 +19,7 @@
     "client": [
       "me.shedaniel.materialisation.MaterialisationClient"
     ],
-    "rei_plugins_v0": [
+    "rei_client": [
       "me.shedaniel.materialisation.rei.MaterialisationREIPlugin"
     ],
     "modmenu": [
@@ -33,11 +33,11 @@
     ]
   },
   "depends": {
-    "fabricloader": ">=0.4.0"
+    "fabricloader": ">=0.4.0",
+    "advanced_runtime_resource_pack": "*"
   },
   "accessWidener": "materialisation.accesswidener",
   "mixins": [
-    "materialisation.mixins.json",
-    "materialisation.plugin.mixins.json"
+    "materialisation.mixins.json"
   ]
 }
