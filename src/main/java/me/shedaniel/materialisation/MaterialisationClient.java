@@ -26,7 +26,7 @@ import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.item.ModelPredicateProviderRegistry;
+import net.minecraft.client.item.ModelPredicateProvider;
 import net.minecraft.client.item.UnclampedModelPredicateProvider;
 import net.minecraft.client.render.model.*;
 import net.minecraft.client.render.model.json.JsonUnbakedModel;
@@ -78,7 +78,7 @@ public class MaterialisationClient implements ClientModInitializer {
         UnclampedModelPredicateProvider brightProvider = (itemStack, world, livingEntity, seed) -> MaterialisationUtils.isHandleBright(itemStack) ? 1 : 0;
         ColorProviderRegistry.ITEM.register(MaterialisationUtils::getItemLayerColor, colorableToolParts);
         for (Item colorableToolPart : colorableToolParts) {
-            ModelPredicateProviderRegistry.register(colorableToolPart, new Identifier(ModReference.MOD_ID, "bright"), brightProvider);
+            FabricModelPredicateProviderRegistry.register(colorableToolPart, new Identifier(ModReference.MOD_ID, "bright"), brightProvider);
         }
         List<Identifier> identifiers = Stream.of(
                 Materialisation.MATERIALISED_MEGAAXE,
@@ -89,7 +89,7 @@ public class MaterialisationClient implements ClientModInitializer {
                 Materialisation.MATERIALISED_HAMMER
         ).map(Registry.ITEM::getId).collect(Collectors.toList());
         Renderer renderer = RendererAccess.INSTANCE.getRenderer();
-        ModelLoadingRegistry.INSTANCE.registerModelProvider((resourceManager, consumer) -> {
+        ModelLoadingRegistry.INSTANCE.registerAppender((resourceManager, consumer) -> {
             for (Identifier identifier : identifiers) {
                 ModelIdentifier handleIdentifier = new ModelIdentifier(new Identifier(identifier.getNamespace(), identifier.getPath() + "_handle"), "inventory");
                 ModelIdentifier headIdentifier = new ModelIdentifier(new Identifier(identifier.getNamespace(), identifier.getPath() + "_head"), "inventory");
@@ -117,7 +117,7 @@ public class MaterialisationClient implements ClientModInitializer {
                 }
             });
         });
-        RRPCallback.BEFORE_VANILLA.register(a -> {
+        RRPCallback.EVENT.register(a -> {
             RuntimeResourcePack pack = RuntimeResourcePack.create(ModReference.MOD_ID + ":" + ModReference.MOD_ID);
             PartMaterials.getKnownMaterials().forEach(partMaterial -> {
                 for (Identifier value : partMaterial.getTexturedHeadIdentifiers().values()) {

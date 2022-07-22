@@ -5,12 +5,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tag.ItemTags;
 import net.minecraft.tag.Tag;
-import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Lazy;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryEntry;
-import net.minecraft.util.registry.RegistryKey;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,11 +24,11 @@ public class BetterIngredient {
     private transient Lazy<ItemStack[]> stacks = new Lazy<>(() -> {
         if (type == Type.ITEM)
             return new ItemStack[]{new ItemStack(Registry.ITEM.get(new Identifier(content)), count)};
-        TagKey<Item> tag = TagKey.of(Registry.ITEM_KEY, new Identifier(content));
+        Tag<Item> tag = ItemTags.getTagGroup().getTag(new Identifier(content));
         List<ItemStack> itemStacks = new ArrayList<>();
         if (tag != null) {
-            for (RegistryEntry<Item> entry : Registry.ITEM.getEntryList(tag).get()) {
-                itemStacks.add(new ItemStack(entry.value(), count));
+            for (Item value : tag.values()) {
+                itemStacks.add(new ItemStack(value, count));
             }
         }
         return itemStacks.toArray(new ItemStack[0]);
@@ -65,12 +62,12 @@ public class BetterIngredient {
     }
 
     @SuppressWarnings("unused")
-    public static BetterIngredient fromTag(TagKey<Item> tag) {
-        return new BetterIngredient(Type.TAG, tag.id().toString());
+    public static BetterIngredient fromTag(Tag.Identified<Item> tag) {
+        return new BetterIngredient(Type.TAG, tag.getId().toString());
     }
 
-    public static BetterIngredient fromTag(TagKey<Item> tag, int count) {
-        return new BetterIngredient(Type.TAG, tag.id().toString(), count);
+    public static BetterIngredient fromTag(Tag.Identified<Item> tag, int count) {
+        return new BetterIngredient(Type.TAG, tag.getId().toString(), count);
     }
     
     public static BetterIngredient fromTag(Identifier tag) {

@@ -1,32 +1,27 @@
 package me.shedaniel.materialisation.items;
 
 import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.ImmutableSetMultimap;
 import com.google.common.collect.Multimap;
 import me.shedaniel.materialisation.Materialisation;
 import me.shedaniel.materialisation.MaterialisationUtils;
 import me.shedaniel.materialisation.api.Modifier;
 import me.shedaniel.materialisation.api.ToolType;
-import net.fabricmc.fabric.api.item.v1.FabricItem;
-import net.minecraft.block.Block;
+import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.tag.BlockTags;
-import net.minecraft.tag.TagKey;
+import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
-public interface MaterialisedMiningTool extends FabricItem {
-
-    Multimap<EntityAttribute, EntityAttributeModifier> EMPTY = ImmutableSetMultimap.of();
-
+public interface MaterialisedMiningTool extends DynamicAttributeTool {
     static float getExtraDamage(ToolType toolType) {
         if (toolType == ToolType.SWORD)
             return 4f;
@@ -42,89 +37,55 @@ public interface MaterialisedMiningTool extends FabricItem {
             return 2.5f;
         return 0f;
     }
-
-    @Nullable
-    default TagKey<Block> getEffectiveBlocks() {
-        TagKey<Block> minableBlock;
-        if (this instanceof AxeItem)
-            minableBlock = BlockTags.AXE_MINEABLE;
-        else if (this instanceof PickaxeItem)
-            minableBlock = BlockTags.PICKAXE_MINEABLE;
-        else if (this instanceof ShovelItem)
-            minableBlock = BlockTags.SHOVEL_MINEABLE;
-        else if (this instanceof HoeItem)
-            minableBlock = BlockTags.HOE_MINEABLE;
-        else
-            return null;
-        return minableBlock;
-    }
-
-    @Override
-    default boolean isSuitableFor(ItemStack stack, BlockState state) {
-        int i = getMiningLevel(stack);
-        if (i < 3 && state.isIn(BlockTags.NEEDS_DIAMOND_TOOL)) {
-            return false;
-        } else if (i < 2 && state.isIn(BlockTags.NEEDS_IRON_TOOL)) {
-            return false;
-        } else {
-            TagKey<Block> minableBlock = getEffectiveBlocks();
-            if (minableBlock == null)
-                return FabricItem.super.isSuitableFor(stack, state);
-            return i < 1 && state.isIn(BlockTags.NEEDS_STONE_TOOL) ? false : state.isIn(minableBlock);
-        }
-    }
-
+    
     static float getExtraDamageFromItem(Item item) {
         if (item instanceof MaterialisedMiningTool)
             return getExtraDamage(((MaterialisedMiningTool) item).getToolType());
         return 0f;
     }
-
-    default float getMiningSpeedMultiplier(ItemStack stack, BlockState state) {
-        TagKey<Block> minableBlock = getEffectiveBlocks();
-        if (minableBlock == null)
-            return MaterialisationUtils.getToolBreakingSpeed(stack);
-        if (state.isIn(minableBlock))
-            return MaterialisationUtils.getToolBreakingSpeed(stack);
-        else
-            return 1.0F;
+    
+    @Override
+    default float getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+        return MaterialisationUtils.getToolBreakingSpeed(stack);
     }
-
-    default int getMiningLevel(ItemStack stack) {
+    
+    @Override
+    default int getMiningLevel(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
         return MaterialisationUtils.getToolMiningLevel(stack);
     }
-
-    default float postProcessMiningSpeed(BlockState state, ItemStack stack, float currentSpeed, boolean isEffective) {
+    
+    @Override
+    default float postProcessMiningSpeed(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user, float currentSpeed, boolean isEffective) {
         return MaterialisationUtils.getToolDurability(stack) <= 0 ? -1 : currentSpeed;
     }
-
+    
     default int getEnchantability(ItemStack stack) {
         return MaterialisationUtils.getToolEnchantability(stack);
     }
-
+    
     @Nonnull
     default ToolType getToolType() {
         return ToolType.UNKNOWN;
     }
-
+    
     default void setModifierLevel(ItemStack stack, Modifier modifier, int level) {
         Identifier id = Materialisation.MODIFIERS.getId(modifier);
         if (id == null)
             return;
         setModifierLevel(stack, id, level);
     }
-
+    
     default int getModifierLevel(ItemStack stack, Modifier modifier) {
         Identifier id = Materialisation.MODIFIERS.getId(modifier);
         if (id == null)
             return 0;
         return getModifierLevel(stack, id);
     }
-
+    
     default int getModifierLevel(ItemStack stack, Identifier modifier) {
         return getModifierLevel(stack, modifier.toString());
     }
-
+    
     default int getModifierLevel(ItemStack stack, String modifier) {
         NbtCompound tag = stack.getNbt();
         if (tag != null && tag.contains("modifiers")) {
@@ -134,7 +95,7 @@ public interface MaterialisedMiningTool extends FabricItem {
         }
         return 0;
     }
-
+    
     default void setModifierLevel(ItemStack stack, Identifier modifier, int level) {
         NbtCompound tag = stack.getOrCreateNbt();
         if (!tag.contains("modifiers"))
@@ -142,7 +103,7 @@ public interface MaterialisedMiningTool extends FabricItem {
         NbtCompound modifiers = tag.getCompound("modifiers");
         modifiers.putInt(modifier.toString(), level);
     }
-
+    
     default Multimap<EntityAttribute, EntityAttributeModifier> getModifiers(EquipmentSlot slot, ItemStack stack) {
         if (slot != EquipmentSlot.MAINHAND) return EMPTY;
         double attackDamage = MaterialisationUtils.getToolDurability(stack) > 0 ? MaterialisationUtils.getToolAttackDamage(stack) : -10000;

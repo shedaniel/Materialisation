@@ -38,11 +38,6 @@ public class MaterialisedAxeItem extends AxeItem implements MaterialisedMiningTo
         builder.put(EntityAttributes.GENERIC_ATTACK_SPEED, new EntityAttributeModifier(ATTACK_SPEED_MODIFIER_ID, "Tool modifier", -3.1F, EntityAttributeModifier.Operation.ADDITION));
         this.attributeModifiers = builder.build();
     }
-
-    @Override
-    public float getMiningSpeedMultiplier(ItemStack stack, BlockState state) {
-        return MaterialisationUtils.getToolDurability(stack) <= 0 ? -1 : MaterialisedMiningTool.super.getMiningSpeedMultiplier(stack, state);
-    }
     
     @Nonnull
     @Override

@@ -17,12 +17,10 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tag.BlockTags;
-import net.minecraft.tag.TagKey;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -39,20 +37,20 @@ import static net.minecraft.util.math.Direction.Axis.*;
 @Mixin(WorldRenderer.class)
 @Environment(EnvType.CLIENT)
 public class MixinWorldRenderer {
-    
+
     @Shadow private ClientWorld world;
-    
+
     @Shadow @Final private Long2ObjectMap<SortedSet<BlockBreakingInfo>> blockBreakingProgressions;
-    
+
     @Shadow @Final private MinecraftClient client;
-    
+
     @ModifyVariable(method = "render",
-                    at = @At(value = "INVOKE", target = "Lit/unimi/dsi/fastutil/objects/ObjectSet;iterator()Lit/unimi/dsi/fastutil/objects/ObjectIterator;",
-                             shift = At.Shift.BY, by = 2), ordinal = 0)
+            at = @At(value = "INVOKE", target = "Lit/unimi/dsi/fastutil/objects/ObjectSet;iterator()Lit/unimi/dsi/fastutil/objects/ObjectIterator;",
+                    shift = At.Shift.BY, by = 2), ordinal = 0)
     private ObjectIterator<Long2ObjectMap.Entry<SortedSet<BlockBreakingInfo>>> appendBlockBreakingProgressions(ObjectIterator<Long2ObjectMap.Entry<SortedSet<BlockBreakingInfo>>> originalIterator) {
         return new AppendedObjectIterator<>(originalIterator, getCurrentExtraBreakingInfos());
     }
-    
+
     @Unique
     private Long2ObjectMap<BlockBreakingInfo> getCurrentExtraBreakingInfos() {
         ItemStack heldStack = this.client.player.getInventory().getMainHandStack();
@@ -67,7 +65,7 @@ public class MixinWorldRenderer {
                         if (infos != null && !infos.isEmpty()) {
                             BlockBreakingInfo breakingInfo = infos.last();
                             int stage = breakingInfo.getStage();
-                            
+
                             List<BlockPos> positions = heldStack.getItem() instanceof MaterialisedHammerItem ? getHammerPos((BlockHitResult) crosshairTarget, crosshairPos) : getMegaAxePos((BlockHitResult) crosshairTarget, crosshairPos);
                             Long2ObjectMap<BlockBreakingInfo> map = new Long2ObjectLinkedOpenHashMap<>(positions.size());
                             for (BlockPos position : positions) {
@@ -84,10 +82,10 @@ public class MixinWorldRenderer {
                 }
             }
         }
-        
+
         return Long2ObjectMaps.emptyMap();
     }
-    
+
     @Unique
     private List<BlockPos> getHammerPos(BlockHitResult crosshairTarget, BlockPos crosshairPos) {
         List<BlockPos> positions = new ArrayList<>();
@@ -100,13 +98,13 @@ public class MixinWorldRenderer {
             }
         return positions;
     }
-    
+
     @Unique
     private List<BlockPos> getMegaAxePos(BlockHitResult crosshairTarget, BlockPos crosshairPos) {
         List<BlockPos> positions = new ArrayList<>();
         Direction.Axis axis = crosshairTarget.getSide().getAxis();
         Block log = world.getBlockState(crosshairPos).getBlock();
-        if (BlockTags.LOGS != TagKey.of(Registry.BLOCK_KEY, Registry.BLOCK.getId(log))) return Collections.emptyList();
+        if (!BlockTags.LOGS.contains(log)) return Collections.emptyList();
         LongSet posList = new LongOpenHashSet();
         AtomicReference<Block> leaves = new AtomicReference<>(null);
         for (int x = -1; x <= 1; x++)
@@ -118,7 +116,7 @@ public class MixinWorldRenderer {
                 }
         return positions;
     }
-    
+
     @Unique
     public void tryBreak(List<BlockPos> positions, LongSet posList, World world, BlockPos blockPos, PlayerEntity player, ItemStack stack, BlockPos ogPos, Block log, AtomicReference<Block> leaves, int leavesDistance) {
         long posLong = blockPos.asLong();
@@ -144,9 +142,9 @@ public class MixinWorldRenderer {
                         tryBreak(positions, posList, world, add, player, stack, ogPos, log, leaves, equalsLeaves ? leavesDistance + 1 : Math.max(0, leavesDistance - 2));
                 }
     }
-    
+
     @Unique
     private boolean isLeaves(BlockState state) {
-        return BlockTags.LEAVES == TagKey.of(Registry.BLOCK_KEY, Registry.BLOCK.getId(state.getBlock()));
+        return BlockTags.LEAVES.contains(state.getBlock());
     }
 }
