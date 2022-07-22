@@ -56,14 +56,14 @@ public class MaterialisationMixinPlugin implements IMixinConfigPlugin {
     
     @Override
     public void preApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
-        MappingResolver mappingResolver = FabricLoader.getInstance().getMappingResolver();
-        String itemRenderer = mappingResolver.mapClassName("intermediary", "net.minecraft.class_918");
-        String textRenderer = mappingResolver.mapClassName("intermediary", "net.minecraft.class_327");
-        String itemStack = mappingResolver.mapClassName("intermediary", "net.minecraft.class_1799");
-        String description = "(L" + textRenderer.replace('.', '/') + ";L" + itemStack.replace('.', '/') + ";IILjava/lang/String;)V";
-        String renderGuiItemOverlay = mappingResolver.mapMethodName("intermediary", "net.minecraft.class_918", "method_4022", "(Lnet/minecraft/class_327;Lnet/minecraft/class_1799;IILjava/lang/String;)V");
-        String isItemBarVisible = mappingResolver.mapMethodName("intermediary", "net.minecraft.class_1799", "method_31578", "()Z");
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT && isOptifineLoaded()) {
+            MappingResolver mappingResolver = FabricLoader.getInstance().getMappingResolver();
+            String itemRenderer = mappingResolver.mapClassName("intermediary", "net.minecraft.class_918");
+            String textRenderer = mappingResolver.mapClassName("intermediary", "net.minecraft.class_327");
+            String itemStack = mappingResolver.mapClassName("intermediary", "net.minecraft.class_1799");
+            String description = "(L" + textRenderer.replace('.', '/') + ";L" + itemStack.replace('.', '/') + ";IILjava/lang/String;)V";
+            String renderGuiItemOverlay = mappingResolver.mapMethodName("intermediary", "net.minecraft.class_918", "method_4022", "(Lnet/minecraft/class_327;Lnet/minecraft/class_1799;IILjava/lang/String;)V");
+            String isItemBarVisible = mappingResolver.mapMethodName("intermediary", "net.minecraft.class_1799", "method_31578", "()Z");
             if (targetClassName.equals(itemRenderer))
                 for (MethodNode method : targetClass.methods) {
                     if (method.name.equals(renderGuiItemOverlay) && method.desc.equals(description)) {

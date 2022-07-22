@@ -38,7 +38,6 @@
   },
   "accessWidener": "materialisation.accesswidener",
   "mixins": [
-    "materialisation.mixins.json",
-    "materialisation.plugin.mixins.json"
+    "materialisation.mixins.json"
   ]
 }
