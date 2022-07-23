@@ -15,6 +15,7 @@ import net.minecraft.util.registry.RegistryKey;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class BetterIngredient {
     @SuppressWarnings("CanBeFinal")
@@ -30,8 +31,12 @@ public class BetterIngredient {
         TagKey<Item> tag = TagKey.of(Registry.ITEM_KEY, new Identifier(content));
         List<ItemStack> itemStacks = new ArrayList<>();
         if (tag != null) {
-            for (RegistryEntry<Item> entry : Registry.ITEM.getEntryList(tag).get()) {
-                itemStacks.add(new ItemStack(entry.value(), count));
+            try {
+                for (RegistryEntry<Item> entry : Registry.ITEM.getEntryList(tag).get()) {
+                    itemStacks.add(new ItemStack(entry.value(), count));
+                }
+            } catch (NoSuchElementException e) {
+                e.printStackTrace();
             }
         }
         return itemStacks.toArray(new ItemStack[0]);

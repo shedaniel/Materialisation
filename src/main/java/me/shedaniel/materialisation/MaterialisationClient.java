@@ -186,50 +186,54 @@ public class MaterialisationClient implements ClientModInitializer {
         @Override
         public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
             BakedModelManager modelManager = MinecraftClient.getInstance().getBakedModelManager();
-            PartMaterial handleMaterial = MaterialisationUtils.getMatFromString(stack.getOrCreateNbt().getString("mt_0_material")).orElseGet(() -> PartMaterials.getKnownMaterials().findFirst().get());
-            PartMaterial headMaterial = MaterialisationUtils.getMatFromString(stack.getOrCreateNbt().getString("mt_1_material")).orElseGet(() -> PartMaterials.getKnownMaterials().findFirst().get());
-            boolean headBright = headMaterial.isBright();
-            int headColor = headMaterial.getToolColor();
-            Optional<Identifier> texturedHandleIdentifier = handleMaterial.getTexturedHandleIdentifier(tool.getToolType());
-            if (texturedHandleIdentifier.isPresent()) {
-                ModelIdentifier modelIdentifier = new ModelIdentifier(texturedHandleIdentifier.get(), "inventory");
-                BakedModel handleModel = modelManager.getModel(modelIdentifier);
-                context.fallbackConsumer().accept(handleModel);
-            } else {
-                int handleColor = handleMaterial.getToolColor();
-                boolean handleBright = handleMaterial.isBright();
-                context.pushTransform(quad -> {
-                    quad.nominalFace(GeometryHelper.lightFace(quad));
-                    quad.spriteColor(0, handleColor, handleColor, handleColor, handleColor);
-                    return true;
-                });
-                BakedModel handleModel = modelManager.getModel(handleBright ? brightHandleIdentifier : handleIdentifier);
-                context.fallbackConsumer().accept(handleModel);
-                context.popTransform();
-            }
-            Optional<Identifier> texturedHeadIdentifier = headMaterial.getTexturedHeadIdentifier(tool.getToolType());
-            if (texturedHeadIdentifier.isPresent()) {
-                ModelIdentifier modelIdentifier = new ModelIdentifier(texturedHeadIdentifier.get(), "inventory");
-                BakedModel headModel = modelManager.getModel(modelIdentifier);
-                context.fallbackConsumer().accept(headModel);
-            } else {
-                context.pushTransform(quad -> {
-                    quad.nominalFace(GeometryHelper.lightFace(quad));
-                    quad.spriteColor(0, headColor, headColor, headColor, headColor);
-                    return true;
-                });
-                BakedModel headModel = modelManager.getModel(headBright ? brightHeadIdentifier : headIdentifier);
-                context.fallbackConsumer().accept(headModel);
-                context.popTransform();
-            }
-            for (Map.Entry<Modifier, Integer> entry : MaterialisationUtils.getToolModifiers(stack).entrySet()) {
-                if (entry.getValue() > 0) {
-                    ModelIdentifier modifierModelId = getModifierModel(entry.getKey());
-                    if (modifierModelId != null) {
-                        BakedModel modifierModel = modelManager.getModel(modifierModelId);
-                        context.fallbackConsumer().accept(modifierModel);
+            try {
+                PartMaterial handleMaterial = MaterialisationUtils.getMatFromString(stack.getOrCreateNbt().getString("mt_0_material")).orElseGet(() -> PartMaterials.getKnownMaterials().findFirst().get());
+                PartMaterial headMaterial = MaterialisationUtils.getMatFromString(stack.getOrCreateNbt().getString("mt_1_material")).orElseGet(() -> PartMaterials.getKnownMaterials().findFirst().get());
+                boolean headBright = headMaterial.isBright();
+                int headColor = headMaterial.getToolColor();
+                Optional<Identifier> texturedHandleIdentifier = handleMaterial.getTexturedHandleIdentifier(tool.getToolType());
+                if (texturedHandleIdentifier.isPresent()) {
+                    ModelIdentifier modelIdentifier = new ModelIdentifier(texturedHandleIdentifier.get(), "inventory");
+                    BakedModel handleModel = modelManager.getModel(modelIdentifier);
+                    context.fallbackConsumer().accept(handleModel);
+                } else {
+                    int handleColor = handleMaterial.getToolColor();
+                    boolean handleBright = handleMaterial.isBright();
+                    context.pushTransform(quad -> {
+                        quad.nominalFace(GeometryHelper.lightFace(quad));
+                        quad.spriteColor(0, handleColor, handleColor, handleColor, handleColor);
+                        return true;
+                    });
+                    BakedModel handleModel = modelManager.getModel(handleBright ? brightHandleIdentifier : handleIdentifier);
+                    context.fallbackConsumer().accept(handleModel);
+                    context.popTransform();
+                }
+                Optional<Identifier> texturedHeadIdentifier = headMaterial.getTexturedHeadIdentifier(tool.getToolType());
+                if (texturedHeadIdentifier.isPresent()) {
+                    ModelIdentifier modelIdentifier = new ModelIdentifier(texturedHeadIdentifier.get(), "inventory");
+                    BakedModel headModel = modelManager.getModel(modelIdentifier);
+                    context.fallbackConsumer().accept(headModel);
+                } else {
+                    context.pushTransform(quad -> {
+                        quad.nominalFace(GeometryHelper.lightFace(quad));
+                        quad.spriteColor(0, headColor, headColor, headColor, headColor);
+                        return true;
+                    });
+                    BakedModel headModel = modelManager.getModel(headBright ? brightHeadIdentifier : headIdentifier);
+                    context.fallbackConsumer().accept(headModel);
+                    context.popTransform();
+                }
+                for (Map.Entry<Modifier, Integer> entry : MaterialisationUtils.getToolModifiers(stack).entrySet()) {
+                    if (entry.getValue() > 0) {
+                        ModelIdentifier modifierModelId = getModifierModel(entry.getKey());
+                        if (modifierModelId != null) {
+                            BakedModel modifierModel = modelManager.getModel(modifierModelId);
+                            context.fallbackConsumer().accept(modifierModel);
+                        }
                     }
                 }
+            } catch (NullPointerException | NoSuchElementException e) {
+                e.printStackTrace();
             }
         }
         
