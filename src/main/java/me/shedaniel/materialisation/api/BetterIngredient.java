@@ -5,13 +5,17 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tag.ItemTags;
 import net.minecraft.tag.Tag;
+import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Lazy;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryEntry;
+import net.minecraft.util.registry.RegistryKey;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class BetterIngredient {
     @SuppressWarnings("CanBeFinal")
@@ -24,11 +28,15 @@ public class BetterIngredient {
     private transient Lazy<ItemStack[]> stacks = new Lazy<>(() -> {
         if (type == Type.ITEM)
             return new ItemStack[]{new ItemStack(Registry.ITEM.get(new Identifier(content)), count)};
-        Tag<Item> tag = ItemTags.getTagGroup().getTag(new Identifier(content));
+        TagKey<Item> tag = TagKey.of(Registry.ITEM_KEY, new Identifier(content));
         List<ItemStack> itemStacks = new ArrayList<>();
         if (tag != null) {
-            for (Item value : tag.values()) {
-                itemStacks.add(new ItemStack(value, count));
+            try {
+                for (RegistryEntry<Item> entry : Registry.ITEM.getEntryList(tag).get()) {
+                    itemStacks.add(new ItemStack(entry.value(), count));
+                }
+            } catch (NoSuchElementException e) {
+                e.printStackTrace();
             }
         }
         return itemStacks.toArray(new ItemStack[0]);
@@ -62,12 +70,12 @@ public class BetterIngredient {
     }
 
     @SuppressWarnings("unused")
-    public static BetterIngredient fromTag(Tag.Identified<Item> tag) {
-        return new BetterIngredient(Type.TAG, tag.getId().toString());
+    public static BetterIngredient fromTag(TagKey<Item> tag) {
+        return new BetterIngredient(Type.TAG, tag.id().toString());
     }
 
-    public static BetterIngredient fromTag(Tag.Identified<Item> tag, int count) {
-        return new BetterIngredient(Type.TAG, tag.getId().toString(), count);
+    public static BetterIngredient fromTag(TagKey<Item> tag, int count) {
+        return new BetterIngredient(Type.TAG, tag.id().toString(), count);
     }
     
     public static BetterIngredient fromTag(Identifier tag) {

@@ -3,6 +3,7 @@ package me.shedaniel.materialisation.modmenu;
 import me.shedaniel.clothconfig2.gui.widget.DynamicElementListWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -52,7 +53,12 @@ public class MaterialisationOverridesListWidget extends DynamicElementListWidget
         public int getItemHeight() {
             return 11;
         }
-        
+
+        @Override
+        public List<? extends Selectable> narratables() {
+            return Collections.emptyList();
+        }
+
         @Override
         public List<? extends Element> children() {
             return Collections.emptyList();

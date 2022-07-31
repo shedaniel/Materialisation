@@ -6,15 +6,17 @@ import me.shedaniel.materialisation.config.ConfigHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.sound.PositionedSoundInstance;
-import net.minecraft.client.util.Rect2i;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.util.math.Rect2i;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.OrderedText;
@@ -25,55 +27,55 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.lwjgl.opengl.GL11;
 
 import java.io.File;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.FileAlreadyExistsException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class MaterialisationInstallListWidget extends DynamicElementListWidget<MaterialisationInstallListWidget.Entry> {
     private PackEntry selected;
-    
+
     public MaterialisationInstallListWidget(MinecraftClient client, int width, int height, int top, int bottom, Identifier backgroundLocation) {
         super(client, width, height, top, bottom, backgroundLocation);
     }
-    
+
     @Override
     public int getItemWidth() {
         return width - 11;
     }
-    
+
     @Override
     protected int getScrollbarPosition() {
         return width - 6;
     }
-    
+
     @Override
     public int addItem(Entry item) {
         return super.addItem(item);
     }
-    
+
     public void clearItemsPublic() {
         clearItems();
     }
-    
+
     @SuppressWarnings("CanBeFinal")
     public static class PackEntry extends Entry {
         private OnlinePack onlinePack;
         private MaterialisationInstallListWidget listWidget;
         private Rect2i bounds;
         private ButtonWidget clickWidget;
-        
+
         public PackEntry(MaterialisationInstallListWidget listWidget, OnlinePack onlinePack) {
             this.listWidget = listWidget;
             this.onlinePack = onlinePack;
             this.clickWidget = new ButtonWidget(0, 0, 100, 20, new TranslatableText("config.button.materialisation.download"), var1 -> {
                 MaterialisationInstallScreen screen = (MaterialisationInstallScreen) MinecraftClient.getInstance().currentScreen;
-                MinecraftClient.getInstance().openScreen(new MaterialisationDownloadingScreen(new TranslatableText("message.materialisation.fetching_file_data"), downloadingScreen -> {
+                MinecraftClient.getInstance().setScreen(new MaterialisationDownloadingScreen(new TranslatableText("message.materialisation.fetching_file_data"), downloadingScreen -> {
                     long size;
                     String textSize;
                     String name;
@@ -100,7 +102,7 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
                     }
                     downloadingScreen.queueNewScreen(new ConfirmScreen(t -> {
                         if (t) {
-                            MinecraftClient.getInstance().openScreen(new MaterialisationDownloadingScreen(new TranslatableText("message.materialisation.file_is_downloading"), screen1 -> {
+                            MinecraftClient.getInstance().setScreen(new MaterialisationDownloadingScreen(new TranslatableText("message.materialisation.file_is_downloading"), screen1 -> {
                                 try {
                                     FileUtils.copyURLToFile(url, file);
                                     assert screen != null;
@@ -112,12 +114,12 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
                             }));
                             return;
                         }
-                        MinecraftClient.getInstance().openScreen(screen);
+                        MinecraftClient.getInstance().setScreen(screen.getParent());
                     }, new TranslatableText("message.materialisation.do_you_want_to_download"), new TranslatableText("message.materialisation.download_file_details", name, textSize)));
                 }));
             });
         }
-        
+
         @Override
         public void render(MatrixStack stack, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
             this.bounds = new Rect2i(x, y, entryWidth, entryHeight);
@@ -128,15 +130,15 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
                 Tessellator tessellator = Tessellator.getInstance();
                 BufferBuilder buffer = tessellator.getBuffer();
                 float float_2 = listWidget.isFocused() ? 1.0F : 0.5F;
-                GL11.glColor4f(float_2, float_2, float_2, 1.0F);
-                buffer.begin(7, VertexFormats.POSITION);
+                RenderSystem.setShaderColor(float_2, float_2, float_2, 1.0F);
+                buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
                 buffer.vertex(itemMinX, y + getItemHeight() + 2, 0.0D).next();
                 buffer.vertex(itemMaxX, y + getItemHeight() + 2, 0.0D).next();
                 buffer.vertex(itemMaxX, y - 2, 0.0D).next();
                 buffer.vertex(itemMinX, y - 2, 0.0D).next();
                 tessellator.draw();
-                GL11.glColor4f(0.0F, 0.0F, 0.0F, 1.0F);
-                buffer.begin(7, VertexFormats.POSITION);
+                RenderSystem.setShaderColor(0.0F, 0.0F, 0.0F, 1.0F);
+                buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
                 buffer.vertex(itemMinX + 1, y + getItemHeight() + 1, 0.0D).next();
                 buffer.vertex(itemMaxX - 1, y + getItemHeight() + 1, 0.0D).next();
                 buffer.vertex(itemMaxX - 1, y - 1, 0.0D).next();
@@ -158,7 +160,7 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
             clickWidget.y = y + entryHeight / 2 - 10;
             clickWidget.render(stack, mouseX, mouseY, delta);
         }
-        
+
         @Override
         public boolean mouseClicked(double double_1, double double_2, int int_1) {
             boolean a = super.mouseClicked(double_1, double_2, int_1);
@@ -169,18 +171,23 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
             }
             return a;
         }
-        
+
         @Override
         public int getItemHeight() {
             return 39;
         }
-        
+
+        @Override
+        public List<? extends Selectable> narratables() {
+            return Collections.emptyList();
+        }
+
         @Override
         public List<? extends Element> children() {
             return Collections.singletonList(clickWidget);
         }
     }
-    
+
     public static class LoadingEntry extends Entry {
         @Override
         public void render(MatrixStack stack, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
@@ -199,63 +206,78 @@ public class MaterialisationInstallListWidget extends DynamicElementListWidget<M
             }
             TextRenderer font = MinecraftClient.getInstance().textRenderer;
             drawCenteredText(stack, font, new TranslatableText("config.text.materialisation.loading_packs"), x + entryWidth / 2, y + 5, 16777215);
-            drawCenteredString(stack, font, string_3, x + entryWidth / 2, y + 5 + 9, 8421504);
+            drawCenteredText(stack, font, string_3, x + entryWidth / 2, y + 5 + 9, 8421504);
         }
-        
+
         @Override
         public int getItemHeight() {
             return 20;
         }
-        
+
+        @Override
+        public List<? extends Selectable> narratables() {
+            return Collections.emptyList();
+        }
+
         @Override
         public List<? extends Element> children() {
             return Collections.emptyList();
         }
     }
-    
+
     public static class FailedEntry extends Entry {
         @Override
         public void render(MatrixStack stack, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isSelected, float delta) {
             TextRenderer font = MinecraftClient.getInstance().textRenderer;
             drawCenteredText(stack, font, new TranslatableText("config.text.materialisation.failed"), x + entryWidth / 2, y + 5, 16777215);
         }
-        
+
         @Override
         public int getItemHeight() {
             return 11;
         }
-        
+
+        @Override
+        public List<? extends Selectable> narratables() {
+            return Collections.emptyList();
+        }
+
         @Override
         public List<? extends Element> children() {
             return Collections.emptyList();
         }
     }
-    
+
     public static class EmptyEntry extends Entry {
         @SuppressWarnings("CanBeFinal")
         private int height;
-        
+
         public EmptyEntry(int height) {
             this.height = height;
         }
-        
+
         @Override
         public void render(MatrixStack matrixStack, int i, int i1, int i2, int i3, int i4, int i5, int i6, boolean b, float v) {
-            
+
         }
-        
+
         @Override
         public int getItemHeight() {
             return height;
         }
-        
+
+        @Override
+        public List<? extends Selectable> narratables() {
+            return Collections.emptyList();
+        }
+
         @Override
         public List<? extends Element> children() {
             return Collections.emptyList();
         }
     }
-    
+
     public static abstract class Entry extends DynamicElementListWidget.ElementEntry<Entry> {
-        
+
     }
 }

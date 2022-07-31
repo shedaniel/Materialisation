@@ -9,7 +9,7 @@ import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.collection.WeightedPicker;
+import net.minecraft.util.collection.Weighting;
 import net.minecraft.util.math.MathHelper;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -83,7 +83,7 @@ public class MixinEnchantmentHelper {
                 int_1 = MathHelper.clamp(Math.round((float) int_1 + (float) int_1 * float_1), 1, Integer.MAX_VALUE);
                 List<EnchantmentLevelEntry> list_2 = EnchantmentHelper.getPossibleEntries(int_1, itemStack_1, boolean_1);
                 if (!list_2.isEmpty()) {
-                    list_1.add(WeightedPicker.getRandom(random_1, list_2));
+                    (Weighting.getRandom(random_1, list_2)).ifPresent(list_1::add);
                     
                     while (random_1.nextInt(50) <= int_1) {
                         int_1 = int_1 * 4 / 5 + 1;
@@ -96,8 +96,7 @@ public class MixinEnchantmentHelper {
                         if (list_2.isEmpty()) {
                             break;
                         }
-                        
-                        list_1.add(WeightedPicker.getRandom(random_1, list_2));
+                        (Weighting.getRandom(random_1, list_2)).ifPresent(list_1::add);
                         int_1 /= 2;
                     }
                 }

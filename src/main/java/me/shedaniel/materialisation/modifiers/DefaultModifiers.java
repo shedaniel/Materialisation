@@ -18,7 +18,7 @@ import java.util.List;
 
 public class DefaultModifiers implements DefaultModifiersSupplier {
     public static final Modifier HASTE;
-    public static final Modifier DIAMOND;
+    // public static final Modifier DIAMOND;
     public static final Modifier EMERALD;
     public static final Modifier SHARP;
     public static final Modifier LUCK;
@@ -58,7 +58,7 @@ public class DefaultModifiers implements DefaultModifiersSupplier {
                 })
                 .model(new Identifier(ModReference.MOD_ID, "modifier/pickaxe_haste"), ToolType.PICKAXE)
                 .build();
-        DIAMOND = Modifier.builder()
+        /*DIAMOND = Modifier.builder()
                 .applicableToolTypes(ImmutableList.copyOf(ToolType.MINING_TOOLS))
                 .maximumLevel(1)
                 .durabilityMultiplier(0.9f)
@@ -77,6 +77,8 @@ public class DefaultModifiers implements DefaultModifiersSupplier {
                 .model(new Identifier(ModReference.MOD_ID, "modifier/hammer_diamond"), ToolType.HAMMER)
                 .model(new Identifier(ModReference.MOD_ID, "modifier/shovel_diamond"), ToolType.SHOVEL)
                 .build();
+
+         */
         EMERALD = Modifier.builder()
                 .applicableToolTypes(ImmutableList.copyOf(ToolType.ALL))
                 .maximumLevel(1)
@@ -200,7 +202,7 @@ public class DefaultModifiers implements DefaultModifiersSupplier {
     @Override
     public void registerModifiers() {
         Registry.register(Materialisation.MODIFIERS, "materialisation:haste", HASTE);
-        Registry.register(Materialisation.MODIFIERS, "materialisation:diamond", DIAMOND);
+        // Registry.register(Materialisation.MODIFIERS, "materialisation:diamond", DIAMOND);
         Registry.register(Materialisation.MODIFIERS, "materialisation:emerald", EMERALD);
         Registry.register(Materialisation.MODIFIERS, "materialisation:sharp", SHARP);
         Registry.register(Materialisation.MODIFIERS, "materialisation:luck", LUCK);
@@ -219,9 +221,12 @@ public class DefaultModifiers implements DefaultModifiersSupplier {
                 .registerIngredient(3, BetterIngredient.fromItem(Items.REDSTONE_BLOCK, 10))
                 .registerIngredient(4, BetterIngredient.fromItem(Items.REDSTONE_BLOCK, 16))
                 .build());
+        /*
         handler.registerDefaultIngredient(DIAMOND, ModifierIngredient.builder()
                 .registerIngredient(1, BetterIngredient.fromItem(Items.DIAMOND))
                 .build());
+
+         */
         handler.registerDefaultIngredient(EMERALD, ModifierIngredient.builder()
                 .registerIngredient(1, BetterIngredient.fromItem(Items.EMERALD))
                 .build());

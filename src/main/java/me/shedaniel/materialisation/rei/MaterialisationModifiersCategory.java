@@ -1,13 +1,18 @@
 package me.shedaniel.materialisation.rei;
 
+import me.shedaniel.materialisation.Materialisation;
 import me.shedaniel.materialisation.api.Modifier;
 import me.shedaniel.materialisation.modmenu.MaterialisationCloth;
 import me.shedaniel.materialisation.utils.RomanNumber;
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
-import me.shedaniel.rei.api.RecipeCategory;
-import me.shedaniel.rei.api.widgets.Widgets;
-import me.shedaniel.rei.gui.widget.Widget;
+import me.shedaniel.rei.api.client.gui.Renderer;
+import me.shedaniel.rei.api.client.gui.widgets.Widget;
+import me.shedaniel.rei.api.client.gui.widgets.Widgets;
+import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
+import me.shedaniel.rei.api.common.category.CategoryIdentifier;
+import me.shedaniel.rei.api.common.entry.EntryStack;
+import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.resource.language.I18n;
@@ -20,26 +25,36 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-public class MaterialisationModifiersCategory implements RecipeCategory<MaterialisationModifiersDisplay> {
-    @NotNull
+public class MaterialisationModifiersCategory implements DisplayCategory<MaterialisationModifiersDisplay> {
+
+    public static final EntryStack<?> LOGO = EntryStacks.of(Materialisation.MATERIALISED_AXE);
+
     @Override
     public Identifier getIdentifier() {
+        return getCategoryIdentifier().getIdentifier();
+    }
+
+    @Override
+    public CategoryIdentifier<? extends MaterialisationModifiersDisplay> getCategoryIdentifier() {
         return MaterialisationREIPlugin.MODIFIERS;
     }
-    
-    @NotNull
     @Override
-    public String getCategoryName() {
-        return I18n.translate("category.materialisation.modifiers");
+    public Renderer getIcon() {
+        return LOGO;
     }
-    
+
+    @Override
+    public Text getTitle() {
+        return new TranslatableText("category.materialisation.modifiers");
+    }
+
     @Override
     public int getDisplayHeight() {
         return 140;
     }
-    
+
     @Override
-    public int getFixedRecipesPerPage() {
+    public int getFixedDisplaysPerPage() {
         return 1;
     }
     

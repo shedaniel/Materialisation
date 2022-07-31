@@ -1,55 +1,57 @@
 package me.shedaniel.materialisation.rei;
 
-import com.google.common.collect.ImmutableList;
-import me.shedaniel.rei.api.EntryStack;
-import me.shedaniel.rei.api.RecipeDisplay;
+import me.shedaniel.rei.api.common.category.CategoryIdentifier;
+import me.shedaniel.rei.api.common.display.Display;
+import me.shedaniel.rei.api.common.entry.EntryIngredient;
+import me.shedaniel.rei.api.common.entry.EntryStack;
+import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("CanBeFinal")
-public class MaterialisingTableDisplay implements RecipeDisplay {
-    private EntryStack first, result;
-    private EntryStack second;
+public class MaterialisingTableDisplay implements Display {
+    private EntryStack<?> first, result;
+    private EntryStack<?> second;
     
     public MaterialisingTableDisplay(ItemStack first, ItemStack second, ItemStack result) {
-        this(EntryStack.create(first).copy(), EntryStack.create(second).copy(), EntryStack.create(result).copy());
+        this(EntryStacks.of(first).copy(), EntryStacks.of(second).copy(), EntryStacks.of(result).copy());
     }
     
-    public MaterialisingTableDisplay(EntryStack first, EntryStack second, EntryStack result) {
+    public MaterialisingTableDisplay(EntryStack<?> first, EntryStack<?> second, EntryStack<?> result) {
         this.first = first;
         this.second = second;
         this.result = result;
     }
     
-    public EntryStack getFirst() {
+    public EntryStack<?> getFirst() {
         return first;
     }
     
-    public List<EntryStack> getSecond() {
-        return Collections.singletonList(second);
+    public EntryStack<?> getSecond() {
+        return second;
     }
     
-    public EntryStack getResult() {
+    public EntryStack<?> getResult() {
         return result;
     }
 
     @Override
-    public @NotNull List<List<EntryStack>> getInputEntries() {
-        return ImmutableList.of(Collections.singletonList(getFirst()), getSecond());
+    public List<EntryIngredient> getInputEntries() {
+        List<EntryIngredient> ingredients = new ArrayList<>(Collections.singletonList(EntryIngredient.of(getFirst())));
+        ingredients.add(EntryIngredient.of(getSecond()));
+        return ingredients;
     }
 
     @Override
-    public @NotNull List<List<EntryStack>> getResultingEntries() {
-        return ImmutableList.of(Collections.singletonList(getResult()));
+    public List<EntryIngredient> getOutputEntries() {
+        return Collections.singletonList(EntryIngredient.of(getResult()));
     }
 
-    @NotNull
     @Override
-    public Identifier getRecipeCategory() {
+    public CategoryIdentifier<?> getCategoryIdentifier() {
         return MaterialisationREIPlugin.MATERIALISING_TABLE;
     }
 }

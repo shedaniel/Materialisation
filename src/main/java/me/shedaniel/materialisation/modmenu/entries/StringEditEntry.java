@@ -4,12 +4,14 @@ import com.google.common.collect.Lists;
 import me.shedaniel.materialisation.modmenu.MaterialisationCreateOverrideListWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.NarratorManager;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -58,7 +60,12 @@ public class StringEditEntry extends MaterialisationCreateOverrideListWidget.Edi
         resetButton.render(stack, mouseX, mouseY, delta);
         buttonWidget.render(stack, mouseX, mouseY, delta);
     }
-    
+
+    @Override
+    public List<? extends Selectable> narratables() {
+        return new ArrayList<>();
+    }
+
     @Override
     public String getDefaultValueString() {
         return defaultValue;

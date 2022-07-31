@@ -1,15 +1,14 @@
 package me.shedaniel.materialisation.modmenu;
 
-import io.github.prospector.modmenu.api.ConfigScreenFactory;
-import io.github.prospector.modmenu.api.ModMenuApi;
-import me.shedaniel.materialisation.ModReference;
+import com.terraformersmc.modmenu.api.ConfigScreenFactory;
+import com.terraformersmc.modmenu.api.ModMenuApi;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.gui.screen.Screen;
 
-import java.util.function.Function;
+import javax.annotation.Nullable;
 
 public class MaterialisationModMenu implements ModMenuApi {
     @Override
+    @Nullable
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
         if (!FabricLoader.getInstance().isModLoaded("cloth-config2"))
             return null;

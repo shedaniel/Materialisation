@@ -3,12 +3,13 @@ package me.shedaniel.materialisation.blocks;
 import me.shedaniel.materialisation.ModReference;
 import me.shedaniel.materialisation.gui.MaterialisingTableScreenHandler;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.*;
 import net.minecraft.entity.ai.pathing.NavigationType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.screen.*;
+import net.minecraft.screen.NamedScreenHandlerFactory;
+import net.minecraft.screen.ScreenHandlerContext;
+import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.state.StateManager;
 import net.minecraft.text.Text;
@@ -34,8 +35,9 @@ public class MaterialisingTableBlock extends HorizontalFacingBlock {
     }
     
     public MaterialisingTableBlock() {
-        super(FabricBlockSettings.of(Material.METAL, MaterialColor.WHITE).strength(5.0F, 1200.0F).breakByTool(FabricToolTags.PICKAXES).drops(new Identifier(ModReference.MOD_ID, "blocks/materialising_table")).sounds(BlockSoundGroup.METAL));
+        super(FabricBlockSettings.of(Material.METAL, MapColor.WHITE).strength(5.0F, 1200.0F).drops(new Identifier(ModReference.MOD_ID, "blocks/materialising_table")).sounds(BlockSoundGroup.METAL));
         this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH));
+        //breakByTool(FabricToolTags.PICKAXES)
     }
     
     @Override

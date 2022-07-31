@@ -17,10 +17,12 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tag.BlockTags;
+import net.minecraft.tag.TagKey;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -53,14 +55,14 @@ public class MixinWorldRenderer {
     
     @Unique
     private Long2ObjectMap<BlockBreakingInfo> getCurrentExtraBreakingInfos() {
-        ItemStack heldStack = this.client.player.inventory.getMainHandStack();
+        ItemStack heldStack = this.client.player.getInventory().getMainHandStack();
         if (heldStack.getItem() instanceof MaterialisedHammerItem || heldStack.getItem() instanceof MaterialisedMegaAxeItem) {
             if (!client.player.isSneaking()) {
                 HitResult crosshairTarget = client.crosshairTarget;
                 if (crosshairTarget instanceof BlockHitResult) {
                     BlockPos crosshairPos = ((BlockHitResult) crosshairTarget).getBlockPos();
                     BlockState crosshairState = world.getBlockState(crosshairPos);
-                    if (heldStack.isEffectiveOn(crosshairState) || (!crosshairState.isToolRequired() && heldStack.getMiningSpeedMultiplier(crosshairState) > 1)) {
+                    if (heldStack.isSuitableFor(crosshairState) || (!crosshairState.isToolRequired() && heldStack.getMiningSpeedMultiplier(crosshairState) > 1)) {
                         SortedSet<BlockBreakingInfo> infos = this.blockBreakingProgressions.get(crosshairPos.asLong());
                         if (infos != null && !infos.isEmpty()) {
                             BlockBreakingInfo breakingInfo = infos.last();
@@ -70,7 +72,7 @@ public class MixinWorldRenderer {
                             Long2ObjectMap<BlockBreakingInfo> map = new Long2ObjectLinkedOpenHashMap<>(positions.size());
                             for (BlockPos position : positions) {
                                 BlockState state = world.getBlockState(position);
-                                if (heldStack.isEffectiveOn(state) || (!state.isToolRequired() && heldStack.getMiningSpeedMultiplier(state) > 1)) {
+                                if (heldStack.isSuitableFor(state) || (!state.isToolRequired() && heldStack.getMiningSpeedMultiplier(state) > 1)) {
                                     BlockBreakingInfo info = new BlockBreakingInfo(breakingInfo.hashCode(), position);
                                     info.setStage(stage);
                                     map.put(position.asLong(), info);
@@ -104,7 +106,7 @@ public class MixinWorldRenderer {
         List<BlockPos> positions = new ArrayList<>();
         Direction.Axis axis = crosshairTarget.getSide().getAxis();
         Block log = world.getBlockState(crosshairPos).getBlock();
-        if (!BlockTags.LOGS.contains(log)) return Collections.emptyList();
+        if (BlockTags.LOGS != TagKey.of(Registry.BLOCK_KEY, Registry.BLOCK.getId(log))) return Collections.emptyList();
         LongSet posList = new LongOpenHashSet();
         AtomicReference<Block> leaves = new AtomicReference<>(null);
         for (int x = -1; x <= 1; x++)
@@ -131,7 +133,7 @@ public class MixinWorldRenderer {
         boolean equalsLeaves = block.equals(leaves.get());
         if (!equalsLog && !equalsLeaves)
             return;
-        if (equalsLog && (stack.isEffectiveOn(state) || (!state.isToolRequired() && stack.getMiningSpeedMultiplier(state) > 1))) {
+        if (equalsLog && (stack.isSuitableFor(state) || (!state.isToolRequired() && stack.getMiningSpeedMultiplier(state) > 1))) {
             positions.add(blockPos);
         }
         for (int x = -1; x <= 1; x++)
@@ -145,6 +147,6 @@ public class MixinWorldRenderer {
     
     @Unique
     private boolean isLeaves(BlockState state) {
-        return BlockTags.LEAVES.contains(state.getBlock());
+        return BlockTags.LEAVES == TagKey.of(Registry.BLOCK_KEY, Registry.BLOCK.getId(state.getBlock()));
     }
 }

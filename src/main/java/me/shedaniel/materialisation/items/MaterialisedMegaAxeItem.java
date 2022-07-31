@@ -25,9 +25,12 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
 import net.minecraft.tag.BlockTags;
+import net.minecraft.tag.TagKey;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
@@ -64,10 +67,10 @@ public class MaterialisedMegaAxeItem extends AxeItem implements MaterialisedMini
                 }
         return true;
     }
-    
+
     @Override
     public float getMiningSpeedMultiplier(ItemStack stack, BlockState state) {
-        return MaterialisationUtils.getToolDurability(stack) <= 0 ? -1 : super.getMiningSpeedMultiplier(stack, state);
+        return MaterialisationUtils.getToolDurability(stack) <= 0 ? -1 : MaterialisedMiningTool.super.getMiningSpeedMultiplier(stack, state);
     }
     
     public void tryBreak(LongSet posList, World world, BlockPos blockPos, PlayerEntity player, ItemStack stack, BlockPos ogPos, Block log, AtomicReference<Block> leaves, int leavesDistance) {
@@ -83,7 +86,7 @@ public class MaterialisedMegaAxeItem extends AxeItem implements MaterialisedMini
         boolean equalsLeaves = block.equals(leaves.get());
         if (!equalsLog && !equalsLeaves)
             return;
-        if (equalsLog && (stack.isEffectiveOn(state) || (!state.isToolRequired() && stack.getMiningSpeedMultiplier(state) > 1))) {
+        if (equalsLog && (stack.isSuitableFor(state) || (!state.isToolRequired() && stack.getMiningSpeedMultiplier(state) > 1))) {
             world.breakBlock(blockPos, !player.isCreative(), player);
             takeDamage(world, state, blockPos, player, stack);
         } else {
@@ -100,17 +103,17 @@ public class MaterialisedMegaAxeItem extends AxeItem implements MaterialisedMini
     
     private void takeDamage(World world, BlockState blockState, BlockPos blockPos, PlayerEntity playerEntity, ItemStack stack) {
         if (!world.isClient && blockState.getHardness(world, blockPos) != 0.0F)
-            if (!playerEntity.world.isClient && !playerEntity.abilities.creativeMode)
+            if (!playerEntity.world.isClient && !playerEntity.getAbilities().creativeMode)
                 if (MaterialisationUtils.getToolDurability(stack) > 0)
                     MaterialisationUtils.applyDamage(stack, 1, playerEntity.getRandom());
     }
     
     private boolean isLogs(BlockState state) {
-        return BlockTags.LOGS.contains(state.getBlock());
+        return BlockTags.LOGS == TagKey.of(Registry.BLOCK_KEY, Registry.BLOCK.getId(state.getBlock()));
     }
     
     private boolean isLeaves(BlockState state) {
-        return BlockTags.LEAVES.contains(state.getBlock());
+        return BlockTags.LEAVES == TagKey.of(Registry.BLOCK_KEY, Registry.BLOCK.getId(state.getBlock()));
     }
     
     @Nonnull
@@ -132,7 +135,7 @@ public class MaterialisedMegaAxeItem extends AxeItem implements MaterialisedMini
             if (!world.isClient) {
                 world.setBlockState(blockPos, block.getDefaultState().with(PillarBlock.AXIS, blockState.get(PillarBlock.AXIS)), 11);
                 if (playerEntity_1 != null) {
-                    if (!playerEntity_1.world.isClient && !playerEntity_1.abilities.creativeMode)
+                    if (!playerEntity_1.world.isClient && !playerEntity_1.getAbilities().creativeMode)
                         if (MaterialisationUtils.applyDamage(itemStack, 1, playerEntity_1.getRandom())) {
                             playerEntity_1.sendToolBreakStatus(context.getHand());
                             Item item_1 = itemStack.getItem();
@@ -154,7 +157,7 @@ public class MaterialisedMegaAxeItem extends AxeItem implements MaterialisedMini
     
     @Override
     public boolean postHit(ItemStack stack, LivingEntity livingEntity_1, LivingEntity livingEntity_2) {
-        if (!livingEntity_1.world.isClient && (!(livingEntity_1 instanceof PlayerEntity) || !((PlayerEntity) livingEntity_1).abilities.creativeMode))
+        if (!livingEntity_1.world.isClient && (!(livingEntity_1 instanceof PlayerEntity) || !((PlayerEntity) livingEntity_1).getAbilities().creativeMode))
             if (MaterialisationUtils.getToolDurability(stack) > 0)
                 if (MaterialisationUtils.applyDamage(stack, 2, livingEntity_1.getRandom())) {
                     livingEntity_1.sendEquipmentBreakStatus(EquipmentSlot.MAINHAND);
@@ -171,7 +174,7 @@ public class MaterialisedMegaAxeItem extends AxeItem implements MaterialisedMini
     @Override
     public boolean postMine(ItemStack stack, World world_1, BlockState blockState_1, BlockPos blockPos_1, LivingEntity livingEntity_1) {
         if (!world_1.isClient && blockState_1.getHardness(world_1, blockPos_1) != 0.0F)
-            if (!livingEntity_1.world.isClient && (!(livingEntity_1 instanceof PlayerEntity) || !((PlayerEntity) livingEntity_1).abilities.creativeMode))
+            if (!livingEntity_1.world.isClient && (!(livingEntity_1 instanceof PlayerEntity) || !((PlayerEntity) livingEntity_1).getAbilities().creativeMode))
                 if (MaterialisationUtils.getToolDurability(stack) > 0)
                     if (MaterialisationUtils.applyDamage(stack, 1, livingEntity_1.getRandom())) {
                         livingEntity_1.sendEquipmentBreakStatus(EquipmentSlot.MAINHAND);

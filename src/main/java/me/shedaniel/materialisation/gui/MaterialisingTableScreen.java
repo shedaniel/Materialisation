@@ -9,6 +9,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -40,10 +41,10 @@ public class MaterialisingTableScreen extends MaterialisingScreenBase<Materialis
         this.nameField.changeFocus(true);
         this.nameField.setEditableColor(-1);
         this.nameField.setUneditableColor(-1);
-        this.nameField.setHasBorder(false);
+        this.nameField.setTextFieldFocused(false); // setHasBorder
         this.nameField.setMaxLength(35);
         this.nameField.setChangedListener(this::onRenamed);
-        this.children.add(this.nameField);
+        this.addDrawableChild(this.nameField);
         this.setInitialFocus(this.nameField);
     }
     
@@ -93,7 +94,9 @@ public class MaterialisingTableScreen extends MaterialisingScreenBase<Materialis
     
     @Override
     protected void drawBackground(MatrixStack matrixStack, float delta, int mouseX, int mouseY) {
-        this.client.getTextureManager().bindTexture(TEXTURE);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderTexture(0, TEXTURE);
         int posX = x;
         int posY = y;
         this.drawTexture(matrixStack, posX, posY, 0, 0, this.backgroundWidth, this.backgroundHeight);
@@ -101,7 +104,7 @@ public class MaterialisingTableScreen extends MaterialisingScreenBase<Materialis
         if ((this.handler.getSlot(0).hasStack() || this.handler.getSlot(1).hasStack()) && !this.handler.getSlot(2).hasStack()) {
             this.drawTexture(matrixStack, posX + 99, posY + 45, this.backgroundWidth, 0, 28, 21);
         }
-        this.nameField.render(matrixStack, mouseY, mouseY, delta);
+        this.nameField.render(matrixStack, mouseX, mouseY, delta);
     }
     
     @Override
@@ -112,5 +115,9 @@ public class MaterialisingTableScreen extends MaterialisingScreenBase<Materialis
             this.nameField.setEditable(!stack.isEmpty());
             this.nameField.setChangedListener(this::onRenamed);
         }
+    }
+
+    public static Identifier getTEXTURE() {
+        return TEXTURE;
     }
 }

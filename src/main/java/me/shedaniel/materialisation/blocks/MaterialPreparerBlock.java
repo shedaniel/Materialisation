@@ -39,7 +39,7 @@ public class MaterialPreparerBlock extends HorizontalFacingBlock implements Name
     }
     
     public MaterialPreparerBlock() {
-        super(FabricBlockSettings.of(new FabricMaterialBuilder(MaterialColor.WOOD).burnable().build()).strength(3, 3).drops(new Identifier(ModReference.MOD_ID, "blocks/material_preparer")).sounds(BlockSoundGroup.WOOD));
+        super(FabricBlockSettings.of(new FabricMaterialBuilder(Material.WOOD.getColor()).burnable().build()).strength(2.5F, 3).drops(new Identifier(ModReference.MOD_ID, "blocks/material_preparer")).sounds(BlockSoundGroup.WOOD));
         this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH));
     }
     

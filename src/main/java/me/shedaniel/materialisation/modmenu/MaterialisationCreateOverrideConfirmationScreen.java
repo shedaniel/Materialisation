@@ -41,7 +41,7 @@ public class MaterialisationCreateOverrideConfirmationScreen extends Screen {
     public boolean keyPressed(int int_1, int int_2, int int_3) {
         if (int_1 == 256 && this.shouldCloseOnEsc()) {
             assert client != null;
-            client.openScreen(parent);
+            client.setScreen(parent);
             return true;
         }
         return super.keyPressed(int_1, int_2, int_3);
@@ -50,11 +50,11 @@ public class MaterialisationCreateOverrideConfirmationScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-        addButton(new ButtonWidget(4, 4, 75, 20, new TranslatableText("gui.back"), var1 -> {
+        addSelectableChild(new ButtonWidget(4, 4, 75, 20, new TranslatableText("gui.back"), var1 -> {
             assert client != null;
-            client.openScreen(parent);
+            client.setScreen(parent);
         }));
-        addButton(new ButtonWidget(width - 79, 4, 75, 20, new TranslatableText("config.button.materialisation.confirm"), var1 -> {
+        addSelectableChild(new ButtonWidget(width - 79, 4, 75, 20, new TranslatableText("config.button.materialisation.confirm"), var1 -> {
             if (!ConfigHelper.loading) {
                 try {
                     FileWriter fileWriter = new FileWriter(file, false);
@@ -72,7 +72,7 @@ public class MaterialisationCreateOverrideConfirmationScreen extends Screen {
                     }
                     fileWriter.write(ConfigHelper.GSON.toJson(object));
                     fileWriter.close();
-                    MinecraftClient.getInstance().openScreen(new MaterialisationLoadingConfigScreen(og));
+                    MinecraftClient.getInstance().setScreen(new MaterialisationLoadingConfigScreen(og));
                     ConfigHelper.loadConfigAsync();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -100,7 +100,7 @@ public class MaterialisationCreateOverrideConfirmationScreen extends Screen {
             }
             entries.add(new MaterialisationOverridesListWidget.TextEntry(new LiteralText(" ")));
         }
-        children.add(listWidget = new MaterialisationOverridesListWidget(client, width, height, 28, height, DrawableHelper.BACKGROUND_TEXTURE));
+        addDrawableChild(listWidget = new MaterialisationOverridesListWidget(client, width, height, 28, height, DrawableHelper.OPTIONS_BACKGROUND_TEXTURE));
         for (MaterialisationOverridesListWidget.Entry entry : entries) {
             listWidget.addItem(entry);
         }

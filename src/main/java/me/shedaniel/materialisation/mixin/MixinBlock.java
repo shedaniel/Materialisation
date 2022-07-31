@@ -36,7 +36,7 @@ public abstract class MixinBlock {
                 for (int i = 0; i < stacks.size(); i++) {
                     ItemStack itemStack = stacks.get(i);
                     Optional<Recipe<Inventory>> first = recipes.stream().filter(
-                            recipe -> recipe.getPreviewInputs().get(0).test(itemStack)
+                            recipe -> recipe.getIngredients().get(0).test(itemStack)
                     ).findFirst();
                     int finalI = i;
                     first.ifPresent(recipe -> outputStacks.set(finalI, recipe.getOutput().copy()));

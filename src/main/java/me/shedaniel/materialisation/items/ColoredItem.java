@@ -8,7 +8,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
@@ -58,7 +58,7 @@ public class ColoredItem extends Item {
     @Override
     public void appendTooltip(ItemStack stack, World world_1, List<Text> list, TooltipContext tooltipContext_1) {
         super.appendTooltip(stack, world_1, list, tooltipContext_1);
-        CompoundTag tag = stack.getOrCreateTag();
+        NbtCompound tag = stack.getOrCreateNbt();
         if (tag.contains("mt_0_material")) {
             PartMaterial material = MaterialisationUtils.getMaterialFromPart(stack);
             if (material != null) {

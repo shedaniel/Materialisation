@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import me.shedaniel.materialisation.ModReference;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
@@ -54,10 +55,16 @@ public class MaterialPreparerScreen extends MaterialisingScreenBase<MaterialPrep
 
     @Override
     protected void drawBackground(MatrixStack matrixStack, float v, int i, int i1) {
-        this.client.getTextureManager().bindTexture(TEXTURE);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderTexture(0, TEXTURE);
         this.drawTexture(matrixStack, x, y, 0, 0, this.backgroundWidth, this.backgroundHeight);
         if ((this.handler.getSlot(0).hasStack() || this.handler.getSlot(1).hasStack()) && !this.handler.getSlot(2).hasStack()) {
             this.drawTexture(matrixStack, x + 99, y + 45 - 26, this.backgroundWidth, 0, 28, 21);
         }
+    }
+
+    public static Identifier getTEXTURE() {
+        return TEXTURE;
     }
 }
