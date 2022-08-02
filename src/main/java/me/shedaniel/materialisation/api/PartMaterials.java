@@ -34,6 +34,7 @@ public class PartMaterials {
         return (ConfigPack) MATERIALS.get("default:default");
     }
     
+    @SuppressWarnings("UnusedReturnValue")
     public static MaterialsPack registerPack(MaterialsPack materialsPack) {
         return MATERIALS.put(materialsPack.getIdentifier().toString(), materialsPack);
     }
@@ -42,6 +43,7 @@ public class PartMaterials {
         return getKnownMaterialList().stream();
     }
     
+    @SuppressWarnings("DeprecatedIsStillUsed")
     @Deprecated
     public static List<PartMaterial> getKnownMaterialList() {
         List<PartMaterial> list = Lists.newArrayList();
@@ -49,6 +51,7 @@ public class PartMaterials {
         return list;
     }
     
+    @SuppressWarnings("DeprecatedIsStillUsed")
     @Deprecated
     public static Map<String, MaterialsPack> getMaterialsMap() {
         return MATERIALS;
@@ -60,7 +63,7 @@ public class PartMaterials {
     
     public static void clearMaterials() {
         MATERIALS.clear();
-        ConfigPackInfo packInfo = new ConfigPackInfo("Default Pack", "default:default", Collections.emptyList(), Collections.emptyList(), "0.1.0");
+        ConfigPackInfo packInfo = new ConfigPackInfo("Default Pack", "default:default", Collections.emptyList(), Collections.emptyList(), "0.1.1");
         MATERIALS.put("default:default", new ConfigPack(packInfo.withDescription("The default material pack that materials with no origin goes to."), Maps.newLinkedHashMap()));
     }
     

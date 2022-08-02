@@ -2,20 +2,22 @@ package me.shedaniel.materialisation.config;
 
 import me.shedaniel.materialisation.api.BetterIngredient;
 import me.shedaniel.materialisation.api.PartMaterial;
+import me.shedaniel.materialisation.api.ToolType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
+@SuppressWarnings("ALL")
 public class MaterialisationConfig {
     
     public static class ConfigIngredient {
+        @SuppressWarnings("CanBeFinal")
         public BetterIngredient.Type type;
+        @SuppressWarnings("CanBeFinal")
         public String content;
+        @SuppressWarnings("CanBeFinal")
         public int count;
         
         public ConfigIngredient(BetterIngredient.Type type, String content) {
@@ -34,7 +36,9 @@ public class MaterialisationConfig {
     }
     
     public static class ConfigIngredients {
+        @SuppressWarnings("CanBeFinal")
         public ConfigIngredient ingredient;
+        @SuppressWarnings("CanBeFinal")
         public float multiplier;
         
         public ConfigIngredients(ConfigIngredient ingredient, float multiplier) {
@@ -62,6 +66,8 @@ public class MaterialisationConfig {
         public List<ConfigIngredients> ingredients;
         // Will be rounded down
         public double fullAmount;
+        public Map<ToolType, Identifier> texturedHeadIdentifiers = new HashMap<>();
+        public Map<ToolType, Identifier> texturedHandleIdentifiers = new HashMap<>();
         private transient Integer color;
         private transient Map<BetterIngredient, Float> ingredientFloatMap = null;
         private transient Identifier identifierCache = null;
@@ -81,6 +87,32 @@ public class MaterialisationConfig {
             this.bright = partMaterial.isBright();
             this.ingredients = ConfigHelper.fromMap(partMaterial.getIngredientMap());
             this.fullAmount = partMaterial.getFullAmount();
+            this.texturedHeadIdentifiers = new HashMap<>(partMaterial.getTexturedHeadIdentifiers());
+            this.texturedHandleIdentifiers = new HashMap<>(partMaterial.getTexturedHandleIdentifiers());
+        }
+        
+        @Override
+        public Map<ToolType, Identifier> getTexturedHeadIdentifiers() {
+            if (texturedHeadIdentifiers == null) return Collections.emptyMap();
+            return texturedHeadIdentifiers;
+        }
+        
+        @Override
+        public Map<ToolType, Identifier> getTexturedHandleIdentifiers() {
+            if (texturedHandleIdentifiers == null) return Collections.emptyMap();
+            return texturedHandleIdentifiers;
+        }
+        
+        @Override
+        public Optional<Identifier> getTexturedHeadIdentifier(ToolType toolType) {
+            if (texturedHeadIdentifiers == null) return Optional.empty();
+            return Optional.ofNullable(texturedHeadIdentifiers.get(toolType));
+        }
+        
+        @Override
+        public Optional<Identifier> getTexturedHandleIdentifier(ToolType toolType) {
+            if (texturedHandleIdentifiers == null) return Optional.empty();
+            return Optional.ofNullable(texturedHandleIdentifiers.get(toolType));
         }
         
         @Override

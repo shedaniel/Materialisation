@@ -26,7 +26,7 @@ import java.util.zip.ZipFile;
 
 public class ConfigHelper implements ModifierIngredientsHandler {
     
-    public static final File CONFIG_DIRECTORY = new File(FabricLoader.getInstance().getConfigDirectory(), "materialisation");
+    public static final File CONFIG_DIRECTORY = new File(FabricLoader.getInstance().getConfigDir() + "/materialisation");
     public static final File MATERIALS_DIRECTORY = new File(CONFIG_DIRECTORY, "material");
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     public static final Map<String, PartMaterial> MATERIAL_CACHE = new HashMap<>();
@@ -56,8 +56,11 @@ public class ConfigHelper implements ModifierIngredientsHandler {
             e.printStackTrace();
         }
     }
-    
-    @SuppressWarnings("ResultOfMethodCallIgnored")
+
+    /*
+    TODO: Fix the problem with this method being too complex to analyze by the data flow algorithm
+     */
+    @SuppressWarnings({"ResultOfMethodCallIgnored", "ConstantConditions"})
     public static void loadConfig() {
         loading = true;
         try {

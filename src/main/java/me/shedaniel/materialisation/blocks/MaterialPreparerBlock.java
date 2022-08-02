@@ -1,16 +1,23 @@
 package me.shedaniel.materialisation.blocks;
 
-import me.shedaniel.materialisation.Materialisation;
 import me.shedaniel.materialisation.ModReference;
-import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
+import me.shedaniel.materialisation.gui.MaterialPreparerScreenHandler;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder;
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.*;
-import net.minecraft.entity.EntityContext;
+import net.minecraft.entity.ai.pathing.NavigationType;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.screen.NamedScreenHandlerFactory;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.ScreenHandlerContext;
+import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
+import net.minecraft.sound.BlockSoundGroup;
+import net.minecraft.stat.Stats;
 import net.minecraft.state.StateManager;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
@@ -22,8 +29,8 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-public class MaterialPreparerBlock extends HorizontalFacingBlock {
-    
+public class MaterialPreparerBlock extends HorizontalFacingBlock implements NamedScreenHandlerFactory {
+    private static final Text TITLE = new TranslatableText("block.materialisation.material_preparer");
     private static final VoxelShape SHAPE;
     
     static {
@@ -32,7 +39,7 @@ public class MaterialPreparerBlock extends HorizontalFacingBlock {
     }
     
     public MaterialPreparerBlock() {
-        super(FabricBlockSettings.of(new FabricMaterialBuilder(MaterialColor.WOOD).burnable().build()).strength(3, 3).drops(new Identifier(ModReference.MOD_ID, "blocks/material_preparer")));
+        super(FabricBlockSettings.of(new FabricMaterialBuilder(Material.WOOD.getColor()).burnable().build()).strength(2.5F, 3).drops(new Identifier(ModReference.MOD_ID, "blocks/material_preparer")).sounds(BlockSoundGroup.WOOD));
         this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH));
     }
     
@@ -40,7 +47,7 @@ public class MaterialPreparerBlock extends HorizontalFacingBlock {
     public BlockState getPlacementState(ItemPlacementContext placementContext) {
         return getDefaultState().with(FACING, placementContext.getPlayerFacing().getOpposite());
     }
-    
+
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         builder.add(FACING);
@@ -48,10 +55,22 @@ public class MaterialPreparerBlock extends HorizontalFacingBlock {
     
     @SuppressWarnings("deprecation")
     @Override
-    public ActionResult onUse(BlockState blockState, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hitResult) {
-        if (!world.isClient)
-            ContainerProviderRegistry.INSTANCE.openContainer(Materialisation.MATERIAL_PREPARER_CONTAINER, player, buf -> buf.writeBlockPos(pos));
-        return ActionResult.SUCCESS;
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hitResult) {
+        if (world.isClient) {
+            return ActionResult.SUCCESS;
+        } else {
+            player.openHandledScreen(state.createScreenHandlerFactory(world, pos));
+            player.incrementStat(Stats.INTERACT_WITH_LOOM);
+            return ActionResult.CONSUME;
+        }
+    }
+    
+    @SuppressWarnings("deprecation")
+    @Override
+    public NamedScreenHandlerFactory createScreenHandlerFactory(BlockState state, World world, BlockPos pos) {
+        return new SimpleNamedScreenHandlerFactory((i, playerInventory, playerEntity) -> {
+            return new MaterialPreparerScreenHandler(i, playerInventory, ScreenHandlerContext.create(world, pos));
+        }, TITLE);
     }
     
     @SuppressWarnings("deprecation")
@@ -68,14 +87,23 @@ public class MaterialPreparerBlock extends HorizontalFacingBlock {
     
     @SuppressWarnings("deprecation")
     @Override
-    public boolean canPlaceAtSide(BlockState blockState_1, BlockView blockView_1, BlockPos blockPos_1, BlockPlacementEnvironment blockPlacementEnvironment_1) {
+    public boolean canPathfindThrough(BlockState blockState_1, BlockView blockView_1, BlockPos blockPos_1, NavigationType type) {
         return false;
     }
     
     @SuppressWarnings("deprecation")
     @Override
-    public VoxelShape getOutlineShape(BlockState blockState_1, BlockView blockView_1, BlockPos blockPos_1, EntityContext entityContext_1) {
+    public VoxelShape getOutlineShape(BlockState blockState, BlockView blockView, BlockPos blockPos, ShapeContext context) {
         return SHAPE;
     }
-    
+
+    @Override
+    public ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
+        return new MaterialPreparerScreenHandler(syncId, inv);
+    }
+
+    @Override
+    public Text getDisplayName() {
+        return new TranslatableText(getDefaultState().getBlock().getTranslationKey());
+    }
 }

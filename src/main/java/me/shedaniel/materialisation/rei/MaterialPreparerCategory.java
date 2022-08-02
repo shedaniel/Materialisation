@@ -2,55 +2,54 @@ package me.shedaniel.materialisation.rei;
 
 import com.google.common.collect.Lists;
 import me.shedaniel.materialisation.Materialisation;
-import me.shedaniel.math.api.Point;
-import me.shedaniel.math.api.Rectangle;
-import me.shedaniel.rei.api.EntryStack;
-import me.shedaniel.rei.api.RecipeCategory;
-import me.shedaniel.rei.gui.widget.CategoryBaseWidget;
-import me.shedaniel.rei.gui.widget.EntryWidget;
-import me.shedaniel.rei.gui.widget.Widget;
-import me.shedaniel.rei.plugin.DefaultPlugin;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.resource.language.I18n;
+import me.shedaniel.materialisation.gui.MaterialPreparerScreen;
+import me.shedaniel.math.Point;
+import me.shedaniel.math.Rectangle;
+import me.shedaniel.rei.api.client.gui.Renderer;
+import me.shedaniel.rei.api.client.gui.widgets.Widget;
+import me.shedaniel.rei.api.client.gui.widgets.Widgets;
+import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
+import me.shedaniel.rei.api.common.category.CategoryIdentifier;
+import me.shedaniel.rei.api.common.entry.EntryStack;
+import me.shedaniel.rei.api.common.util.EntryStacks;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
 import java.util.List;
-import java.util.function.Supplier;
 
-public class MaterialPreparerCategory implements RecipeCategory<MaterialPreparerDisplay> {
+public class MaterialPreparerCategory implements DisplayCategory<MaterialPreparerDisplay> {
     
-    public static final EntryStack LOGO = EntryStack.create(Materialisation.MATERIAL_PREPARER);
+    public static final EntryStack<?> LOGO = EntryStacks.of(Materialisation.MATERIAL_PREPARER);
     
     @Override
     public Identifier getIdentifier() {
+        return getCategoryIdentifier().getIdentifier();
+    }
+
+    @Override
+    public CategoryIdentifier<? extends MaterialPreparerDisplay> getCategoryIdentifier() {
         return MaterialisationREIPlugin.MATERIAL_PREPARER;
     }
-    
+
     @Override
-    public String getCategoryName() {
-        return I18n.translate("category.materialisation.material_preparer");
-    }
-    
-    @Override
-    public EntryStack getLogo() {
+    public Renderer getIcon() {
         return LOGO;
     }
-    
+
     @Override
-    public List<Widget> setupDisplay(Supplier<MaterialPreparerDisplay> recipeDisplaySupplier, Rectangle bounds) {
+    public Text getTitle() {
+        return new TranslatableText("category.materialisation.material_preparer");
+    }
+
+    @Override
+    public List<Widget> setupDisplay(MaterialPreparerDisplay display, Rectangle bounds) {
         final Point startPoint = new Point(bounds.getCenterX() - 41, bounds.getCenterY() - 13);
-        List<Widget> widgets = Lists.newArrayList(new CategoryBaseWidget(bounds) {
-            @Override
-            public void render(int mouseX, int mouseY, float delta) {
-                super.render(mouseX, mouseY, delta);
-                MinecraftClient.getInstance().getTextureManager().bindTexture(DefaultPlugin.getDisplayTexture());
-                this.blit(startPoint.x, startPoint.y, 0, 221, 82, 26);
-            }
-        });
-        MaterialPreparerDisplay display = recipeDisplaySupplier.get();
-        widgets.add(EntryWidget.create(startPoint.x - 18, startPoint.y + 5).entry(display.getFirst()).markIsInput());
-        widgets.add(EntryWidget.create(startPoint.x + 4, startPoint.y + 5).entries(display.getSecond()).markIsInput());
-        widgets.add(EntryWidget.create(startPoint.x + 61, startPoint.y + 5).entry(display.getResult()).noBackground().markIsOutput());
+        List<Widget> widgets = Lists.newArrayList(Widgets.createCategoryBase(bounds));
+        widgets.add(Widgets.createTexturedWidget(MaterialPreparerScreen.getTEXTURE(), startPoint.x, startPoint.y, 0, 221, 82, 26));
+        widgets.add(Widgets.createSlot(new Point(startPoint.x - 18, startPoint.y + 5)).entry(display.getFirst()).markInput());
+        widgets.add(Widgets.createSlot(new Point(startPoint.x + 4, startPoint.y + 5)).entries(display.getSecond()).markInput());
+        widgets.add(Widgets.createSlot(new Point(startPoint.x + 61, startPoint.y + 5)).entry(display.getResult()).disableBackground().markOutput());
         return widgets;
     }
     
@@ -58,5 +57,5 @@ public class MaterialPreparerCategory implements RecipeCategory<MaterialPreparer
     public int getDisplayHeight() {
         return 36;
     }
-    
+
 }

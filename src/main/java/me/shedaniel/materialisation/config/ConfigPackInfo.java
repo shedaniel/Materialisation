@@ -2,7 +2,7 @@ package me.shedaniel.materialisation.config;
 
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.Version;
-import net.fabricmc.loader.util.version.VersionParsingException;
+import net.fabricmc.loader.api.VersionParsingException;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.InvalidIdentifierException;
 
@@ -12,10 +12,15 @@ import java.util.function.Consumer;
 
 public class ConfigPackInfo {
     
+    @SuppressWarnings("CanBeFinal")
     private String displayName;
+    @SuppressWarnings("CanBeFinal")
     private String identifier;
+    @SuppressWarnings("CanBeFinal")
     private Consumer<ConfigPackInfo> predicate;
+    @SuppressWarnings("CanBeFinal")
     private List<String> authors;
+    @SuppressWarnings("CanBeFinal")
     private String version;
     private String description;
     private transient Identifier identifierObject;

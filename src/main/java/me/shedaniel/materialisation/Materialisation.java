@@ -5,19 +5,19 @@ import me.shedaniel.materialisation.blocks.MaterialPreparerBlock;
 import me.shedaniel.materialisation.blocks.MaterialisingTableBlock;
 import me.shedaniel.materialisation.config.ConfigHelper;
 import me.shedaniel.materialisation.config.MaterialisationConfig;
-import me.shedaniel.materialisation.containers.MaterialPreparerContainer;
-import me.shedaniel.materialisation.containers.MaterialisingTableContainer;
+import me.shedaniel.materialisation.gui.MaterialPreparerScreenHandler;
+import me.shedaniel.materialisation.gui.MaterialisingTableScreenHandler;
 import me.shedaniel.materialisation.items.*;
 import me.shedaniel.materialisation.utils.ResettableSimpleRegistry;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.minecraft.SharedConstants;
 import net.minecraft.block.Block;
-import net.minecraft.container.BlockContext;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.Level;
@@ -27,6 +27,7 @@ import org.apache.logging.log4j.Logger;
 import java.lang.reflect.Field;
 import java.util.Optional;
 
+@SuppressWarnings("unused")
 public class Materialisation implements ModInitializer {
     
     public static final Logger LOGGER = LogManager.getLogger();
@@ -34,6 +35,8 @@ public class Materialisation implements ModInitializer {
     public static final Block MATERIAL_PREPARER = new MaterialPreparerBlock();
     public static final Identifier MATERIAL_PREPARER_CONTAINER = new Identifier(ModReference.MOD_ID, "material_preparer");
     public static final Identifier MATERIALISING_TABLE_CONTAINER = new Identifier(ModReference.MOD_ID, "materialising_table");
+    public static final ScreenHandlerType<MaterialPreparerScreenHandler> MATERIAL_PREPARER_SCREEN_HANDLER = ScreenHandlerRegistry.registerSimple(Materialisation.MATERIAL_PREPARER_CONTAINER, MaterialPreparerScreenHandler::new);
+    public static final ScreenHandlerType<MaterialisingTableScreenHandler> MATERIALISING_TABLE_SCREEN_HANDLER = ScreenHandlerRegistry.registerSimple(Materialisation.MATERIALISING_TABLE_CONTAINER, MaterialisingTableScreenHandler::new);
     public static final Identifier MATERIALISING_TABLE_RENAME = new Identifier(ModReference.MOD_ID, "materialising_table_rename");
     public static final Identifier MATERIALISING_TABLE_PLAY_SOUND = new Identifier(ModReference.MOD_ID, "materialising_table_play_sound");
     public static final Item MATERIALISED_PICKAXE = new MaterialisedPickaxeItem(new Item.Settings());
@@ -57,9 +60,9 @@ public class Materialisation implements ModInitializer {
     public static final Item SWORD_BLADE_PATTERN = new PatternItem(new Item.Settings().group(ItemGroup.MATERIALS));
     public static final Item HAMMER_HEAD_PATTERN = new PatternItem(new Item.Settings().group(ItemGroup.MATERIALS));
     public static final Item MEGAAXE_HEAD_PATTERN = new PatternItem(new Item.Settings().group(ItemGroup.MATERIALS));
-    public static final Registry<Modifier> MODIFIERS = new ResettableSimpleRegistry<>();
+    public static final Registry<Modifier> MODIFIERS = new ResettableSimpleRegistry<>("modifiers");
     public static MaterialisationConfig config;
-    
+
     public static <T> Optional<T> getReflectionField(Object parent, Class<T> clazz, int index) {
         try {
             Field field = parent.getClass().getDeclaredFields()[index];
@@ -74,17 +77,12 @@ public class Materialisation implements ModInitializer {
     
     @Override
     public void onInitialize() {
+        MaterialisationModifierMaterials.register();
         registerBlock("materialising_table", MATERIALISING_TABLE, ItemGroup.DECORATIONS);
         registerBlock("material_preparer", MATERIAL_PREPARER, ItemGroup.DECORATIONS);
-        ContainerProviderRegistry.INSTANCE.registerFactory(MATERIALISING_TABLE_CONTAINER, (syncId, identifier, playerEntity, packetByteBuf) -> {
-            return new MaterialisingTableContainer(syncId, playerEntity.inventory, BlockContext.create(playerEntity.world, packetByteBuf.readBlockPos()));
-        });
-        ContainerProviderRegistry.INSTANCE.registerFactory(MATERIAL_PREPARER_CONTAINER, (syncId, identifier, playerEntity, packetByteBuf) -> {
-            return new MaterialPreparerContainer(syncId, playerEntity.inventory, BlockContext.create(playerEntity.world, packetByteBuf.readBlockPos()));
-        });
         ServerSidePacketRegistry.INSTANCE.register(MATERIALISING_TABLE_RENAME, (packetContext, packetByteBuf) -> {
-            if (packetContext.getPlayer().container instanceof MaterialisingTableContainer) {
-                MaterialisingTableContainer container = (MaterialisingTableContainer) packetContext.getPlayer().container;
+            if (packetContext.getPlayer().currentScreenHandler instanceof MaterialisingTableScreenHandler) {
+                MaterialisingTableScreenHandler container = (MaterialisingTableScreenHandler)packetContext.getPlayer().currentScreenHandler;
                 String string_1 = SharedConstants.stripInvalidChars(packetByteBuf.readString(32767));
                 if (string_1.length() <= 35)
                     container.setNewItemName(string_1);
@@ -123,6 +121,7 @@ public class Materialisation implements ModInitializer {
         registerBlock(name, block, new Item.Settings());
     }
     
+    @SuppressWarnings("SameParameterValue")
     private void registerBlock(String name, Block block, ItemGroup group) {
         registerBlock(name, block, new Item.Settings().group(group));
     }
@@ -135,5 +134,4 @@ public class Materialisation implements ModInitializer {
     private void registerItem(String name, Item item) {
         Registry.register(Registry.ITEM, new Identifier(ModReference.MOD_ID, name), item);
     }
-    
 }

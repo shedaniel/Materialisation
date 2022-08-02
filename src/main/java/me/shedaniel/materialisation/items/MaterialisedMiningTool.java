@@ -1,23 +1,25 @@
 package me.shedaniel.materialisation.items;
 
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
 import me.shedaniel.materialisation.Materialisation;
 import me.shedaniel.materialisation.MaterialisationUtils;
-import me.shedaniel.materialisation.ModReference;
 import me.shedaniel.materialisation.api.Modifier;
 import me.shedaniel.materialisation.api.ToolType;
 import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.attribute.EntityAttribute;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 
 import javax.annotation.Nonnull;
-
-import static me.shedaniel.materialisation.MaterialisationUtils.isHandleBright;
-import static me.shedaniel.materialisation.MaterialisationUtils.isHeadBright;
 
 public interface MaterialisedMiningTool extends DynamicAttributeTool {
     static float getExtraDamage(ToolType toolType) {
@@ -54,20 +56,11 @@ public interface MaterialisedMiningTool extends DynamicAttributeTool {
     
     @Override
     default float postProcessMiningSpeed(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user, float currentSpeed, boolean isEffective) {
-        return MaterialisationUtils.getToolDurability(stack) > 0 ? currentSpeed : 0f;
+        return MaterialisationUtils.getToolDurability(stack) <= 0 ? -1 : currentSpeed;
     }
     
     default int getEnchantability(ItemStack stack) {
         return MaterialisationUtils.getToolEnchantability(stack);
-    }
-    
-    double getAttackSpeed();
-    
-    default void initProperty() {
-        ((Item) this).addPropertyGetter(new Identifier(ModReference.MOD_ID, "handle_isbright"),
-                (itemStack, world, livingEntity) -> isHandleBright(itemStack) ? 1f : 0f);
-        ((Item) this).addPropertyGetter(new Identifier(ModReference.MOD_ID, "tool_head_isbright"),
-                (itemStack, world, livingEntity) -> isHeadBright(itemStack) ? 1f : 0f);
     }
     
     @Nonnull
@@ -94,9 +87,9 @@ public interface MaterialisedMiningTool extends DynamicAttributeTool {
     }
     
     default int getModifierLevel(ItemStack stack, String modifier) {
-        CompoundTag tag = stack.getTag();
+        NbtCompound tag = stack.getNbt();
         if (tag != null && tag.contains("modifiers")) {
-            CompoundTag modifiers = tag.getCompound("modifiers");
+            NbtCompound modifiers = tag.getCompound("modifiers");
             if (modifiers.contains(modifier))
                 return modifiers.getInt(modifier);
         }
@@ -104,10 +97,19 @@ public interface MaterialisedMiningTool extends DynamicAttributeTool {
     }
     
     default void setModifierLevel(ItemStack stack, Identifier modifier, int level) {
-        CompoundTag tag = stack.getOrCreateTag();
+        NbtCompound tag = stack.getOrCreateNbt();
         if (!tag.contains("modifiers"))
-            tag.put("modifiers", new CompoundTag());
-        CompoundTag modifiers = tag.getCompound("modifiers");
+            tag.put("modifiers", new NbtCompound());
+        NbtCompound modifiers = tag.getCompound("modifiers");
         modifiers.putInt(modifier.toString(), level);
+    }
+    
+    default Multimap<EntityAttribute, EntityAttributeModifier> getModifiers(EquipmentSlot slot, ItemStack stack) {
+        if (slot != EquipmentSlot.MAINHAND) return EMPTY;
+        double attackDamage = MaterialisationUtils.getToolDurability(stack) > 0 ? MaterialisationUtils.getToolAttackDamage(stack) : -10000;
+        if (attackDamage <= 0) return EMPTY;
+        return ImmutableMultimap.of(
+                EntityAttributes.GENERIC_ATTACK_DAMAGE, new EntityAttributeModifier(MaterialisationUtils.getItemModifierDamage(), "Tool modifier", attackDamage, EntityAttributeModifier.Operation.ADDITION)
+        );
     }
 }

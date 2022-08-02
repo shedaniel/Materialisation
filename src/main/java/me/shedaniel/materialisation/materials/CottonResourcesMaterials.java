@@ -11,7 +11,8 @@ public class CottonResourcesMaterials implements DefaultMaterialSupplier {
     @Override
     public List<MaterialsPack> getMaterialPacks() {
         try {
-            return (List) Class.forName("me.shedaniel.materialisation.materials.CottonResourcesMaterialsGetter").getDeclaredMethod("get").invoke(null);
+            //noinspection unchecked,rawtypes
+            return (List)Class.forName("me.shedaniel.materialisation.materials.CottonResourcesMaterialsGetter").getDeclaredMethod("get").invoke(null);
         } catch (Exception e) {
             e.printStackTrace();
         }

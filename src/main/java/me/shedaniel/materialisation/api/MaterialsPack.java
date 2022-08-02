@@ -11,9 +11,11 @@ public interface MaterialsPack {
     ConfigPackInfo getConfigPackInfo();
     
     Identifier getIdentifier();
-    
+
+    @SuppressWarnings("unused")
     String getDisplayName();
-    
+
+    @SuppressWarnings("unused")
     PartMaterial getMaterial(String str);
     
     Stream<PartMaterial> getKnownMaterials();

@@ -4,6 +4,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 public interface PartMaterial extends RepairAmountGetter {
@@ -26,6 +27,13 @@ public interface PartMaterial extends RepairAmountGetter {
     }
     
     Identifier getIdentifier();
+    
+    Map<ToolType, Identifier> getTexturedHeadIdentifiers();
+    Map<ToolType, Identifier> getTexturedHandleIdentifiers();
+    
+    Optional<Identifier> getTexturedHeadIdentifier(ToolType toolType);
+    
+    Optional<Identifier> getTexturedHandleIdentifier(ToolType toolType);
     
     boolean isBright();
     

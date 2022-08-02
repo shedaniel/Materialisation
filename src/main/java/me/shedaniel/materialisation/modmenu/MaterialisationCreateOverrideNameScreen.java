@@ -8,8 +8,11 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.util.NarratorManager;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
 import java.util.Locale;
@@ -17,6 +20,8 @@ import java.util.UUID;
 
 import static me.shedaniel.materialisation.modmenu.MaterialisationMaterialsScreen.overlayBackground;
 
+
+@SuppressWarnings("CanBeFinal")
 public class MaterialisationCreateOverrideNameScreen extends Screen {
     private MaterialisationMaterialsScreen og;
     private Screen parent;
@@ -37,7 +42,8 @@ public class MaterialisationCreateOverrideNameScreen extends Screen {
     @Override
     public boolean keyPressed(int int_1, int int_2, int int_3) {
         if (int_1 == 256 && this.shouldCloseOnEsc()) {
-            minecraft.openScreen(parent);
+            assert client != null;
+            client.setScreen(parent);
             return true;
         }
         return super.keyPressed(int_1, int_2, int_3);
@@ -46,25 +52,28 @@ public class MaterialisationCreateOverrideNameScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-        addButton(new ButtonWidget(4, 4, 75, 20, I18n.translate("gui.back"), var1 -> {
-            minecraft.openScreen(parent);
+        addSelectableChild(new ButtonWidget(4, 4, 75, 20, new TranslatableText("gui.back"), var1 -> {
+            assert client != null;
+            client.setScreen(parent);
         }));
-        addButton(continueButton = new ButtonWidget(width - 79, 4, 75, 20, I18n.translate("config.button.materialisation.continue"), var1 -> {
-            minecraft.openScreen(new MaterialisationCreateOverrideScreen(og, this, partMaterial, fileName.getText().isEmpty() ? randomFileName : fileName.getText(), priority.getText().isEmpty() ? 0 : Double.parseDouble(priority.getText())));
+        addSelectableChild(continueButton = new ButtonWidget(width - 79, 4, 75, 20, new TranslatableText("config.button.materialisation.continue"), var1 -> {
+            assert client != null;
+            client.setScreen(new MaterialisationCreateOverrideScreen(og, this, partMaterial, fileName.getText().isEmpty() ? randomFileName : fileName.getText(), priority.getText().isEmpty() ? 0 : Double.parseDouble(priority.getText())));
         }));
-        addButton(fileName = new TextFieldWidget(minecraft.textRenderer, width / 4, 50, width / 2, 18, fileName, "") {
+        assert client != null;
+        addSelectableChild(fileName = new TextFieldWidget(client.textRenderer, width / 4, 50, width / 2, 18, fileName, NarratorManager.EMPTY) {
             @Override
-            public void render(int int_1, int int_2, float float_1) {
+            public void render(MatrixStack stack, int int_1, int int_2, float float_1) {
                 if (getText().isEmpty())
                     setSuggestion(randomFileName);
                 else setSuggestion(null);
                 setEditableColor(!getText().isEmpty() && !getText().toLowerCase(Locale.ROOT).endsWith(".json") ? 16733525 : 14737632);
-                super.render(int_1, int_2, float_1);
+                super.render(stack, int_1, int_2, float_1);
             }
         });
-        addButton(priority = new TextFieldWidget(minecraft.textRenderer, width / 4, 118, width / 2, 18, priority, "") {
+        addSelectableChild(priority = new TextFieldWidget(client.textRenderer, width / 4, 118, width / 2, 18, priority, NarratorManager.EMPTY) {
             @Override
-            public void render(int int_1, int int_2, float float_1) {
+            public void render(MatrixStack stack, int int_1, int int_2, float float_1) {
                 if (getText().isEmpty())
                     setSuggestion("0");
                 else setSuggestion(null);
@@ -75,13 +84,13 @@ public class MaterialisationCreateOverrideNameScreen extends Screen {
                     } catch (NumberFormatException e) {
                         setEditableColor(16733525);
                     }
-                super.render(int_1, int_2, float_1);
+                super.render(stack, int_1, int_2, float_1);
             }
         });
     }
     
     @Override
-    public void render(int mouseX, int mouseY, float delta) {
+    public void render(MatrixStack stack, int mouseX, int mouseY, float delta) {
         continueButton.active = fileName.getText().isEmpty() || fileName.getText().toLowerCase(Locale.ROOT).endsWith(".json");
         if (continueButton.active && !priority.getText().isEmpty()) {
             try {
@@ -94,25 +103,21 @@ public class MaterialisationCreateOverrideNameScreen extends Screen {
         overlayBackground(0, 28, width, height, 32, 32, 32, 255, 255);
         RenderSystem.enableBlend();
         RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SrcFactor.ZERO, GlStateManager.DstFactor.ONE);
-        RenderSystem.disableAlphaTest();
-        RenderSystem.shadeModel(7425);
         RenderSystem.disableTexture();
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
-        buffer.begin(7, VertexFormats.POSITION_TEXTURE_COLOR);
-        buffer.vertex(0, 28 + 4, 0.0D).texture(0.0F, 1.0F).color(0, 0, 0, 0).next();
-        buffer.vertex(this.width, 28 + 4, 0.0D).texture(1.0F, 1.0F).color(0, 0, 0, 0).next();
-        buffer.vertex(this.width, 28, 0.0D).texture(1.0F, 0.0F).color(0, 0, 0, 255).next();
-        buffer.vertex(0, 28, 0.0D).texture(0.0F, 0.0F).color(0, 0, 0, 255).next();
+        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR_TEXTURE);
+        buffer.vertex(0, 28 + 4, 0.0D).color(0, 0, 0, 0).texture(0.0F, 1.0F).next();
+        buffer.vertex(this.width, 28 + 4, 0.0D).color(0, 0, 0, 0).texture(1.0F, 1.0F).next();
+        buffer.vertex(this.width, 28, 0.0D).color(0, 0, 0, 255).texture(1.0F, 0.0F).next();
+        buffer.vertex(0, 28, 0.0D).color(0, 0, 0, 255).texture(0.0F, 0.0F).next();
         tessellator.draw();
         RenderSystem.enableTexture();
-        RenderSystem.shadeModel(7424);
-        RenderSystem.enableAlphaTest();
         RenderSystem.disableBlend();
-        drawCenteredString(font, title.asFormattedString(), width / 2, 10, 16777215);
-        drawString(font, I18n.translate("config.text.materialisation.override_json_file_name"), width / 4, 36, -6250336);
-        drawString(font, I18n.translate("config.text.materialisation.override_json_file_saved"), width / 4, 74, -6250336);
-        drawString(font, I18n.translate("config.text.materialisation.priority"), width / 4, 104, -6250336);
-        super.render(mouseX, mouseY, delta);
+        drawCenteredText(stack, textRenderer, title, width / 2, 10, 16777215);
+        drawTextWithShadow(stack, textRenderer, new TranslatableText("config.text.materialisation.override_json_file_name"), width / 4, 36, -6250336);
+        drawTextWithShadow(stack, textRenderer, new TranslatableText("config.text.materialisation.override_json_file_saved"), width / 4, 74, -6250336);
+        drawTextWithShadow(stack, textRenderer, new TranslatableText("config.text.materialisation.priority"), width / 4, 104, -6250336);
+        super.render(stack, mouseX, mouseY, delta);
     }
 }
